@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>直感ビジュアル学習「場合の数」</title>
+    <!-- Google Fonts: Outfit & Noto Sans JP -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="logo">
+            <span class="logo-icon">🎲</span>
+            <h1>場合の数 <span class="accent-text">直感ビジュアル学習</span></h1>
+        </div>
+        <p class="subtitle">数式とビジュアルを繋ぐインタラクティブ教材</p>
+    </header>
+
+    <nav class="app-nav">
+        <button class="nav-tab active" data-tab="tab-pc">
+            <span class="tab-badge">P1,P2,P7</span> 順列・組合せ (P / C)
+        </button>
+        <button class="nav-tab locked" data-tab="tab-circular" title="Phase 2で追加予定">
+            <span class="tab-badge locked-badge">Phase 2</span> 円順列・数珠・隣接
+        </button>
+        <button class="nav-tab locked" data-tab="tab-multiset" title="Phase 3で追加予定">
+            <span class="tab-badge locked-badge">Phase 3</span> 重複組合せ・組分け
+        </button>
+        <button class="nav-tab locked" data-tab="tab-derangement" title="Phase 4で追加予定">
+            <span class="tab-badge locked-badge">Phase 4</span> 完全順列・クイズ
+        </button>
+    </nav>
+
+    <main class="app-main">
+        <!-- Tab 1: 順列・組合せ (P / C) -->
+        <section id="tab-pc" class="tab-content active">
+            <div class="layout-grid">
+                <!-- 左カラム: パラメータ設定 -->
+                <div class="control-panel panel">
+                    <h2 class="panel-title">🛠️ 条件設定</h2>
+                    
+                    <!-- パターン選択 -->
+                    <div class="control-group">
+                        <label for="pattern-select" class="control-label">数え上げのパターン</label>
+                        <select id="pattern-select" class="form-select">
+                            <option value="p1">基本の順列 (nPr)</option>
+                            <option value="p2">同じものがある順列 (A,A,B,C)</option>
+                            <option value="p7">基本の組合せ (nCr)</option>
+                        </select>
+                    </div>
+
+                    <!-- パラメータn, r (動的に非表示にすることもある) -->
+                    <div id="nr-sliders">
+                        <div class="control-group">
+                            <div class="slider-header">
+                                <label for="param-n" class="control-label">要素の総数 (n)</label>
+                                <span id="val-n" class="param-value">4</span>
+                            </div>
+                            <input type="range" id="param-n" min="2" max="6" value="4" class="form-slider">
+                        </div>
+
+                        <div class="control-group" id="group-r">
+                            <div class="slider-header">
+                                <label for="param-r" class="control-label">並べる・選ぶ数 (r)</label>
+                                <span id="val-r" class="param-value">3</span>
+                            </div>
+                            <input type="range" id="param-r" min="1" max="4" value="3" class="form-slider">
+                        </div>
+                    </div>
+
+                    <!-- 同じものがある順列専用の設定 -->
+                    <div id="duplicate-settings" class="control-group hidden">
+                        <label class="control-label">各要素の個数設定</label>
+                        <div class="dup-elements-grid">
+                            <div class="dup-item">
+                                <span class="dup-badge val-A">A</span>
+                                <input type="number" id="dup-count-A" min="1" max="4" value="2" class="form-number">
+                            </div>
+                            <div class="dup-item">
+                                <span class="dup-badge val-B">B</span>
+                                <input type="number" id="dup-count-B" min="0" max="4" value="1" class="form-number">
+                            </div>
+                            <div class="dup-item">
+                                <span class="dup-badge val-C">C</span>
+                                <input type="number" id="dup-count-C" min="0" max="4" value="1" class="form-number">
+                            </div>
+                            <div class="dup-item">
+                                <span class="dup-badge val-D">D</span>
+                                <input type="number" id="dup-count-D" min="0" max="4" value="0" class="form-number">
+                            </div>
+                        </div>
+                        <p class="help-text">総数 (n) は上記個数の合計になります（最大6個まで）。</p>
+                    </div>
+
+                    <!-- 要素の表示タイプ -->
+                    <div class="control-group">
+                        <label class="control-label">要素の見た目</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="element-type" value="ball" checked>
+                                <span>ボール</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="element-type" value="card">
+                                <span>カード</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="element-type" value="char">
+                                <span>英字</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右カラム: 可視化エリア -->
+                <div class="visualization-panel">
+                    <!-- アニメーション・可視化キャンバス -->
+                    <div class="visualizer-wrapper panel">
+                        <div class="visualizer-header">
+                            <h3 class="panel-subtitle">✨ リアルタイム可視化</h3>
+                            <button id="btn-animate" class="btn-primary">並び替えを再生</button>
+                        </div>
+                        <div class="visualizer-canvas" id="canvas-container">
+                            <!-- 要素（ボールやカード）が動的に配置される領域 -->
+                            <div id="elements-pool" class="pool-area"></div>
+                            <div class="arrow-indicator">⬇️</div>
+                            <div id="slots-area" class="slots-area"></div>
+                        </div>
+                    </div>
+
+                    <!-- 数式・解説エリア -->
+                    <div class="explanation-panel panel">
+                        <h3 class="panel-subtitle">📖 計算プロセスと解説</h3>
+                        <div class="formula-container">
+                            <div id="math-formula" class="math-display"></div>
+                            <div id="math-steps" class="math-steps"></div>
+                        </div>
+                        <div class="explanation-text" id="explanation-body"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 全パターン一覧エリア -->
+            <div class="results-panel panel">
+                <h3 class="panel-subtitle">📋 全パターン一覧 (<span id="results-count">0</span> 通り)</h3>
+                <div class="results-grid" id="patterns-list"></div>
+            </div>
+        </section>
+
+        <!-- Tab 2: 円順列・数珠・隣接 (Phase 2 ロック画面) -->
+        <section id="tab-circular" class="tab-content locked-content">
+            <div class="lock-card">
+                <div class="lock-icon">🔒</div>
+                <h2>円順列・数珠・隣接制限</h2>
+                <p>現在 Phase 1 の実装を検証中です。基本の順列・組合せの動作確認が完了し、Gitプッシュされた後に Phase 2 としてアンロックされます！(=^・^=)</p>
+                <div class="feature-preview">
+                    <h3>🌟 実装予定の機能</h3>
+                    <ul>
+                        <li>円環上に要素を並べ、回転移動して重なるパターン（周期性）をアニメーション可視化</li>
+                        <li>数珠順列における「裏返して同じになる（左右対称性）」の判定デモ</li>
+                        <li>隣り合う条件（グループ化）と隣り合わない条件（隙間に差し込む）のビジュアル表現</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 3: 重複組合せ・組分け (Phase 3 ロック画面) -->
+        <section id="tab-multiset" class="tab-content locked-content">
+            <div class="lock-card">
+                <div class="lock-icon">🔒</div>
+                <h2>重複組合せ・部屋割り・組分け</h2>
+                <p>Phase 3 でアンロック予定です。仕切り棒とりんごの分配、および写像12相の相関（部屋割り・組分けの違い）を体験できます。</p>
+            </div>
+        </section>
+
+        <!-- Tab 4: 完全順列・クイズ (Phase 4 ロック画面) -->
+        <section id="tab-derangement" class="tab-content locked-content">
+            <div class="lock-card">
+                <div class="lock-icon">🔒</div>
+                <h2>完全順列・演習クイズ</h2>
+                <p>Phase 4 でアンロック予定です。席替えの完全順列アニメーションと、場合の数をマスターするためのインタラクティブクイズを収録します。</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>© 2026 cases & combinatorics simulation tool. Designed for Eleanor Arroway & Nova. (=^・^=)</p>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
