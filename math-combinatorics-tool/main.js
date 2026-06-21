@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 steps += ` \\times ${n - i}`;
             }
             if (r === 0) steps = '1';
-            mathSteps.innerHTML = `${r}個並べる: ${steps} = ${count} 通り`;
+            mathSteps.innerHTML = `${r}個並べる: \\( ${steps} = ${count} \\) 通り`;
 
             explanationBody.innerHTML = `
                 <p><strong>基本の順列 ($_nP_r$)</strong>は、異なる $n$ 個のものから異なる $r$ 個を選んで、<strong>順番を区別して</strong>一列に並べる並べ方です。</p>
@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const count = factorial(n) / denomVal;
             mathFormula.innerHTML = `\\( \\frac{${n}!}{${denomStr}} = \\frac{${totalFact}}{${denomVal}} = ${count} \\)`;
-            mathSteps.innerHTML = `総数 ${n} 個の階乗を、重複要素の個数の階乗で割る: ${count} 通り`;
+            mathSteps.innerHTML = `総数 \\( ${n} \\) 個の階乗を、重複要素の個数の階乗で割る: \\( ${count} \\) 通り`;
 
             explanationBody.innerHTML = `
                 <p><strong>同じものがある順列</strong>では、一度すべての要素を「区別できる」と仮定して <code>n!</code> 通りの並べ方を考えます。</p>
@@ -369,9 +369,9 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }
 
-        // LaTeX の再読み込み（もしあれば）
-        if (window.MathJax) {
-            window.MathJax.typesetPromise();
+        // LaTeX の再読み込み（指定要素のみ再スキャンすることで高速化）
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise([mathFormula, mathSteps, explanationBody]).catch(err => console.log(err));
         }
     }
 
