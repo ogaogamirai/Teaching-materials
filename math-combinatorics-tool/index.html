@@ -39,8 +39,8 @@
         <button class="nav-tab" data-tab="tab-circular">
             <span class="tab-badge">P4-6,13</span> 円順列・数珠・隣接
         </button>
-        <button class="nav-tab locked" data-tab="tab-multiset" title="Phase 3で追加予定">
-            <span class="tab-badge locked-badge">Phase 3</span> 重複組合せ・組分け
+        <button class="nav-tab" data-tab="tab-multiset">
+            <span class="tab-badge">P8-10,14,15</span> 重複組合せ・組分け
         </button>
         <button class="nav-tab locked" data-tab="tab-derangement" title="Phase 4で追加予定">
             <span class="tab-badge locked-badge">Phase 4</span> 完全順列・クイズ
@@ -249,12 +249,104 @@
             </div>
         </section>
 
-        <!-- Tab 3: 重複組合せ・組分け (Phase 3 ロック画面) -->
-        <section id="tab-multiset" class="tab-content locked-content">
-            <div class="lock-card">
-                <div class="lock-icon">🔒</div>
-                <h2>重複組合せ・部屋割り・組分け</h2>
-                <p>Phase 3 でアンロック予定です。仕切り棒とりんごの分配、および写像12相の相関（部屋割り・組分けの違い）を体験できます。</p>
+        <!-- Tab 3: 重複組合せ・組分け (Phase 3 実装エリア) -->
+        <section id="tab-multiset" class="tab-content">
+            <div class="layout-grid">
+                <!-- 左カラム: パラメータ設定 -->
+                <div class="control-panel panel">
+                    <h2 class="panel-title">🛠️ 条件設定 (重複組合せ・相関)</h2>
+                    
+                    <!-- パターン選択 -->
+                    <div class="control-group">
+                        <label for="pattern-select-multi" class="control-label">数え上げのパターン</label>
+                        <select id="pattern-select-multi" class="form-select">
+                            <option value="p14">重複組合せ (もらえない人がいても良い)</option>
+                            <option value="p15">重複組合せ (最低個数制限あり: A≧2, B≧3, C≧1)</option>
+                            <option value="p-matrix">組合せ相関マトリックス (写像12相)</option>
+                        </select>
+                    </div>
+
+                    <!-- パラメータn, k (重複組合せ用) -->
+                    <div id="multi-params">
+                        <div class="control-group">
+                            <div class="slider-header">
+                                <label for="param-multi-n" class="control-label">リンゴの数 (n)</label>
+                                <span id="val-multi-n" class="param-value">6</span>
+                            </div>
+                            <input type="range" id="param-multi-n" min="3" max="9" value="6" class="form-slider">
+                        </div>
+
+                        <div class="control-group">
+                            <div class="slider-header">
+                                <label for="param-multi-k" class="control-label">分ける人数 (k)</label>
+                                <span id="val-multi-k" class="param-value">3</span>
+                            </div>
+                            <input type="range" id="param-multi-k" min="2" max="4" value="3" class="form-slider">
+                        </div>
+                    </div>
+
+                    <!-- 組合せ相関マトリックス用の制御パラメータ -->
+                    <div id="matrix-controls" class="hidden">
+                        <div class="control-group">
+                            <div class="slider-header">
+                                <label for="param-mat-n" class="control-label">ボールの数 (n)</label>
+                                <span id="val-mat-n" class="param-value">4</span>
+                            </div>
+                            <input type="range" id="param-mat-n" min="2" max="4" value="4" class="form-slider">
+                        </div>
+                        <div class="control-group">
+                            <div class="slider-header">
+                                <label for="param-mat-k" class="control-label">グループ/部屋の数 (k)</label>
+                                <span id="val-mat-k" class="param-value">3</span>
+                            </div>
+                            <input type="range" id="param-mat-k" min="2" max="3" value="3" class="form-slider">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">重複（空きグループ）の許可</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="matrix-empty" value="allow" checked>
+                                    <span>空きグループあり</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="matrix-empty" value="deny">
+                                    <span>空きグループなし</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右カラム: 可視化エリア -->
+                <div class="visualization-panel">
+                    <!-- アニメーション・可視化キャンバス -->
+                    <div class="visualizer-wrapper panel">
+                        <div class="visualizer-header">
+                            <h3 class="panel-subtitle" id="visualizer-subtitle-multi">✨ リアルタイム可視化 (仕切りモデル)</h3>
+                            <button id="btn-animate-multi" class="btn-primary">シミュレーションを再生</button>
+                        </div>
+                        <div class="visualizer-canvas" id="canvas-container-multi" style="min-height: 320px;">
+                            <!-- 仕切りとりんごの配置、またはマトリックス表示 -->
+                            <div id="elements-container-multi" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; position: relative;"></div>
+                        </div>
+                    </div>
+
+                    <!-- 数式・解説エリア -->
+                    <div class="explanation-panel panel">
+                        <h3 class="panel-subtitle">📖 計算プロセスと解説</h3>
+                        <div class="formula-container">
+                            <div id="math-formula-multi" class="math-display"></div>
+                            <div id="math-steps-multi" class="math-steps"></div>
+                        </div>
+                        <div class="explanation-text" id="explanation-body-multi"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 全パターン一覧エリア -->
+            <div class="results-panel panel">
+                <h3 class="panel-subtitle">📋 全パターン一覧 (<span id="results-count-multi">0</span> 通り)</h3>
+                <div class="results-grid" id="patterns-list-multi"></div>
             </div>
         </section>
 

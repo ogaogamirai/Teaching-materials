@@ -1343,6 +1343,879 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+
+    // ==========================================================================
+    // --- Phase 3: 重複組合せ・写像12相相関の実装 ---
+    // ==========================================================================
+
+    // 1. Phase 3 用のDOM要素取得
+    const patternSelectMulti = document.getElementById('pattern-select-multi');
+    const paramMultiN = document.getElementById('param-multi-n');
+    const valMultiN = document.getElementById('val-multi-n');
+    const paramMultiK = document.getElementById('param-multi-k');
+    const valMultiK = document.getElementById('val-multi-k');
+    const multiParams = document.getElementById('multi-params');
+    const matrixControls = document.getElementById('matrix-controls');
+    const paramMatN = document.getElementById('param-mat-n');
+    const valMatN = document.getElementById('val-mat-n');
+    const paramMatK = document.getElementById('param-mat-k');
+    const valMatK = document.getElementById('val-mat-k');
+    const matrixEmptyRadios = document.querySelectorAll('input[name="matrix-empty"]');
+    const btnAnimateMulti = document.getElementById('btn-animate-multi');
+    const elementsContainerMulti = document.getElementById('elements-container-multi');
+    const mathFormulaMulti = document.getElementById('math-formula-multi');
+    const mathStepsMulti = document.getElementById('math-steps-multi');
+    const explanationBodyMulti = document.getElementById('explanation-body-multi');
+    const patternsListMulti = document.getElementById('patterns-list-multi');
+    const resultsCountMulti = document.getElementById('results-count-multi');
+    const visualizerSubtitleMulti = document.getElementById('visualizer-subtitle-multi');
+
+    // Phase 3 の状態
+    let currentPatternMulti = 'p14';
+    let multiN = 6;
+    let multiK = 3;
+    let matN = 4;
+    let matK = 3;
+    let matAllowEmpty = true;
+    let activePatternsMulti = [];
+    let currentDisplayIndexMulti = 0;
+    let activeMatrixCell = 'cell-ur-ur'; // 現在選択されているマトリックスセル
+
+    // 数学関数: スターリング数 S(n, k)
+    function getStirling2(n, k) {
+        if (k === 1 || n === k) return 1;
+        if (k > n || k < 1) return 0;
+        return k * getStirling2(n - 1, k) + getStirling2(n - 1, k - 1);
+    }
+
+    // 数学関数: 分割数 P(n, k) - nをk個の正整数の和に分ける
+    function getPartition(n, k) {
+        if (n < 0 || k < 1) return 0;
+        if (n === 0 || k === 1 || n === k) return 1;
+        if (n < k) return 0;
+        return getPartition(n - 1, k - 1) + getPartition(n - k, k);
+    }
+
+    // 数学関数: 分割数の和 - nをk個以下の非負整数の和に分ける
+    function getPartitionSum(n, k) {
+        let sum = 0;
+        for (let j = 1; j <= k; j++) {
+            sum += getPartition(n, j);
+        }
+        return sum;
+    }
+
+    // 重複組合せの分配パターンの全列挙 (和がnになる非負整数の組)
+    function generateMultisetPartitions(n, k, minLimits) {
+        const results = [];
+        
+        function backtrack(temp, sum, index) {
+            if (index === k) {
+                if (sum === n) {
+                    results.push([...temp]);
+                }
+                return;
+            }
+            
+            const minVal = minLimits[index] || 0;
+            // 残りの枠で最低限必要な個数
+            let remainingMin = 0;
+            for (let i = index + 1; i < k; i++) {
+                remainingMin += minLimits[i] || 0;
+            }
+
+            const maxVal = n - sum - remainingMin;
+
+            for (let val = minVal; val <= maxVal; val++) {
+                backtrack([...temp, val], sum + val, index + 1);
+            }
+        }
+
+        backtrack([], 0, 0);
+        return results;
+    }
+
+    // 写像12相の全パターン列挙用 (可視化＆リスト用)
+    // n個のボール(球)をk個の箱(箱)に入れる
+    function generateMatrixPatterns(n, k, ballDist, boxDist, allowEmpty) {
+        const results = [];
+        
+        // 1. ボール区別あり, 箱区別あり
+        if (ballDist === 'dist' && boxDist === 'dist') {
+            // 全ての配分パターン K^N を全列挙
+            // 例: N=3, K=2 -> [0,0,0], [0,0,1], [0,1,0]... (各ボールがどの箱に入るか)
+            function backtrack(temp, index) {
+                if (index === n) {
+                    // 空箱禁止チェック
+                    if (!allowEmpty) {
+                        const usedBoxes = new Set(temp);
+                        if (usedBoxes.size < k) return;
+                    }
+                    results.push([...temp]);
+                    return;
+                }
+                for (let i = 0; i < k; i++) {
+                    backtrack([...temp, i], index + 1);
+                }
+            }
+            backtrack([], 0);
+            return results;
+        }
+
+        // 2. ボール区別なし, 箱区別あり (重複組合せ)
+        if (ballDist === 'indist' && boxDist === 'dist') {
+            // 各箱に入るボールの個数 [x1, x2... xk] で、合計が n
+            const minLimits = Array(k).fill(allowEmpty ? 0 : 1);
+            return generateMultisetPartitions(n, k, minLimits);
+        }
+
+        // 3. ボール区別あり, 箱区別なし (組分け)
+        if (ballDist === 'dist' && boxDist === 'indist') {
+            // 区別のあるボールを区別のないグループに分ける
+            // 代表シグネチャによる重複排除
+            // まず「ボール区別あり、箱区別あり」で列挙し、
+            // 箱のラベル(0,1,2)の並び替えを同一視した上で代表値をシグネチャとする
+            const rawPatterns = generateMatrixPatterns(n, k, 'dist', 'dist', allowEmpty);
+            const seen = new Set();
+            const filtered = [];
+
+            rawPatterns.forEach(pattern => {
+                // ボールのグループ分け構造を文字列化する
+                // 例: ボール0,1が箱A、ボール2が箱B -> グループ=[[0,1], [2]]
+                // これを各グループ内はソート、グループ同士もソートして文字列化
+                const groups = Array.from({ length: k }, () => []);
+                pattern.forEach((boxIdx, ballIdx) => {
+                    groups[boxIdx].push(ballIdx);
+                });
+                
+                // 空のグループを除去し、各グループ内をソート
+                const sortedGroups = groups
+                    .map(g => g.sort((a,b) => a-b))
+                    .filter(g => g.length > 0);
+                
+                // グループ同士を「最初の要素の値」などでソート
+                sortedGroups.sort((a,b) => a[0] - b[0]);
+                
+                const sig = sortedGroups.map(g => g.join(',')).join('|');
+                if (!seen.has(sig)) {
+                    seen.add(sig);
+                    // 描画しやすいよう、箱の割り当て配列形式に復元する
+                    // 箱の区別はないため、辞書順にグループインデックスを割り振る
+                    const restored = Array(n).fill(0);
+                    sortedGroups.forEach((g, gIdx) => {
+                        g.forEach(ballIdx => {
+                            restored[ballIdx] = gIdx;
+                        });
+                    });
+                    filtered.push(restored);
+                }
+            });
+            return filtered;
+        }
+
+        // 4. ボール区別なし, 箱区別なし (整数の分割)
+        if (ballDist === 'indist' && boxDist === 'indist') {
+            // 個数分布 [x1, x2... xk] (合計n) のうち、ソートして同じになるものを同一視する
+            const minLimits = Array(k).fill(allowEmpty ? 0 : 1);
+            const rawPartitions = generateMultisetPartitions(n, k, minLimits);
+            const seen = new Set();
+            const filtered = [];
+
+            rawPartitions.forEach(part => {
+                const sorted = [...part].sort((a, b) => b - a); // 降順ソート (例: [3,1,0])
+                const sig = sorted.join(',');
+                if (!seen.has(sig)) {
+                    seen.add(sig);
+                    filtered.push(sorted);
+                }
+            });
+            return filtered;
+        }
+
+        return [];
+    }
+
+    // --- Phase 3 パラメータ同期 ---
+    function syncParametersMultiset() {
+        currentPatternMulti = patternSelectMulti.value;
+        
+        if (currentPatternMulti === 'p-matrix') {
+            multiParams.classList.add('hidden');
+            matrixControls.classList.remove('hidden');
+            
+            matN = parseInt(paramMatN.value);
+            matK = parseInt(paramMatK.value);
+            matAllowEmpty = document.querySelector('input[name="matrix-empty"]:checked').value === 'allow';
+            
+            valMatN.textContent = matN;
+            valMatK.textContent = matK;
+
+            visualizerSubtitleMulti.textContent = '📊 類似性と相関マトリックス (写像12相)';
+            btnAnimateMulti.classList.add('hidden');
+        } else {
+            multiParams.classList.remove('hidden');
+            matrixControls.classList.add('hidden');
+            
+            multiN = parseInt(paramMultiN.value);
+            multiK = parseInt(paramMultiK.value);
+            valMultiN.textContent = multiN;
+            valMultiK.textContent = multiK;
+
+            visualizerSubtitleMulti.textContent = '🍎 リアルタイム可視化 (仕切りモデル)';
+            btnAnimateMulti.classList.remove('hidden');
+        }
+
+        calculateAndDisplayMultiset();
+    }
+
+    // --- Phase 3 計算・表示 ---
+    function calculateAndDisplayMultiset() {
+        patternsListMulti.innerHTML = '';
+        elementsContainerMulti.innerHTML = '';
+        currentDisplayIndexMulti = 0;
+
+        if (currentPatternMulti === 'p14') {
+            // 重複組合せ (制限なし)
+            activePatternsMulti = generateMultisetPartitions(multiN, multiK, Array(multiK).fill(0));
+            resultsCountMulti.textContent = activePatternsMulti.length;
+            renderFormulaAndExplanationMultiset();
+            renderListMultiset();
+            renderVisualizationMultiset(activePatternsMulti[0]);
+        } else if (currentPatternMulti === 'p15') {
+            // 重複組合せ (A>=2, B>=3, C>=1, D>=0)
+            const minLimits = [2, 3, 1, 0];
+            activePatternsMulti = generateMultisetPartitions(multiN, multiK, minLimits);
+            resultsCountMulti.textContent = activePatternsMulti.length;
+            renderFormulaAndExplanationMultiset();
+            renderListMultiset();
+            renderVisualizationMultiset(activePatternsMulti[0]);
+        } else if (currentPatternMulti === 'p-matrix') {
+            // 写像12相マトリックス表示
+            renderMatrixUI();
+        }
+    }
+
+    // 重複組合せ用リストレンダリング
+    function renderListMultiset() {
+        if (activePatternsMulti.length === 0) {
+            patternsListMulti.innerHTML = '<p class="help-text">条件を満たす配分はありません（リンゴが足りません）。</p>';
+            return;
+        }
+
+        activePatternsMulti.forEach((pattern, index) => {
+            const item = document.createElement('div');
+            item.className = 'pattern-item';
+            if (index === 0) item.classList.add('active-pattern');
+
+            const seqDiv = document.createElement('div');
+            seqDiv.className = 'pattern-sequence';
+            seqDiv.style.fontSize = '0.9rem';
+            seqDiv.style.fontWeight = '700';
+
+            // 配分形式で描画 (例: [3, 1, 2] -> A:3, B:1, C:2)
+            const parts = [];
+            pattern.forEach((val, idx) => {
+                parts.push(`${ELEMENT_DEFS[idx].label}:${val}`);
+            });
+            seqDiv.textContent = `[ ${parts.join(', ')} ]`;
+
+            const idxSpan = document.createElement('span');
+            idxSpan.className = 'pattern-index';
+            idxSpan.textContent = `#${index + 1}`;
+
+            item.appendChild(seqDiv);
+            item.appendChild(idxSpan);
+
+            item.addEventListener('click', () => {
+                document.querySelectorAll('#patterns-list-multi .pattern-item').forEach(el => el.classList.remove('active-pattern'));
+                item.classList.add('active-pattern');
+                currentDisplayIndexMulti = index;
+                renderVisualizationMultiset(pattern);
+            });
+
+            patternsListMulti.appendChild(item);
+        });
+    }
+
+    // --- Phase 3 数式・解説 (重複組合せ) ---
+    function renderFormulaAndExplanationMultiset() {
+        if (currentPatternMulti === 'p14') {
+            const count = getnCr(multiN + multiK - 1, multiK - 1);
+            mathFormulaMulti.innerHTML = `\\( _{${multiN}}H_{${multiK}} = {}_{${multiN}+${multiK}-1}C_{${multiK}-1} = {}_{${multiN + multiK - 1}}C_{${multiK - 1}} = ${count} \\)`;
+            mathStepsCirc.innerHTML = '';
+            mathStepsMulti.innerHTML = `りんご ${multiN} 個と仕切り ${multiK - 1} 枚の並び替え: \\( \\frac{(${multiN}+${multiK}-1)!}{${multiN}! \\times (${multiK}-1)!} = ${count} \\) 通り`;
+            explanationBodyMulti.innerHTML = `
+                <p><strong>重複組合せ ($nHk$)</strong>は、区別のない $n$ 個のモノを区別のある $k$ 個のグループ（子供）に分ける方法の数です（もらえない子供がいても良い）。</p>
+                <p>これは、<strong>「$n$ 個のモノ（〇）と $k-1$ 個の仕切り（｜）を一列に並べる」</strong>というモデルに1対1対応します。</p>
+                <p>現在の設定: りんご <code>${multiN}</code> 個、子供 <code>${multiK}</code> 人（仕切り <code>${multiK - 1}</code> 枚）の並び替え問題になり、計算式は <code>{}_{n+k-1}C_{k-1}</code> となります。</p>
+            `;
+        } else if (currentPatternMulti === 'p15') {
+            // 制限あり
+            const limits = [2, 3, 1, 0];
+            const sumLimits = limits.slice(0, multiK).reduce((a, b) => a + b, 0);
+            const remainingN = multiN - sumLimits;
+            
+            if (remainingN < 0) {
+                mathFormulaMulti.innerHTML = `\\( \\text{計算不可能 (負数)} \\)`;
+                mathStepsMulti.innerHTML = `必要な最低個数の合計 (${sumLimits}) が、用意されたリンゴの数 (${multiN}) を超えています。`;
+                explanationBodyMulti.innerHTML = `<p class="help-text" style="color:var(--danger)">リンゴの数を増やしてください。</p>`;
+                return;
+            }
+
+            const count = getnCr(remainingN + multiK - 1, multiK - 1);
+            
+            mathFormulaMulti.innerHTML = `\\( {}_{${remainingN}}H_{${multiK}} = {}_{${remainingN}+${multiK}-1}C_{${multiK}-1} = {}_{${remainingN + multiK - 1}}C_{${multiK - 1}} = ${count} \\)`;
+            
+            const limitStrings = [];
+            limits.slice(0, multiK).forEach((v, i) => {
+                limitStrings.push(`${ELEMENT_DEFS[i].label}君に${v}個`);
+            });
+
+            mathStepsMulti.innerHTML = `最低個数を配った残りのリンゴ ${remainingN} 個を ${multiK} 人に分ける: ${count} 通り`;
+            explanationBodyMulti.innerHTML = `
+                <p>最低個数の制限がある場合、<strong>「あらかじめ必要な最小個数をそれぞれに配っておく（取り分けておく）」</strong>ことで、制限なしの重複組合せ問題に還元できます。</p>
+                <p>あらかじめ配る個数: <code>${limitStrings.join(', ')}</code> (合計 <code>${sumLimits}</code> 個)</p>
+                <p>残りのリンゴ: <code>${multiN} - ${sumLimits} = ${remainingN}</code> 個。この <code>${remainingN}</code> 個の残りを <code>${multiK}</code> 人に配る重複組合せ <code>{}_{${remainingN}}H_{${multiK}}</code> を計算します。</p>
+            `;
+        }
+
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise([mathFormulaMulti, mathStepsMulti, explanationBodyMulti]).catch(err => console.log(err));
+        }
+    }
+
+    // --- Phase 3 可視化 (重複組合せ) ---
+    function renderVisualizationMultiset(pattern) {
+        elementsContainerMulti.innerHTML = '';
+        if (!pattern) return;
+
+        // 1. 上段: りんごと仕切りの一列並び
+        const row1 = document.createElement('div');
+        row1.style.display = 'flex';
+        row1.style.gap = '0.5rem';
+        row1.style.justifyContent = 'center';
+        row1.style.alignItems = 'center';
+        row1.style.minHeight = '70px';
+        row1.style.width = '100%';
+
+        // パターン [3, 1, 2] を 〇〇〇｜〇｜〇〇 に変換して並べる
+        const seqElements = [];
+        pattern.forEach((count, idx) => {
+            for (let i = 0; i < count; i++) {
+                seqElements.push({ type: 'apple', label: '🍎', colorIdx: 0 });
+            }
+            if (idx < pattern.length - 1) {
+                seqElements.push({ type: 'bar', label: '｜', colorIdx: 5 });
+            }
+        });
+
+        seqElements.forEach(elem => {
+            const el = document.createElement('div');
+            el.className = `visual-element type-${elem.type}`;
+            if (elem.type === 'apple') {
+                el.style.width = '48px';
+                el.style.height = '48px';
+            }
+            row1.appendChild(el);
+        });
+
+        elementsContainerMulti.appendChild(row1);
+
+        // 2. 下段: 子供の箱
+        const row2 = document.createElement('div');
+        row2.className = 'child-box-container';
+
+        pattern.forEach((count, idx) => {
+            const box = document.createElement('div');
+            box.className = 'child-box';
+            box.setAttribute('data-child-name', `${ELEMENT_DEFS[idx].label}君`);
+            box.id = `child-box-${idx}`;
+
+            // 中にりんごを描画
+            for (let i = 0; i < count; i++) {
+                const apple = document.createElement('div');
+                apple.className = 'visual-element type-apple';
+                apple.style.width = '40px';
+                apple.style.height = '40px';
+                apple.style.fontSize = '0.8rem';
+                box.appendChild(apple);
+            }
+
+            row2.appendChild(box);
+        });
+
+        elementsContainerMulti.appendChild(row2);
+    }
+
+    // --- Phase 3 アニメーション (仕切りが動き、りんごが箱へ落ちる) ---
+    function playTransitionMultiset() {
+        if (currentPatternMulti === 'p-matrix') return;
+        
+        const pattern = activePatternsMulti[currentDisplayIndexMulti];
+        if (!pattern) return;
+
+        btnAnimateMulti.disabled = true;
+        btnAnimateMulti.textContent = '計算中...';
+
+        // 可視化エリアをクリアして、まずは上段に「りんごと仕切り」だけを表示
+        elementsContainerMulti.innerHTML = '';
+        
+        const row1 = document.createElement('div');
+        row1.style.display = 'flex';
+        row1.style.gap = '0.6rem';
+        row1.style.justifyContent = 'center';
+        row1.style.alignItems = 'center';
+        row1.style.minHeight = '70px';
+        row1.style.width = '100%';
+        elementsContainerMulti.appendChild(row1);
+
+        const seqElements = [];
+        pattern.forEach((count, idx) => {
+            for (let i = 0; i < count; i++) {
+                seqElements.push({ type: 'apple', childIdx: idx });
+            }
+            if (idx < pattern.length - 1) {
+                seqElements.push({ type: 'bar' });
+            }
+        });
+
+        seqElements.forEach((elem, index) => {
+            const el = document.createElement('div');
+            el.className = `visual-element type-${elem.type}`;
+            if (elem.type === 'apple') {
+                el.style.width = '48px';
+                el.style.height = '48px';
+                el.id = `anim-apple-${index}`;
+                el.setAttribute('data-child-idx', elem.childIdx);
+            } else {
+                el.id = `anim-bar-${index}`;
+            }
+            el.style.opacity = '0';
+            el.style.transition = 'all 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
+            row1.appendChild(el);
+        });
+
+        // 順次フェードインで並べる
+        const children = Array.from(row1.children);
+        children.forEach((child, idx) => {
+            setTimeout(() => {
+                child.style.opacity = '1';
+            }, idx * 100);
+        });
+
+        // 2. 子供の空箱を配置
+        setTimeout(() => {
+            const row2 = document.createElement('div');
+            row2.className = 'child-box-container';
+            elementsContainerMulti.appendChild(row2);
+
+            pattern.forEach((count, idx) => {
+                const box = document.createElement('div');
+                box.className = 'child-box';
+                box.setAttribute('data-child-name', `${ELEMENT_DEFS[idx].label}君`);
+                box.id = `child-box-anim-${idx}`;
+                box.style.opacity = '0';
+                box.style.transition = 'opacity 0.4s ease';
+                row2.appendChild(box);
+                requestAnimationFrame(() => box.style.opacity = '1');
+            });
+
+            // 3. りんごが仕切りで分けられて、それぞれの箱へ「落ちていく」アニメーション
+            setTimeout(() => {
+                // 仕切り(｜)をフェードアウト
+                children.forEach(child => {
+                    if (child.classList.contains('type-bar')) {
+                        child.style.opacity = '0.1';
+                        child.style.transform = 'scaleY(0.2)';
+                    }
+                });
+
+                // 各りんごを移動
+                const apples = children.filter(c => c.classList.contains('type-apple'));
+                
+                apples.forEach((apple, aIdx) => {
+                    const childIdx = apple.getAttribute('data-child-idx');
+                    const targetBox = document.getElementById(`child-box-anim-${childIdx}`);
+                    
+                    if (targetBox) {
+                        const appRect = apple.getBoundingClientRect();
+                        const boxRect = targetBox.getBoundingClientRect();
+
+                        // 箱の中心あたりへ移動
+                        const dX = (boxRect.left + boxRect.width/2) - (appRect.left + appRect.width/2);
+                        const dY = (boxRect.top + boxRect.height/3) - (appRect.top + apple.offsetHeight/2);
+
+                        // 落下アニメーション
+                        apple.style.transform = `translate(${dX}px, ${dY}px) scale(0.8)`;
+                        
+                        setTimeout(() => {
+                            apple.style.opacity = '0'; // 上段の要素は消す
+                            
+                            // 箱の中にりんごを新規配置
+                            const newApple = document.createElement('div');
+                            newApple.className = 'visual-element type-apple';
+                            newApple.style.width = '40px';
+                            newApple.style.height = '40px';
+                            newApple.style.fontSize = '0.8rem';
+                            newApple.style.opacity = '0';
+                            newApple.style.transition = 'opacity 0.2s ease';
+                            
+                            targetBox.appendChild(newApple);
+                            requestAnimationFrame(() => newApple.style.opacity = '1');
+                        }, 500);
+                    }
+                });
+
+                setTimeout(() => {
+                    btnAnimateMulti.disabled = false;
+                    btnAnimateMulti.textContent = 'シミュレーションを再生';
+                }, 800);
+
+            }, 800);
+
+        }, children.length * 100 + 400);
+    }
+
+    // --- Phase 3 相関マトリックス UI の描画 ---
+    function renderMatrixUI() {
+        elementsContainerMulti.innerHTML = '';
+        btnAnimateMulti.classList.add('hidden'); // マトリックス表示中は非表示
+
+        // マトリックス全体のコンテナ
+        const container = document.createElement('div');
+        container.className = 'matrix-container';
+
+        // 3x3のグリッドを作成 (ヘッダ含む)
+        // 列ヘッダ: ボール区別あり, ボール区別なし
+        // 行ヘッダ: 箱区別あり, 箱区別なし
+        const grid = document.createElement('div');
+        grid.className = 'matrix-grid';
+
+        // 1行目: ヘッダー
+        const corner = document.createElement('div');
+        corner.className = 'matrix-header';
+        corner.innerHTML = 'ボール \\( n \\) 個<br>⬇️<br>箱 \\( k \\) 個';
+        grid.appendChild(corner);
+
+        const col1 = document.createElement('div');
+        col1.className = 'matrix-header col-title';
+        col1.innerHTML = '【区別あり】<br>ボール: A, B, C, D...';
+        grid.appendChild(col1);
+
+        const col2 = document.createElement('div');
+        col2.className = 'matrix-header col-title';
+        col2.innerHTML = '【区別なし】<br>ボール: 〇, 〇, 〇...';
+        grid.appendChild(col2);
+
+        // 各セルの計算値
+        // 1. ボールあり × 箱あり (部屋割り)
+        const valBoxYBallY = matAllowEmpty ? Math.pow(matK, matN) : (getStirling2(matN, matK) * factorial(matK));
+        const formBoxYBallY = matAllowEmpty ? `${matK}^{${matN}}` : `S(${matN},${matK}) \\times ${matK}!`;
+
+        // 2. ボールなし × 箱あり (重複組合せ)
+        const valBoxYBallN = matAllowEmpty ? getnCr(matN + matK - 1, matK - 1) : getnCr(matN - 1, matK - 1);
+        const formBoxYBallN = matAllowEmpty ? `${matN}H${matK}` : `S(${matN-1}C${matK-1})`; // LaTeX簡略表記
+
+        // 3. ボールあり × 箱なし (グループ分け)
+        let valBoxNBallY = 0;
+        let formBoxNBallY = '';
+        if (matAllowEmpty) {
+            for (let j = 1; j <= matK; j++) valBoxNBallY += getStirling2(matN, j);
+            formBoxNBallY = `\\sum_{j=1}^{${matK}} S(${matN},j)`;
+        } else {
+            valBoxNBallY = getStirling2(matN, matK);
+            formBoxNBallY = `S(${matN},${matK})`;
+        }
+
+        // 4. ボールなし × 箱なし (整数の分割)
+        const valBoxNBallN = matAllowEmpty ? getPartitionSum(matN, matK) : getPartition(matN, matK);
+        const formBoxNBallN = matAllowEmpty ? `\\sum P(${matN},j)` : `P(${matN},${matK})`;
+
+        // 2行目: 箱区別あり
+        const row1Title = document.createElement('div');
+        row1Title.className = 'matrix-header row-title';
+        row1Title.innerHTML = '【区別あり】<br>部屋: A, B, C';
+        grid.appendChild(row1Title);
+
+        // セル1: ボールあり・箱あり
+        const cellYY = createMatrixCell('cell-y-y', '部屋割り (順列の分配)', formBoxYBallY, valBoxYBallY);
+        grid.appendChild(cellYY);
+
+        // セル2: ボールなし・箱あり
+        const cellYN = createMatrixCell('cell-y-n', '重複組合せ (仕切りモデル)', formBoxYBallN, valBoxYBallN);
+        grid.appendChild(cellYN);
+
+        // 3行目: 箱区別なし
+        const row2Title = document.createElement('div');
+        row2Title.className = 'matrix-header row-title';
+        row2Title.innerHTML = '【区別なし】<br>組に名前がない';
+        grid.appendChild(row2Title);
+
+        // セル3: ボールあり・箱なし
+        const cellNY = createMatrixCell('cell-n-y', '組分け (グループ分け)', formBoxNBallY, valBoxNBallY);
+        grid.appendChild(cellNY);
+
+        // セル4: ボールなし・箱なし
+        const cellNN = createMatrixCell('cell-n-n', '数え上げ (整数の分割)', formBoxNBallN, valBoxNBallN);
+        grid.appendChild(cellNN);
+
+        container.appendChild(grid);
+        elementsContainerMulti.appendChild(container);
+
+        // 数式を再レンダリング
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise([grid]).catch(err => console.log(err));
+        }
+
+        // 初期状態でアクティブなセルを読み込む
+        // (存在しない場合はデフォルトにする)
+        let activeEl = document.getElementById(activeMatrixCell);
+        if (!activeEl) {
+            activeMatrixCell = 'cell-y-y';
+            activeEl = document.getElementById(activeMatrixCell);
+        }
+        if (activeEl) {
+            activeEl.classList.add('active');
+            handleMatrixCellSelect(activeMatrixCell);
+        }
+    }
+
+    // マトリックスの各セルを作成するヘルパー
+    function createMatrixCell(id, title, formula, countVal) {
+        const cell = document.createElement('div');
+        cell.className = 'matrix-cell';
+        cell.id = id;
+
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'matrix-cell-title';
+        titleDiv.textContent = title;
+
+        const formDiv = document.createElement('div');
+        formDiv.className = 'matrix-cell-formula';
+        formDiv.innerHTML = `\\( ${formula} \\)`;
+
+        const countDiv = document.createElement('div');
+        countDiv.className = 'matrix-cell-count';
+        countDiv.textContent = `${countVal} 通り`;
+
+        cell.appendChild(titleDiv);
+        cell.appendChild(formDiv);
+        cell.appendChild(countDiv);
+
+        cell.addEventListener('click', () => {
+            document.querySelectorAll('.matrix-cell').forEach(c => c.classList.remove('active'));
+            cell.classList.add('active');
+            activeMatrixCell = id;
+            handleMatrixCellSelect(id);
+        });
+
+        return cell;
+    }
+
+    // マトリックスセルが選択された際のアクション (詳細リストと解説を描画)
+    function handleMatrixCellSelect(id) {
+        patternsListMulti.innerHTML = '';
+        
+        let ballDist = 'dist'; // dist: 区別あり, indist: 区別なし
+        let boxDist = 'dist';
+        
+        if (id === 'cell-y-y') {
+            ballDist = 'dist'; boxDist = 'dist';
+        } else if (id === 'cell-y-n') {
+            ballDist = 'indist'; boxDist = 'dist';
+        } else if (id === 'cell-n-y') {
+            ballDist = 'dist'; boxDist = 'indist';
+        } else if (id === 'cell-n-n') {
+            ballDist = 'indist'; boxDist = 'indist';
+        }
+
+        // 全パターンの生成
+        const patterns = generateMatrixPatterns(matN, matK, ballDist, boxDist, matAllowEmpty);
+        
+        // 解説の更新
+        renderMatrixExplanation(id, patterns.length);
+
+        // リストの描画
+        if (patterns.length === 0) {
+            patternsListMulti.innerHTML = '<p class="help-text">条件を満たす組み合わせがありません。</p>';
+            return;
+        }
+
+        resultsCountMulti.textContent = patterns.length;
+
+        patterns.forEach((pattern, index) => {
+            const item = document.createElement('div');
+            item.className = 'pattern-item';
+            
+            const seqDiv = document.createElement('div');
+            seqDiv.className = 'pattern-sequence';
+            seqDiv.style.fontSize = '0.85rem';
+
+            // ビジュアルテキスト化
+            if (ballDist === 'dist') {
+                // ボール区別あり: 各ボールがどの箱(0,1,2)にいるか
+                // 例: [0, 0, 1, 2] -> 0番:A室, 1番:A室, 2番:B室, 3番:C室
+                // グループ分け形式で表示
+                const groups = Array.from({ length: matK }, () => []);
+                pattern.forEach((boxIdx, ballIdx) => {
+                    const ballLabel = ELEMENT_DEFS[ballIdx].label;
+                    groups[boxIdx].push(ballLabel);
+                });
+                
+                const groupStrings = groups.map((g, idx) => {
+                    const boxName = boxDist === 'dist' ? `${ELEMENT_DEFS[idx].label}室` : `組`;
+                    return `${boxName}:{${g.join(',') || '空'}}`;
+                });
+                seqDiv.textContent = `[ ${groupStrings.join(' | ')} ]`;
+            } else {
+                // ボール区別なし: 各箱に入っているボールの数
+                // 例: [3, 1, 0]
+                if (boxDist === 'dist') {
+                    // 箱区別あり
+                    const parts = pattern.map((count, idx) => `${ELEMENT_DEFS[idx].label}箱:${count}個`);
+                    seqDiv.textContent = `[ ${parts.join(', ')} ]`;
+                } else {
+                    // 箱区別なし (単なる数の分割)
+                    seqDiv.textContent = `[ 分割数: ${pattern.join(' + ')} ]`;
+                }
+            }
+
+            const idxSpan = document.createElement('span');
+            idxSpan.className = 'pattern-index';
+            idxSpan.textContent = `#${index + 1}`;
+
+            item.appendChild(seqDiv);
+            item.appendChild(idxSpan);
+            patternsListMulti.appendChild(item);
+        });
+    }
+
+    // マトリックスセル選択時の解説更新
+    function renderMatrixExplanation(id, count) {
+        if (id === 'cell-y-y') {
+            // 部屋割り
+            mathFormulaMulti.innerHTML = matAllowEmpty ? 
+                `\\( k^n = ${matK}^{${matN}} = ${count} \\text{ 通り} \\)` : 
+                `\\( S(${matN}, ${matK}) \\times k! = ${getStirling2(matN, matK)} \\times ${factorial(matK)} = ${count} \\text{ 通り} \\)`;
+            
+            mathStepsMulti.innerHTML = matAllowEmpty ? 
+                `ボール ${matN} 個それぞれについて、入る部屋の選び方が ${matK} 通りある` :
+                `ボールを ${matK} つのグループに分ける方法 S(${matN},${matK}) × 部屋の区別 k!`;
+
+            explanationBodyMulti.innerHTML = `
+                <p><strong>ボール区別あり × 箱区別あり（部屋割り）</strong></p>
+                <p>・<strong>空き部屋あり</strong>の場合、各ボールについて <code>k</code> 通りの部屋の選び方があるため、単純な重複順列 <code>k^n</code> になります。</p>
+                <p>・<strong>空き部屋なし</strong>の場合、区別されたボールをまず <code>k</code> 個のグループに分割し（第二種スターリング数 $S(n,k)$）、その後 <code>k!</code> 通りの部屋に割り当てます。</p>
+            `;
+        } else if (id === 'cell-y-n') {
+            // 重複組合せ
+            const valH = matAllowEmpty ? getnCr(matN + matK - 1, matK - 1) : getnCr(matN - 1, matK - 1);
+            mathFormulaMulti.innerHTML = matAllowEmpty ? 
+                `\\( {}_{${matN}}H_{${matK}} = {}_{${matN}+${matK}-1}C_{${matK}-1} = ${valH} \\text{ 通り} \\)` :
+                `\\( {}_{${matN}-1}C_{${matK}-1} = ${valH} \\text{ 通り} \\)`;
+            
+            mathStepsMulti.innerHTML = matAllowEmpty ? 
+                `区別のないボール ${matN} 個と仕切り ${matK-1} 枚の並び替え` :
+                `ボール ${matN} 個の間の隙間 ${matN-1} 箇所から仕切りを入れる ${matK-1} 箇所を選ぶ`;
+
+            explanationBodyMulti.innerHTML = `
+                <p><strong>ボール区別なし × 箱区別あり（重複組合せ）</strong></p>
+                <p>・これは左の「重複組合せ」タブと同じモデルです。</p>
+                <p>・<strong>空き箱なし</strong>（全員1個以上もらう）の場合、あらかじめボールを1つずつ配るか、ボールの「隙間」に仕切りを差し込む（仕切りは重ならない）ため、重複なしの組合せ <code>{}_{n-1}C_{k-1}</code> になります。</p>
+            `;
+        } else if (id === 'cell-n-y') {
+            // 組分け
+            let stVal = getStirling2(matN, matK);
+            mathFormulaMulti.innerHTML = matAllowEmpty ? 
+                `\\( \\sum_{j=1}^{${matK}} S(${matN}, j) = ${count} \\text{ 通り} \\)` :
+                `\\( S(${matN}, ${matK}) = ${stVal} \\text{ 通り} \\)`;
+            
+            mathStepsMulti.innerHTML = matAllowEmpty ? 
+                `1〜${matK}個のグループに分ける場合の数の合計` :
+                `第2種スターリング数 S(${matN}, ${matK})`;
+
+            explanationBodyMulti.innerHTML = `
+                <p><strong>ボール区別あり × 箱区別なし（グループ分け）</strong></p>
+                <p>・部屋の区別がなくなるため、部屋割り（部屋に名前がある）で生じた <code>k!</code> 通りの重複（並び替え）を取り除いたものになります。</p>
+                <p>・空き箱を許さない場合、ボールをちょうど <code>k</code> 個の空でない組に分ける数そのものであり、<strong>第2種スターリング数 $S(n,k)$</strong> と呼ばれます。</p>
+            `;
+        } else if (id === 'cell-n-n') {
+            // 分割数
+            mathFormulaMulti.innerHTML = matAllowEmpty ? 
+                `\\( \\sum_{j=1}^{${matK}} P(${matN}, j) = ${count} \\text{ 通り} \\)` :
+                `\\( P(${matN}, ${matK}) = ${count} \\text{ 通り} \\)`;
+            
+            mathStepsMulti.innerHTML = matAllowEmpty ? 
+                `整数 ${matN} を ${matK} 個以下の正整数の和に分割する方法の数` :
+                `整数 ${matN} をちょうど ${matK} 個の正整数の和に分割する方法の数`;
+
+            explanationBodyMulti.innerHTML = `
+                <p><strong>ボール区別なし × 箱区別なし（整数の分割）</strong></p>
+                <p>・モノも箱も区別がないため、単に「${matN}個のボールをどのように分けるか」という個数分布（数の足し算パターン）を数える問題になります。</p>
+                <p>・例えば、ボール4個を3つに分ける（空き箱なし）場合：<code>[2+1+1]</code> の <code>1通り</code> になります。</p>
+                <p>・数学的には、<strong>整数の分割数 $P(n,k)$</strong> として算出されます。</p>
+            `;
+        }
+
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise([mathFormulaMulti, mathStepsMulti, explanationBodyMulti]).catch(err => console.log(err));
+        }
+    }
+
+
+    // ==========================================================================
+    // --- 6. イベントリスナーの設定 ---
+    // ==========================================================================
+    
+    // タブ切り替えイベント
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            if (tab.classList.contains('locked')) {
+                e.preventDefault();
+                alert('このテーマは後続フェーズでアンロックされます。まずは基本の順列・組合せの学習から進めましょう！(=^・^=)');
+                return;
+            }
+            
+            // アクティブタブの切り替え
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            // コンテンツの切り替え
+            const targetTab = tab.getAttribute('data-tab');
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(targetTab).classList.add('active');
+
+            // 各タブに応じた初期化/再描画
+            if (targetTab === 'tab-pc') {
+                syncParameters();
+            } else if (targetTab === 'tab-circular') {
+                syncParametersCirc();
+            } else if (targetTab === 'tab-multiset') {
+                syncParametersMultiset();
+            }
+        });
+    });
+
+    // Phase 1 コントロール
+    patternSelect.addEventListener('change', syncParameters);
+    paramN.addEventListener('input', syncParameters);
+    paramR.addEventListener('input', syncParameters);
+    
+    Object.keys(dupCountInputs).forEach(key => {
+        dupCountInputs[key].addEventListener('change', syncParameters);
+    });
+
+    document.querySelectorAll('input[name="element-type"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            syncParameters();
+            if (document.getElementById('tab-circular').classList.contains('active')) {
+                syncParametersCirc();
+            }
+        });
+    });
+
     btnAnimate.addEventListener('click', playTransition);
 
     // Phase 2 コントロール
@@ -1353,6 +2226,19 @@ document.addEventListener('DOMContentLoaded', () => {
     btnAnimateCirc.addEventListener('click', playTransitionCirc);
     btnRotateCirc.addEventListener('click', toggleCircRotation);
     btnFlipCirc.addEventListener('click', toggleCircFlip);
+
+    // Phase 3 コントロール
+    patternSelectMulti.addEventListener('change', syncParametersMultiset);
+    paramMultiN.addEventListener('input', syncParametersMultiset);
+    paramMultiK.addEventListener('input', syncParametersMultiset);
+    paramMatN.addEventListener('input', syncParametersMultiset);
+    paramMatK.addEventListener('input', syncParametersMultiset);
+    
+    matrixEmptyRadios.forEach(radio => {
+        radio.addEventListener('change', syncParametersMultiset);
+    });
+    
+    btnAnimateMulti.addEventListener('click', playTransitionMultiset);
 
     // --- 7. 初期化実行 ---
     syncParameters();
