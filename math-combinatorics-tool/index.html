@@ -36,8 +36,8 @@
         <button class="nav-tab active" data-tab="tab-pc">
             <span class="tab-badge">P1,P2,P7</span> 順列・組合せ (P / C)
         </button>
-        <button class="nav-tab locked" data-tab="tab-circular" title="Phase 2で追加予定">
-            <span class="tab-badge locked-badge">Phase 2</span> 円順列・数珠・隣接
+        <button class="nav-tab" data-tab="tab-circular">
+            <span class="tab-badge">P4-6,13</span> 円順列・数珠・隣接
         </button>
         <button class="nav-tab locked" data-tab="tab-multiset" title="Phase 3で追加予定">
             <span class="tab-badge locked-badge">Phase 3</span> 重複組合せ・組分け
@@ -163,20 +163,89 @@
             </div>
         </section>
 
-        <!-- Tab 2: 円順列・数珠・隣接 (Phase 2 ロック画面) -->
-        <section id="tab-circular" class="tab-content locked-content">
-            <div class="lock-card">
-                <div class="lock-icon">🔒</div>
-                <h2>円順列・数珠・隣接制限</h2>
-                <p>現在 Phase 1 の実装を検証中です。基本の順列・組合せの動作確認が完了し、Gitプッシュされた後に Phase 2 としてアンロックされます！(=^・^=)</p>
-                <div class="feature-preview">
-                    <h3>🌟 実装予定の機能</h3>
-                    <ul>
-                        <li>円環上に要素を並べ、回転移動して重なるパターン（周期性）をアニメーション可視化</li>
-                        <li>数珠順列における「裏返して同じになる（左右対称性）」の判定デモ</li>
-                        <li>隣り合う条件（グループ化）と隣り合わない条件（隙間に差し込む）のビジュアル表現</li>
-                    </ul>
+        <!-- Tab 2: 円順列・数珠・隣接 (Phase 2 実装エリア) -->
+        <section id="tab-circular" class="tab-content">
+            <div class="layout-grid">
+                <!-- 左カラム: パラメータ設定 -->
+                <div class="control-panel panel">
+                    <h2 class="panel-title">🛠️ 条件設定 (円・数珠・隣接)</h2>
+                    
+                    <!-- パターン選択 -->
+                    <div class="control-group">
+                        <label for="pattern-select-circ" class="control-label">数え上げのパターン</label>
+                        <select id="pattern-select-circ" class="form-select">
+                            <option value="p4">基本の円順列 (n人を円形に並べる)</option>
+                            <option value="p5">同じものがある円順列 (A,A,B,B,C,C)</option>
+                            <option value="p6">数珠順列 (玉を首飾りにする)</option>
+                            <option value="p13-1">隣接制限: 隣り合う (女子3人が隣り合う)</option>
+                            <option value="p13-2">隣接制限: 隣り合わない (女子が隣り合わない)</option>
+                        </select>
+                    </div>
+
+                    <!-- パラメータnスライダー (円順列・数珠順列用) -->
+                    <div id="circ-params">
+                        <div class="control-group" id="circ-group-n">
+                            <div class="slider-header">
+                                <label for="param-circ-n" class="control-label">要素の総数 (n)</label>
+                                <span id="val-circ-n" class="param-value">4</span>
+                            </div>
+                            <input type="range" id="param-circ-n" min="3" max="6" value="4" class="form-slider">
+                        </div>
+                    </div>
+
+                    <!-- 隣接制限専用のパラメータ (男子M, 女子W) -->
+                    <div id="adj-params" class="hidden">
+                        <div class="control-group">
+                            <div class="slider-header">
+                                <label for="param-adj-m" class="control-label">男子の人数 (M)</label>
+                                <span id="val-adj-m" class="param-value">5</span>
+                            </div>
+                            <input type="range" id="param-adj-m" min="2" max="5" value="5" class="form-slider">
+                        </div>
+                        <div class="control-group">
+                            <div class="slider-header">
+                                <label for="param-adj-w" class="control-label">女子の人数 (W)</label>
+                                <span id="val-adj-w" class="param-value">3</span>
+                            </div>
+                            <input type="range" id="param-adj-w" min="2" max="3" value="3" class="form-slider">
+                        </div>
+                    </div>
                 </div>
+
+                <!-- 右カラム: 可視化エリア -->
+                <div class="visualization-panel">
+                    <!-- アニメーション・可視化キャンバス -->
+                    <div class="visualizer-wrapper panel">
+                        <div class="visualizer-header">
+                            <h3 class="panel-subtitle">✨ リアルタイム可視化 (円/隣接)</h3>
+                            <div class="btn-group" style="display: flex; gap: 0.5rem;">
+                                <button id="btn-animate-circ" class="btn-primary">並び替えを再生</button>
+                                <button id="btn-rotate-circ" class="btn-primary hidden">回転を確認</button>
+                                <button id="btn-flip-circ" class="btn-primary hidden">裏返しを確認</button>
+                            </div>
+                        </div>
+                        <div class="visualizer-canvas" id="canvas-container-circ" style="min-height: 320px; position: relative;">
+                            <!-- 円順列の場合は円形配置、隣接は直線配置 -->
+                            <div id="elements-container-circ" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative;"></div>
+                        </div>
+                    </div>
+
+                    <!-- 数式・解説エリア -->
+                    <div class="explanation-panel panel">
+                        <h3 class="panel-subtitle">📖 計算プロセスと解説</h3>
+                        <div class="formula-container">
+                            <div id="math-formula-circ" class="math-display"></div>
+                            <div id="math-steps-circ" class="math-steps"></div>
+                        </div>
+                        <div class="explanation-text" id="explanation-body-circ"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 全パターン一覧エリア -->
+            <div class="results-panel panel">
+                <h3 class="panel-subtitle">📋 全パターン一覧 (<span id="results-count-circ">0</span> 通り)</h3>
+                <div class="results-grid" id="patterns-list-circ"></div>
             </div>
         </section>
 
