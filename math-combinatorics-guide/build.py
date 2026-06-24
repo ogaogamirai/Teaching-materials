@@ -346,12 +346,12 @@ def convert_md_to_html(md_text):
             idx += 1
             continue
 
-        # HTMLタグやSVGなどの生HTML行はそのまま通す
+        # HTMLタグやSVGなどの生HTML行はそのまま通すが、インライン要素は置換する
         if line_strip.startswith("<") or line_strip.startswith("</") or any(tag in line_strip for tag in ["<table", "</table>", "<tr", "</tr>", "<td", "</td>", "<th", "</th>", "<thead", "</thead>", "<tbody", "</tbody>", "<svg", "</svg>", "<rect", "<circle", "<line", "<text", "<path", "<defs", "<marker"]):
             close_p_if_open()
             close_lists_if_open()
             close_warning_if_open()
-            html_lines.append(line)
+            html_lines.append(inline_replace(line))
             idx += 1
             continue
 
