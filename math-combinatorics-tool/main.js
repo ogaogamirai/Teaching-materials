@@ -1922,7 +1922,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (matAllowEmpty) {
             for (let j = 1; j <= matK; j++) valBoxNBallY += getStirling2(matN, j);
             formBoxNBallY = `\\sum_{j=1}^{${matK}} S(${matN},j)`;
-        } else {
+} else {
             valBoxNBallY = getStirling2(matN, matK);
             formBoxNBallY = `S(${matN},${matK})`;
         }

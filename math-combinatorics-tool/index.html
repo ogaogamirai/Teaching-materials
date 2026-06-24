@@ -42,8 +42,8 @@
         <button class="nav-tab" data-tab="tab-multiset">
             <span class="tab-badge">P8-10,14,15</span> 重複組合せ・組分け
         </button>
-        <button class="nav-tab locked" data-tab="tab-derangement" title="Phase 4で追加予定">
-            <span class="tab-badge locked-badge">Phase 4</span> 完全順列・クイズ
+        <button class="nav-tab" data-tab="tab-derangement">
+            <span class="tab-badge">P64+,Quiz</span> 完全順列・クイズ
         </button>
     </nav>
 
@@ -350,12 +350,73 @@
             </div>
         </section>
 
-        <!-- Tab 4: 完全順列・クイズ (Phase 4 ロック画面) -->
-        <section id="tab-derangement" class="tab-content locked-content">
-            <div class="lock-card">
-                <div class="lock-icon">🔒</div>
-                <h2>完全順列・演習クイズ</h2>
-                <p>Phase 4 でアンロック予定です。席替えの完全順列アニメーションと、場合の数をマスターするためのインタラクティブクイズを収録します。</p>
+        <!-- Tab 4: 完全順列・クイズ (Phase 4 実装エリア) -->
+        <section id="tab-derangement" class="tab-content">
+            <div class="layout-grid">
+                <!-- 左カラム: パラメータ設定 -->
+                <div class="control-panel panel">
+                    <h2 class="panel-title">🛠️ 条件設定 (完全順列・クイズ)</h2>
+                    
+                    <!-- パターン選択 -->
+                    <div class="control-group">
+                        <label for="pattern-select-der" class="control-label">モード選択</label>
+                        <select id="pattern-select-der" class="form-select">
+                            <option value="p-der">完全順列 (攪乱順列) のシミュレーション</option>
+                            <option value="p-quiz">場合の数 腕試しクイズモード</option>
+                        </select>
+                    </div>
+
+                    <!-- パラメータnスライダー (完全順列用) -->
+                    <div id="der-params">
+                        <div class="control-group">
+                            <div class="slider-header">
+                                <label for="param-der-n" class="control-label">要素の数 (n)</label>
+                                <span id="val-der-n" class="param-value">4</span>
+                            </div>
+                            <input type="range" id="param-der-n" min="2" max="5" value="4" class="form-slider">
+                        </div>
+                    </div>
+
+                    <!-- クイズ用パラメータ・コントローラー -->
+                    <div id="quiz-controls" class="hidden">
+                        <div class="control-group" style="display: flex; justify-content: space-between; gap: 0.5rem;">
+                            <button id="btn-quiz-prev" class="btn-primary" style="flex: 1;">&lt; 前の問題</button>
+                            <button id="btn-quiz-next" class="btn-primary" style="flex: 1;">次の問題 &gt;</button>
+                        </div>
+                        <p class="help-text" style="text-align: center;">現在の問題: <span id="val-quiz-idx" class="param-value">1</span> / <span id="val-quiz-total">5</span></p>
+                    </div>
+                </div>
+
+                <!-- 右カラム: 可視化エリア -->
+                <div class="visualization-panel">
+                    <!-- アニメーション・可視化キャンバス -->
+                    <div class="visualizer-wrapper panel">
+                        <div class="visualizer-header">
+                            <h3 class="panel-subtitle" id="visualizer-subtitle-der">✨ リアルタイム可視化 (ポストと手紙)</h3>
+                            <button id="btn-animate-der" class="btn-primary">シミュレーションを再生</button>
+                        </div>
+                        <div class="visualizer-canvas" id="canvas-container-der" style="min-height: 320px;">
+                            <!-- ポストと手紙の配置、またはクイズ問題表示 -->
+                            <div id="elements-container-der" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; position: relative;"></div>
+                        </div>
+                    </div>
+
+                    <!-- 数式・解説エリア -->
+                    <div class="explanation-panel panel">
+                        <h3 class="panel-subtitle" id="explanation-subtitle-der">📖 計算プロセスと解説</h3>
+                        <div class="formula-container" id="formula-container-der">
+                            <div id="math-formula-der" class="math-display"></div>
+                            <div id="math-steps-der" class="math-steps"></div>
+                        </div>
+                        <div class="explanation-text" id="explanation-body-der"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 全パターン一覧エリア -->
+            <div class="results-panel panel" id="results-panel-der">
+                <h3 class="panel-subtitle">📋 全パターン一覧 (<span id="results-count-der">0</span> 通り)</h3>
+                <div class="results-grid" id="patterns-list-der"></div>
             </div>
         </section>
     </main>

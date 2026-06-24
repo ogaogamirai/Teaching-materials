@@ -1091,6 +1091,165 @@ body {
     color: var(--text-main);
 }
 
+/* ==========================================================================
+   Phase 4: 完全順列・クイズモード用の追加スタイル
+   ========================================================================== */
+
+/* ポスト（受け取り側）のスタイル */
+.post-box-container {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    width: 100%;
+    margin-top: 1.5rem;
+    border-top: 1px dashed rgba(255, 255, 255, 0.05);
+    padding-top: 1.5rem;
+}
+
+.post-box {
+    width: 66px;
+    height: 90px;
+    background: rgba(10, 15, 30, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 0.6rem;
+}
+
+.post-box::before {
+    content: "📮 " attr(data-post-name);
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-main);
+    white-space: nowrap;
+}
+
+/* ポストの口（手紙の投入口） */
+.post-box::after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 44px;
+    height: 6px;
+    background: var(--bg-dark);
+    border-radius: 2px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* クイズ表示カード */
+.quiz-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    padding: 0.5rem;
+}
+
+.quiz-question-box {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--bg-panel-border);
+    border-radius: 12px;
+    padding: 1.2rem;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-main);
+}
+
+.quiz-options-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+}
+
+@media (max-width: 600px) {
+    .quiz-options-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.quiz-option-btn {
+    background: var(--bg-panel);
+    border: 1px solid var(--bg-panel-border);
+    color: var(--text-main);
+    padding: 1rem;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.quiz-option-btn:hover:not(:disabled) {
+    border-color: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+    background: rgba(26, 32, 58, 0.8);
+}
+
+.quiz-option-btn:disabled {
+    cursor: default;
+}
+
+/* クイズ正誤時の選択肢表示 */
+.quiz-option-btn.correct-choice {
+    border-color: var(--success);
+    background: rgba(16, 185, 129, 0.1);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
+}
+
+.quiz-option-btn.incorrect-choice {
+    border-color: var(--danger);
+    background: rgba(239, 68, 68, 0.08);
+    opacity: 0.75;
+}
+
+/* クイズ結果表示パネル */
+.quiz-feedback-panel {
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-weight: 600;
+    animation: slideIn 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.quiz-feedback-panel.correct {
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #a7f3d0;
+}
+
+.quiz-feedback-panel.incorrect {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+}
+
+.quiz-feedback-icon {
+    font-size: 1.8rem;
+}
+
+@keyframes slideIn {
+    0% { transform: translateY(10px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
 /* 13. フッター */
 .app-footer {
     text-align: center;
