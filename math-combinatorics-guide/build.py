@@ -25,7 +25,7 @@ HTML_TEMPLATE_START = """<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>場合の数・直感的完全学習ガイド V2.3</title>
+    <title>場合の数・直感的完全学習ガイド V2.4</title>
     
     <!-- KaTeX for beautiful math equations -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
@@ -251,8 +251,8 @@ HTML_TEMPLATE_START = """<!DOCTYPE html>
 <body>
     <div class="container">
         <header>
-            <h1>🌌 場合の数・直感的完全学習ガイド V2.3</h1>
-            <div class="metadata">最終更新: 2026-06-24</div>
+            <h1>🌌 場合の数・直感的完全学習ガイド V2.4</h1>
+            <div class="metadata">最終更新: 2026-06-25</div>
             <div class="metadata">スマートフォン & PC 完全レスポンシブ調律仕様</div>
         </header>
 """
@@ -502,7 +502,7 @@ def build():
     combined_md_lines = []
     
     # メタ情報ヘッダー
-    combined_md_lines.append("# 🌌 場合の数・直感的完全学習ガイド V2.3")
+    combined_md_lines.append("# 🌌 場合の数・直感的完全学習ガイド V2.4")
     combined_md_lines.append("")
     
     for fn in section_files:
