@@ -14,12 +14,6 @@ SECTIONS_DIR = os.path.join(BASE_DIR, "sections")
 OUTPUT_MD = os.path.join(BASE_DIR, "combinatorics_intuitive_guide_v2.md")
 OUTPUT_HTML = os.path.join(BASE_DIR, "combinatorics_intuitive_guide_v2.html")
 
-# Eleanor Arroway ワークスペース側の同期先パス
-WORKSPACE_DIR = r"g:\マイドライブ\Eleanor Arroway\TeachingText"
-WORKSPACE_MD = os.path.join(WORKSPACE_DIR, "combinatorics_intuitive_guide_v2.md")
-WORKSPACE_HTML = os.path.join(WORKSPACE_DIR, "combinatorics_intuitive_guide_v2.html")
-WORKSPACE_SECTIONS = os.path.join(WORKSPACE_DIR, "sections")
-
 HTML_TEMPLATE_START = """<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -527,20 +521,6 @@ def build():
     with open(OUTPUT_HTML, 'w', encoding='utf-8', newline='\n') as f_out:
         f_out.write(full_html_content)
     print(f"Saved completed HTML to: {OUTPUT_HTML}")
-    
-    # 3. Eleanor Arroway ワークスペース側への自動同期コピー
-    if os.path.exists(WORKSPACE_DIR):
-        print("Synchronizing build artifacts to Eleanor Arroway workspace...")
-        shutil.copyfile(OUTPUT_MD, WORKSPACE_MD)
-        shutil.copyfile(OUTPUT_HTML, WORKSPACE_HTML)
-        
-        # sections 内の Markdown ファイルも双方向で同期可能にするためコピー
-        os.makedirs(WORKSPACE_SECTIONS, exist_ok=True)
-        for fn in section_files:
-            shutil.copyfile(os.path.join(SECTIONS_DIR, fn), os.path.join(WORKSPACE_SECTIONS, fn))
-        print("Synchronization completed successfully!")
-    else:
-        print("Warning: Eleanor Arroway workspace directory not found. Skipping synchronization.")
 
 if __name__ == "__main__":
     build()
