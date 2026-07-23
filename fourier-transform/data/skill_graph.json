@@ -1,0 +1,180 @@
+{
+  "graph_id": "fourier-realpath-v1.1-phaseA",
+  "completion_node": "FT-CAP-1",
+  "plan": "B",
+  "core_path": [
+    "FT-HOOK-1",
+    "FT-WAVE-1",
+    "FT-RATIO-1",
+    "FT-RAD-1",
+    "FT-CIRCLE-1",
+    "FT-SUPER-1",
+    "FT-SERIES-1",
+    "FT-ORTHO-1",
+    "FT-COEFF-1",
+    "FT-APP-1",
+    "FT-CAP-1"
+  ],
+  "optional_after_cap": ["FT-EULER-1", "FT-TRANSFORM-1"],
+  "insert_rules": {
+    "FT-RATIO-1": {
+      "before": "FT-CIRCLE-1",
+      "when": ["ratioForced", "conf_trig_false", "D-TRIG-01_fail", "conf_pyth_false", "D-PYTH-01_fail"]
+    },
+    "FT-RAD-1": {
+      "before": "FT-CIRCLE-1",
+      "after_if_present": "FT-RATIO-1",
+      "when": ["radForced", "conf_rad_false", "D-RAD-01_fail"]
+    }
+  },
+  "chapter_flags": {
+    "sum_chapter": {
+      "host": "FT-SERIES-1",
+      "when": ["conf_sum_false", "D-SUM-01_fail", "sumChapterForced"]
+    },
+    "int_chapter": {
+      "host": "FT-COEFF-1",
+      "when": ["conf_area_false", "D-AREA-01_fail", "intChapterForced"]
+    },
+    "pyth_chapter": {
+      "host": "FT-RATIO-1",
+      "when": ["conf_pyth_false", "D-PYTH-01_fail", "ratioForced"]
+    }
+  },
+  "nodes": {
+    "FT-HOOK-1": {
+      "title": "画像は波の束：JPEG直感",
+      "tier": "core",
+      "target_level": 1,
+      "demo": "hook",
+      "checks": ["C-HOOK-01", "C-HOOK-02"],
+      "teachback": false,
+      "hard_prereq": [],
+      "remediation": []
+    },
+    "FT-WAVE-1": {
+      "title": "波の三要素",
+      "tier": "core",
+      "target_level": 3,
+      "demo": "wave",
+      "checks": ["C-WAVE-01", "C-WAVE-02", "C-WAVE-M1"],
+      "teachback": "short",
+      "hard_prereq": ["FT-HOOK-1"],
+      "remediation": []
+    },
+    "FT-RATIO-1": {
+      "title": "三角比・単位円・三平方（前提ハブ）",
+      "tier": "core",
+      "target_level": 2,
+      "demo": "ratio",
+      "checks": ["C-RATIO-01", "C-RATIO-02"],
+      "teachback": false,
+      "hard_prereq": ["FT-WAVE-1"],
+      "remediation": [],
+      "chapters": ["pyth", "unit", "trig"]
+    },
+    "FT-RAD-1": {
+      "title": "ラジアン（弧度法）ミニ",
+      "tier": "core",
+      "target_level": 2,
+      "demo": "rad",
+      "checks": ["C-RAD-01", "C-RAD-02"],
+      "teachback": false,
+      "hard_prereq": ["FT-RATIO-1"],
+      "remediation": ["FT-RATIO-1"],
+      "goal_link": "ωt や周期と角度をつなぎ、円→波の式を読むために必要"
+    },
+    "FT-CIRCLE-1": {
+      "title": "円の回転がサインを生む",
+      "tier": "core",
+      "target_level": 3,
+      "demo": "circle",
+      "checks": ["C-CIRC-01", "C-CIRC-02", "C-CIRC-03", "C-CIRC-M1"],
+      "teachback": "short",
+      "hard_prereq": ["FT-RAD-1"],
+      "remediation": ["FT-RAD-1", "FT-RATIO-1"]
+    },
+    "FT-SUPER-1": {
+      "title": "波は足してよい",
+      "tier": "core",
+      "target_level": 3,
+      "demo": "super",
+      "checks": ["C-SUP-01", "C-SUP-02"],
+      "teachback": "short",
+      "hard_prereq": ["FT-CIRCLE-1"],
+      "remediation": ["FT-CIRCLE-1"]
+    },
+    "FT-SERIES-1": {
+      "title": "足し算で形が変わる",
+      "tier": "core",
+      "target_level": 3,
+      "demo": "series",
+      "checks": ["C-SER-01", "C-SER-02", "C-SER-03", "C-SER-M1"],
+      "teachback": "short",
+      "hard_prereq": ["FT-SUPER-1"],
+      "remediation": ["FT-SUPER-1"],
+      "chapters": ["sum"]
+    },
+    "FT-ORTHO-1": {
+      "title": "似ている度で取り出す",
+      "tier": "core",
+      "target_level": 3,
+      "demo": "ortho",
+      "checks": ["C-ORT-01", "C-ORT-02", "C-ORT-M1"],
+      "teachback": "short",
+      "hard_prereq": ["FT-SERIES-1"],
+      "remediation": ["FT-SERIES-1"]
+    },
+    "FT-COEFF-1": {
+      "title": "係数の意味と決まり方",
+      "tier": "core",
+      "target_level": 3,
+      "demo": "coeff",
+      "checks": ["C-COE-01", "C-COE-02", "C-COE-M1"],
+      "teachback": "short",
+      "hard_prereq": ["FT-ORTHO-1"],
+      "remediation": ["FT-ORTHO-1"],
+      "chapters": ["int"]
+    },
+    "FT-APP-1": {
+      "title": "削る＝圧縮（画像再接続）",
+      "tier": "core",
+      "target_level": 3,
+      "demo": "app",
+      "checks": ["C-APP-01", "C-APP-02"],
+      "teachback": "short",
+      "hard_prereq": ["FT-COEFF-1"],
+      "remediation": ["FT-COEFF-1", "FT-HOOK-1"]
+    },
+    "FT-CAP-1": {
+      "title": "Capstone + Teach-Back",
+      "tier": "core",
+      "target_level": 3,
+      "demo": "cap",
+      "checks": ["C-CAP-01"],
+      "teachback": "full",
+      "hard_prereq": ["FT-APP-1"],
+      "remediation": []
+    },
+    "FT-EULER-1": {
+      "title": "回転の言葉 e^{iθ}",
+      "tier": "optional",
+      "target_level": 2,
+      "demo": "euler",
+      "checks": ["C-EUL-01"],
+      "teachback": false,
+      "hard_prereq": ["FT-CAP-1"],
+      "remediation": []
+    },
+    "FT-TRANSFORM-1": {
+      "title": "連続と離散の地図",
+      "tier": "optional",
+      "target_level": 1,
+      "demo": "transform",
+      "checks": ["C-TR-01"],
+      "teachback": false,
+      "hard_prereq": ["FT-EULER-1"],
+      "remediation": []
+    }
+  }
+}

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>フーリエ縦一列 — 動機主導教材</title>
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="app-header-inner">
+      <div class="brand">Fourier Path · V5</div>
+      <div class="nav-actions">
+        <label class="mode-live-label" title="説明の出し方（中身は削りません）">
+          <span class="mode-live-cap">表示</span>
+          <select id="mode-live" aria-label="表示モード">
+            <option value="sprint">sprint（短め）</option>
+            <option value="deep" selected>deep（標準）</option>
+            <option value="teach">teach（厚め）</option>
+          </select>
+        </label>
+        <button type="button" class="btn btn-ghost" id="btn-map">地図</button>
+        <button type="button" class="btn btn-ghost" id="btn-reset">履歴リセット</button>
+      </div>
+    </div>
+    <div style="max-width:920px;margin:0.35rem auto 0;padding:0 1rem">
+      <div class="row" style="justify-content:space-between">
+        <span class="kv" id="progress-label">—</span>
+      </div>
+      <div class="progress"><span id="progress-bar" style="width:0%"></span></div>
+    </div>
+  </header>
+
+  <main>
+    <p id="boot-error" class="note-warn hidden"></p>
+    <p id="boot-ok" class="muted hidden" style="color:#34d399"></p>
+
+    <section id="view-home" class="view active">
+      <h1 id="app-title">読み込み中…</h1>
+      <p class="muted" id="app-sub"></p>
+      <div class="panel stack">
+        <p>対象: 中3〜社会人 · 完了条件: 素人に教えられる（Teach-Back）</p>
+        <p class="muted">数式のキーボード入力は不要です。予測・選択・操作で進みます。</p>
+        <div class="row">
+          <button type="button" class="btn btn-primary" id="btn-start">はじめる / 続きから</button>
+        </div>
+      </div>
+      <p class="muted">設計正本: LEARNING_DESIGN.md / SKILL_GRAPH.md</p>
+      <p class="muted">この HTML はダブルクリック（file://）でも動作します。</p>
+    </section>
+
+    <section id="view-diag" class="view">
+      <h1>入口診断</h1>
+      <p class="muted">自己申告のあと、確認を少数だけ行います（数式入力なし）。</p>
+      <div class="panel stack" id="diag-form">
+        <label class="chk"><input type="checkbox" id="conf_trig" checked /> sin/cos の意味をだいたい説明できる</label>
+        <label class="chk"><input type="checkbox" id="conf_rad" checked /> ラジアン（π rad＝180°など）を見た・使ったことがある</label>
+        <label class="chk"><input type="checkbox" id="conf_pyth" checked /> 三平方の定理（a²+b²=c²）を使える</label>
+        <label class="chk"><input type="checkbox" id="conf_sum" checked /> Σ（和の記号）を読める</label>
+        <label class="chk"><input type="checkbox" id="conf_area" checked /> 積分が「面積をまとめる」話だと知っている</label>
+        <label class="chk"><input type="checkbox" id="conf_wave" /> 振幅・周期・位相を区別できる</label>
+        <label class="chk"><input type="checkbox" id="conf_image" checked /> JPEGや画像の粗さの話を聞いたことがある</label>
+        <label class="chk"><input type="checkbox" id="conf_series" /> 波の足し算のデモを見たことがある</label>
+        <p class="muted">チェックを外すと、その前提を経路に差し込みます（案B：ラジアンは独立ノード、他は章またはRATIO）。</p>
+        <label class="row">モード
+          <select id="mode-select">
+            <option value="sprint">sprint（短め）</option>
+            <option value="deep" selected>deep（標準）</option>
+            <option value="teach">teach（厚め）</option>
+          </select>
+        </label>
+        <button type="button" class="btn btn-primary" id="btn-diag-go">確認問題へ</button>
+      </div>
+      <div class="panel" id="diag-item"></div>
+    </section>
+
+    <section id="view-map" class="view">
+      <h1>学習地図</h1>
+      <p class="muted">現在地と習熟。タップでノードを開けます。末尾の optional に <strong>e^{iθ}</strong>（オイラー）があります。</p>
+      <div class="row" style="margin-bottom:0.5rem">
+        <button type="button" class="btn btn-primary" id="btn-continue-learning">推奨ノードへ</button>
+        <button type="button" class="btn" id="btn-goto-euler-map">e^{iθ} を開く</button>
+      </div>
+      <ul class="map-list" id="map-list"></ul>
+    </section>
+
+    <section id="view-node" class="view">
+      <p class="kv" id="node-id"></p>
+      <h1 id="node-title"></h1>
+      <p class="muted" id="process-blurb" style="margin:0.25rem 0 0.6rem"></p>
+      <div class="step-tabs" id="step-tabs">
+        <button type="button" class="btn" data-step="learn">1. 学ぶ</button>
+        <button type="button" class="btn" data-step="try">2. やってみる</button>
+        <button type="button" class="btn" data-step="example">3. 例で定着</button>
+        <button type="button" class="btn" data-step="check">4. 確認</button>
+        <button type="button" class="btn" data-step="teachback">5. 教え返し</button>
+      </div>
+
+      <div id="node-learn" class="panel">
+        <div id="learn-host"></div>
+        <div class="row" style="margin-top:0.75rem">
+          <button type="button" class="btn btn-primary" id="btn-learn-done">読んだ・理解の準備OK → やってみる</button>
+        </div>
+      </div>
+
+      <div id="node-try" class="panel hidden">
+        <div id="try-guide" class="stack" style="margin-bottom:0.6rem"></div>
+        <div id="hs-bar-host"></div>
+        <p class="muted" id="interact-hint"></p>
+        <p class="kv" id="observe-prompt"></p>
+        <p class="kv" id="interact-done-flag"></p>
+        <div id="demo-host"></div>
+      </div>
+
+      <div id="node-example" class="panel hidden">
+        <div id="example-host"></div>
+        <div class="row" style="margin-top:0.75rem">
+          <button type="button" class="btn btn-primary" id="btn-example-done">例を押さえた → 確認へ</button>
+        </div>
+      </div>
+
+      <div id="node-check" class="panel hidden">
+        <p class="muted">ここは仕上げの確認です。わからなければ「学ぶ」「やってみる」に戻ってください。</p>
+        <div id="check-host"></div>
+      </div>
+
+      <div id="node-tb" class="panel hidden">
+        <div id="tb-host"></div>
+      </div>
+
+      <div class="row" style="margin-top:0.75rem">
+        <button type="button" class="btn" id="btn-step-prev">戻る</button>
+        <button type="button" class="btn btn-primary" id="btn-step-next">次のステップ</button>
+      </div>
+    </section>
+
+    <section id="view-complete" class="view">
+      <h1>完了 — 実数経路クリア</h1>
+      <p class="muted">Capstone Teach-Back 合格。下のボタン、または地図の「回転の言葉 e^{iθ}」から任意拡張へ。</p>
+      <div class="panel" id="complete-ext"></div>
+      <div class="panel complete-box" id="complete-sheet"></div>
+      <div class="row">
+        <button type="button" class="btn btn-primary" id="btn-map-from-complete">地図へ</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- classic scripts: file:// OK (no ES modules / no fetch) -->
+  <script src="js/ft-ns.js"></script>
+  <script src="js/data_bundle.js"></script>
+  <script src="js/mastery.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/teachback.js"></script>
+  <script src="js/readings.js"></script>
+  <script src="js/math_render.js"></script>
+  <script src="js/proof_ui.js"></script>
+  <script src="js/hotspots.js"></script>
+  <script src="js/demos/common.js"></script>
+  <script src="js/demos/geometry_proof.js"></script>
+  <script src="js/demos/hook.js"></script>
+  <script src="js/demos/wave.js"></script>
+  <script src="js/demos/ratio.js"></script>
+  <script src="js/demos/rad.js"></script>
+  <script src="js/demos/circle_series.js"></script>
+  <script src="js/demos/super.js"></script>
+  <script src="js/demos/ortho.js"></script>
+  <script src="js/demos/coeff.js"></script>
+  <script src="js/demos/app_compress.js"></script>
+  <script src="js/demos/euler.js"></script>
+  <script src="js/demos/transform.js"></script>
+  <script src="js/demos/index.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    (function () {
+      var btn = document.getElementById("btn-map-from-complete");
+      if (btn) {
+        btn.addEventListener("click", function () {
+          var m = document.getElementById("btn-map");
+          if (m) m.click();
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

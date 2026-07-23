@@ -1,0 +1,37 @@
+{
+  "schema_version": 3,
+  "ref_nodes": [
+    "FT-CIRCLE-1",
+    "FT-ORTHO-1",
+    "FT-COEFF-1"
+  ],
+  "note": "geometry.demo on main path + post-CAP P-EULER/P-MAP. HOOK has no formula proof. Complex only after CAP.",
+  "node_index": {
+    "FT-WAVE-1": "P-WAVE",
+    "FT-RATIO-1": "P-RATIO",
+    "FT-RAD-1": "P-RAD",
+    "FT-CIRCLE-1": "P-CIRCLE",
+    "FT-SUPER-1": "P-SUPER",
+    "FT-SERIES-1": "P-SERIES",
+    "FT-ORTHO-1": "P-ORTHO",
+    "FT-COEFF-1": "P-COEFF",
+    "FT-APP-1": "P-APP",
+    "FT-CAP-1": "P-CAP",
+    "FT-EULER-1": "P-EULER",
+    "FT-TRANSFORM-1": "P-MAP"
+  },
+  "script_order": [
+    "P-WAVE",
+    "P-RATIO",
+    "P-RAD",
+    "P-CIRCLE",
+    "P-SUPER",
+    "P-SERIES",
+    "P-ORTHO",
+    "P-COEFF",
+    "P-APP",
+    "P-CAP",
+    "P-EULER",
+    "P-MAP"
+  ]
+}

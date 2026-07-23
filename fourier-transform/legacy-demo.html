@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legacy Layer1 — 円と方形波（単体デモ）</title>
+  <style>
+    body { margin:0; padding:20px; background:#0f172a; color:#f8fafc; font-family:system-ui,sans-serif; text-align:center; }
+    a { color:#38bdf8; }
+    canvas { background:#1e293b; border-radius:12px; margin-top:12px; }
+  </style>
+</head>
+<body>
+  <p><a href="index.html">← 本編教材（縦一列 MVP）へ</a></p>
+  <h1>単体デモ（旧 Layer1）</h1>
+  <p style="color:#94a3b8">本編の CIRCLE / SERIES 操作に統合済み。比較用に残置。</p>
+  <label>N <input type="range" id="n" min="1" max="15" value="3" /></label>
+  <label>speed <input type="range" id="s" min="0.5" max="3" step="0.1" value="1" /></label>
+  <br />
+  <canvas id="c" width="800" height="360"></canvas>
+  <script>
+    const canvas = document.getElementById("c");
+    const ctx = canvas.getContext("2d");
+    let time = 0, wave = [];
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let x = 180, y = 180;
+      const N = +document.getElementById("n").value;
+      const speed = +document.getElementById("s").value;
+      for (let i = 0; i < N; i++) {
+        const prevx = x, prevy = y;
+        const n = i * 2 + 1;
+        const radius = 70 * (4 / (n * Math.PI));
+        x += radius * Math.cos(n * time);
+        y += radius * Math.sin(n * time);
+        ctx.beginPath(); ctx.arc(prevx, prevy, radius, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(56,189,248,0.25)"; ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(prevx, prevy); ctx.lineTo(x, y);
+        ctx.strokeStyle = "#38bdf8"; ctx.stroke();
+      }
+      wave.unshift(y); if (wave.length > 420) wave.pop();
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(360, wave[0]);
+      ctx.setLineDash([4, 4]); ctx.strokeStyle = "rgba(248,250,252,0.4)"; ctx.stroke(); ctx.setLineDash([]);
+      ctx.beginPath(); ctx.moveTo(360, wave[0]);
+      for (let i = 0; i < wave.length; i++) ctx.lineTo(360 + i, wave[i]);
+      ctx.strokeStyle = "#f43f5e"; ctx.lineWidth = 2.5; ctx.stroke();
+      time += 0.02 * speed;
+      requestAnimationFrame(draw);
+    }
+    draw();
+  </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+{
+  "id": "P-COEFF",
+  "node": "FT-COEFF-1",
+  "title": "係数は似ている度の一覧表",
+  "formula_html": "a<sub>n</sub> 〜 cos との似ている度　／　b<sub>n</sub> 〜 sin との似ている度",
+  "formula_read": "エーエヌは コサインとの にているど、ビーエヌは サインとの にているど",
+  "reading_keys": [
+    "aₙ",
+    "bₙ",
+    "n",
+    "sin",
+    "cos",
+    "ω"
+  ],
+  "intuition_1line": "周波数ごとに cos用・sin用のつまみ（分量）があるミキサー。",
+  "why_needed": "足し算の材料の分量。削ると圧縮へ。",
+  "bridge_from": [
+    "FT-ORTHO-1"
+  ],
+  "story_steps": [
+    {
+      "title": "① 周波数 n を選ぶ",
+      "body": "何倍速の材料か。"
+    },
+    {
+      "title": "② cos → a_n",
+      "body": "cos との似ている度。"
+    },
+    {
+      "title": "③ sin → b_n",
+      "body": "sin との似ている度。"
+    },
+    {
+      "title": "④ 足して再構成",
+      "body": "分量どおり足すと波が戻る。"
+    },
+    {
+      "title": "⑤ 削ると圧縮",
+      "body": "いらない棒を下げる。"
+    }
+  ],
+  "full_explain": [
+    "定数倍（2/T など）は今は暗記不要。測って決まる重み、と読む。",
+    "棒グラフ＝レシピの分量一覧。"
+  ],
+  "geometry": {
+    "demo": "coeff_mixer",
+    "beats": [
+      "測る",
+      "棒の高さ",
+      "つまみ",
+      "合成が変わる"
+    ],
+    "caption": "係数＝似ている度の棒。ミキサーの一覧表。"
+  },
+  "morph_steps": [
+    {
+      "html": "周波数 <b>n</b>",
+      "say": "材料を選ぶ。",
+      "change": "スタート。"
+    },
+    {
+      "html": "cos → <b>a<sub>n</sub></b>",
+      "say": "cos用つまみ。",
+      "change": "点数に名前 a_n。"
+    },
+    {
+      "html": "sin → <b>b<sub>n</sub></b>",
+      "say": "sin用つまみ。",
+      "change": "同じ n に二つ。"
+    },
+    {
+      "html": "Σ で足す（再構成）",
+      "say": "分量どおり。",
+      "change": "表 → 波。"
+    },
+    {
+      "html": "係数を弱める → <b>圧縮</b>",
+      "say": "材料を減らす。",
+      "change": "完成：APPへ。"
+    }
+  ],
+  "puzzle_cards": [
+    {
+      "id": "k0",
+      "text": "① 周波数 n を選ぶ"
+    },
+    {
+      "id": "k1",
+      "text": "② cos との似ている度 → a_n"
+    },
+    {
+      "id": "k2",
+      "text": "③ sin との似ている度 → b_n"
+    },
+    {
+      "id": "k3",
+      "text": "④ 係数を重みにして足す"
+    },
+    {
+      "id": "k4",
+      "text": "⑤ 係数を削ると圧縮へ"
+    }
+  ],
+  "puzzle_order": [
+    "k0",
+    "k1",
+    "k2",
+    "k3",
+    "k4"
+  ],
+  "common_error": "係数＝個数、全部同じ強さ",
+  "teach_line": "係数は各 sin/cos との似ている度。大きいほど目立つ。"
+}

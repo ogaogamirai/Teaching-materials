@@ -1,0 +1,187 @@
+{
+  "FT-WAVE-1": {
+    "formula_html": "y = <span data-hs-btn=\"A\">A</span> sin(<span data-hs-btn=\"omega\">ω</span>t + <span data-hs-btn=\"phi\">φ</span>)",
+    "items": [
+      {
+        "id": "A",
+        "label": "A 振幅",
+        "hint": "山の高さ。振幅スライダ。",
+        "read": "エー"
+      },
+      {
+        "id": "omega",
+        "label": "ω・周期",
+        "hint": "細かさ・繰り返し。周期スライダ（短い⇔ω大）。",
+        "read": "オメガ"
+      },
+      {
+        "id": "phi",
+        "label": "φ 位相",
+        "hint": "横ずれ。位相スライダ。",
+        "read": "ファイ"
+      },
+      {
+        "id": "y",
+        "label": "y 波",
+        "hint": "赤い波形全体。",
+        "read": "ワイ"
+      }
+    ],
+    "formula_read": "ワイ イコール エー かける サイン（オメガティー たす ファイ）",
+    "reading_keys": [
+      "A",
+      "ω",
+      "φ",
+      "sin",
+      "t"
+    ]
+  },
+  "FT-CIRCLE-1": {
+    "formula_html": "y(t) = <span data-hs-btn=\"R\">R</span> sin(<span data-hs-btn=\"omega\">ω</span>t + φ)",
+    "items": [
+      {
+        "id": "R",
+        "label": "R 半径",
+        "hint": "円の大きさ＝振幅。半径スケール。",
+        "read": "アール"
+      },
+      {
+        "id": "omega",
+        "label": "ω 速さ",
+        "hint": "回転速度スライダ。速く回る＝波が細かい。",
+        "read": "オメガ"
+      },
+      {
+        "id": "circle",
+        "label": "円",
+        "hint": "左側の回転する円。",
+        "read": "えん"
+      },
+      {
+        "id": "y",
+        "label": "y(t) 波",
+        "hint": "右側の赤い波形（高さの記録）。",
+        "read": "ワイティー"
+      }
+    ],
+    "formula_read": "ワイティー イコール アール かける サイン（オメガティー たす ファイ）",
+    "reading_keys": [
+      "R",
+      "ω",
+      "φ",
+      "sin",
+      "y(t)"
+    ]
+  },
+  "FT-SERIES-1": {
+    "formula_html": "f ≈ <span data-hs-btn=\"sum\">Σ</span> ( … n=<span data-hs-btn=\"n\">1,3,…</span> … )　項数 <span data-hs-btn=\"N\">N</span>",
+    "items": [
+      {
+        "id": "N",
+        "label": "N 項数",
+        "hint": "足す成分の個数スライダ。",
+        "read": "エヌ（個数）"
+      },
+      {
+        "id": "n",
+        "label": "成分 n",
+        "hint": "ON/OFF チップ。各円の速さの段。",
+        "read": "エヌ（番号）"
+      },
+      {
+        "id": "sum",
+        "label": "Σ 和",
+        "hint": "円を重ねて足している全体。",
+        "read": "シグマ"
+      },
+      {
+        "id": "y",
+        "label": "部分和の波",
+        "hint": "右側の赤い波形。",
+        "read": "ぶぶんわ"
+      }
+    ],
+    "formula_read": "エフは シグマ（和）で エーエヌ・ビーエヌ の波を足したもの。エヌは成分の番号",
+    "reading_keys": [
+      "Σ",
+      "aₙ",
+      "bₙ",
+      "n"
+    ]
+  },
+  "FT-COEFF-1": {
+    "formula_html": "f ≈ Σ <span data-hs-btn=\"an\">a<sub>n</sub>, b<sub>n</sub></span> · 波<sub>n</sub>",
+    "items": [
+      {
+        "id": "an",
+        "label": "係数",
+        "hint": "下の棒と係数スライダ。大きいほど目立つ。",
+        "read": "エーエヌ・ビーエヌ"
+      },
+      {
+        "id": "y",
+        "label": "合成波",
+        "hint": "赤い合成波形。",
+        "read": "ごうせい波"
+      }
+    ],
+    "formula_read": "エーエヌ・ビーエヌは 係数（にているどの強さ）",
+    "reading_keys": [
+      "aₙ",
+      "bₙ",
+      "Σ"
+    ]
+  },
+  "FT-RAD-1": {
+    "formula_html": "<span data-hs-btn=\"pi\">π rad = 180°</span>　／　<span data-hs-btn=\"ang\">θ</span>",
+    "items": [
+      {
+        "id": "ang",
+        "label": "角度 θ",
+        "hint": "度スライダと紫の弧。",
+        "read": "シータ"
+      },
+      {
+        "id": "pi",
+        "label": "π・2π",
+        "hint": "半周・一周の目印（表示を動かす）。",
+        "read": "パイ"
+      }
+    ],
+    "formula_read": "パイ ラジアン イコール 百八十ど。シータは角度",
+    "reading_keys": [
+      "π",
+      "θ",
+      "rad"
+    ]
+  },
+  "FT-ORTHO-1": {
+    "formula_html": "⟨f,g⟩ 〜 <span data-hs-btn=\"prod\">f·g</span> を <span data-hs-btn=\"bar\">足し上げ</span>",
+    "items": [
+      {
+        "id": "prod",
+        "label": "かけ算",
+        "hint": "赤い塗り（fとgの積）。",
+        "read": "かけ算"
+      },
+      {
+        "id": "bar",
+        "label": "似ている度",
+        "hint": "下の緑バー。",
+        "read": "にているど"
+      },
+      {
+        "id": "freq",
+        "label": "試し波の周波数",
+        "hint": "周波数スライダ。",
+        "read": "しゅうはすう"
+      }
+    ],
+    "formula_read": "エフジーを かけ算して 足すと にているど",
+    "reading_keys": [
+      "⟨ ⟩",
+      "∫",
+      "f, g"
+    ]
+  }
+}

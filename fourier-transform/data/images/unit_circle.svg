@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 450" width="100%" height="100%" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; border-radius: 12px;">
+  <!-- Subtle Grid Pattern / Axes -->
+  <line x1="40" y1="225" x2="460" y2="225" stroke="#334155" stroke-width="2" stroke-dasharray="4,4"/>
+  <line x1="250" y1="35" x2="250" y2="415" stroke="#334155" stroke-width="2" stroke-dasharray="4,4"/>
+  
+  <!-- Axis Labels -->
+  <text x="465" y="230" fill="#cbd5e1" font-size="15" font-weight="600">x (cos)</text>
+  <text x="250" y="24" fill="#cbd5e1" font-size="15" font-weight="600" text-anchor="middle">y (sin)</text>
+  <text x="233" y="244" fill="#64748b" font-size="13">O</text>
+
+  <!-- Unit Circle (R=150) -->
+  <circle cx="250" cy="225" r="150" stroke="#38bdf8" stroke-width="2.5" fill="rgba(56, 189, 248, 0.04)"/>
+
+  <!-- Angle θ Arc -->
+  <path d="M 288 225 A 38 38 0 0 0 280 202" fill="none" stroke="#fbbf24" stroke-width="2.5"/>
+  <text x="296" y="210" fill="#fbbf24" font-size="18" font-weight="bold">θ</text>
+
+  <!-- Right Triangle Shading -->
+  <polygon points="250,225 370,225 370,135" fill="rgba(14, 165, 233, 0.15)"/>
+
+  <!-- Radius Vector (Hypotenuse = 1) -->
+  <line x1="250" y1="225" x2="370" y2="135" stroke="#f8fafc" stroke-width="3"/>
+  <text x="295" y="168" fill="#f8fafc" font-size="15" font-weight="bold" transform="rotate(-37 300 175)">半径 = 1</text>
+
+  <!-- Horizontal Component: cosθ (Bright Cyan/Teal) -->
+  <line x1="250" y1="225" x2="370" y2="225" stroke="#06b6d4" stroke-width="4.5" stroke-linecap="round"/>
+  <text x="310" y="254" fill="#22d3ee" font-size="16" font-weight="bold" text-anchor="middle">cosθ (横の長さ)</text>
+
+  <!-- Vertical Component: sinθ (Bright Coral Rose) -->
+  <line x1="370" y1="225" x2="370" y2="135" stroke="#fb7185" stroke-width="4.5" stroke-linecap="round"/>
+  <text x="382" y="184" fill="#fda4af" font-size="16" font-weight="bold">sinθ (縦の高さ)</text>
+
+  <!-- Right Angle Marker -->
+  <path d="M 358 225 L 358 213 L 370 213" fill="none" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Point P (cosθ, sinθ) -->
+  <circle cx="370" cy="135" r="7" fill="#38bdf8" stroke="#ffffff" stroke-width="2.5"/>
+  <text x="370" y="112" fill="#ffffff" font-size="17" font-weight="bold">点 P (cosθ, sinθ)</text>
+</svg>

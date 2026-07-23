@@ -1,0 +1,14 @@
+# indexes / caches
+.ariadne.db
+**/__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+
+# local agent scratch
+scratch/
+**/scratch/
+
+# editor
+.vscode/
+.idea/
