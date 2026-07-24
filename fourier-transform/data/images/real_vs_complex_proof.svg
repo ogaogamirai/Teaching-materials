@@ -1,61 +1,50 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" width="100%" height="100%" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; border-radius: 12px;">
-  <text x="320" y="35" fill="#38bdf8" font-size="20" font-weight="bold" text-anchor="middle">実数表現 vs 複素数表現の完全対比と進化マップ</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" width="100%" height="100%" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px;">
+  <!--
+    All math uses Unicode only (aₙ, eⁱⁿˣ). No TeX braces, no baseline-shift
+    (baseline-shift is unreliable in Edge/Chromium SVG and looked like "e inx").
+  -->
+  <style>
+    .t { font-family: "Cambria Math", "Segoe UI Symbol", "Segoe UI", system-ui, sans-serif; }
+    .jp { font-family: "Segoe UI", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif; }
+  </style>
+
+  <text class="jp" x="320" y="35" fill="#38bdf8" font-size="18" font-weight="bold" text-anchor="middle">実数表現 vs 複素数表現の完全対比と進化マップ</text>
 
   <!-- Left: Real -->
   <g transform="translate(20, 50)">
     <rect x="0" y="0" width="290" height="390" fill="rgba(30, 41, 59, 0.7)" rx="10" stroke="#06b6d4" stroke-width="1.5"/>
-    <text x="145" y="30" fill="#06b6d4" font-size="16" font-weight="bold" text-anchor="middle">① 実数表現（フーリエ級数）</text>
+    <text class="jp" x="145" y="30" fill="#06b6d4" font-size="15" font-weight="bold" text-anchor="middle">① 実数表現（フーリエ級数）</text>
 
-    <rect x="12" y="50" width="266" height="85" fill="#0f172a" rx="6" stroke="#06b6d4" stroke-width="1"/>
-    <text x="20" y="73" fill="#cbd5e1" font-size="11">展開式:</text>
-    <text x="20" y="93" fill="#ffffff" font-size="13" font-weight="bold">f(x) = a₀/2 + Σ [aₙ cos(nx) + bₙ sin(nx)]</text>
-    <text x="20" y="120" fill="#a7f3d0" font-size="11">cos と sin の 2 種類の波を足す</text>
+    <rect x="12" y="48" width="266" height="88" fill="#0f172a" rx="6" stroke="#06b6d4" stroke-width="1"/>
+    <text class="jp" x="20" y="70" fill="#cbd5e1" font-size="11">展開式:</text>
+    <text class="t" x="20" y="94" fill="#ffffff" font-size="14" font-weight="bold">f(x) = a₀/2 + Σ [aₙ cos(nx) + bₙ sin(nx)]</text>
+    <text class="jp" x="20" y="118" fill="#a7f3d0" font-size="11">cos と sin の 2 種類の波を足す</text>
 
-    <rect x="12" y="145" width="266" height="230" fill="#0f172a" rx="6" stroke="#334155" stroke-width="1"/>
-    <text x="20" y="170" fill="#fbbf24" font-size="13" font-weight="bold">【特徴とメリット・課題】</text>
-    <text x="20" y="195" fill="#ffffff" font-size="12">・係数：aₙ と bₙ の 2 つを別管理</text>
-    <text x="20" y="220" fill="#ffffff" font-size="12">・直感：波の高さ（振幅）がすぐ見える</text>
-    <text x="20" y="245" fill="#ffffff" font-size="12">・計算：積和公式や加法定理が必要</text>
-    <text x="20" y="270" fill="#ffffff" font-size="12">・周波数：n ＝ 1, 2, 3... (正のみ)</text>
-    <text x="20" y="305" fill="#f43f5e" font-size="12" font-weight="bold">➔ 式が長くなり、微積の計算が複雑</text>
+    <rect x="12" y="148" width="266" height="228" fill="#0f172a" rx="6" stroke="#334155" stroke-width="1"/>
+    <text class="jp" x="20" y="175" fill="#fbbf24" font-size="13" font-weight="bold">【特徴とメリット・課題】</text>
+    <text class="jp" x="20" y="205" fill="#ffffff" font-size="12">・係数：aₙ と bₙ の 2 つを別管理</text>
+    <text class="jp" x="20" y="232" fill="#ffffff" font-size="12">・直感：波の高さ（振幅）がすぐ見える</text>
+    <text class="jp" x="20" y="259" fill="#ffffff" font-size="12">・計算：積和公式や加法定理が必要</text>
+    <text class="jp" x="20" y="286" fill="#ffffff" font-size="12">・周波数：n = 1, 2, 3…（正のみ）</text>
+    <text class="jp" x="20" y="330" fill="#f43f5e" font-size="12" font-weight="bold">→ 式が長く、微積の計算が複雑</text>
   </g>
 
-  <!-- Right: Complex (tspan superscripts only — no TeX braces) -->
+  <!-- Right: Complex -->
   <g transform="translate(330, 50)">
     <rect x="0" y="0" width="290" height="390" fill="rgba(30, 41, 59, 0.7)" rx="10" stroke="#fb7185" stroke-width="1.5"/>
-    <text x="145" y="30" fill="#fb7185" font-size="16" font-weight="bold" text-anchor="middle">② 複素数表現（複素フーリエ）</text>
+    <text class="jp" x="145" y="30" fill="#fb7185" font-size="15" font-weight="bold" text-anchor="middle">② 複素数表現（複素フーリエ）</text>
 
-    <rect x="12" y="50" width="266" height="100" fill="#0f172a" rx="6" stroke="#fb7185" stroke-width="1"/>
-    <text x="20" y="73" fill="#cbd5e1" font-size="11">展開式:</text>
-    <text x="20" y="98" fill="#ffffff" font-size="13" font-weight="bold">
-      <tspan>f(x) = Σ cₙ · e</tspan>
-      <tspan baseline-shift="super" font-size="10">inx</tspan>
-    </text>
-    <text x="20" y="128" fill="#a7f3d0" font-size="11">
-      <tspan>回転 e</tspan>
-      <tspan baseline-shift="super" font-size="9">inx</tspan>
-      <tspan> のたった 1 種類に統一！</tspan>
-    </text>
+    <rect x="12" y="48" width="266" height="88" fill="#0f172a" rx="6" stroke="#fb7185" stroke-width="1"/>
+    <text class="jp" x="20" y="70" fill="#cbd5e1" font-size="11">展開式:</text>
+    <text class="t" x="20" y="94" fill="#ffffff" font-size="15" font-weight="bold">f(x) = Σ cₙ · eⁱⁿˣ</text>
+    <text class="jp" x="20" y="118" fill="#a7f3d0" font-size="11">回転 eⁱⁿˣ のたった 1 種類に統一！</text>
 
-    <rect x="12" y="160" width="266" height="215" fill="#0f172a" rx="6" stroke="#334155" stroke-width="1"/>
-    <text x="20" y="185" fill="#fbbf24" font-size="13" font-weight="bold">【進化と圧倒的メリット】</text>
-    <text x="20" y="210" fill="#ffffff" font-size="12">・係数：複素数 cₙ ＝ (aₙ − i bₙ)/2 の1つ！</text>
-    <text x="20" y="235" fill="#ffffff" font-size="12">・直感：正の回転(+n) と負の回転(-n)</text>
-    <text x="20" y="260" fill="#ffffff" font-size="12">
-      <tspan>・計算：指数法則 e</tspan>
-      <tspan baseline-shift="super" font-size="9">a</tspan>
-      <tspan>e</tspan>
-      <tspan baseline-shift="super" font-size="9">b</tspan>
-      <tspan> ＝ e</tspan>
-      <tspan baseline-shift="super" font-size="9">a+b</tspan>
-    </text>
-    <text x="20" y="285" fill="#ffffff" font-size="12">
-      <tspan>・微積：(e</tspan>
-      <tspan baseline-shift="super" font-size="9">inx</tspan>
-      <tspan>)' ＝ in · e</tspan>
-      <tspan baseline-shift="super" font-size="9">inx</tspan>
-      <tspan> と一瞬！</tspan>
-    </text>
-    <text x="20" y="320" fill="#a7f3d0" font-size="12" font-weight="bold">➔ フーリエ変換 F(ω) への最強の扉！</text>
+    <rect x="12" y="148" width="266" height="228" fill="#0f172a" rx="6" stroke="#334155" stroke-width="1"/>
+    <text class="jp" x="20" y="175" fill="#fbbf24" font-size="13" font-weight="bold">【進化と圧倒的メリット】</text>
+    <text class="jp" x="20" y="205" fill="#ffffff" font-size="12">・係数：複素数 cₙ = (aₙ − i bₙ)/2 の1つ</text>
+    <text class="jp" x="20" y="232" fill="#ffffff" font-size="12">・直感：正の回転(+n) と負の回転(−n)</text>
+    <text class="t" x="20" y="259" fill="#ffffff" font-size="12">・計算：eᵃ eᵇ = eᵃ⁺ᵇ で超簡単</text>
+    <text class="t" x="20" y="286" fill="#ffffff" font-size="12">・微積：(eⁱⁿˣ)' = in · eⁱⁿˣ と一瞬</text>
+    <text class="jp" x="20" y="330" fill="#a7f3d0" font-size="12" font-weight="bold">→ フーリエ変換 F(ω) への扉</text>
   </g>
 </svg>

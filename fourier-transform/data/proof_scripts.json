@@ -2152,7 +2152,7 @@
       "id": "P-COMPARE",
       "node": "FT-COMPARE-1",
       "title": "実数 vs 複素数 — なぜ複素数に拡張すると世界が変わるのか？（対比とマップ）",
-      "formula_html": "\\text{実数: } f(x)=\\dfrac{a_0}{2}+\\sum [a_n\\cos(nx)+b_n\\sin(nx)] \\quad\\text{VS}\\quad \\text{複素数: } f(x)=\\sum c_n e^{inx}\\ (c_n=(a_n-ib_n)/2)",
+      "formula_html": "\\begin{aligned}\\text{実数: }& f(x)=\\dfrac{a_0}{2}+\\sum\\bigl(a_n\\cos nx+b_n\\sin nx\\bigr)\\\\[0.35em]\\text{複素数: }& f(x)=\\sum c_n e^{inx},\\quad c_n=\\dfrac{a_n-ib_n}{2}\\end{aligned}",
       "formula_read": "じっすう: エフエックス イコール エーゼロ わる に たす シマン。ふくそすう: エフエックス イコール シグマ シーエヌ イーの アイ・エヌ・エックス",
       "reading_keys": [
         "aₙ",
