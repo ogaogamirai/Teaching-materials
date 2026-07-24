@@ -22,10 +22,11 @@
 
   function polishExpBody(ex) {
     var t = String(ex || "").replace(/\s+/g, "");
-    if (/^inx$/i.test(t) || t === "\\mathrm{i}nx") return "i n x";
+    // Prefer i·n·x so factors read separately (manabitimes-friendly)
+    if (/^inx$/i.test(t) || t === "\\mathrm{i}nx") return "i\\cdot n\\cdot x";
     if (t === "i\\theta" || t === "iθ") return "i\\theta";
-    if (t === "ix\\xi" || t === "ixξ") return "i x \\xi";
-    t = t.replace(/inx/g, "i n x");
+    if (t === "ix\\xi" || t === "ixξ") return "i\\cdot x\\cdot\\xi";
+    t = t.replace(/inx/g, "i\\cdot n\\cdot x");
     t = t.replace(/iθ/g, "i\\theta");
     t = t.replace(/iπ/g, "i\\pi");
     return t;
@@ -42,22 +43,25 @@
   /** Cramped → spaced manabitimes-style exponents / products */
   function polishLatex(latex) {
     var s = String(latex == null ? "" : latex);
-    s = s.replace(/e\^\{\\mathrm\{i\}nx\}/g, "e^{i n x}");
-    s = s.replace(/e\^\{\\mathrm\{i\} n x\}/g, "e^{i n x}");
-    s = s.replace(/e\^\{inx\}/g, "e^{i n x}");
+    s = s.replace(/e\^\{\\mathrm\{i\}nx\}/g, "e^{i\\cdot n\\cdot x}");
+    s = s.replace(/e\^\{\\mathrm\{i\} n x\}/g, "e^{i\\cdot n\\cdot x}");
+    s = s.replace(/e\^\{i n x\}/g, "e^{i\\cdot n\\cdot x}");
+    s = s.replace(/e\^\{inx\}/g, "e^{i\\cdot n\\cdot x}");
     s = s.replace(/e\^\{i\\theta\}/g, "e^{i\\theta}");
     s = s.replace(/e\^\{iθ\}/g, "e^{i\\theta}");
     s = s.replace(/e\^\{i\\pi\}/g, "e^{i\\pi}");
     s = s.replace(
-      /\(e\^\{i\s*n\s*x\}\)'/g,
-      "\\dfrac{\\mathrm{d}}{\\mathrm{d}x}e^{i n x}"
+      /\(e\^\{i(\\cdot)?\s*n(\\cdot)?\s*x\}\)'/g,
+      "\\dfrac{\\mathrm{d}}{\\mathrm{d}x}e^{i\\cdot n\\cdot x}"
     );
     s = s.replace(
       /\(e\^\{inx\}\)'/g,
-      "\\dfrac{\\mathrm{d}}{\\mathrm{d}x}e^{i n x}"
+      "\\dfrac{\\mathrm{d}}{\\mathrm{d}x}e^{i\\cdot n\\cdot x}"
     );
-    s = s.replace(/=\s*in\s*e\^/g, "= i n e^");
-    s = s.replace(/=\s*\\mathrm\{i\}\s*n\s*e\^/g, "= i n e^");
+    s = s.replace(/=\s*in\s*e\^/g, "= i\\cdot n\\, e^");
+    s = s.replace(/=\s*i\s*n\s*e\^/g, "= i\\cdot n\\, e^");
+    s = s.replace(/=\s*\\mathrm\{i\}\s*n\s*e\^/g, "= i\\cdot n\\, e^");
+    s = s.replace(/i\\,n\\,/g, "i\\cdot n\\,");
     s = s.replace(/\\mathrm\{i\}/g, "i");
     if (
       s.indexOf("\\displaystyle") < 0 &&

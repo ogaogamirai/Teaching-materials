@@ -3,9 +3,9 @@
   "node": "FT-COMPARE-1",
   "title": "実数 vs 複素数 — なぜ複素数に拡張すると世界が変わるのか？（対比とマップ）",
   "formula_html": "\\text{実数}\\quad f(x)=\\dfrac{a_0}{2}+\\sum_{n=1}^{\\infty}\\bigl(a_n\\cos(nx)+b_n\\sin(nx)\\bigr)",
-  "formula_html_2": "\\text{複素数}\\quad f(x)=\\sum_{n=-\\infty}^{\\infty} c_n\\,e^{i n x}",
-  "formula_html_3": "n\\ge 1:\\quad c_n=\\dfrac{a_n-i b_n}{2},\\quad c_{-n}=\\dfrac{a_n+i b_n}{2},\\quad c_0=\\dfrac{a_0}{2}",
-  "formula_html_4": "\\dfrac{\\mathrm{d}}{\\mathrm{d}x}\\,e^{i n x}=i\\,n\\,e^{i n x}",
+  "formula_html_2": "\\text{複素数}\\quad f(x)=\\sum_{n=-\\infty}^{\\infty} c_n\\,e^{i\\cdot n\\cdot x}",
+  "formula_html_3": "n\\ge 1:\\quad c_n=\\dfrac{a_n-i\\,b_n}{2},\\quad c_{-n}=\\dfrac{a_n+i\\,b_n}{2},\\quad c_0=\\dfrac{a_0}{2}",
+  "formula_html_4": "\\dfrac{\\mathrm{d}}{\\mathrm{d}x}\\,e^{i\\cdot n\\cdot x}=i\\cdot n\\,e^{i\\cdot n\\cdot x}",
   "formula_read": "実数はエヌが1から無限大。複素数はエヌがマイナス無限大からプラス無限大。シーエヌはエーエヌひくアイかけるビーエヌの半分。シーのマイナスエヌはエーエヌたすアイかけるビーエヌの半分。イーのアイエヌエックスをエックスで微分すると、アイかけるエヌかける同じ指数。",
   "reading_keys": [
     "aₙ",
