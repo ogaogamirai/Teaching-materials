@@ -329,6 +329,13 @@ canvas.demo {
   font-family: "Segoe UI", "Hiragino Sans", sans-serif;
   font-size: 0.92rem; font-weight: 600; color: #6d28d9; line-height: 1.45;
 }
+.formula-stack .formula-gap {
+  height: 0.85rem;
+}
+.formula-stack .katex-display,
+.formula-stack .katex {
+  text-align: left;
+}
 .reading-chips {
   display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.35rem 0 0.6rem;
 }

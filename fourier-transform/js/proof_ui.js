@@ -325,25 +325,51 @@
     return formatMathHtmlLocal(esc(s));
   }
 
-  function renderFormulaBlock(formulaHtml, formulaRead) {
+  function renderFormulaBlock(scriptOrHtml, formulaRead) {
+    // script object may carry formula_html, formula_html_2, ...
+    var parts = [];
+    if (scriptOrHtml && typeof scriptOrHtml === "object") {
+      var sc = scriptOrHtml;
+      ["formula_html", "formula_html_2", "formula_html_3", "formula_html_4"].forEach(
+        function (k) {
+          if (sc[k]) parts.push(sc[k]);
+        }
+      );
+      formulaRead = formulaRead || sc.formula_read || null;
+    } else if (scriptOrHtml) {
+      parts.push(scriptOrHtml);
+    }
+    if (!parts.length) return "";
+
     if (FT.mathTex && typeof FT.mathTex.renderFormulaHtml === "function") {
-      var box = FT.mathTex.renderFormulaHtml(formulaHtml || "");
+      var inner = parts
+        .map(function (p) {
+          var box = FT.mathTex.renderFormulaHtml(p);
+          // unwrap single formula-box to stack multiple lines
+          return box
+            .replace(/^<div class="formula-box[^"]*">/, "")
+            .replace(/<\/div>\s*$/, "");
+        })
+        .join('<div class="formula-gap"></div>');
+      var out =
+        '<div class="formula-box formula-katex formula-stack">' + inner;
       if (formulaRead) {
-        box = box.replace(
-          /<\/div>\s*$/,
-          '<div class="formula-read">よみ: ' + esc(formulaRead) + "</div></div>"
-        );
+        out +=
+          '<div class="formula-read">よみ: ' + esc(formulaRead) + "</div>";
       }
-      return box;
+      out += "</div>";
+      return out;
     }
     if (FT.readings) {
       return FT.readings.formulaWithRead(
-        formatMathHtml(formulaHtml || ""),
+        formatMathHtml(parts.join(" \\quad ")),
         formulaRead || null
       );
     }
     return (
-      '<div class="formula-box">' + formatMathHtml(formulaHtml || "") + "</div>"
+      '<div class="formula-box">' +
+      parts.map(formatMathHtml).join("<br>") +
+      "</div>"
     );
   }
 
@@ -565,7 +591,7 @@
           esc(script.bridge_from.join(" → ")) +
           " → いまここ</p>"
         : "") +
-      renderFormulaBlock(script.formula_html || "", script.formula_read || null) +
+      renderFormulaBlock(script, null) +
       (FT.readings
         ? FT.readings.renderChips(script.reading_keys || null)
         : "") +

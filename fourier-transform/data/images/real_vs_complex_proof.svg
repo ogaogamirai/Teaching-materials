@@ -32,8 +32,8 @@
 
     <rect x="12" y="44" width="288" height="100" fill="#0f172a" rx="6" stroke="#fb7185"/>
     <text class="jp" x="20" y="66" fill="#cbd5e1" font-size="11">展開式（n は …-2,-1,0,1,2…）</text>
-    <text class="t" x="20" y="92" fill="#fff" font-size="14" font-weight="bold">f(x) = Σₙ₌₋∞^∞ cₙ eⁱⁿˣ</text>
-    <text class="jp" x="20" y="122" fill="#a7f3d0" font-size="11">部品は回転 eⁱⁿˣ の 1 種類</text>
+    <text class="t" x="20" y="90" fill="#fff" font-size="13" font-weight="bold">f(x) = Σ (n=−∞ … +∞) cₙ e^{i n x}</text>
+    <text class="jp" x="20" y="122" fill="#a7f3d0" font-size="11">和の範囲は −∞ から +∞（上端は +∞）</text>
 
     <rect x="12" y="158" width="288" height="232" fill="#0f172a" rx="6" stroke="#334155"/>
     <text class="jp" x="20" y="186" fill="#fbbf24" font-size="13" font-weight="bold">係数の対応（n≥1）</text>
@@ -41,6 +41,6 @@
     <text class="t" x="20" y="244" fill="#fff" font-size="13">cₙ = (aₙ − i bₙ)/2</text>
     <text class="t" x="20" y="272" fill="#fff" font-size="13">c₋ₙ = (aₙ + i bₙ)/2</text>
     <text class="jp" x="20" y="304" fill="#cbd5e1" font-size="12">※ aₙ・bₙ の情報は cₙ と c₋ₙ のペア</text>
-    <text class="t" x="20" y="340" fill="#a7f3d0" font-size="12" font-weight="bold">(eⁱⁿˣ)' = in · eⁱⁿˣ</text>
+    <text class="t" x="20" y="340" fill="#a7f3d0" font-size="12" font-weight="bold">d/dx e^{i n x} = i·n·e^{i n x}</text>
   </g>
 </svg>
