@@ -59,10 +59,10 @@
     "demo": "transform",
     "svg_image": "data/images/real_vs_complex_proof.svg",
     "beats": [
-      "実数：a_n cos(nx) + b_n sin(nx) （2つの波）",
-      "複素数：c_n e^{inx} （たった1つの回転指数）",
-      "係数の合体：c_n = (a_n - i b_n) / 2",
-      "指数法則 eᵃeᵇ = eᵃ⁺ᵇ による圧倒的計算簡略化"
+      "実数：aₙ cos(nx) + bₙ sin(nx) （2つの波）",
+      "複素数：cₙ e^{inx} （たった1つの回転指数）",
+      "係数の合体：cₙ = (aₙ - i bₙ) / 2",
+      "指数法則 eᵃeᵇ = eᵃ⁺ᵇ と微分 (e^{inx})' = in e^{inx}"
     ],
     "caption": "実数フーリエ級数と複素フーリエ級数の対比構造と進化マップ。"
   },

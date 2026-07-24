@@ -111,62 +111,46 @@
     });
   }
 
-  var TEX_BASE = "[A-Za-z0-9πθφωαβγλμσΣ∑∏∂∞)]";
-
   /**
    * TeX-like sub/superscripts → <sub>/<sup>.
-   * Order matters: _{}^{} combo, then ^{}, then _{}, then bare ^ / _.
+   * Base is a single symbol/letter (∑, e, a, …) — not a char-class run that
+   * fails on unicode edges. Order: _{}^{} combo → ^{} → _{} → bare.
    */
   function formatTexScripts(s) {
     if (!s) return "";
     var str = String(s);
     if (str.indexOf("^") < 0 && str.indexOf("_") < 0) return str;
 
-    // base_{low}^{up}
+    // X_{low}^{up}  e.g. ∑_{n=-∞}^{∞}
     str = str.replace(
-      new RegExp(
-        "(" + TEX_BASE + "+)_\\{([^}]+)\\}\\^\\{([^}]+)\\}",
-        "g"
-      ),
+      /([^\s\\<{])_\{([^}]+)\}\^\{([^}]+)\}/g,
       function (m, base, low, up) {
         return base + "<sub>" + low + "</sub><sup>" + up + "</sup>";
       }
     );
-    // base_{low}^upToken
+    // X_{low}^up  e.g. ∑_{n=1}^∞  or ∑_{n=1}^K
     str = str.replace(
-      new RegExp(
-        "(" + TEX_BASE + "+)_\\{([^}]+)\\}\\^(" + TEX_BASE + "+)",
-        "g"
-      ),
+      /([^\s\\<{])_\{([^}]+)\}\^([A-Za-z0-9+\-πθφ∞∞KNnm]+)/g,
       function (m, base, low, up) {
         return base + "<sub>" + low + "</sub><sup>" + up + "</sup>";
       }
     );
-    // base^{up}
+    // X^{up}  e.g. e^{inx}, e^{-iθ}, e^{A+B}
+    str = str.replace(/([^\s\\<{])\^\{([^}]+)\}/g, function (m, base, up) {
+      return base + "<sup>" + up + "</sup>";
+    });
+    // X_{low}
+    str = str.replace(/([^\s\\<{])_\{([^}]+)\}/g, function (m, base, low) {
+      return base + "<sub>" + low + "</sub>";
+    });
+    // X^token  e.g. e^A (no braces)
     str = str.replace(
-      new RegExp("(" + TEX_BASE + "+)\\^\\{([^}]+)\\}", "g"),
+      /([A-Za-z0-9πθφωαβγλμσΣ∑∏])\^([A-Za-z0-9+\-πθφ∞]+)/g,
       function (m, base, up) {
         return base + "<sup>" + up + "</sup>";
       }
     );
-    // base_{low}
-    str = str.replace(
-      new RegExp("(" + TEX_BASE + "+)_\\{([^}]+)\\}", "g"),
-      function (m, base, low) {
-        return base + "<sub>" + low + "</sub>";
-      }
-    );
-    // base^token
-    str = str.replace(
-      new RegExp(
-        "(" + TEX_BASE + "+)\\^([A-Za-z0-9+\\-πθφᵢₙₘ₀-₉¹²³]+)",
-        "g"
-      ),
-      function (m, base, up) {
-        return base + "<sup>" + up + "</sup>";
-      }
-    );
-    // a_n style (single letter base, short index) — avoid file paths (no / before)
+    // a_n style — avoid paths (no / before)
     str = str.replace(
       /(^|[^\/\w])([A-Za-z])_([A-Za-z0-9ₙₘ]{1,6})\b/g,
       function (m, pre, base, low) {
@@ -290,40 +274,34 @@
       FT.geometryProof.has(script.geometry.demo);
 
     // Canvas is always outside closed <details> so it paints and stays visible.
-    const geoListFallback =
-      script.geometry && !hasGeoDemo
-        ? '<ol class="guide-list">' +
-          (script.geometry.beats || [])
+    const geoBeatsList =
+      script.geometry && script.geometry.beats && script.geometry.beats.length
+        ? '<ol class="guide-list geo-beats">' +
+          script.geometry.beats
             .map(function (b) {
-              return "<li>" + esc(b) + "</li>";
+              return "<li>" + escMath(b) + "</li>";
             })
             .join("") +
-          "</ol>" +
-          (script.geometry.beats && script.geometry.beats.length
-            ? '<p class="muted geo-beat-fallback">見どころ: ' +
-              esc(script.geometry.beats.join(" → ")) +
-              "</p>"
-            : "")
+          "</ol>"
         : "";
 
-    const svgImgTag = (script.geometry && script.geometry.svg_image)
-      ? '<div class="geo-svg-host" style="text-align:center;margin:12px auto;max-width:360px;"><img src="' + esc(script.geometry.svg_image) + '" alt="図解" style="width:100%;max-width:360px;height:auto;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,0.35);" /></div>'
-      : '';
+    const svgImgTag =
+      script.geometry && script.geometry.svg_image
+        ? '<div class="geo-svg-host" style="text-align:center;margin:12px auto;max-width:520px;"><img src="' +
+          esc(script.geometry.svg_image) +
+          '" alt="図解" style="width:100%;max-width:520px;height:auto;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,0.35);" /></div>'
+        : "";
 
     const geoBlock = script.geometry
       ? '<div class="geo-box" id="geo-fold">' +
         '<p class="kv"><strong>図で先に納得</strong> — ' +
-        esc(script.geometry.caption || "") +
+        escMath(script.geometry.caption || "") +
         "</p>" +
         svgImgTag +
         (hasGeoDemo
-          ? '<div class="geo-proof-host" id="geo-proof-host"></div>' +
-            (script.geometry.beats && script.geometry.beats.length
-              ? '<p class="muted geo-beat-fallback">見どころ: ' +
-                esc(script.geometry.beats.join(" → ")) +
-                "</p>"
-              : "")
-          : geoListFallback) +
+          ? '<div class="geo-proof-host" id="geo-proof-host"></div>'
+          : "") +
+        geoBeatsList +
         "</div>"
       : "";
 
