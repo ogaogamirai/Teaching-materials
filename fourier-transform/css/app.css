@@ -285,15 +285,45 @@ canvas.demo {
   background: #f8fafc; border: 1px solid var(--border); border-radius: 10px;
 }
 .formula-box {
-  /* Prefer math fonts so unicode ⁿ ⁱ ˣ render as true superscripts */
-  font-family: "Cambria Math", "Segoe UI Symbol", "Times New Roman", "Segoe UI", sans-serif;
-  font-size: 1.2rem; line-height: 1.75;
-  background: var(--formula-bg); color: var(--formula-text);
-  padding: 1.15rem 1rem 0.9rem;
-  border-radius: 10px; margin: 0.5rem 0;
-  border: 1px solid #7dd3fc; border-left: 4px solid var(--accent2);
+  /* manabitimes-like: calm board, room for display Σ/∫ */
+  font-family: "Segoe UI", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  background: #f8fafc;
+  color: #0f172a;
+  padding: 1.25rem 1.1rem 1.1rem;
+  border-radius: 12px;
+  margin: 0.75rem 0;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #0ea5e9;
   overflow-x: auto;
   overflow-y: visible;
+}
+/* KaTeX display (like manabitimes article math) */
+.formula-box.formula-display,
+.formula-box.formula-katex {
+  text-align: center;
+}
+.formula-box .katex-display {
+  margin: 0.35em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.formula-box .katex {
+  font-size: 1.22em;
+  color: #0f172a;
+}
+.formula-stack {
+  text-align: center;
+}
+.formula-stack .formula-gap {
+  height: 1.1rem;
+}
+.intuition-line .katex,
+.story-step .katex,
+.lesson-block .katex,
+.guide-list .katex {
+  font-size: 1.05em;
 }
 /* Residual HTML sub/sup (should be rare after unicode conversion) */
 .formula-box sup,
@@ -329,13 +359,7 @@ canvas.demo {
   font-family: "Segoe UI", "Hiragino Sans", sans-serif;
   font-size: 0.92rem; font-weight: 600; color: #6d28d9; line-height: 1.45;
 }
-.formula-stack .formula-gap {
-  height: 0.85rem;
-}
-.formula-stack .katex-display,
-.formula-stack .katex {
-  text-align: left;
-}
+
 .reading-chips {
   display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.35rem 0 0.6rem;
 }
