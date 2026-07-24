@@ -4,12 +4,22 @@
   "title": "オイラーの公式 e^{iθ}=cosθ+i sinθ",
   "formula_html": "e^{i\\theta}=\\cos\\theta+i\\sin\\theta",
   "formula_html_2": "e^{i\\pi}+1=0",
-  "formula_html_3": "\\cos\\theta=\\dfrac{e^{i\\theta}+e^{-i\\theta}}{2},\\quad \\sin\\theta=\\dfrac{e^{i\\theta}-e^{-i\\theta}}{2i}",
+  "formula_html_3": "\\cos\\theta=\\dfrac{e^{i\\theta}+e^{-i\\theta}}{2},\\quad\\sin\\theta=\\dfrac{e^{i\\theta}-e^{-i\\theta}}{2i}",
   "formula_read": "イーのアイシータはコサインシータたすアイサインシータ。イーのアイパイたすいちはゼロ。",
-  "reading_keys": ["e^{iθ}", "i", "π", "θ", "sin", "cos"],
+  "reading_keys": [
+    "e^{iθ}",
+    "i",
+    "π",
+    "θ",
+    "sin",
+    "cos"
+  ],
   "intuition_1line": "単位円上の点 (cosθ, sinθ) を複素数でまとめたものが e^{iθ}。掛け算は角度の足し算になる。",
   "why_needed": "実数の cos/sin と複素の e^{inx} を行き来し、複素フーリエ級数を書くため。",
-  "bridge_from": ["FT-E-1", "FT-POLAR-1"],
+  "bridge_from": [
+    "FT-E-1",
+    "FT-POLAR-1"
+  ],
   "story_steps": [
     {
       "title": "① 公式の主張",
@@ -82,12 +92,29 @@
     }
   ],
   "puzzle_cards": [
-    { "id": "u0", "text": "① e^{iθ}=cosθ+i sinθ を述べ、右辺が偏角 θ・絶対値1だと説明する" },
-    { "id": "u1", "text": "② 級数または f'=if,f(0)=1 の一意性のどちらで正当化するか一言で言う" },
-    { "id": "u2", "text": "③ θ=π から e^{iπ}+1=0 を導く" },
-    { "id": "u3", "text": "④ cos nx と sin nx を e^{±inx} で書き、複素級数への橋を述べる" }
+    {
+      "id": "u0",
+      "text": "① e^{iθ}=cosθ+i sinθ を述べ、右辺が偏角 θ・絶対値1だと説明する"
+    },
+    {
+      "id": "u1",
+      "text": "② 級数または f'=if,f(0)=1 の一意性のどちらで正当化するか一言で言う"
+    },
+    {
+      "id": "u2",
+      "text": "③ θ=π から e^{iπ}+1=0 を導く"
+    },
+    {
+      "id": "u3",
+      "text": "④ cos nx と sin nx を e^{±inx} で書き、複素級数への橋を述べる"
+    }
   ],
-  "puzzle_order": ["u0", "u1", "u2", "u3"],
+  "puzzle_order": [
+    "u0",
+    "u1",
+    "u2",
+    "u3"
+  ],
   "common_error": "証明なしの暗記だけになる／度とラジアンを混同／e^{iθ} と (cosθ,sinθ) の同一視を忘れる",
   "teach_line": "e^{iθ}=cosθ+i sinθ。正当化は級数または f'=if。e^{iπ}+1=0。cos/sin は e^{±inx} に分解できる。"
 }

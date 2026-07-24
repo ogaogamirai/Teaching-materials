@@ -2,7 +2,7 @@
   "id": "P-CALC-TRIG",
   "node": "FT-CALC-TRIG-1",
   "title": "三角関数の微分と積分の完全証明",
-  "formula_html": "(sin x)' = cos x　／　(cos x)' = -sin x　／　∫ sin(ax) dx = - (1/a) cos(ax)",
+  "formula_html": "(\\sin x)'=\\cos x,\\quad(\\cos x)'=-\\sin x",
   "formula_read": "サインエックスの びぶんは コサインエックス。コサインエックスの びぶんは マイナス サインエックス",
   "reading_keys": [
     "sin",
@@ -108,5 +108,6 @@
     "ct3"
   ],
   "common_error": "(sin x)' をただの暗記ルールだと思う／加法定理との繋がりを知らない",
-  "teach_line": "加法定理と極限 lim (sin h / h = 1) から (sin x)' = cos x が完璧に証明される！"
+  "teach_line": "加法定理と極限 lim (sin h / h = 1) から (sin x)' = cos x が完璧に証明される！",
+  "formula_html_2": "\\int\\sin(ax)\\,dx=-\\dfrac{1}{a}\\cos(ax)"
 }

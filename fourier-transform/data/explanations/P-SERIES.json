@@ -2,7 +2,7 @@
   "id": "P-SERIES",
   "node": "FT-SERIES-1",
   "title": "速さの違う波を番号付きで足す（フーリエ級数・展開式の解剖）",
-  "formula_html": "f(t) = a₁ sin(1ωt) + a₂ sin(2ωt) + a₃ sin(3ωt) + ... = Σ<sub>n=1</sub><sup>N</sup> a<sub>n</sub> sin(nωt)",
+  "formula_html": "f(t)=a_{1}\\sin(\\omega t)+a_{2}\\sin(2\\omega t)+a_{3}\\sin(3\\omega t)+\\cdots=\\sum_{n=1}^{N}a_{n}\\sin(n\\omega t)",
   "formula_read": "エフティー イコール エーワン サイン オメガティー たす エーツー サイン にオメガティー たす エースリー... イコール シグマ エーエヌ サイン エヌオメガティー",
   "reading_keys": [
     "Σ",

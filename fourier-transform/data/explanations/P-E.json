@@ -2,12 +2,19 @@
   "id": "P-E",
   "node": "FT-E-1",
   "title": "ネイピア数 e（定義と (eˣ)'=eˣ）",
-  "formula_html": "e=\\lim_{n\\to\\infty}\\left(1+\\dfrac{1}{n}\\right)^{n},\\quad \\dfrac{d}{dx}e^{x}=e^{x},\\quad \\int e^{x}\\,dx=e^{x}+C",
+  "formula_html": "e=\\lim_{n\\to\\infty}\\left(1+\\dfrac{1}{n}\\right)^{n},\\quad\\dfrac{d}{dx}e^{x}=e^{x},\\quad\\int e^{x}\\,dx=e^{x}+C",
   "formula_read": "イーはエヌを無限にしたいちたすエヌぶんのいちのエヌ乗の極限。イーのエックスの微分はイーのエックス。",
-  "reading_keys": ["e", "lim", "n", "x"],
+  "reading_keys": [
+    "e",
+    "lim",
+    "n",
+    "x"
+  ],
   "intuition_1line": "e は「微分しても形が同じまま残る」指数関数の底。だから e^{iθ} の微分に i がきれいに出る。",
   "why_needed": "オイラーの公式で底が 2 や 10 ではなく e である理由（微分の定数が 1）を押さえるため。",
-  "bridge_from": ["FT-POLAR-1"],
+  "bridge_from": [
+    "FT-POLAR-1"
+  ],
   "story_steps": [
     {
       "title": "① 連続複利の極限として e が現れる",
@@ -71,12 +78,29 @@
     }
   ],
   "puzzle_cards": [
-    { "id": "e0", "text": "① e を lim(1+1/n)ⁿ で定義する" },
-    { "id": "e1", "text": "② (aˣ)'=(ln a)aˣ より、係数1になる底が e だと述べる" },
-    { "id": "e2", "text": "③ (eˣ)'=eˣ と ∫eˣ dx=eˣ+C を確認する" },
-    { "id": "e3", "text": "④ 連鎖律で (e^{iθ})'=i e^{iθ} を書き、次のオイラーへつなぐ" }
+    {
+      "id": "e0",
+      "text": "① e を lim(1+1/n)ⁿ で定義する"
+    },
+    {
+      "id": "e1",
+      "text": "② (aˣ)'=(ln a)aˣ より、係数1になる底が e だと述べる"
+    },
+    {
+      "id": "e2",
+      "text": "③ (eˣ)'=eˣ と ∫eˣ dx=eˣ+C を確認する"
+    },
+    {
+      "id": "e3",
+      "text": "④ 連鎖律で (e^{iθ})'=i e^{iθ} を書き、次のオイラーへつなぐ"
+    }
   ],
-  "puzzle_order": ["e0", "e1", "e2", "e3"],
+  "puzzle_order": [
+    "e0",
+    "e1",
+    "e2",
+    "e3"
+  ],
   "common_error": "eˣ が f'=f の唯一解だと条件なしで言い切る／底が e の理由を「美しいから」だけで済ませる",
   "teach_line": "e=lim(1+1/n)ⁿ。(eˣ)'=eˣ だから (e^{iθ})'=i e^{iθ}。底が e なのは微分の係数を1にするため。"
 }

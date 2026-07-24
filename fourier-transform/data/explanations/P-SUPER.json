@@ -2,7 +2,7 @@
   "id": "P-SUPER",
   "node": "FT-SUPER-1",
   "title": "波は足してよい（重ね合わせの原理と関数の和）",
-  "formula_html": "(f + g)(t) = f(t) + g(t)　／　y(t) = A₁ sin(ω₁ t) + A₂ sin(ω₂ t)",
+  "formula_html": "(f+g)(t)=f(t)+g(t)",
   "formula_read": "エフたすジー の ティー イコール エフのティー たす ジーのティー",
   "reading_keys": [
     "f, g",
@@ -98,5 +98,6 @@
     "s3"
   ],
   "common_error": "足すと高さを平均（割る2）するものだと勘違いする",
-  "teach_line": "同じ時刻の高さを素直に足し算！山と山で大きく、山と谷で打ち消し合うのが重ね合わせ。"
+  "teach_line": "同じ時刻の高さを素直に足し算！山と山で大きく、山と谷で打ち消し合うのが重ね合わせ。",
+  "formula_html_2": "y(t)=A_{1}\\sin(\\omega_{1} t)+A_{2}\\sin(\\omega_{2} t)"
 }

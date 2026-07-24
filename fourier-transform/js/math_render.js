@@ -25,7 +25,9 @@
         .join("") +
       "</div>" +
       (ch.formula_html
-        ? '<div class="formula-box">' + ch.formula_html + "</div>"
+        ? FT.mathTex && FT.mathTex.renderFormulaHtml
+          ? FT.mathTex.renderFormulaHtml(ch.formula_html)
+          : '<div class="formula-box formula-error">' + esc(ch.formula_html) + "</div>"
         : "") +
       (ch.takeaway
         ? '<p class="takeaway" style="margin-top:0.5rem">' +
@@ -60,11 +62,22 @@
         return "<li>" + esc(s) + "</li>";
       })
       .join("");
-    const formulaBlock = FT.readings
-      ? FT.readings.formulaWithRead(card.formula_html, card.read_aloud || null)
-      : card.formula_html
-        ? '<div class="formula-box">' + card.formula_html + "</div>"
-        : "";
+    var renderedFormula = "";
+    if (card.formula_html) {
+      renderedFormula =
+        FT.mathTex && FT.mathTex.renderFormulaHtml
+          ? FT.mathTex.renderFormulaHtml(card.formula_html)
+          : '<div class="formula-box formula-error">' +
+            esc(card.formula_html) +
+            "</div>";
+      if (FT.readings && card.read_aloud) {
+        renderedFormula = FT.readings.formulaWithRead(
+          renderedFormula,
+          card.read_aloud
+        );
+      }
+    }
+    const formulaBlock = renderedFormula;
     return (
       '<div class="math-card">' +
       '<p class="kv"><strong>理論・数式（Lyr-S）</strong> — 入力不要。読む・対応づける。</p>' +

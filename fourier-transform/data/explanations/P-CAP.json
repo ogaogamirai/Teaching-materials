@@ -2,7 +2,7 @@
   "id": "P-CAP",
   "node": "FT-CAP-1",
   "title": "実数経路の物語を一本に",
-  "formula_html": "波 → R sin(ωt+φ) → Σ(a cos+b sin) → 係数＝似ている度 → 捨てて再合成",
+  "formula_html": "\\text{波}\\to R\\sin(\\omega t+\\phi)\\to\\sum(a\\cos+b\\sin)\\to\\text{係数＝似ている度}\\to\\text{捨てて再合成}",
   "formula_read": "なみ、えんのサイン、シグマで足す、けいすうはにているど、すててさいごうせい",
   "reading_keys": [
     "Σ",

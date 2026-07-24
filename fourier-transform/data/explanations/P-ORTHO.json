@@ -2,7 +2,7 @@
   "id": "P-ORTHO",
   "node": "FT-ORTHO-1",
   "title": "関数の直交性（波の掛け算とゼロになる組み合わせ）",
-  "formula_html": "⟨f, g⟩ = ∫₀<sup>2π</sup> f(x)g(x) dx　／　∫₀<sup>2π</sup> sin(mx)sin(nx) dx = 0  (m ≠ n)",
+  "formula_html": "\\langle f,g\\rangle=\\int_{0}^{2\\pi}f(x)g(x)\\,dx",
   "formula_read": "エフとジーの ないせき は ゼロからニパイの せきぶん エフエックス ジーエックス ディーエックス。エムとエヌが ちがうとき ゼロ",
   "reading_keys": [
     "⟨ ⟩",
@@ -102,5 +102,6 @@
     "o3"
   ],
   "common_error": "波の掛け算と足し算を混同する／なぜ違う波だとプラスとマイナスが同じ面積になるか疑問に思う",
-  "teach_line": "同じ波ならプラスが残り高得点！違う波ならプラスとマイナスの面積が同じになり0に消える。"
+  "teach_line": "同じ波ならプラスが残り高得点！違う波ならプラスとマイナスの面積が同じになり0に消える。",
+  "formula_html_2": "\\int_{0}^{2\\pi}\\sin(mx)\\sin(nx)\\,dx=0\\quad(m\\neq n)"
 }

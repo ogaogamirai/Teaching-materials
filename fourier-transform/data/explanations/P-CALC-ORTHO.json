@@ -2,7 +2,7 @@
   "id": "P-CALC-ORTHO",
   "node": "FT-CALC-ORTHO-1",
   "title": "積和公式の導出と直交性微積分の完全証明",
-  "formula_html": "sin A sin B = 1/2 [cos(A-B) - cos(A+B)]　／　∫₀<sup>2π</sup> sin(mx)sin(nx) dx = 0 (m≠n),  π (m=n)",
+  "formula_html": "\\sin A\\sin B=\\dfrac{1}{2}\\bigl[\\cos(A-B)-\\cos(A+B)\\bigr]",
   "formula_read": "サインエー サインビー イコール にぶんのいち カッコ コサイン エーひくビー ひく コサイン エーたすビー",
   "reading_keys": [
     "sin",
@@ -111,5 +111,6 @@
     "co3"
   ],
   "common_error": "積和公式を丸暗記しようとして途中で忘れる／m=n のときの半角公式の使い方で迷う",
-  "teach_line": "加法定理の引き算から積和公式を導出し、積分すれば 0 と π が完全に証明できる！"
+  "teach_line": "加法定理の引き算から積和公式を導出し、積分すれば 0 と π が完全に証明できる！",
+  "formula_html_2": "\\int_{0}^{2\\pi}\\sin(mx)\\sin(nx)\\,dx=0\\ (m\\neq n),\\ \\pi\\ (m=n)"
 }

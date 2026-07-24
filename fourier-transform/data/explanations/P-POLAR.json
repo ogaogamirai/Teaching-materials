@@ -2,12 +2,21 @@
   "id": "P-POLAR",
   "node": "FT-POLAR-1",
   "title": "極形式とド・モアブルの定理",
-  "formula_html": "z=r(\\cos\\theta+i\\sin\\theta),\\quad (\\cos\\theta+i\\sin\\theta)^{n}=\\cos(n\\theta)+i\\sin(n\\theta)\\ (n\\in\\mathbb{Z})",
+  "formula_html": "z=r(\\cos\\theta+i\\sin\\theta),\\quad(\\cos\\theta+i\\sin\\theta)^{n}=\\cos(n\\theta)+i\\sin(n\\theta)\\ (n\\in\\mathbb{Z})",
   "formula_read": "ゼットイコールアールかっこコサインシータたすアイサインシータ。かっこコサインたすアイサインのかっこエヌ乗はコサインエヌシータたすアイサインエヌシータ。",
-  "reading_keys": ["z", "r", "θ", "n", "sin", "cos"],
+  "reading_keys": [
+    "z",
+    "r",
+    "θ",
+    "n",
+    "sin",
+    "cos"
+  ],
   "intuition_1line": "同じ向きに n 回掛けると、角度は n 倍になる。これがド・モアブル。(1+i)⁴=−4 はその計算例。",
   "why_needed": "のちの e^{iθ}=(cosθ+i sinθ) や (e^{iθ})ⁿ=e^{inθ} を、角度の整数倍として読むため。",
-  "bridge_from": ["FT-COMPLEX-1"],
+  "bridge_from": [
+    "FT-COMPLEX-1"
+  ],
   "story_steps": [
     {
       "title": "① 極形式 z=r(cosθ+i sinθ)",
@@ -75,12 +84,29 @@
     }
   ],
   "puzzle_cards": [
-    { "id": "po0", "text": "① 1+i を r=√2、θ=π/4 の極形式に書く" },
-    { "id": "po1", "text": "② ド・モアブルで (1+i)⁴=−4 を出す" },
-    { "id": "po2", "text": "③ (1+i)²=2i から (1+i)⁴=−4 を検算する" },
-    { "id": "po3", "text": "④ (1+i)(1−i)=2=|1+i|² を確認する" }
+    {
+      "id": "po0",
+      "text": "① 1+i を r=√2、θ=π/4 の極形式に書く"
+    },
+    {
+      "id": "po1",
+      "text": "② ド・モアブルで (1+i)⁴=−4 を出す"
+    },
+    {
+      "id": "po2",
+      "text": "③ (1+i)²=2i から (1+i)⁴=−4 を検算する"
+    },
+    {
+      "id": "po3",
+      "text": "④ (1+i)(1−i)=2=|1+i|² を確認する"
+    }
   ],
-  "puzzle_order": ["po0", "po1", "po2", "po3"],
+  "puzzle_order": [
+    "po0",
+    "po1",
+    "po2",
+    "po3"
+  ],
   "common_error": "度とラジアンの混在／(√2)⁴ を 2√2 などと誤る／ド・モアブルを n が整数のときに限定しない",
   "teach_line": "極形式で掛けると角度が足せる。(cosθ+i sinθ)ⁿ=cos(nθ)+i sin(nθ)（整数 n）。(1+i)⁴=−4。"
 }

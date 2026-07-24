@@ -2,7 +2,7 @@
   "id": "P-COEFF",
   "node": "FT-COEFF-1",
   "title": "フーリエ係数の意味と決まり方（公式の完全導出）",
-  "formula_html": "a<sub>n</sub> = (1/π) ∫₀<sup>2π</sup> f(x) cos(nx) dx　／　b<sub>n</sub> = (1/π) ∫₀<sup>2π</sup> f(x) sin(nx) dx　／　合成振幅 C<sub>n</sub> = <span class=\"math-sqrt\"><span class=\"math-sqrt-sym\">√</span><span class=\"math-sqrt-body\">a<sub>n</sub><sup>2</sup> + b<sub>n</sub><sup>2</sup></span></span>",
+  "formula_html": "a_{n}=\\dfrac{1}{\\pi}\\int_{0}^{2\\pi}f(x)\\cos(nx)\\,dx",
   "formula_read": "エーエヌ イコール パイぶんのいち インテグラル ゼロからニパイ エフエックス コサインエヌエックス ディーエックス",
   "reading_keys": [
     "aₙ",
@@ -111,5 +111,7 @@
     "c3"
   ],
   "common_error": "係数公式 a_n をただの複雑な丸暗記公式だと思って諦める／直交性によって他項が消える理由を忘れる",
-  "teach_line": "直交性のおかげで他項が全滅！残った aₙ · π の両辺を π で割れば係数公式が導出できる！"
+  "teach_line": "直交性のおかげで他項が全滅！残った aₙ · π の両辺を π で割れば係数公式が導出できる！",
+  "formula_html_2": "b_{n}=\\dfrac{1}{\\pi}\\int_{0}^{2\\pi}f(x)\\sin(nx)\\,dx",
+  "formula_html_3": "C_{n}=\\sqrt{a_{n}^{2}+b_{n}^{2}}"
 }

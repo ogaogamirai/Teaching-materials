@@ -1,5 +1,8 @@
 # Math display root causes (2026-07-24 r5)
 
+> **Superseded (2026-07-25):** 正本は `PLAN_MATH_DISPLAY_FUNDAMENTAL.md`。  
+> 実装: 純 LaTeX + KaTeX 一本化。ゲート: `python tools/verify_math.py --strict-path`。
+
 ## Why patches kept failing
 1. **HTML `<sup>`/`<sub>` look almost flat** in Japanese UI fonts (Segoe UI / Hiragino) on Edge — DOM was correct (`e<sup>inx</sup>`) but eyes see `einx` / `cn`.
 2. **Multiple text paths** (intuition, beats, formula, SVG) — fixing one left others broken.

@@ -15,7 +15,7 @@
         "半径 1 の円（単位円）上の点では、横を cos、高さを sin と書くと、そのまま cos²θ + sin²θ = 1 になります。",
         "だから「円の上を動く点の高さ＝sin」は、三角比と三平方の延長です。"
       ],
-      "formula_html": "a² + b² = c²　→　cos²θ + sin²θ = 1",
+      "formula_html": "a^{2}+b^{2}=c^{2}\\ \\Rightarrow\\ \\cos^{2}\\theta+\\sin^{2}\\theta=1",
       "takeaway": "三平方が単位円の sin/cos をつなぐ。"
     },
     "sum_chapter": {
@@ -26,7 +26,7 @@
         "例：Σ_{n=1}^{3} n は 1+2+3。級数では n が成分の番号（1倍速、3倍速…）になります。",
         "N を増やす＝足す項を増やす。部分和＝途中までの合計、が「やってみる」の N スライダです。"
       ],
-      "formula_html": "Σ<sub>n=1</sub><sup>N</sup> x<sub>n</sub> ＝ x₁ + x₂ + … + x<sub>N</sub>",
+      "formula_html": "\\sum_{n=1}^{N}x_{n}=x_{1}+x_{2}+\\cdots+x_{N}",
       "takeaway": "Σ は和。級数の材料を並べて足す印。"
     },
     "int_chapter": {
@@ -37,7 +37,7 @@
         "似ている度では、f と g をかけた結果を区間で足し上げます。それが ⟨f,g⟩ の中身です。",
         "計算テク（置換・部分積分）はこの教材のゲートにしません。記号を見て「かけ合わせて足す」と言えれば OK です。"
       ],
-      "formula_html": "⟨f, g⟩ 〜 ∫ f(t)·g(t) dt　＝　かけ算して区間で足し上げる",
+      "formula_html": "\\langle f,g\\rangle\\sim\\int f(t)\\cdot g(t)\\,dt",
       "takeaway": "∫ は面積・累積の記号。係数はそれで測る。"
     }
   },
@@ -57,7 +57,7 @@
     },
     "FT-WAVE-1": {
       "why_math": "操作した3つまみに、式の記号の名前を付けます。",
-      "formula_html": "y = A sin(ωt + φ)　／　ω = 2π / T",
+      "formula_html": "y=A\\sin(\\omega t+\\phi),\\quad\\omega=\\dfrac{2\\pi}{T}",
       "read_aloud": "ワイはエーかけるサイン、オメガティーたすファイ。オメガは二π割る周期。",
       "symbols": [
         {
@@ -102,7 +102,7 @@
     },
     "FT-RATIO-1": {
       "why_math": "円の座標に sin/cos という名前を付ける定義です。",
-      "formula_html": "sin θ = 対辺/斜辺　／　cos θ = 隣辺/斜辺　／　単位円では (cos θ, sin θ)",
+      "formula_html": "\\sin\\theta=\\dfrac{\\text{対辺}}{\\text{斜辺}}",
       "read_aloud": "サインは対辺わる斜辺、単位円では高さ。コサインは横。",
       "symbols": [
         {
@@ -134,7 +134,7 @@
     },
     "FT-RAD-1": {
       "why_math": "式の角度はラジアンで進みます。度だけだと ωt が読めません。",
-      "formula_html": "π rad = 180°　／　2π rad = 360°　／　ω = 2π / T",
+      "formula_html": "\\pi\\,\\mathrm{rad}=180^{\\circ},\\quad\\omega=\\dfrac{2\\pi}{T}",
       "read_aloud": "パイラジアンは百八十度。一周は二パイ。オメガは二パイ割る周期。",
       "symbols": [
         {
@@ -166,7 +166,7 @@
     },
     "FT-CIRCLE-1": {
       "why_math": "フーリエの原子：回る点の高さがサイン波になる、に式を付けます。",
-      "formula_html": "y(t) = R sin(ωt + φ)",
+      "formula_html": "y(t)=R\\sin(\\omega t+\\phi),\\quad\\cos^{2}\\theta+\\sin^{2}\\theta=1",
       "read_aloud": "ワイティーはアールかけるサイン、オメガティーたすファイ。",
       "symbols": [
         {
@@ -205,7 +205,7 @@
     },
     "FT-SUPER-1": {
       "why_math": "足し算してよい、を式でも許可します。",
-      "formula_html": "(f + g)(t) = f(t) + g(t)",
+      "formula_html": "(f+g)(t)=f(t)+g(t)",
       "read_aloud": "エフたすジーのティーは、エフのティーたすジーのティー。",
       "symbols": [
         {
@@ -231,7 +231,7 @@
     },
     "FT-SERIES-1": {
       "why_math": "速さの違う sin/cos を番号付きで足す＝級数の読み方です。",
-      "formula_html": "f(t) ≈ Σ<sub>n</sub> [ a<sub>n</sub> cos(nωt) + b<sub>n</sub> sin(nωt) ]",
+      "formula_html": "f(t)\\approx\\sum_{n=1}^{N}a_{n}\\sin(n\\omega t)",
       "read_aloud": "エフは、エーエヌコサインたすビーエヌサインを、エヌについて足したもの。",
       "symbols": [
         {
@@ -270,7 +270,7 @@
     },
     "FT-ORTHO-1": {
       "why_math": "係数を勘ではなく測る。ものさしが内積（似ている度）です。",
-      "formula_html": "⟨f, g⟩ 〜 ∫ f(t) g(t) dt　（違う周波数どうしは小さくなりやすい）",
+      "formula_html": "\\langle f,g\\rangle=\\int f(t)g(t)\\,dt",
       "read_aloud": "エフとジーの内積は、かけ算して区間で足す。似ていると大きい。",
       "symbols": [
         {
@@ -303,7 +303,7 @@
     },
     "FT-COEFF-1": {
       "why_math": "各周波数について似ている度を測った結果が係数です。",
-      "formula_html": "a<sub>n</sub> 〜 ⟨f, cos(nωt)⟩　／　b<sub>n</sub> 〜 ⟨f, sin(nωt)⟩",
+      "formula_html": "a_{n},b_{n}\\ \\text{は}\\ f\\ \\text{と}\\ \\cos/\\sin\\ \\text{の似ている度}",
       "read_aloud": "エーエヌはコサインとの似ている度、ビーエヌはサインとの似ている度。",
       "symbols": [
         {
@@ -336,7 +336,7 @@
     },
     "FT-APP-1": {
       "why_math": "圧縮は係数の一部を0に近づける操作、と式で言えます。",
-      "formula_html": "再合成：残した a<sub>n</sub>, b<sub>n</sub> だけで Σ を計算する",
+      "formula_html": "f_{\\mathrm{approx}}=\\sum_{n=1}^{K}(\\cdots)",
       "read_aloud": "いらない係数をゼロにして、残りだけで足し直す。",
       "symbols": [
         {
@@ -363,7 +363,7 @@
     },
     "FT-CAP-1": {
       "why_math": "実数経路の看板を一本の物語で指差します。",
-      "formula_html": "波 → R sin(ωt+φ) → Σ (a cos + b sin) → 係数＝内積 → 捨てて再合成",
+      "formula_html": "\\text{波}\\to\\sin/\\cos\\to\\sum\\to\\text{係数}\\to\\text{再合成}",
       "read_aloud": "円のサインを足し、係数は似ている度、捨てると圧縮。",
       "symbols": [
         {
@@ -384,7 +384,7 @@
     },
     "FT-EULER-1": {
       "why_math": "cos と sin のペアを回転ひとつにまとめる表記です。",
-      "formula_html": "e<sup>iθ</sup> = cos θ + i sin θ",
+      "formula_html": "e^{i\\theta}=\\cos\\theta+i\\sin\\theta",
       "read_aloud": "イーのアイシータは、コサインたすアイサイン。",
       "symbols": [
         {
@@ -410,7 +410,7 @@
     },
     "FT-TRANSFORM-1": {
       "why_math": "名前の違う親戚の地図です。計算はしません。",
-      "formula_html": "級数（和）／変換（見取り図）／離散 DFT（配列）",
+      "formula_html": "\\text{級数}\\ /\\ \\text{変換}\\ /\\ \\text{離散}",
       "read_aloud": "自分は級数の実数経路を通った。",
       "symbols": [],
       "derivation_steps": [

@@ -2,7 +2,7 @@
   "id": "P-RAD",
   "node": "FT-RAD-1",
   "title": "ラジアンで角度を読む（弧度法と角周波数 ω の正体）",
-  "formula_html": "π rad = 180°　／　2π rad = 360°（1周）　／　ω = 2π / T",
+  "formula_html": "\\pi\\,\\mathrm{rad}=180^{\\circ}",
   "formula_read": "パイ ラジアン イコール 百八十ど。二パイ ラジアン イコール 三百六十ど（いっしゅう）。オメガ イコール 二パイ わる ティー",
   "reading_keys": [
     "π",
@@ -98,5 +98,7 @@
     "d3"
   ],
   "common_error": "2π を90°だと勘違いする／ラジアンは角度ではなく長さだと思って迷う",
-  "teach_line": "1周 360°＝ 2π rad！1秒間に進む回転角度のスピードが ω ＝ 2π / T。"
+  "teach_line": "1周 360°＝ 2π rad！1秒間に進む回転角度のスピードが ω ＝ 2π / T。",
+  "formula_html_2": "2\\pi\\,\\mathrm{rad}=360^{\\circ}\\ (\\text{1周})",
+  "formula_html_3": "\\omega=\\dfrac{2\\pi}{T}"
 }

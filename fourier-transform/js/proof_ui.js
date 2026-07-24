@@ -726,7 +726,7 @@
         d.classList.toggle("done", i < morphI);
       });
       if (!steps.length) {
-        morphView.innerHTML = formatMathHtml(script.formula_html || "");
+        morphView.innerHTML = renderFormulaBlock(script, null) || formatMathHtml(script.formula_html || "");
         if (morphSay) morphSay.innerHTML = "";
         if (morphChange) morphChange.innerHTML = "";
         if (morphIdx) morphIdx.textContent = "";

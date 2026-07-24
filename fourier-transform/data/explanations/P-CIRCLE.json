@@ -2,7 +2,7 @@
   "id": "P-CIRCLE",
   "node": "FT-CIRCLE-1",
   "title": "単位円上の点と sin, cos の定義（円運動から波へ）",
-  "formula_html": "P(x, y) = (cos θ, sin θ)　／　cos²θ + sin²θ = 1　／　y(t) = R · sin(ωt + φ)",
+  "formula_html": "P(x,y)=(\\cos\\theta,\\sin\\theta)",
   "formula_read": "ピー エックス ワー イコール （コサイン シータ、 サイン シータ）。コサイン じじょう たす サイン じじょう イコール いち",
   "reading_keys": [
     "θ",
@@ -116,5 +116,7 @@
     "c4"
   ],
   "common_error": "sin が横で cos が縦だと混同する／速く回すと波が高くなると思い込む",
-  "teach_line": "cos は横の長さ、sin は縦の高さ！円運動の縦の高さを時間軸へ引き伸ばしたものがサイン波。"
+  "teach_line": "cos は横の長さ、sin は縦の高さ！円運動の縦の高さを時間軸へ引き伸ばしたものがサイン波。",
+  "formula_html_2": "\\cos^{2}\\theta+\\sin^{2}\\theta=1",
+  "formula_html_3": "y(t)=R\\cdot\\sin(\\omega t+\\phi)"
 }

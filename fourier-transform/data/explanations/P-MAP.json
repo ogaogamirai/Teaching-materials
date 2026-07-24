@@ -2,7 +2,7 @@
   "id": "P-MAP",
   "node": "FT-TRANSFORM-1",
   "title": "級数・変換・離散の地図",
-  "formula_html": "級数（和）　／　変換（見取り図）　／　離散 DFT・FFT（配列）",
+  "formula_html": "\\text{級数（和）}\\ /\\ \\text{変換（見取り図）}\\ /\\ \\text{離散 DFT・FFT（配列）}",
   "formula_read": "きゅうすうは わ。へんかんは みとりず。りさんは はいれつの せかい",
   "reading_keys": [
     "Σ",

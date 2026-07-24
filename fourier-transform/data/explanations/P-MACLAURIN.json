@@ -2,7 +2,7 @@
   "id": "P-MACLAURIN",
   "node": "FT-MACLAURIN-1",
   "title": "マクローリン展開とは何か？（驚異的有用性・幾何学的高次接触と完全導出）",
-  "formula_html": "f(x) = f(0) + f'(0)x + (f''(0)/2!) x² + (f'''(0)/3!) x³ + ... = Σ<sub>n=0</sub><sup>∞</sup> [ f<sup>(n)</sup>(0) / n! ] x<sup>n</sup>",
+  "formula_html": "f(x)=f(0)+f'(0)x+\\dfrac{f''(0)}{2!}x^{2}+\\dfrac{f'''(0)}{3!}x^{3}+\\cdots=\\sum_{n=0}^{\\infty}\\dfrac{f^{(n)}(0)}{n!}x^{n}",
   "formula_read": "エフ エックス イコール エフ ゼロ たす エフ プライム ゼロ エックス たす にの かいじょう ぶんの エフ ツープライム ゼロ エックス じじょう",
   "reading_keys": [
     "f(x)",

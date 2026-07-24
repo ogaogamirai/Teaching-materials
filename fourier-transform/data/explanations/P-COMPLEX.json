@@ -4,10 +4,19 @@
   "title": "複素数と複素数平面（i を掛けると 90° 回る）",
   "formula_html": "i^{2}=-1,\\quad z=a+bi=r(\\cos\\theta+i\\sin\\theta),\\quad i\\cdot z\\ \\text{は}\\ z\\ \\text{を}\\ 90^{\\circ}\\ \\text{反時計回り}",
   "formula_read": "アイ二乗イコールマイナスいち。ゼットはエーたすビーアイ。アールは長さ、シータは角度。アイを掛けると九十度反時計回り。",
-  "reading_keys": ["i", "z", "r", "θ", "sin", "cos"],
+  "reading_keys": [
+    "i",
+    "z",
+    "r",
+    "θ",
+    "sin",
+    "cos"
+  ],
   "intuition_1line": "複素数 z=a+bi を平面の点 (a,b) と見る。i を掛ける操作は、その点を原点中心に 90° 反時計回りへ回す。",
   "why_needed": "のちの e^{iθ} と複素フーリエを、「記号の暗記」ではなく平面上の回転として読むため。",
-  "bridge_from": ["FT-CAP-1"],
+  "bridge_from": [
+    "FT-CAP-1"
+  ],
   "story_steps": [
     {
       "title": "① 虚数単位 i は i²=−1 を満たすと約束する",
@@ -77,12 +86,29 @@
     }
   ],
   "puzzle_cards": [
-    { "id": "cp0", "text": "① i²=−1 を定義として押さえる" },
-    { "id": "cp1", "text": "② z=a+bi を点 (a,b) と同一視する" },
-    { "id": "cp2", "text": "③ i(a+bi)=−b+ai より、i 倍が 90° 反時計回転だと確認する" },
-    { "id": "cp3", "text": "④ 極形式の積で、長さは積・角度は和になることを述べる" }
+    {
+      "id": "cp0",
+      "text": "① i²=−1 を定義として押さえる"
+    },
+    {
+      "id": "cp1",
+      "text": "② z=a+bi を点 (a,b) と同一視する"
+    },
+    {
+      "id": "cp2",
+      "text": "③ i(a+bi)=−b+ai より、i 倍が 90° 反時計回転だと確認する"
+    },
+    {
+      "id": "cp3",
+      "text": "④ 極形式の積で、長さは積・角度は和になることを述べる"
+    }
   ],
-  "puzzle_order": ["cp0", "cp1", "cp2", "cp3"],
+  "puzzle_order": [
+    "cp0",
+    "cp1",
+    "cp2",
+    "cp3"
+  ],
   "common_error": "i を図と結び付けず記号だけ覚える／i 倍の向き（時計・反時計）を混同する",
   "teach_line": "z=a+bi は点 (a,b)。i 倍は 90° 反時計。積は長さが積・角度が和。"
 }

@@ -75,13 +75,20 @@
 
   function formulaWithRead(formulaHtml, formulaRead) {
     if (!formulaHtml) return "";
-    return (
-      '<div class="formula-box">' +
-      formulaHtml +
-      (formulaRead
+    var read =
+      formulaRead
         ? '<div class="formula-read">よみ: ' + esc(formulaRead) + "</div>"
-        : "") +
-      "</div>"
+        : "";
+    // Already a formula-box (e.g. KaTeX output) — append よみ inside/after without nesting
+    if (/class="[^"]*formula-box/.test(String(formulaHtml))) {
+      if (!read) return formulaHtml;
+      if (/<\/div>\s*$/.test(String(formulaHtml))) {
+        return String(formulaHtml).replace(/<\/div>\s*$/, read + "</div>");
+      }
+      return formulaHtml + read;
+    }
+    return (
+      '<div class="formula-box">' + formulaHtml + read + "</div>"
     );
   }
 

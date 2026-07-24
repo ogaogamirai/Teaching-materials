@@ -2,7 +2,7 @@
   "id": "P-INTEG",
   "node": "FT-INTEG-1",
   "title": "定積分の基礎と導出（長方形の短冊集計と面積・原始関数）",
-  "formula_html": "∫<sub>a</sub><sup>b</sup> f(x) dx = [ F(x) ]<sub>a</sub><sup>b</sup> = F(b) - F(a)　／　∫₀² x dx = 2",
+  "formula_html": "\\int_{a}^{b}f(x)\\,dx=\\bigl[F(x)\\bigr]_{a}^{b}=F(b)-F(a)",
   "formula_read": "インテグラル エーからビー エフエックス ディーエックス イコール エフ ビー ひく エフ エー。インテグラル ゼロからニ エックス ディーエックス イコール に",
   "reading_keys": [
     "∫",
@@ -113,5 +113,6 @@
     "ig3"
   ],
   "common_error": "定積分をただの複雑な記号として丸暗記し、面積や短冊の集計と結びつけられない",
-  "teach_line": "定積分は短冊面積の合計！微分の逆 F(b) - F(a) を使えば手計算で面積が求まる！"
+  "teach_line": "定積分は短冊面積の合計！微分の逆 F(b) - F(a) を使えば手計算で面積が求まる！",
+  "formula_html_2": "\\int_{0}^{2}x\\,dx=2"
 }

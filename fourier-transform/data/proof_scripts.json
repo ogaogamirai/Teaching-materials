@@ -22,7 +22,7 @@
       "id": "P-WAVE",
       "node": "FT-WAVE-1",
       "title": "波の3つまみに名前を付ける（波の基本公式の完全解剖）",
-      "formula_html": "y(t) = A · sin(ωt + φ)　／　ω = 2π / T",
+      "formula_html": "y(t)=A\\cdot\\sin(\\omega t+\\phi)",
       "formula_read": "ワイティー イコール エー かける サイン（オメガ ティー たす ファイ）。オメガは 二パイ わる ティー",
       "reading_keys": [
         "A",
@@ -134,13 +134,14 @@
         "w4"
       ],
       "common_error": "スピード ω を上げると波が高くなると混同する／周期 T と角周波数 ω の関係を忘れる",
-      "teach_line": "波の公式 y = A sin(ωt + φ) は、高さ A・速さ ω・ズレ φ の3つまみを整理した名札！"
+      "teach_line": "波の公式 y = A sin(ωt + φ) は、高さ A・速さ ω・ズレ φ の3つまみを整理した名札！",
+      "formula_html_2": "\\omega=\\dfrac{2\\pi}{T}"
     },
     "P-RATIO": {
       "id": "P-RATIO",
       "node": "FT-RATIO-1",
       "title": "sin / cos の名前と単位円",
-      "formula_html": "sin θ = 対辺/斜辺　／　単位円では高さ = sin θ",
+      "formula_html": "\\sin\\theta=\\dfrac{\\text{対辺}}{\\text{斜辺}}",
       "formula_read": "サイン・シータ イコール たいへん わる しゃへん。たんいえんでは たかさ イコール サイン・シータ",
       "reading_keys": [
         "θ",
@@ -232,13 +233,14 @@
         "r3"
       ],
       "common_error": "sin は電卓のボタンで中身がない、と思う",
-      "teach_line": "sin は高さの比。単位円では高さそのもの。"
+      "teach_line": "sin は高さの比。単位円では高さそのもの。",
+      "formula_html_2": "\\text{単位円では}\\ \\text{高さ}=\\sin\\theta"
     },
     "P-RAD": {
       "id": "P-RAD",
       "node": "FT-RAD-1",
       "title": "ラジアンで角度を読む（弧度法と角周波数 ω の正体）",
-      "formula_html": "π rad = 180°　／　2π rad = 360°（1周）　／　ω = 2π / T",
+      "formula_html": "\\pi\\,\\mathrm{rad}=180^{\\circ}",
       "formula_read": "パイ ラジアン イコール 百八十ど。二パイ ラジアン イコール 三百六十ど（いっしゅう）。オメガ イコール 二パイ わる ティー",
       "reading_keys": [
         "π",
@@ -334,13 +336,15 @@
         "d3"
       ],
       "common_error": "2π を90°だと勘違いする／ラジアンは角度ではなく長さだと思って迷う",
-      "teach_line": "1周 360°＝ 2π rad！1秒間に進む回転角度のスピードが ω ＝ 2π / T。"
+      "teach_line": "1周 360°＝ 2π rad！1秒間に進む回転角度のスピードが ω ＝ 2π / T。",
+      "formula_html_2": "2\\pi\\,\\mathrm{rad}=360^{\\circ}\\ (\\text{1周})",
+      "formula_html_3": "\\omega=\\dfrac{2\\pi}{T}"
     },
     "P-CIRCLE": {
       "id": "P-CIRCLE",
       "node": "FT-CIRCLE-1",
       "title": "単位円上の点と sin, cos の定義（円運動から波へ）",
-      "formula_html": "P(x, y) = (cos θ, sin θ)　／　cos²θ + sin²θ = 1　／　y(t) = R · sin(ωt + φ)",
+      "formula_html": "P(x,y)=(\\cos\\theta,\\sin\\theta)",
       "formula_read": "ピー エックス ワー イコール （コサイン シータ、 サイン シータ）。コサイン じじょう たす サイン じじょう イコール いち",
       "reading_keys": [
         "θ",
@@ -454,13 +458,15 @@
         "c4"
       ],
       "common_error": "sin が横で cos が縦だと混同する／速く回すと波が高くなると思い込む",
-      "teach_line": "cos は横の長さ、sin は縦の高さ！円運動の縦の高さを時間軸へ引き伸ばしたものがサイン波。"
+      "teach_line": "cos は横の長さ、sin は縦の高さ！円運動の縦の高さを時間軸へ引き伸ばしたものがサイン波。",
+      "formula_html_2": "\\cos^{2}\\theta+\\sin^{2}\\theta=1",
+      "formula_html_3": "y(t)=R\\cdot\\sin(\\omega t+\\phi)"
     },
     "P-ADD-TRIG": {
       "id": "P-ADD-TRIG",
       "node": "FT-ADD-TRIG-1",
       "title": "三角関数の加法定理（角度の足し算 α+β の完全図解証明）",
-      "formula_html": "sin(α+β) = sin α cos β + cos α sin β　／　cos(α+β) = cos α cos β - sin α sin β",
+      "formula_html": "\\sin(\\alpha+\\beta)=\\sin\\alpha\\cos\\beta+\\cos\\alpha\\sin\\beta",
       "formula_read": "サイン（アルファ たす ベータ）イコール サインアルファ コサインベータ たす コサインアルファ サインベータ",
       "reading_keys": [
         "sin",
@@ -569,13 +575,14 @@
         "at3"
       ],
       "common_error": "sin(30°+45°) を sin 30° + sin 45° だと勘違いする／加法定理の符号を丸暗記しようとして忘れる",
-      "teach_line": "直角三角形を重ねて高さを足し算、横長を引き算すれば加法定理は完璧に図解できる！"
+      "teach_line": "直角三角形を重ねて高さを足し算、横長を引き算すれば加法定理は完璧に図解できる！",
+      "formula_html_2": "\\cos(\\alpha+\\beta)=\\cos\\alpha\\cos\\beta-\\sin\\alpha\\sin\\beta"
     },
     "P-SUPER": {
       "id": "P-SUPER",
       "node": "FT-SUPER-1",
       "title": "波は足してよい（重ね合わせの原理と関数の和）",
-      "formula_html": "(f + g)(t) = f(t) + g(t)　／　y(t) = A₁ sin(ω₁ t) + A₂ sin(ω₂ t)",
+      "formula_html": "(f+g)(t)=f(t)+g(t)",
       "formula_read": "エフたすジー の ティー イコール エフのティー たす ジーのティー",
       "reading_keys": [
         "f, g",
@@ -671,13 +678,14 @@
         "s3"
       ],
       "common_error": "足すと高さを平均（割る2）するものだと勘違いする",
-      "teach_line": "同じ時刻の高さを素直に足し算！山と山で大きく、山と谷で打ち消し合うのが重ね合わせ。"
+      "teach_line": "同じ時刻の高さを素直に足し算！山と山で大きく、山と谷で打ち消し合うのが重ね合わせ。",
+      "formula_html_2": "y(t)=A_{1}\\sin(\\omega_{1} t)+A_{2}\\sin(\\omega_{2} t)"
     },
     "P-SERIES": {
       "id": "P-SERIES",
       "node": "FT-SERIES-1",
       "title": "速さの違う波を番号付きで足す（フーリエ級数・展開式の解剖）",
-      "formula_html": "f(t) = a₁ sin(1ωt) + a₂ sin(2ωt) + a₃ sin(3ωt) + ... = Σ<sub>n=1</sub><sup>N</sup> a<sub>n</sub> sin(nωt)",
+      "formula_html": "f(t)=a_{1}\\sin(\\omega t)+a_{2}\\sin(2\\omega t)+a_{3}\\sin(3\\omega t)+\\cdots=\\sum_{n=1}^{N}a_{n}\\sin(n\\omega t)",
       "formula_read": "エフティー イコール エーワン サイン オメガティー たす エーツー サイン にオメガティー たす エースリー... イコール シグマ エーエヌ サイン エヌオメガティー",
       "reading_keys": [
         "Σ",
@@ -785,7 +793,7 @@
       "id": "P-DIFF",
       "node": "FT-DIFF-1",
       "title": "微分の基礎と導出（瞬間の変化率と接線の傾き）",
-      "formula_html": "f'(x) = lim<sub>h→0</sub> [ f(x+h) - f(x) ] / h　／　(x<sup>2</sup>)' = 2x",
+      "formula_html": "f'(x)=\\lim_{h\\to 0}\\dfrac{f(x+h)-f(x)}{h}",
       "formula_read": "エフ プライム エックス イコール リミット エイチ ゼロ かっこ エフ エックス たす エイチ ひく エフ エックス わる エイチ。エックス じじょう の びぶん イコール にエックス",
       "reading_keys": [
         "f'(x)",
@@ -893,13 +901,14 @@
         "df3"
       ],
       "common_error": "微分を単なる『肩の数字を前に下ろす暗記パズル』だと思って意味を知らない",
-      "teach_line": "微分は瞬間の速さ（接線の傾き）！h ➔ 0 の極限で (x²)' = 2x も手計算できる！"
+      "teach_line": "微分は瞬間の速さ（接線の傾き）！h ➔ 0 の極限で (x²)' = 2x も手計算できる！",
+      "formula_html_2": "(x^{2})'=2x"
     },
     "P-INTEG": {
       "id": "P-INTEG",
       "node": "FT-INTEG-1",
       "title": "定積分の基礎と導出（長方形の短冊集計と面積・原始関数）",
-      "formula_html": "∫<sub>a</sub><sup>b</sup> f(x) dx = [ F(x) ]<sub>a</sub><sup>b</sup> = F(b) - F(a)　／　∫₀² x dx = 2",
+      "formula_html": "\\int_{a}^{b}f(x)\\,dx=\\bigl[F(x)\\bigr]_{a}^{b}=F(b)-F(a)",
       "formula_read": "インテグラル エーからビー エフエックス ディーエックス イコール エフ ビー ひく エフ エー。インテグラル ゼロからニ エックス ディーエックス イコール に",
       "reading_keys": [
         "∫",
@@ -1010,13 +1019,14 @@
         "ig3"
       ],
       "common_error": "定積分をただの複雑な記号として丸暗記し、面積や短冊の集計と結びつけられない",
-      "teach_line": "定積分は短冊面積の合計！微分の逆 F(b) - F(a) を使えば手計算で面積が求まる！"
+      "teach_line": "定積分は短冊面積の合計！微分の逆 F(b) - F(a) を使えば手計算で面積が求まる！",
+      "formula_html_2": "\\int_{0}^{2}x\\,dx=2"
     },
     "P-CALC-TRIG": {
       "id": "P-CALC-TRIG",
       "node": "FT-CALC-TRIG-1",
       "title": "三角関数の微分と積分の完全証明",
-      "formula_html": "(sin x)' = cos x　／　(cos x)' = -sin x　／　∫ sin(ax) dx = - (1/a) cos(ax)",
+      "formula_html": "(\\sin x)'=\\cos x,\\quad(\\cos x)'=-\\sin x",
       "formula_read": "サインエックスの びぶんは コサインエックス。コサインエックスの びぶんは マイナス サインエックス",
       "reading_keys": [
         "sin",
@@ -1122,13 +1132,14 @@
         "ct3"
       ],
       "common_error": "(sin x)' をただの暗記ルールだと思う／加法定理との繋がりを知らない",
-      "teach_line": "加法定理と極限 lim (sin h / h = 1) から (sin x)' = cos x が完璧に証明される！"
+      "teach_line": "加法定理と極限 lim (sin h / h = 1) から (sin x)' = cos x が完璧に証明される！",
+      "formula_html_2": "\\int\\sin(ax)\\,dx=-\\dfrac{1}{a}\\cos(ax)"
     },
     "P-CALC-ORTHO": {
       "id": "P-CALC-ORTHO",
       "node": "FT-CALC-ORTHO-1",
       "title": "積和公式の導出と直交性微積分の完全証明",
-      "formula_html": "sin A sin B = 1/2 [cos(A-B) - cos(A+B)]　／　∫₀<sup>2π</sup> sin(mx)sin(nx) dx = 0 (m≠n),  π (m=n)",
+      "formula_html": "\\sin A\\sin B=\\dfrac{1}{2}\\bigl[\\cos(A-B)-\\cos(A+B)\\bigr]",
       "formula_read": "サインエー サインビー イコール にぶんのいち カッコ コサイン エーひくビー ひく コサイン エーたすビー",
       "reading_keys": [
         "sin",
@@ -1237,13 +1248,14 @@
         "co3"
       ],
       "common_error": "積和公式を丸暗記しようとして途中で忘れる／m=n のときの半角公式の使い方で迷う",
-      "teach_line": "加法定理の引き算から積和公式を導出し、積分すれば 0 と π が完全に証明できる！"
+      "teach_line": "加法定理の引き算から積和公式を導出し、積分すれば 0 と π が完全に証明できる！",
+      "formula_html_2": "\\int_{0}^{2\\pi}\\sin(mx)\\sin(nx)\\,dx=0\\ (m\\neq n),\\ \\pi\\ (m=n)"
     },
     "P-ORTHO": {
       "id": "P-ORTHO",
       "node": "FT-ORTHO-1",
       "title": "関数の直交性（波の掛け算とゼロになる組み合わせ）",
-      "formula_html": "⟨f, g⟩ = ∫₀<sup>2π</sup> f(x)g(x) dx　／　∫₀<sup>2π</sup> sin(mx)sin(nx) dx = 0  (m ≠ n)",
+      "formula_html": "\\langle f,g\\rangle=\\int_{0}^{2\\pi}f(x)g(x)\\,dx",
       "formula_read": "エフとジーの ないせき は ゼロからニパイの せきぶん エフエックス ジーエックス ディーエックス。エムとエヌが ちがうとき ゼロ",
       "reading_keys": [
         "⟨ ⟩",
@@ -1343,13 +1355,14 @@
         "o3"
       ],
       "common_error": "波の掛け算と足し算を混同する／なぜ違う波だとプラスとマイナスが同じ面積になるか疑問に思う",
-      "teach_line": "同じ波ならプラスが残り高得点！違う波ならプラスとマイナスの面積が同じになり0に消える。"
+      "teach_line": "同じ波ならプラスが残り高得点！違う波ならプラスとマイナスの面積が同じになり0に消える。",
+      "formula_html_2": "\\int_{0}^{2\\pi}\\sin(mx)\\sin(nx)\\,dx=0\\quad(m\\neq n)"
     },
     "P-COEFF": {
       "id": "P-COEFF",
       "node": "FT-COEFF-1",
       "title": "フーリエ係数の意味と決まり方（公式の完全導出）",
-      "formula_html": "a<sub>n</sub> = (1/π) ∫₀<sup>2π</sup> f(x) cos(nx) dx　／　b<sub>n</sub> = (1/π) ∫₀<sup>2π</sup> f(x) sin(nx) dx　／　合成振幅 C<sub>n</sub> = <span class=\"math-sqrt\"><span class=\"math-sqrt-sym\">√</span><span class=\"math-sqrt-body\">a<sub>n</sub><sup>2</sup> + b<sub>n</sub><sup>2</sup></span></span>",
+      "formula_html": "a_{n}=\\dfrac{1}{\\pi}\\int_{0}^{2\\pi}f(x)\\cos(nx)\\,dx",
       "formula_read": "エーエヌ イコール パイぶんのいち インテグラル ゼロからニパイ エフエックス コサインエヌエックス ディーエックス",
       "reading_keys": [
         "aₙ",
@@ -1458,13 +1471,15 @@
         "c3"
       ],
       "common_error": "係数公式 a_n をただの複雑な丸暗記公式だと思って諦める／直交性によって他項が消える理由を忘れる",
-      "teach_line": "直交性のおかげで他項が全滅！残った aₙ · π の両辺を π で割れば係数公式が導出できる！"
+      "teach_line": "直交性のおかげで他項が全滅！残った aₙ · π の両辺を π で割れば係数公式が導出できる！",
+      "formula_html_2": "b_{n}=\\dfrac{1}{\\pi}\\int_{0}^{2\\pi}f(x)\\sin(nx)\\,dx",
+      "formula_html_3": "C_{n}=\\sqrt{a_{n}^{2}+b_{n}^{2}}"
     },
     "P-APP": {
       "id": "P-APP",
       "node": "FT-APP-1",
       "title": "削る＝圧縮（画像再接続と高周波カットの原理）",
-      "formula_html": "f_approx(x) = Σ<sub>n=1</sub><sup>K</sup> [ a<sub>n</sub> cos(nx) + b<sub>n</sub> sin(nx) ]  (K < N)",
+      "formula_html": "f_{\\mathrm{approx}}(x)=\\sum_{n=1}^{K}\\bigl[a_{n}\\cos(nx)+b_{n}\\sin(nx)\\bigr]\\quad(K\\lt N)",
       "formula_read": "エフ 近似 イコール シグマ ケーまで エーエヌ コサインエヌエックス たす ビーエヌ サインエヌエックス",
       "reading_keys": [
         "aₙ",
@@ -1567,7 +1582,7 @@
       "id": "P-CAP",
       "node": "FT-CAP-1",
       "title": "実数経路の物語を一本に",
-      "formula_html": "波 → R sin(ωt+φ) → Σ(a cos+b sin) → 係数＝似ている度 → 捨てて再合成",
+      "formula_html": "\\text{波}\\to R\\sin(\\omega t+\\phi)\\to\\sum(a\\cos+b\\sin)\\to\\text{係数＝似ている度}\\to\\text{捨てて再合成}",
       "formula_read": "なみ、えんのサイン、シグマで足す、けいすうはにているど、すててさいごうせい",
       "reading_keys": [
         "Σ",
@@ -1797,7 +1812,7 @@
       "id": "P-POLAR",
       "node": "FT-POLAR-1",
       "title": "極形式とド・モアブルの定理",
-      "formula_html": "z=r(\\cos\\theta+i\\sin\\theta),\\quad (\\cos\\theta+i\\sin\\theta)^{n}=\\cos(n\\theta)+i\\sin(n\\theta)\\ (n\\in\\mathbb{Z})",
+      "formula_html": "z=r(\\cos\\theta+i\\sin\\theta),\\quad(\\cos\\theta+i\\sin\\theta)^{n}=\\cos(n\\theta)+i\\sin(n\\theta)\\ (n\\in\\mathbb{Z})",
       "formula_read": "ゼットイコールアールかっこコサインシータたすアイサインシータ。かっこコサインたすアイサインのかっこエヌ乗はコサインエヌシータたすアイサインエヌシータ。",
       "reading_keys": [
         "z",
@@ -1909,7 +1924,7 @@
       "id": "P-E",
       "node": "FT-E-1",
       "title": "ネイピア数 e（定義と (eˣ)'=eˣ）",
-      "formula_html": "e=\\lim_{n\\to\\infty}\\left(1+\\dfrac{1}{n}\\right)^{n},\\quad \\dfrac{d}{dx}e^{x}=e^{x},\\quad \\int e^{x}\\,dx=e^{x}+C",
+      "formula_html": "e=\\lim_{n\\to\\infty}\\left(1+\\dfrac{1}{n}\\right)^{n},\\quad\\dfrac{d}{dx}e^{x}=e^{x},\\quad\\int e^{x}\\,dx=e^{x}+C",
       "formula_read": "イーはエヌを無限にしたいちたすエヌぶんのいちのエヌ乗の極限。イーのエックスの微分はイーのエックス。",
       "reading_keys": [
         "e",
@@ -2015,7 +2030,7 @@
       "id": "P-MACLAURIN",
       "node": "FT-MACLAURIN-1",
       "title": "マクローリン展開とは何か？（驚異的有用性・幾何学的高次接触と完全導出）",
-      "formula_html": "f(x) = f(0) + f'(0)x + (f''(0)/2!) x² + (f'''(0)/3!) x³ + ... = Σ<sub>n=0</sub><sup>∞</sup> [ f<sup>(n)</sup>(0) / n! ] x<sup>n</sup>",
+      "formula_html": "f(x)=f(0)+f'(0)x+\\dfrac{f''(0)}{2!}x^{2}+\\dfrac{f'''(0)}{3!}x^{3}+\\cdots=\\sum_{n=0}^{\\infty}\\dfrac{f^{(n)}(0)}{n!}x^{n}",
       "formula_read": "エフ エックス イコール エフ ゼロ たす エフ プライム ゼロ エックス たす にの かいじょう ぶんの エフ ツープライム ゼロ エックス じじょう",
       "reading_keys": [
         "f(x)",
@@ -2139,7 +2154,7 @@
       "title": "オイラーの公式 e^{iθ}=cosθ+i sinθ",
       "formula_html": "e^{i\\theta}=\\cos\\theta+i\\sin\\theta",
       "formula_html_2": "e^{i\\pi}+1=0",
-      "formula_html_3": "\\cos\\theta=\\dfrac{e^{i\\theta}+e^{-i\\theta}}{2},\\quad \\sin\\theta=\\dfrac{e^{i\\theta}-e^{-i\\theta}}{2i}",
+      "formula_html_3": "\\cos\\theta=\\dfrac{e^{i\\theta}+e^{-i\\theta}}{2},\\quad\\sin\\theta=\\dfrac{e^{i\\theta}-e^{-i\\theta}}{2i}",
       "formula_read": "イーのアイシータはコサインシータたすアイサインシータ。イーのアイパイたすいちはゼロ。",
       "reading_keys": [
         "e^{iθ}",
@@ -2257,7 +2272,7 @@
       "id": "P-EULER-PROOF",
       "node": "FT-EULER-PROOF-1",
       "title": "オイラーの公式の完全証明とフーリエ変換へのつながり（マクローリン展開と回転波）",
-      "formula_html": "e<sup>iθ</sup> = 1 + iθ - θ²/2! - iθ³/3! + θ⁴/4! ... = cos θ + i sin θ　／　F(ω) = ∫<sub>-∞</sub><sup>∞</sup> f(t) e<sup>-iωt</sup> dt",
+      "formula_html": "e^{i\\theta}=1+i\\theta-\\dfrac{\\theta^{2}}{2!}-i\\dfrac{\\theta^{3}}{3!}+\\dfrac{\\theta^{4}}{4!}+\\cdots=\\cos\\theta+i\\sin\\theta",
       "formula_read": "イーの アイ・シータ は コサイン・シータ たす アイ サイン・シータ。エフ オメガ イコール インテグラル マイナスむげんだいから むげんだい エフティー イーの マイナスアイ・オメガティー ディーティー",
       "reading_keys": [
         "e^{iθ}",
@@ -2374,7 +2389,8 @@
         "ep3"
       ],
       "common_error": "オイラーの公式の証明を諦めてブラックボックス扱いし、フーリエ変換とのつながりを知らない",
-      "teach_line": "マクローリン展開で e^{iθ} = cos θ + i sin θ が完全証明！逆回転波 e^{-iωt} で周波数を抽出するのがフーリエ変換！"
+      "teach_line": "マクローリン展開で e^{iθ} = cos θ + i sin θ が完全証明！逆回転波 e^{-iωt} で周波数を抽出するのがフーリエ変換！",
+      "formula_html_2": "F(\\omega)=\\int_{-\\infty}^{\\infty}f(t)\\,e^{-i\\omega t}\\,dt"
     },
     "P-COMPARE": {
       "id": "P-COMPARE",
@@ -2504,7 +2520,7 @@
       "id": "P-MAP",
       "node": "FT-TRANSFORM-1",
       "title": "級数・変換・離散の地図",
-      "formula_html": "級数（和）　／　変換（見取り図）　／　離散 DFT・FFT（配列）",
+      "formula_html": "\\text{級数（和）}\\ /\\ \\text{変換（見取り図）}\\ /\\ \\text{離散 DFT・FFT（配列）}",
       "formula_read": "きゅうすうは わ。へんかんは みとりず。りさんは はいれつの せかい",
       "reading_keys": [
         "Σ",

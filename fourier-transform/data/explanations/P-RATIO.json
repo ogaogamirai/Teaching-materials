@@ -2,7 +2,7 @@
   "id": "P-RATIO",
   "node": "FT-RATIO-1",
   "title": "sin / cos の名前と単位円",
-  "formula_html": "sin θ = 対辺/斜辺　／　単位円では高さ = sin θ",
+  "formula_html": "\\sin\\theta=\\dfrac{\\text{対辺}}{\\text{斜辺}}",
   "formula_read": "サイン・シータ イコール たいへん わる しゃへん。たんいえんでは たかさ イコール サイン・シータ",
   "reading_keys": [
     "θ",
@@ -94,5 +94,6 @@
     "r3"
   ],
   "common_error": "sin は電卓のボタンで中身がない、と思う",
-  "teach_line": "sin は高さの比。単位円では高さそのもの。"
+  "teach_line": "sin は高さの比。単位円では高さそのもの。",
+  "formula_html_2": "\\text{単位円では}\\ \\text{高さ}=\\sin\\theta"
 }

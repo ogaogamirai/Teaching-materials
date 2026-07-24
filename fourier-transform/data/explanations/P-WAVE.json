@@ -2,7 +2,7 @@
   "id": "P-WAVE",
   "node": "FT-WAVE-1",
   "title": "波の3つまみに名前を付ける（波の基本公式の完全解剖）",
-  "formula_html": "y(t) = A · sin(ωt + φ)　／　ω = 2π / T",
+  "formula_html": "y(t)=A\\cdot\\sin(\\omega t+\\phi)",
   "formula_read": "ワイティー イコール エー かける サイン（オメガ ティー たす ファイ）。オメガは 二パイ わる ティー",
   "reading_keys": [
     "A",
@@ -114,5 +114,6 @@
     "w4"
   ],
   "common_error": "スピード ω を上げると波が高くなると混同する／周期 T と角周波数 ω の関係を忘れる",
-  "teach_line": "波の公式 y = A sin(ωt + φ) は、高さ A・速さ ω・ズレ φ の3つまみを整理した名札！"
+  "teach_line": "波の公式 y = A sin(ωt + φ) は、高さ A・速さ ω・ズレ φ の3つまみを整理した名札！",
+  "formula_html_2": "\\omega=\\dfrac{2\\pi}{T}"
 }

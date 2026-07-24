@@ -2,7 +2,7 @@
   "id": "P-ADD-TRIG",
   "node": "FT-ADD-TRIG-1",
   "title": "三角関数の加法定理（角度の足し算 α+β の完全図解証明）",
-  "formula_html": "sin(α+β) = sin α cos β + cos α sin β　／　cos(α+β) = cos α cos β - sin α sin β",
+  "formula_html": "\\sin(\\alpha+\\beta)=\\sin\\alpha\\cos\\beta+\\cos\\alpha\\sin\\beta",
   "formula_read": "サイン（アルファ たす ベータ）イコール サインアルファ コサインベータ たす コサインアルファ サインベータ",
   "reading_keys": [
     "sin",
@@ -111,5 +111,6 @@
     "at3"
   ],
   "common_error": "sin(30°+45°) を sin 30° + sin 45° だと勘違いする／加法定理の符号を丸暗記しようとして忘れる",
-  "teach_line": "直角三角形を重ねて高さを足し算、横長を引き算すれば加法定理は完璧に図解できる！"
+  "teach_line": "直角三角形を重ねて高さを足し算、横長を引き算すれば加法定理は完璧に図解できる！",
+  "formula_html_2": "\\cos(\\alpha+\\beta)=\\cos\\alpha\\cos\\beta-\\sin\\alpha\\sin\\beta"
 }

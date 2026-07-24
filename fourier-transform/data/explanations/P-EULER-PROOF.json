@@ -2,7 +2,7 @@
   "id": "P-EULER-PROOF",
   "node": "FT-EULER-PROOF-1",
   "title": "オイラーの公式の完全証明とフーリエ変換へのつながり（マクローリン展開と回転波）",
-  "formula_html": "e<sup>iθ</sup> = 1 + iθ - θ²/2! - iθ³/3! + θ⁴/4! ... = cos θ + i sin θ　／　F(ω) = ∫<sub>-∞</sub><sup>∞</sup> f(t) e<sup>-iωt</sup> dt",
+  "formula_html": "e^{i\\theta}=1+i\\theta-\\dfrac{\\theta^{2}}{2!}-i\\dfrac{\\theta^{3}}{3!}+\\dfrac{\\theta^{4}}{4!}+\\cdots=\\cos\\theta+i\\sin\\theta",
   "formula_read": "イーの アイ・シータ は コサイン・シータ たす アイ サイン・シータ。エフ オメガ イコール インテグラル マイナスむげんだいから むげんだい エフティー イーの マイナスアイ・オメガティー ディーティー",
   "reading_keys": [
     "e^{iθ}",
@@ -119,5 +119,6 @@
     "ep3"
   ],
   "common_error": "オイラーの公式の証明を諦めてブラックボックス扱いし、フーリエ変換とのつながりを知らない",
-  "teach_line": "マクローリン展開で e^{iθ} = cos θ + i sin θ が完全証明！逆回転波 e^{-iωt} で周波数を抽出するのがフーリエ変換！"
+  "teach_line": "マクローリン展開で e^{iθ} = cos θ + i sin θ が完全証明！逆回転波 e^{-iωt} で周波数を抽出するのがフーリエ変換！",
+  "formula_html_2": "F(\\omega)=\\int_{-\\infty}^{\\infty}f(t)\\,e^{-i\\omega t}\\,dt"
 }

@@ -2,7 +2,7 @@
   "id": "P-APP",
   "node": "FT-APP-1",
   "title": "削る＝圧縮（画像再接続と高周波カットの原理）",
-  "formula_html": "f_approx(x) = Σ<sub>n=1</sub><sup>K</sup> [ a<sub>n</sub> cos(nx) + b<sub>n</sub> sin(nx) ]  (K < N)",
+  "formula_html": "f_{\\mathrm{approx}}(x)=\\sum_{n=1}^{K}\\bigl[a_{n}\\cos(nx)+b_{n}\\sin(nx)\\bigr]\\quad(K\\lt N)",
   "formula_read": "エフ 近似 イコール シグマ ケーまで エーエヌ コサインエヌエックス たす ビーエヌ サインエヌエックス",
   "reading_keys": [
     "aₙ",
