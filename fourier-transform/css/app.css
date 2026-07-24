@@ -25,54 +25,82 @@
   --formula-text: #0c4a6e;
   --canvas-bg: #f8fafc;
 }
-/* Radical √ with overline (plain-text √(…) → .math-sqrt via escMath) */
+/*
+ * Radical √ + vinculum (top bar).
+ * NOTE: parent overflow-x:auto often clips border-top — keep padding-top on
+ * .formula-box / .math-sqrt and draw the bar with box-shadow (inside padding).
+ */
 .math-sqrt {
   display: inline-flex;
+  flex-direction: row;
   align-items: stretch;
   vertical-align: middle;
-  margin: 0 0.12em;
-  line-height: 1;
+  margin: 0 0.14em;
+  padding-top: 0.28em; /* room so bar is never clipped */
+  line-height: 1.15;
   white-space: nowrap;
+  overflow: visible;
 }
 .math-sqrt-sym {
-  font-size: 1.35em;
+  font-size: 1.45em;
   line-height: 1;
-  font-family: "Cambria Math", "Times New Roman", "Segoe UI Symbol", serif;
-  margin-right: -0.06em;
-  align-self: center;
+  font-family: "Segoe UI Symbol", "Cambria Math", "Times New Roman", serif;
+  margin-right: -0.1em;
+  align-self: flex-end;
+  transform: translateY(0.06em);
+  color: inherit;
 }
 .math-sqrt-body {
-  border-top: 2px solid currentColor;
-  padding: 0.12em 0.14em 0 0.08em;
   display: inline-block;
-  line-height: 1.15;
-  min-height: 1em;
+  position: relative;
+  padding: 0.2em 0.22em 0.02em 0.12em;
+  line-height: 1.2;
+  min-height: 1.05em;
+  color: inherit;
+  /* vinculum (top bar): gradient is more reliable than border under overflow */
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 100% 2.5px;
+  background-repeat: no-repeat;
+  background-position: left top;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
-/* Integral symbol + stacked limits (plain ∫₀²π → .math-integral) */
+/* Integral + stacked limits */
 .math-integral {
   display: inline-flex;
   align-items: center;
-  margin: 0 0.15em;
+  margin: 0 0.18em;
   vertical-align: middle;
   white-space: nowrap;
+  padding: 0.1em 0;
+  overflow: visible;
 }
 .int-sym {
-  font-size: 1.55em;
-  line-height: 0.95;
-  font-family: "Cambria Math", "Times New Roman", serif;
+  font-size: 1.65em;
+  line-height: 1;
+  font-family: "Cambria Math", "Times New Roman", "Segoe UI Symbol", serif;
   font-style: italic;
 }
 .int-limits {
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
-  font-size: 0.68em;
-  line-height: 1.05;
-  margin-left: 0.05em;
-  margin-right: 0.12em;
+  font-size: 0.7em;
+  line-height: 1.1;
+  margin-left: 0.06em;
+  margin-right: 0.14em;
+  font-family: "Segoe UI", "Cambria Math", sans-serif;
 }
-.int-limits .upper { order: 0; font-weight: 600; }
-.int-limits .lower { order: 1; font-weight: 600; }
+.int-limits .upper {
+  order: 0;
+  font-weight: 700;
+  margin-bottom: 0.12em;
+}
+.int-limits .lower {
+  order: 1;
+  font-weight: 700;
+  margin-top: 0.12em;
+}
 * { box-sizing: border-box; }
 html, body {
   margin: 0;
@@ -258,11 +286,14 @@ canvas.demo {
 }
 .formula-box {
   font-family: "Cambria Math", "Times New Roman", "Segoe UI", serif;
-  font-size: 1.2rem; line-height: 1.5;
+  font-size: 1.2rem; line-height: 1.65;
   background: var(--formula-bg); color: var(--formula-text);
-  padding: 0.85rem 1rem; border-radius: 10px; margin: 0.5rem 0;
+  /* extra top padding: radical vinculum must not be clipped by scrollport */
+  padding: 1.15rem 1rem 0.9rem;
+  border-radius: 10px; margin: 0.5rem 0;
   border: 1px solid #7dd3fc; border-left: 4px solid var(--accent2);
   overflow-x: auto;
+  overflow-y: visible;
 }
 .formula-read {
   margin-top: 0.55rem; padding-top: 0.5rem; border-top: 1px dashed #7dd3fc;
@@ -375,11 +406,18 @@ canvas.hs-target.hs-lit {
   margin: 0.75rem 0; padding: 0.75rem; background: #fff;
   border-radius: 12px; border: 1px solid var(--border);
 }
-.morph-step { min-height: 3rem; font-size: 1.25rem !important; }
+.morph-step {
+  min-height: 3rem;
+  font-size: 1.25rem !important;
+  overflow: visible;
+  padding-top: 0.35rem;
+  line-height: 1.7;
+}
 .morph-change {
   background: #fef9c3; border: 1px solid #fde047; border-radius: 8px;
   padding: 0.55rem 0.7rem; margin: 0.45rem 0; color: #713f12;
   font-size: 0.95rem; line-height: 1.45;
+  overflow: visible;
 }
 .morph-change strong { color: #a16207; }
 .morph-track {
@@ -403,12 +441,15 @@ canvas.hs-target.hs-lit {
   border: 1px solid #a7f3d0;
 }
 .puzzle-card { text-align: left; max-width: 100%; }
-.story-box { margin: 0.65rem 0; }
+.story-box { margin: 0.65rem 0; overflow: visible; }
 .story-step {
   background: #fff; border: 1px solid var(--border); border-radius: 10px;
-  padding: 0.65rem 0.8rem; margin: 0.45rem 0; line-height: 1.5;
+  padding: 0.85rem 0.9rem 0.75rem; margin: 0.45rem 0; line-height: 1.65;
+  overflow: visible;
 }
-.story-step p { margin: 0.35rem 0 0; color: #334155; }
+.story-step p {
+  margin: 0.35rem 0 0; color: #334155; line-height: 1.7; overflow: visible;
+}
 .step-label {
   display: inline-block; font-size: 0.75rem; font-weight: 700;
   color: #fff; background: var(--accent2); border-radius: 999px;
