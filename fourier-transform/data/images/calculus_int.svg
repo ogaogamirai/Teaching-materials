@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 480" width="100%" height="100%" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; border-radius: 12px;">
+  <!-- Section 1: Differentiation (Left) -->
+  <g transform="translate(10, 20)">
+    <rect x="10" y="10" width="275" height="420" fill="rgba(30, 41, 59, 0.7)" rx="10" stroke="#334155" stroke-width="1.5"/>
+    <text x="147" y="40" fill="#38bdf8" font-size="18" font-weight="bold" text-anchor="middle">① 微分の導出（極限 lim）</text>
+    
+    <!-- Graph Axes -->
+    <line x1="30" y1="210" x2="265" y2="210" stroke="#64748b" stroke-width="1.5"/>
+    <line x1="50" y1="50" x2="50" y2="230" stroke="#64748b" stroke-width="1.5"/>
+    
+    <!-- Curve f(x) = x^2 -->
+    <path d="M 50 210 Q 140 200 240 70" fill="none" stroke="#38bdf8" stroke-width="3"/>
+    
+    <!-- Points P and Q -->
+    <circle cx="120" cy="180" r="5" fill="#fbbf24"/>
+    <text x="100" y="175" fill="#fbbf24" font-size="12" font-weight="bold">P(x, f(x))</text>
+    
+    <circle cx="190" cy="120" r="5" fill="#f43f5e"/>
+    <text x="195" y="115" fill="#f43f5e" font-size="12" font-weight="bold">Q(x+h, f(x+h))</text>
+
+    <!-- Secant Line -->
+    <line x1="80" y1="214" x2="230" y2="85" stroke="#a7f3d0" stroke-width="2" stroke-dasharray="4,4"/>
+
+    <!-- Δx = h and Δy -->
+    <line x1="120" y1="180" x2="190" y2="180" stroke="#fbbf24" stroke-width="2"/>
+    <text x="155" y="198" fill="#fbbf24" font-size="13" text-anchor="middle">幅 h</text>
+    
+    <line x1="190" y1="180" x2="190" y2="120" stroke="#f43f5e" stroke-width="2"/>
+
+    <!-- Formula Box -->
+    <rect x="25" y="240" width="245" height="175" fill="#0f172a" rx="8" stroke="#0284c7" stroke-width="1"/>
+    <text x="35" y="265" fill="#cbd5e1" font-size="13">平均の傾き ＝ <tspan fill="#fbbf24">f(x+h) - f(x)</tspan> / <tspan fill="#38bdf8">h</tspan></text>
+    <text x="35" y="295" fill="#a7f3d0" font-size="13" font-weight="bold">h → 0（極限）で一瞬の傾きへ！</text>
+    <text x="35" y="330" fill="#f8fafc" font-size="14" font-weight="bold">例: f(x)=x² のとき</text>
+    <text x="35" y="360" fill="#22d3ee" font-size="13">((x+h)² - x²) / h ＝ 2x + h</text>
+    <text x="35" y="390" fill="#fbbf24" font-size="15" font-weight="bold">➔ h→0 より 微分 f'(x) = 2x</text>
+  </g>
+
+  <!-- Section 2: Integration (Right) -->
+  <g transform="translate(305, 20)">
+    <rect x="10" y="10" width="275" height="420" fill="rgba(30, 41, 59, 0.7)" rx="10" stroke="#334155" stroke-width="1.5"/>
+    <text x="147" y="40" fill="#fb7185" font-size="18" font-weight="bold" text-anchor="middle">② 積分の導出（面積の集計）</text>
+
+    <!-- Graph Axes -->
+    <line x1="30" y1="210" x2="265" y2="210" stroke="#64748b" stroke-width="1.5"/>
+    <line x1="50" y1="50" x2="50" y2="230" stroke="#64748b" stroke-width="1.5"/>
+
+    <!-- Rectangles (Riemann Sum) -->
+    <rect x="70" y="170" width="25" height="40" fill="rgba(251, 113, 133, 0.4)" stroke="#fb7185" stroke-width="1"/>
+    <rect x="95" y="140" width="25" height="70" fill="rgba(251, 113, 133, 0.4)" stroke="#fb7185" stroke-width="1"/>
+    <rect x="120" y="110" width="25" height="100" fill="rgba(251, 113, 133, 0.4)" stroke="#fb7185" stroke-width="1"/>
+    <rect x="145" y="85" width="25" height="125" fill="rgba(251, 113, 133, 0.4)" stroke="#fb7185" stroke-width="1"/>
+    <rect x="170" y="70" width="25" height="140" fill="rgba(251, 113, 133, 0.4)" stroke="#fb7185" stroke-width="1"/>
+
+    <!-- Curve f(x) -->
+    <path d="M 50 200 Q 130 150 220 60" fill="none" stroke="#fda4af" stroke-width="3"/>
+
+    <!-- dx Label -->
+    <text x="132" y="226" fill="#fda4af" font-size="12" font-weight="bold">dx</text>
+    <text x="132" y="100" fill="#ffffff" font-size="12" font-weight="bold">f(x)</text>
+
+    <!-- Formula Box -->
+    <rect x="25" y="240" width="245" height="175" fill="#0f172a" rx="8" stroke="#e11d48" stroke-width="1"/>
+    <text x="35" y="265" fill="#cbd5e1" font-size="13">短冊1個の面積 ＝ <tspan fill="#fda4af">f(x) × dx</tspan></text>
+    <text x="35" y="295" fill="#fb7185" font-size="13" font-weight="bold">∫ (S) で短冊を全部足し算！</text>
+    <text x="35" y="330" fill="#f8fafc" font-size="14" font-weight="bold">微分の逆（原始関数 F(x)）</text>
+    <text x="35" y="360" fill="#38bdf8" font-size="13">∫ f(x) dx ＝ F(x) + C</text>
+    <text x="35" y="390" fill="#fbbf24" font-size="15" font-weight="bold">定積分 ＝ F(b) - F(a)</text>
+  </g>
+</svg>

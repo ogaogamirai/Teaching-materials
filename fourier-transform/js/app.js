@@ -191,9 +191,13 @@ function renderLearn(copy) {
         .join(" / ") +
       "</strong></p>";
   }
+  function mathText(s) {
+    if (FT.escMath) return FT.escMath(s);
+    return String(s == null ? "" : s);
+  }
   const lesson = (copy.lesson || copy.reveal || [])
     .map(function (p) {
-      return "<p>" + p + "</p>";
+      return "<p>" + mathText(p) + "</p>";
     })
     .join("");
   const terms = copy.terms || [];
@@ -201,7 +205,13 @@ function renderLearn(copy) {
     ? '<table class="term-table"><tbody>' +
       terms
         .map(function (t) {
-          return "<tr><th>" + t.name + "</th><td>" + t.def + "</td></tr>";
+          return (
+            "<tr><th>" +
+            mathText(t.name) +
+            "</th><td>" +
+            mathText(t.def) +
+            "</td></tr>"
+          );
         })
         .join("") +
       "</tbody></table>"
@@ -211,7 +221,7 @@ function renderLearn(copy) {
     ? '<p class="kv"><strong>つまずきポイント</strong></p><ul class="mc-list">' +
       mcs
         .map(function (m) {
-          return "<li>" + m + "</li>";
+          return "<li>" + mathText(m) + "</li>";
         })
         .join("") +
       "</ul>"

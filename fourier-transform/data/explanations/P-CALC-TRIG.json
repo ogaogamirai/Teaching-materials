@@ -1,0 +1,112 @@
+{
+  "id": "P-CALC-TRIG",
+  "node": "FT-CALC-TRIG-1",
+  "title": "三角関数の微分と積分の完全証明",
+  "formula_html": "(sin x)' = cos x　／　(cos x)' = -sin x　／　∫ sin(ax) dx = - (1/a) cos(ax)",
+  "formula_read": "サインエックスの びぶんは コサインエックス。コサインエックスの びぶんは マイナス サインエックス",
+  "reading_keys": [
+    "sin",
+    "cos",
+    "'",
+    "∫",
+    "lim",
+    "h"
+  ],
+  "intuition_1line": "加法定理と極限 lim (sin h / h = 1) を使うことで、(sin x)' = cos x が数学的に完璧に証明される！",
+  "why_needed": "フーリエ変換の直交性や係数計算で使われる『(sin x)' = cos x』や『∫ sin(ax)dx』の計算根拠を証明するため。",
+  "bridge_from": [
+    "FT-INT-1"
+  ],
+  "story_steps": [
+    {
+      "title": "① 証明の前提となる重要極限：lim_{h→0} (sin h / h) = 1",
+      "body": "角度 h がごくわずかなとき、扇形の弧の長さと sin h がほぼ等しくなるため、lim_{h→0} (sin h / h) = 1 が成り立ちます。"
+    },
+    {
+      "title": "② (sin x)' = cos x の証明（加法定理の利用）",
+      "body": "微分の定義式 lim_{h→0} [sin(x+h) - sin x] / h に加法定理 sin(x+h) = sin x cos h + cos x sin h を代入して展開します。"
+    },
+    {
+      "title": "③ 整理と極限計算（証明完成）",
+      "body": "= sin x · [(cos h - 1)/h] + cos x · [sin h / h]。h→0 で前者は 0 に消え、後者は 1 になるため、結果は見事に cos x と証明されます！"
+    },
+    {
+      "title": "④ (cos x)' = -sin x の証明",
+      "body": "同様に cos(x+h) = cos x cos h - sin x sin h を使って微分の定義を計算すると、マイナスが付いた -sin x と証明されます。"
+    },
+    {
+      "title": "⑤ 三角関数の積分の証明（微分の逆）",
+      "body": "(-cos(ax) / a)' = - (-a sin(ax) / a) = sin(ax) となるため、∫ sin(ax) dx = - (1/a) cos(ax) + C が証明されます！"
+    }
+  ],
+  "full_explain": [
+    "【証明1：(sin x)' = cos x】",
+    "1. 微分の定義：(sin x)' = lim_{h→0} [ sin(x+h) - sin x ] / h",
+    "2. 加法定理：sin(x+h) = sin x cos h + cos x sin h を代入",
+    "3. 式を変形：= lim_{h→0} [ sin x (cos h - 1)/h + cos x (sin h / h) ]",
+    "4. 極限公式：lim_{h→0} (sin h / h) = 1, lim_{h→0} (cos h - 1)/h = 0 を適用",
+    "5. 結論：sin x · 0 + cos x · 1 ＝ cos x （証明終了）",
+    "【証明2：∫ sin(ax) dx ＝ - (1/a) cos(ax) + C】",
+    "・[- (1/a) cos(ax)] を x で微分すると、合成関数の微分により - (1/a) · (- a sin(ax)) = sin(ax) となり元に戻ります。",
+    "・したがって、積分結果は - (1/a) cos(ax) + C と証明されます。"
+  ],
+  "geometry": {
+    "demo": "ortho",
+    "svg_image": "data/images/trig_calc_proof.svg",
+    "beats": [
+      "微分の定義式",
+      "加法定理の代入",
+      "極限 lim (sin h / h) = 1",
+      "(sin x)' = cos x の証明完成"
+    ],
+    "caption": "加法定理と極限を用いた (sin x)' = cos x および積分の王道数学証明。"
+  },
+  "morph_steps": [
+    {
+      "html": "微分の定義 ➔ <b>lim<sub>h→0</sub> [sin(x+h) - sin x] / h</b>",
+      "say": "定義式を立てる。",
+      "change": "スタート：微分の定義。"
+    },
+    {
+      "html": "加法定理で展開 ➔ <b>sin x cos h + cos x sin h</b>",
+      "say": "加法定理を代入。",
+      "change": "代入：三角関数の展開。"
+    },
+    {
+      "html": "極限 lim (sin h / h) = 1 を適用",
+      "say": "重要極限を計算。",
+      "change": "極限適用：0 と 1。"
+    },
+    {
+      "html": "証明完成 ➔ <b>(sin x)' = cos x</b>",
+      "say": "微分公式の証明完了。",
+      "change": "完成：(sin x)' = cos x。"
+    }
+  ],
+  "puzzle_cards": [
+    {
+      "id": "ct0",
+      "text": "① 微分の定義式 lim_{h→0} [sin(x+h) - sin x] / h を立てる"
+    },
+    {
+      "id": "ct1",
+      "text": "② 加法定理 sin(x+h) = sin x cos h + cos x sin h を代入する"
+    },
+    {
+      "id": "ct2",
+      "text": "③ 極限公式 lim_{h→0} (sin h / h) = 1 を適用して整理する"
+    },
+    {
+      "id": "ct3",
+      "text": "④ (sin x)' = cos x および積分の公式が完全に証明される"
+    }
+  ],
+  "puzzle_order": [
+    "ct0",
+    "ct1",
+    "ct2",
+    "ct3"
+  ],
+  "common_error": "(sin x)' をただの暗記ルールだと思う／加法定理との繋がりを知らない",
+  "teach_line": "加法定理と極限 lim (sin h / h = 1) から (sin x)' = cos x が完璧に証明される！"
+}

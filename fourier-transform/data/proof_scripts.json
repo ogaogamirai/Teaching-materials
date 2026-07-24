@@ -2,6 +2,10 @@
   "schema_version": 3,
   "ref_nodes": [
     "FT-CIRCLE-1",
+    "FT-ADD-TRIG-1",
+    "FT-INT-1",
+    "FT-CALC-TRIG-1",
+    "FT-CALC-ORTHO-1",
     "FT-ORTHO-1",
     "FT-COEFF-1"
   ],
@@ -445,6 +449,121 @@
       "common_error": "sin が横で cos が縦だと混同する／速く回すと波が高くなると思い込む",
       "teach_line": "cos は横の長さ、sin は縦の高さ！円運動の縦の高さを時間軸へ引き伸ばしたものがサイン波。"
     },
+    "P-ADD-TRIG": {
+      "id": "P-ADD-TRIG",
+      "node": "FT-ADD-TRIG-1",
+      "title": "三角関数の加法定理（角度の足し算 α+β の完全図解証明）",
+      "formula_html": "sin(α+β) = sin α cos β + cos α sin β　／　cos(α+β) = cos α cos β - sin α sin β",
+      "formula_read": "サイン（アルファ たす ベータ）イコール サインアルファ コサインベータ たす コサインアルファ サインベータ",
+      "reading_keys": [
+        "sin",
+        "cos",
+        "α",
+        "β",
+        "+"
+      ],
+      "intuition_1line": "直角三角形の上に別の直角三角形を重ねると、角度 α+β の高さと横幅が掛け算の和と差に分解・合成できる！",
+      "why_needed": "積和公式の導出（sin A sin B の変形）や、波の位相・積分の計算で必須となる加法定理を根本から納得して扱うため。",
+      "bridge_from": [
+        "FT-RAD-1"
+      ],
+      "story_steps": [
+        {
+          "title": "① なぜ sin(α + β) は sin α + sin β と単純足し算できないのか？",
+          "body": "sin(30° + 45°) = sin 75° ≈ 0.966。しかし sin 30°(0.5) + sin 45°(0.707) = 1.207 となり、単純に足すと1を超えて破綻してしまいます！"
+        },
+        {
+          "title": "② 図形を重ねる：角度 α の直角三角形の上に、角度 β の直角三角形を乗せる",
+          "body": "斜辺 1 の直角三角形を 2 つ重ねて、全体として角度 α + β の位置にある点 P を作ります。"
+        },
+        {
+          "title": "③ 縦の高さ sin(α + β) の分解：2つの長さの和",
+          "body": "点 P から地面（x 軸）に下ろした全体の高さは、下の三角形の高さ sin α cos β と、上の三角形の高さ cos α sin β の足し算になります！"
+        },
+        {
+          "title": "④ 横の長さ cos(α + β) の分解：引き算になる理由",
+          "body": "横の長さは、底辺の長さ cos α cos β から、上の三角形の飛び出た幅 sin α sin β を『引き算』したものになります！"
+        },
+        {
+          "title": "⑤ まとめ：加法定理の完成と自力での再現",
+          "body": "これで sin(α+β) = sin α cos β + cos α sin β、cos(α+β) = cos α cos β - sin α sin β が図形的に100%完璧に証明されました！"
+        }
+      ],
+      "full_explain": [
+        "【動機：なぜ加法定理が必要か】",
+        "角度を足したときの sin(α+β) や cos(α+β) の値は、単なる sin α + sin β ではなく、sin と cos の掛け算の組み合わせになります。",
+        "【図形による幾何学的証明】",
+        "1. 角度 α の直角三角形の上に、斜辺 1・角度 β の直角三角形を重ねて乗せます。",
+        "2. 上の直角三角形の各辺の長さは、底辺が cos β、高さが sin β になります。",
+        "3. 全体の高さ sin(α+β) を調べると：",
+        "   ・下の直角三角形の高さ部分 ＝ sin α cos β",
+        "   ・上の直角三角形の高さ部分 ＝ cos α sin β",
+        "   ・全体の高さ ＝ sin α cos β ＋ cos α sin β となり、サインの加法定理が証明されます！",
+        "4. 全体の横の長さ cos(α+β) を調べると：",
+        "   ・下の直角三角形の底辺部分 ＝ cos α cos β",
+        "   ・上の直角三角形で左に飛び出た幅 ＝ sin α sin β",
+        "   ・全体の横長 ＝ cos α cos β − sin α sin β となり、コサインの加法定理が証明されます！"
+      ],
+      "geometry": {
+        "demo": "ortho",
+        "svg_image": "data/images/add_trig_proof.svg",
+        "beats": [
+          "単純足し算の破綻",
+          "三角形の重ね合わせ",
+          "高さの分解：sinα cosβ ＋ cosα sinβ",
+          "横長の分解：cosα cosβ − sinα sinβ"
+        ],
+        "caption": "斜辺1の直角三角形を2重に重ねて、sin(α+β) と cos(α+β) を導出する幾何学的証明図。"
+      },
+      "morph_steps": [
+        {
+          "html": "直角三角形を2重に重ねる ➔ <b>角度 α ＋ β</b>",
+          "say": "三角形の重ね合わせ。",
+          "change": "スタート：重なる2つの角度。"
+        },
+        {
+          "html": "全体の高さを調べる ➔ <b>sin(α+β)</b>",
+          "say": "高さの足し算。",
+          "change": "高さ：sinα cosβ ＋ cosα sinβ。"
+        },
+        {
+          "html": "全体の横長を調べる ➔ <b>cos(α+β)</b>",
+          "say": "横幅の引き算。",
+          "change": "横長：cosα cosβ − sinα sinβ。"
+        },
+        {
+          "html": "完成 ➔ <b>加法定理の全公式が証明される！</b>",
+          "say": "加法定理の証明完了。",
+          "change": "完成：積和公式や微積分の前提。"
+        }
+      ],
+      "puzzle_cards": [
+        {
+          "id": "at0",
+          "text": "① 角度 α の上に角度 β の直角三角形を重ねて配置する"
+        },
+        {
+          "id": "at1",
+          "text": "② 全体の高さ sin(α+β) が sin α cos β ＋ cos α sin β になることを図で確認する"
+        },
+        {
+          "id": "at2",
+          "text": "③ 全体の横長 cos(α+β) が cos α cos β − sin α sin β になることを図で確認する"
+        },
+        {
+          "id": "at3",
+          "text": "④ 加法定理の全公式が100%図形的に証明される"
+        }
+      ],
+      "puzzle_order": [
+        "at0",
+        "at1",
+        "at2",
+        "at3"
+      ],
+      "common_error": "sin(30°+45°) を sin 30° + sin 45° だと勘違いする／加法定理の符号を丸暗記しようとして忘れる",
+      "teach_line": "直角三角形を重ねて高さを足し算、横長を引き算すれば加法定理は完璧に図解できる！"
+    },
     "P-SUPER": {
       "id": "P-SUPER",
       "node": "FT-SUPER-1",
@@ -655,6 +774,346 @@
       "common_error": "Σ が何か特別で難しい計算記号だと思って身構えてしまう／a_n を波の数だと誤解する",
       "teach_line": "フーリエ級数は『1倍速の波＋2倍速の波＋3倍速の波＋…』と具体的な足し算を並べたもの！Σはその短縮記号。"
     },
+    "P-INT": {
+      "id": "P-INT",
+      "node": "FT-INT-1",
+      "title": "微分と積分の基本（導出ステップと直感イメージ）",
+      "formula_html": "【微分導出】f'(x) = lim<sub>h→0</sub> [ f(x+h) - f(x) ] / h　／　【積分導出】∫<sub>a</sub><sup>b</sup> f(x) dx = F(b) - F(a)",
+      "formula_read": "エフダッシュエックス イコール リミット エイチゼロへの エフ エックスたすエイチ ひく エフエックス わる エイチ。せきぶんは エフビー ひく エフエー",
+      "reading_keys": [
+        "∫",
+        "dx",
+        "f(x)",
+        "lim",
+        "h",
+        "F(x)",
+        "'"
+      ],
+      "intuition_1line": "微分は『2点間の傾きで幅h→0にする導出』、積分は『微分の逆（原始関数）で面積を集計する導出』！",
+      "why_needed": "フーリエ変換で出始める微分・積分の計算ルールを、丸暗記ではなく導出原理から納得して使うため。",
+      "bridge_from": [
+        "FT-SERIES-1"
+      ],
+      "story_steps": [
+        {
+          "title": "① 【微分の定義と導出】2点を通る直線の傾きから出発する",
+          "body": "グラフ上の2点 (x, f(x)) と (x+h, f(x+h)) を結ぶ直線の傾きは (f(x+h) - f(x)) / h です。"
+        },
+        {
+          "title": "② 【極限 lim h→0】横幅 h を限りなく 0 に近づけて『接線の傾き』を導出！",
+          "body": "h → 0 とする極限（lim）をとることで、一瞬の傾き f'(x) = lim_{h→0} [f(x+h) - f(x)] / h が導き出されます。"
+        },
+        {
+          "title": "③ 【具体例：f(x) = x² の微分導出】",
+          "body": "((x+h)² - x²) / h = (x² + 2xh + h² - x²) / h = 2x + h。ここで h → 0 にすると、見事に f'(x) = 2x が導出されます！"
+        },
+        {
+          "title": "④ 【積分の定義と導出】微分の逆演算（原始関数 F(x)）を見つける",
+          "body": "微分して f(x) になる元の関数 F(x) を探す操作が『不定積分 ∫ f(x) dx = F(x) + C』です。（例：微分して 2x になる元は x²）"
+        },
+        {
+          "title": "⑤ 【定積分の導出】区間 [a, b] の面積は F(b) - F(a) で求まる！",
+          "body": "細かな短冊面積 f(x)dx を a から b まで積み上げた合計面積は、原始関数の差 F(b) - F(a) で一発で計算できます！"
+        }
+      ],
+      "full_explain": [
+        "【微分の極限導出】",
+        "1. 平均の変化率（2点の傾き）：[ f(x+h) - f(x) ] / h",
+        "2. 幅 h を 0 に近づける極限：f'(x) = lim_{h→0} [ f(x+h) - f(x) ] / h",
+        "3. 例：f(x) = x² のとき、((x+h)² - x²)/h = (2xh + h²)/h = 2x + h ➔ h→0 より (x²)' = 2x と導出されます。",
+        "【積分の導出と基本定理】",
+        "1. 微分の逆（原始関数）：F'(x) = f(x) となる F(x) を見つけます（例：(x²)' = 2x なので ∫ 2x dx = x² + C）。",
+        "2. 面積の集計（定積分）：x=a から x=b までの囲む面積は ∫_a^b f(x) dx = [F(x)]_a^b = F(b) - F(a) として導出されます。",
+        "【波の積分への応用】",
+        "正弦波 sin(x) を 0 から 2π まで積分すると、原始関数 -cos(x) より [-cos(2π)] - [-cos(0)] = -1 - (-1) = 0 となり、山と谷の面積が相殺されて 0 になることが数学的にも導出されます！"
+      ],
+      "geometry": {
+        "demo": "ortho",
+        "svg_image": "data/images/calculus_int.svg",
+        "beats": [
+          "2点の傾き (f(x+h)-f(x))/h",
+          "極限 h→0 による微分の導出",
+          "細い短冊面積 f(x)dx の集計",
+          "原始関数 F(b)-F(a) による面積の導出"
+        ],
+        "caption": "微分の極限導出（左：h→0）と、積分の面積導出（右：短冊集計と原始関数 F(b)-F(a)）。"
+      },
+      "morph_steps": [
+        {
+          "html": "2点を通る傾き ➔ <b>[f(x+h) - f(x)] / h</b>",
+          "say": "平均の変化率。",
+          "change": "スタート：2点の傾き。"
+        },
+        {
+          "html": "h → 0（極限）で一瞬の傾きを導出 ➔ <b>f'(x) = 2x</b>",
+          "say": "微分の導出。",
+          "change": "極限：接線の傾き。"
+        },
+        {
+          "html": "微分の逆（原始関数 F(x)）を探す ➔ <b>∫ f(x) dx = F(x)</b>",
+          "say": "積分の導出。",
+          "change": "短冊面積の集計。"
+        },
+        {
+          "html": "a から b までの面積を算出 ➔ <b>∫<sub>a</sub><sup>b</sup> f(x) dx = F(b) - F(a)</b>",
+          "say": "定積分の完成。",
+          "change": "完成：面積導出の基本定理。"
+        }
+      ],
+      "puzzle_cards": [
+        {
+          "id": "i0",
+          "text": "① 2点を通る傾き [f(x+h) - f(x)] / h を立てる"
+        },
+        {
+          "id": "i1",
+          "text": "② h → 0 の極限（lim）をとって微分 f'(x) を導出する"
+        },
+        {
+          "id": "i2",
+          "text": "③ 微分して f(x) になる元の大元（原始関数 F(x)）を見つける"
+        },
+        {
+          "id": "i3",
+          "text": "④ 定積分の公式 F(b) - F(a) で合計面積を導出する"
+        }
+      ],
+      "puzzle_order": [
+        "i0",
+        "i1",
+        "i2",
+        "i3"
+      ],
+      "common_error": "微分と積分が独立した別物だと思う／導出における h→0 の極限の意味を忘れる",
+      "teach_line": "微分は h→0 の極限で傾きを導き、積分は微分の逆（原始関数）で面積を導く！"
+    },
+    "P-CALC-TRIG": {
+      "id": "P-CALC-TRIG",
+      "node": "FT-CALC-TRIG-1",
+      "title": "三角関数の微分と積分の完全証明",
+      "formula_html": "(sin x)' = cos x　／　(cos x)' = -sin x　／　∫ sin(ax) dx = - (1/a) cos(ax)",
+      "formula_read": "サインエックスの びぶんは コサインエックス。コサインエックスの びぶんは マイナス サインエックス",
+      "reading_keys": [
+        "sin",
+        "cos",
+        "'",
+        "∫",
+        "lim",
+        "h"
+      ],
+      "intuition_1line": "加法定理と極限 lim (sin h / h = 1) を使うことで、(sin x)' = cos x が数学的に完璧に証明される！",
+      "why_needed": "フーリエ変換の直交性や係数計算で使われる『(sin x)' = cos x』や『∫ sin(ax)dx』の計算根拠を証明するため。",
+      "bridge_from": [
+        "FT-INT-1"
+      ],
+      "story_steps": [
+        {
+          "title": "① 証明の前提となる重要極限：lim_{h→0} (sin h / h) = 1",
+          "body": "角度 h がごくわずかなとき、扇形の弧の長さと sin h がほぼ等しくなるため、lim_{h→0} (sin h / h) = 1 が成り立ちます。"
+        },
+        {
+          "title": "② (sin x)' = cos x の証明（加法定理の利用）",
+          "body": "微分の定義式 lim_{h→0} [sin(x+h) - sin x] / h に加法定理 sin(x+h) = sin x cos h + cos x sin h を代入して展開します。"
+        },
+        {
+          "title": "③ 整理と極限計算（証明完成）",
+          "body": "= sin x · [(cos h - 1)/h] + cos x · [sin h / h]。h→0 で前者は 0 に消え、後者は 1 になるため、結果は見事に cos x と証明されます！"
+        },
+        {
+          "title": "④ (cos x)' = -sin x の証明",
+          "body": "同様に cos(x+h) = cos x cos h - sin x sin h を使って微分の定義を計算すると、マイナスが付いた -sin x と証明されます。"
+        },
+        {
+          "title": "⑤ 三角関数の積分の証明（微分の逆）",
+          "body": "(-cos(ax) / a)' = - (-a sin(ax) / a) = sin(ax) となるため、∫ sin(ax) dx = - (1/a) cos(ax) + C が証明されます！"
+        }
+      ],
+      "full_explain": [
+        "【証明1：(sin x)' = cos x】",
+        "1. 微分の定義：(sin x)' = lim_{h→0} [ sin(x+h) - sin x ] / h",
+        "2. 加法定理：sin(x+h) = sin x cos h + cos x sin h を代入",
+        "3. 式を変形：= lim_{h→0} [ sin x (cos h - 1)/h + cos x (sin h / h) ]",
+        "4. 極限公式：lim_{h→0} (sin h / h) = 1, lim_{h→0} (cos h - 1)/h = 0 を適用",
+        "5. 結論：sin x · 0 + cos x · 1 ＝ cos x （証明終了）",
+        "【証明2：∫ sin(ax) dx ＝ - (1/a) cos(ax) + C】",
+        "・[- (1/a) cos(ax)] を x で微分すると、合成関数の微分により - (1/a) · (- a sin(ax)) = sin(ax) となり元に戻ります。",
+        "・したがって、積分結果は - (1/a) cos(ax) + C と証明されます。"
+      ],
+      "geometry": {
+        "demo": "ortho",
+        "svg_image": "data/images/trig_calc_proof.svg",
+        "beats": [
+          "微分の定義式",
+          "加法定理の代入",
+          "極限 lim (sin h / h) = 1",
+          "(sin x)' = cos x の証明完成"
+        ],
+        "caption": "加法定理と極限を用いた (sin x)' = cos x および積分の王道数学証明。"
+      },
+      "morph_steps": [
+        {
+          "html": "微分の定義 ➔ <b>lim<sub>h→0</sub> [sin(x+h) - sin x] / h</b>",
+          "say": "定義式を立てる。",
+          "change": "スタート：微分の定義。"
+        },
+        {
+          "html": "加法定理で展開 ➔ <b>sin x cos h + cos x sin h</b>",
+          "say": "加法定理を代入。",
+          "change": "代入：三角関数の展開。"
+        },
+        {
+          "html": "極限 lim (sin h / h) = 1 を適用",
+          "say": "重要極限を計算。",
+          "change": "極限適用：0 と 1。"
+        },
+        {
+          "html": "証明完成 ➔ <b>(sin x)' = cos x</b>",
+          "say": "微分公式の証明完了。",
+          "change": "完成：(sin x)' = cos x。"
+        }
+      ],
+      "puzzle_cards": [
+        {
+          "id": "ct0",
+          "text": "① 微分の定義式 lim_{h→0} [sin(x+h) - sin x] / h を立てる"
+        },
+        {
+          "id": "ct1",
+          "text": "② 加法定理 sin(x+h) = sin x cos h + cos x sin h を代入する"
+        },
+        {
+          "id": "ct2",
+          "text": "③ 極限公式 lim_{h→0} (sin h / h) = 1 を適用して整理する"
+        },
+        {
+          "id": "ct3",
+          "text": "④ (sin x)' = cos x および積分の公式が完全に証明される"
+        }
+      ],
+      "puzzle_order": [
+        "ct0",
+        "ct1",
+        "ct2",
+        "ct3"
+      ],
+      "common_error": "(sin x)' をただの暗記ルールだと思う／加法定理との繋がりを知らない",
+      "teach_line": "加法定理と極限 lim (sin h / h = 1) から (sin x)' = cos x が完璧に証明される！"
+    },
+    "P-CALC-ORTHO": {
+      "id": "P-CALC-ORTHO",
+      "node": "FT-CALC-ORTHO-1",
+      "title": "積和公式の導出と直交性微積分の完全証明",
+      "formula_html": "sin A sin B = 1/2 [cos(A-B) - cos(A+B)]　／　∫₀<sup>2π</sup> sin(mx)sin(nx) dx = 0 (m≠n),  π (m=n)",
+      "formula_read": "サインエー サインビー イコール にぶんのいち カッコ コサイン エーひくビー ひく コサイン エーたすビー",
+      "reading_keys": [
+        "sin",
+        "cos",
+        "∫",
+        "π",
+        "m, n"
+      ],
+      "intuition_1line": "加法定理を引き算して『積和公式』を導出し、1周期積分することで直交性 (0) と同じ波の定数 (π) を証明する！",
+      "why_needed": "フーリエ変換の核心である直交性計算のすべての途中の数式変形（積和公式・半角公式・積分）をノーカットで証明するため。",
+      "bridge_from": [
+        "FT-CALC-TRIG-1"
+      ],
+      "story_steps": [
+        {
+          "title": "① 【加法定理の復習】コサインの加法定理を2つ並べる",
+          "body": "cos(A-B) = cos A cos B + sin A sin B … ①、cos(A+B) = cos A cos B - sin A sin B … ②。"
+        },
+        {
+          "title": "② 【積和公式の導出】① から ② を引き算する！",
+          "body": "引き算すると cos A cos B が綺麗に消えて、cos(A-B) - cos(A+B) = 2 sin A sin B が残ります。両辺を 2 で割れば『積和公式』の完成です！"
+        },
+        {
+          "title": "③ 【m ≠ n の直交性証明】積和公式を入れて積分する（計算結果 ＝ 0）",
+          "body": "∫₀²π sin(mx)sin(nx)dx = 1/2 ∫₀²π [cos(m-n)x - cos(m+n)x] dx = 1/2 [ sin(m-n)x / (m-n) - sin(m+n)x / (m+n) ]₀²π = 0 - 0 = 0！"
+        },
+        {
+          "title": "④ 【m = n（同じ波）の証明】半角公式を使って積分する（計算結果 ＝ π）",
+          "body": "m=n のとき sin²(mx) = (1 - cos 2mx) / 2 （半角公式）。これを積分すると ∫₀²π 1/2 dx - ∫₀²π (cos 2mx)/2 dx = [x/2]₀²π - 0 = π と証明されます！"
+        },
+        {
+          "title": "⑤ 【まとめ】なぜこの導出がフーリエ変換の鍵なのか？",
+          "body": "この導出のおかげで『違う波は掛け算して積分すると0になり、同じ波だけがπとして残る』という数学的根拠が100%完璧になりました！"
+        }
+      ],
+      "full_explain": [
+        "【ステップ1：積和公式の証明導出】",
+        "・cos(A - B) ＝ cos A cos B ＋ sin A sin B  … ①",
+        "・cos(A ＋ B) ＝ cos A cos B − sin A sin B  … ②",
+        "① − ② を計算すると：cos(A - B) − cos(A + B) ＝ 2 sin A sin B",
+        "よって：sin A sin B ＝ 1/2 [ cos(A - B) − cos(A + B) ] （導出完了）",
+        "【ステップ2：異周波数 m ≠ n の直交性証明】",
+        "∫₀²π sin(mx)sin(nx) dx ＝ 1/2 [ ∫₀²π cos(m-n)x dx − ∫₀²π cos(m+n)x dx ]",
+        "＝ 1/2 [ sin(m-n)x / (m-n) − sin(m+n)x / (m+n) ]₀²π",
+        "sin(2kπ) ＝ 0 および sin(0) ＝ 0 より、＝ 0 − 0 ＝ 0 （証明完了）",
+        "【ステップ3：同周波数 m ＝ n の積分証明】",
+        "m ＝ n のとき、sin²(mx) ＝ 1/2 [ 1 − cos(2mx) ] （半角の公式）",
+        "∫₀²π sin²(mx) dx ＝ 1/2 ∫₀²π 1 dx − 1/2 ∫₀²π cos(2mx) dx",
+        "＝ 1/2 [x]₀²π − 1/2 [ sin(2mx)/2m ]₀²π ＝ π − 0 ＝ π （証明完了）"
+      ],
+      "geometry": {
+        "demo": "ortho",
+        "svg_image": "data/images/ortho_calc_proof.svg",
+        "beats": [
+          "加法定理の引き算",
+          "積和公式の導出",
+          "m ≠ n のとき 積分結果 ＝ 0",
+          "m ＝ n のとき 積分結果 ＝ π"
+        ],
+        "caption": "積和公式の完全導出と、直交性 (0) および同周波数 (π) のステップバイステップ数式証明。"
+      },
+      "morph_steps": [
+        {
+          "html": "コサインの加法定理の引き算 ➔ <b>cos(A-B) - cos(A+B)</b>",
+          "say": "加法定理を引き算。",
+          "change": "スタート：加法定理の差。"
+        },
+        {
+          "html": "積和公式の完成 ➔ <b>sin A sin B = 1/2 [cos(A-B) - cos(A+B)]</b>",
+          "say": "積和公式の導出。",
+          "change": "導出：掛け算を足し算へ。"
+        },
+        {
+          "html": "m ≠ n を積分 ➔ <b>結果 ＝ 0 （直交）</b>",
+          "say": "直交性の証明。",
+          "change": "計算：異なる波は 0。"
+        },
+        {
+          "html": "m ＝ n を積分 ➔ <b>結果 ＝ π （成分抽出）</b>",
+          "say": "抽出の証明。",
+          "change": "完成：同じ波は π。"
+        }
+      ],
+      "puzzle_cards": [
+        {
+          "id": "co0",
+          "text": "① cos(A-B) と cos(A+B) の加法定理を引き算して積和公式を導出する"
+        },
+        {
+          "id": "co1",
+          "text": "② m ≠ n のとき、積和公式の各項を積分して [sin(k·2π)/k] = 0 より 0 と証明する"
+        },
+        {
+          "id": "co2",
+          "text": "③ m = n のとき、半角公式 sin²(mx) = (1 - cos 2mx)/2 を使う"
+        },
+        {
+          "id": "co3",
+          "text": "④ 1/2 [x]₀²π = π となり、同じ波の成分抽出結果 π が証明される"
+        }
+      ],
+      "puzzle_order": [
+        "co0",
+        "co1",
+        "co2",
+        "co3"
+      ],
+      "common_error": "積和公式を丸暗記しようとして途中で忘れる／m=n のときの半角公式の使い方で迷う",
+      "teach_line": "加法定理の引き算から積和公式を導出し、積分すれば 0 と π が完全に証明できる！"
+    },
     "P-ORTHO": {
       "id": "P-ORTHO",
       "node": "FT-ORTHO-1",
@@ -764,116 +1223,117 @@
     "P-COEFF": {
       "id": "P-COEFF",
       "node": "FT-COEFF-1",
-      "title": "係数は似ている度の一覧表",
-      "formula_html": "a<sub>n</sub> 〜 cos との似ている度　／　b<sub>n</sub> 〜 sin との似ている度",
-      "formula_read": "エーエヌは コサインとの にているど、ビーエヌは サインとの にているど",
+      "title": "フーリエ係数の意味と決まり方（公式の完全導出）",
+      "formula_html": "a<sub>n</sub> = (1/π) ∫₀<sup>2π</sup> f(x) cos(nx) dx　／　b<sub>n</sub> = (1/π) ∫₀<sup>2π</sup> f(x) sin(nx) dx　／　合成振幅 C<sub>n</sub> = <span class=\"math-sqrt\"><span class=\"math-sqrt-sym\">√</span><span class=\"math-sqrt-body\">a<sub>n</sub><sup>2</sup> + b<sub>n</sub><sup>2</sup></span></span>",
+      "formula_read": "エーエヌ イコール パイぶんのいち インテグラル ゼロからニパイ エフエックス コサインエヌエックス ディーエックス",
       "reading_keys": [
         "aₙ",
         "bₙ",
-        "n",
-        "sin",
+        "∫",
+        "π",
+        "f(x)",
         "cos",
-        "ω"
+        "sin"
       ],
-      "intuition_1line": "周波数ごとに cos用・sin用のつまみ（分量）があるミキサー。",
-      "why_needed": "足し算の材料の分量。削ると圧縮へ。",
+      "intuition_1line": "両辺に狙った波 cos(nx) や sin(nx) を掛けて積分すると、直交性のおかげで他の波は全滅し、係数 aₙ × π だけが抽出される！",
+      "why_needed": "『どの周波数の波がどれくらいの強さ（係数）で混ざっているか』という音や画像のレシピの分量を完全自動で計算するため。",
       "bridge_from": [
         "FT-ORTHO-1"
       ],
       "story_steps": [
         {
-          "title": "① 周波数 n を選ぶ",
-          "body": "何倍速の材料か。"
+          "title": "① フーリエ級数の展開式を用意する",
+          "body": "f(x) = a₀/2 + a₁ cos x + a₂ cos 2x + ... + b₁ sin x + b₂ sin 2x + ... という基本の級数展開式を立てます。"
         },
         {
-          "title": "② cos → a_n",
-          "body": "cos との似ている度。"
+          "title": "② 求めたい係数 aₘ の波 cos(mx) を両辺に掛け算する",
+          "body": "両辺全体に cos(mx) を掛けます。すると各項が aₙ cos(nx) cos(mx) や bₙ sin(nx) cos(mx) になります。"
         },
         {
-          "title": "③ sin → b_n",
-          "body": "sin との似ている度。"
+          "title": "③ 両辺を 0 から 2π まで 1 周期分積分する",
+          "body": "直交性（前ノードの証明）により、m ≠ n の項は積分すると『すべて 0 になって消滅』します！"
         },
         {
-          "title": "④ 足して再構成",
-          "body": "分量どおり足すと波が戻る。"
+          "title": "④ 狙った項 aₘ × π だけが残る！",
+          "body": "唯一 m = n である aₘ ∫₀²π cos²(mx) dx の項だけが残り、計算すると aₘ × π になります。"
         },
         {
-          "title": "⑤ 削ると圧縮",
-          "body": "いらない棒を下げる。"
+          "title": "⑤ 両辺を π で割って フーリエ係数 aₙ, bₙ の公式が完成！",
+          "body": "∫₀²π f(x) cos(mx) dx = aₘ · π より、両辺を π で割ると aₙ = (1/π) ∫₀²π f(x) cos(nx) dx が完璧に導出されます！"
         }
       ],
       "full_explain": [
-        "定数倍（2/T など）は今は暗記不要。測って決まる重み、と読む。",
-        "棒グラフ＝レシピの分量一覧。"
+        "【フーリエ係数 a_n, b_n の完全導出プロセス】",
+        "1. フーリエ級数：f(x) ＝ a₀/2 ＋ ∑ [ a_n cos(nx) ＋ b_n sin(nx) ]",
+        "2. 両辺に cos(mx) を掛け算して 0 から 2π まで積分：",
+        "   ∫₀²π f(x) cos(mx) dx ＝ ∫₀²π (a₀/2) cos(mx) dx ＋ ∑ a_n ∫₀²π cos(nx)cos(mx) dx ＋ ∑ b_n ∫₀²π sin(nx)cos(mx) dx",
+        "3. 直交性定理の適用：",
+        "   ・n ≠ m のとき：∫₀²π cos(nx)cos(mx) dx ＝ 0,  ∫₀²π sin(nx)cos(mx) dx ＝ 0",
+        "   ・n ＝ m のとき：∫₀²π cos²(mx) dx ＝ π",
+        "4. 整理：右辺は n ＝ m の項以外すべて 0 に消え、＝ a_m · π だけが残ります。",
+        "5. 公式完成：両辺を π で割ると、a_n ＝ (1/π) ∫₀²π f(x) cos(nx) dx が導出されます！",
+        "   同様に sin(mx) を掛けて積分すると、b_n ＝ (1/π) ∫₀²π f(x) sin(nx) dx が導出されます。",
+        "   ※ 合成振幅（全体振幅）は C_n = √(a_n² + b_n²) と求まります。"
       ],
       "geometry": {
-        "demo": "coeff_mixer",
+        "demo": "coeff",
+        "svg_image": "data/images/coeff_calc_proof.svg",
         "beats": [
-          "測る",
-          "棒の高さ",
-          "つまみ",
-          "合成が変わる"
+          "展開式に cos(mx) を掛ける",
+          "1周期分 (0〜2π) 積分",
+          "直交性より他項が 0 に消滅",
+          "aₘ × π ➔ 両辺を π で割って公式完成！"
         ],
-        "caption": "係数＝似ている度の棒。ミキサーの一覧表。"
+        "caption": "直交性を利用して狙った項以外を 0 に消去し、フーリエ係数 aₙ, bₙ の公式を導出するプロセス。"
       },
       "morph_steps": [
         {
-          "html": "周波数 <b>n</b>",
-          "say": "材料を選ぶ。",
-          "change": "スタート。"
+          "html": "級数展開式 ➔ <b>f(x) = a₀/2 + ∑ [aₙ cos(nx) + bₙ sin(nx)]</b>",
+          "say": "展開式を用意。",
+          "change": "スタート：基本の級数。"
         },
         {
-          "html": "cos → <b>a<sub>n</sub></b>",
-          "say": "cos用つまみ。",
-          "change": "点数に名前 a_n。"
+          "html": "両辺に <b>cos(mx)</b> を掛けて積分 ➔ <b>∫₀²π f(x)cos(mx)dx</b>",
+          "say": "両辺に掛け算して積分。",
+          "change": "操作：積分の実行。"
         },
         {
-          "html": "sin → <b>b<sub>n</sub></b>",
-          "say": "sin用つまみ。",
-          "change": "同じ n に二つ。"
+          "html": "直交性より <b>m ≠ n の項はすべて 0 に消滅！</b>",
+          "say": "直交性の威力を適用。",
+          "change": "消去：狙った項以外全滅。"
         },
         {
-          "html": "Σ で足す（再構成）",
-          "say": "分量どおり。",
-          "change": "表 → 波。"
-        },
-        {
-          "html": "係数を弱める → <b>圧縮</b>",
-          "say": "材料を減らす。",
-          "change": "完成：APPへ。"
+          "html": "公式完成 ➔ <b>aₙ = (1/π) ∫₀²π f(x) cos(nx) dx</b>",
+          "say": "両辺を π で割る。",
+          "change": "完成：フーリエ係数の決定公式。"
         }
       ],
       "puzzle_cards": [
         {
-          "id": "k0",
-          "text": "① 周波数 n を選ぶ"
+          "id": "c0",
+          "text": "① フーリエ級数 f(x) の両辺に狙った波 cos(mx) を掛け算する"
         },
         {
-          "id": "k1",
-          "text": "② cos との似ている度 → a_n"
+          "id": "c1",
+          "text": "② 0 から 2π まで 1 周期分積分する"
         },
         {
-          "id": "k2",
-          "text": "③ sin との似ている度 → b_n"
+          "id": "c2",
+          "text": "③ 直交性により m ≠ n の項がすべて 0 になって消え a_m · π だけが残る"
         },
         {
-          "id": "k3",
-          "text": "④ 係数を重みにして足す"
-        },
-        {
-          "id": "k4",
-          "text": "⑤ 係数を削ると圧縮へ"
+          "id": "c3",
+          "text": "④ 両辺を π で割ることで係数 a_n, b_n の公式が完全に導出される"
         }
       ],
       "puzzle_order": [
-        "k0",
-        "k1",
-        "k2",
-        "k3",
-        "k4"
+        "c0",
+        "c1",
+        "c2",
+        "c3"
       ],
-      "common_error": "係数＝個数、全部同じ強さ",
-      "teach_line": "係数は各 sin/cos との似ている度。大きいほど目立つ。"
+      "common_error": "係数公式 a_n をただの複雑な丸暗記公式だと思って諦める／直交性によって他項が消える理由を忘れる",
+      "teach_line": "直交性のおかげで他項が全滅！残った aₙ · π の両辺を π で割れば係数公式が導出できる！"
     },
     "P-APP": {
       "id": "P-APP",
@@ -1295,8 +1755,12 @@
     "FT-RATIO-1": "P-RATIO",
     "FT-RAD-1": "P-RAD",
     "FT-CIRCLE-1": "P-CIRCLE",
+    "FT-ADD-TRIG-1": "P-ADD-TRIG",
     "FT-SUPER-1": "P-SUPER",
     "FT-SERIES-1": "P-SERIES",
+    "FT-INT-1": "P-INT",
+    "FT-CALC-TRIG-1": "P-CALC-TRIG",
+    "FT-CALC-ORTHO-1": "P-CALC-ORTHO",
     "FT-ORTHO-1": "P-ORTHO",
     "FT-COEFF-1": "P-COEFF",
     "FT-APP-1": "P-APP",

@@ -25,6 +25,54 @@
   --formula-text: #0c4a6e;
   --canvas-bg: #f8fafc;
 }
+/* Radical √ with overline (plain-text √(…) → .math-sqrt via escMath) */
+.math-sqrt {
+  display: inline-flex;
+  align-items: stretch;
+  vertical-align: middle;
+  margin: 0 0.12em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.math-sqrt-sym {
+  font-size: 1.35em;
+  line-height: 1;
+  font-family: "Cambria Math", "Times New Roman", "Segoe UI Symbol", serif;
+  margin-right: -0.06em;
+  align-self: center;
+}
+.math-sqrt-body {
+  border-top: 2px solid currentColor;
+  padding: 0.12em 0.14em 0 0.08em;
+  display: inline-block;
+  line-height: 1.15;
+  min-height: 1em;
+}
+/* Integral symbol + stacked limits (plain ∫₀²π → .math-integral) */
+.math-integral {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0.15em;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.int-sym {
+  font-size: 1.55em;
+  line-height: 0.95;
+  font-family: "Cambria Math", "Times New Roman", serif;
+  font-style: italic;
+}
+.int-limits {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 0.68em;
+  line-height: 1.05;
+  margin-left: 0.05em;
+  margin-right: 0.12em;
+}
+.int-limits .upper { order: 0; font-weight: 600; }
+.int-limits .lower { order: 1; font-weight: 600; }
 * { box-sizing: border-box; }
 html, body {
   margin: 0;

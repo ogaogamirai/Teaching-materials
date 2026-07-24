@@ -10,6 +10,117 @@
       .replace(/"/g, "&quot;");
   }
 
+  var SUB_MAP = {
+    "₀": "0",
+    "₁": "1",
+    "₂": "2",
+    "₃": "3",
+    "₄": "4",
+    "₅": "5",
+    "₆": "6",
+    "₇": "7",
+    "₈": "8",
+    "₉": "9",
+    "ₙ": "n",
+    "ₘ": "m",
+    "ₐ": "a",
+    "ₓ": "x"
+  };
+  var SUP_MAP = {
+    "⁰": "0",
+    "¹": "1",
+    "²": "2",
+    "³": "3",
+    "⁴": "4",
+    "⁵": "5",
+    "⁶": "6",
+    "⁷": "7",
+    "⁸": "8",
+    "⁹": "9",
+    "ⁿ": "n"
+  };
+
+  function mapChars(str, table) {
+    if (!str) return "";
+    var out = "";
+    for (var i = 0; i < str.length; i++) {
+      var ch = str.charAt(i);
+      out += table[ch] != null ? table[ch] : ch;
+    }
+    return out;
+  }
+
+  /** Format √(...) in already-safe or HTML-ish text (does not escape). */
+  function formatRoot(s) {
+    if (!s) return "";
+    var str = String(s);
+    if (str.indexOf("√") < 0) return str;
+    // √(body) | √{body} | √token — stop before HTML tag / CJK / punctuation
+    return str.replace(
+      /√(?:\(([^)]+)\)|\{([^}]+)\}|([A-Za-z0-9_+\-^=²³⁴ⁿ₀-₉\s\.]+))/g,
+      function (m, p1, p2, p3) {
+        var body = p1 || p2 || p3 || "";
+        body = String(body).replace(/\s+$/, "");
+        if (!body) return m;
+        return (
+          '<span class="math-sqrt"><span class="math-sqrt-sym">√</span><span class="math-sqrt-body">' +
+          body +
+          "</span></span>"
+        );
+      }
+    );
+  }
+
+  /**
+   * Format ∫ with unicode limits like ∫₀²π (plain-text explanations).
+   * Hybrid HTML (∫₀<sup>2π</sup>) is left untouched so limits are not orphaned.
+   * Bare ∫ becomes a styled symbol only (no invented 0..2π).
+   */
+  function formatIntegral(s) {
+    if (!s) return "";
+    var str = String(s);
+    if (str.indexOf("∫") < 0) return str;
+    return str.replace(/∫([₀₁₂₃₄₅₆₇₈₉ₙₘₐₓ]*)([⁰¹²³⁴⁵⁶⁷⁸⁹ⁿ]*)(π?)/g, function (
+      m,
+      lowU,
+      upU,
+      pi,
+      offset,
+      full
+    ) {
+      var end = offset + m.length;
+      // e.g. ∫₀<sup>2π</sup> — do not partially consume unicode sub
+      if (end < full.length && full.charAt(end) === "<") {
+        return m;
+      }
+      var hasLim = !!(lowU || upU || pi);
+      if (!hasLim) {
+        return '<span class="math-integral"><span class="int-sym">∫</span></span>';
+      }
+      var lower = mapChars(lowU, SUB_MAP) || "0";
+      var upper = mapChars(upU, SUP_MAP) + (pi || "");
+      if (!upper) upper = "2π";
+      return (
+        '<span class="math-integral"><span class="int-sym">∫</span>' +
+        '<span class="int-limits"><span class="upper">' +
+        upper +
+        '</span><span class="lower">' +
+        lower +
+        "</span></span></span>"
+      );
+    });
+  }
+
+  /** Apply root/integral formatting without HTML-escaping (for trusted HTML snippets). */
+  function formatMathHtml(s) {
+    return formatIntegral(formatRoot(String(s == null ? "" : s)));
+  }
+
+  /** Escape plain text, then decorate √ / ∫ for display. */
+  function escMath(s) {
+    return formatMathHtml(esc(s));
+  }
+
   function getScript(nodeId) {
     const root = FT.DATA_PROOF;
     if (!root || !root.node_index) return null;
@@ -88,10 +199,10 @@
           (i + 1) +
           "</div>" +
           "<strong>" +
-          esc(s.title) +
+          escMath(s.title) +
           "</strong>" +
           "<p>" +
-          esc(s.body) +
+          escMath(s.body) +
           "</p></div>"
         );
       })
@@ -236,10 +347,12 @@
         : "") +
       (FT.readings
         ? FT.readings.formulaWithRead(
-            script.formula_html,
+            formatMathHtml(script.formula_html || ""),
             script.formula_read || null
           )
-        : '<div class="formula-box">' + script.formula_html + "</div>") +
+        : '<div class="formula-box">' +
+          formatMathHtml(script.formula_html || "") +
+          "</div>") +
       (FT.readings
         ? FT.readings.renderChips(script.reading_keys || null)
         : "") +
@@ -260,7 +373,7 @@
         : "") +
       (script.full_explain || [])
         .map(function (p) {
-          return "<p>" + esc(p) + "</p>";
+          return "<p>" + escMath(p) + "</p>";
         })
         .join("") +
       "</div></details>" +
@@ -374,8 +487,8 @@
         d.classList.toggle("done", i < morphI);
       });
       if (!steps.length) {
-        morphView.innerHTML = script.formula_html;
-        if (morphSay) morphSay.textContent = "";
+        morphView.innerHTML = formatMathHtml(script.formula_html || "");
+        if (morphSay) morphSay.innerHTML = "";
         if (morphChange) morphChange.innerHTML = "";
         if (morphIdx) morphIdx.textContent = "";
         return;
@@ -389,11 +502,13 @@
         " / " +
         steps.length +
         "</span><br>" +
-        st.html;
-      if (morphSay) morphSay.textContent = st.say ? "ひとこと: " + st.say : "";
+        formatMathHtml(st.html || "");
+      if (morphSay) {
+        morphSay.innerHTML = st.say ? "ひとこと: " + escMath(st.say) : "";
+      }
       if (morphChange) {
         morphChange.innerHTML = st.change
-          ? "<strong>いま変わったこと</strong><br>" + esc(st.change)
+          ? "<strong>いま変わったこと</strong><br>" + escMath(st.change)
           : "";
       }
       if (morphIdx) {
@@ -640,6 +755,9 @@
   function hasProof(nodeId) {
     return !!getScript(nodeId);
   }
+
+  FT.formatMathHtml = formatMathHtml;
+  FT.escMath = escMath;
 
   FT.proofUI = {
     getScript: getScript,

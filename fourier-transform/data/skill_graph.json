@@ -8,8 +8,12 @@
     "FT-RATIO-1",
     "FT-RAD-1",
     "FT-CIRCLE-1",
+    "FT-ADD-TRIG-1",
     "FT-SUPER-1",
     "FT-SERIES-1",
+    "FT-INT-1",
+    "FT-CALC-TRIG-1",
+    "FT-CALC-ORTHO-1",
     "FT-ORTHO-1",
     "FT-COEFF-1",
     "FT-APP-1",
@@ -94,6 +98,17 @@
       "hard_prereq": ["FT-RAD-1"],
       "remediation": ["FT-RAD-1", "FT-RATIO-1"]
     },
+    "FT-ADD-TRIG-1": {
+      "title": "三角関数の加法定理の図解証明",
+      "tier": "core",
+      "target_level": 3,
+      "demo": "ortho",
+      "checks": ["C-CIRC-01"],
+      "teachback": false,
+      "hard_prereq": ["FT-CIRCLE-1"],
+      "remediation": ["FT-CIRCLE-1"],
+      "goal_link": "積和公式の導出や微積分の前提となる sin(α+β), cos(α+β) の幾何学的図解証明を理解するために必要"
+    },
     "FT-SUPER-1": {
       "title": "波は足してよい",
       "tier": "core",
@@ -101,8 +116,8 @@
       "demo": "super",
       "checks": ["C-SUP-01", "C-SUP-02"],
       "teachback": "short",
-      "hard_prereq": ["FT-CIRCLE-1"],
-      "remediation": ["FT-CIRCLE-1"]
+      "hard_prereq": ["FT-ADD-TRIG-1"],
+      "remediation": ["FT-ADD-TRIG-1"]
     },
     "FT-SERIES-1": {
       "title": "足し算で形が変わる",
@@ -115,6 +130,39 @@
       "remediation": ["FT-SUPER-1"],
       "chapters": ["sum"]
     },
+    "FT-INT-1": {
+      "title": "微分と定積分（面積集計）ハブ",
+      "tier": "core",
+      "target_level": 2,
+      "demo": "ortho",
+      "checks": ["C-INT-01"],
+      "teachback": false,
+      "hard_prereq": ["FT-SERIES-1"],
+      "remediation": ["FT-SERIES-1"],
+      "goal_link": "直交性や係数で使われる 1 周期分の積分 ∫fg dx の意味と面積相殺を理解するために必要"
+    },
+    "FT-CALC-TRIG-1": {
+      "title": "三角関数の微積分証明",
+      "tier": "core",
+      "target_level": 3,
+      "demo": "ortho",
+      "checks": ["C-INT-01"],
+      "teachback": false,
+      "hard_prereq": ["FT-INT-1"],
+      "remediation": ["FT-INT-1"],
+      "goal_link": "(sin x)' = cos x や ∫ sin(ax)dx の証明を理解するために必要"
+    },
+    "FT-CALC-ORTHO-1": {
+      "title": "積和公式と直交性微積証明",
+      "tier": "core",
+      "target_level": 3,
+      "demo": "ortho",
+      "checks": ["C-ORT-01"],
+      "teachback": false,
+      "hard_prereq": ["FT-CALC-TRIG-1"],
+      "remediation": ["FT-CALC-TRIG-1"],
+      "goal_link": "積和公式の導出と直交性積分 0 および π の完全証明を理解するために必要"
+    },
     "FT-ORTHO-1": {
       "title": "似ている度で取り出す",
       "tier": "core",
@@ -122,8 +170,8 @@
       "demo": "ortho",
       "checks": ["C-ORT-01", "C-ORT-02", "C-ORT-M1"],
       "teachback": "short",
-      "hard_prereq": ["FT-SERIES-1"],
-      "remediation": ["FT-SERIES-1"]
+      "hard_prereq": ["FT-CALC-ORTHO-1"],
+      "remediation": ["FT-CALC-ORTHO-1"]
     },
     "FT-COEFF-1": {
       "title": "係数の意味と決まり方",
