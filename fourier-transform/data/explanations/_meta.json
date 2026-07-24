@@ -12,6 +12,8 @@
     "FT-COMPLEX-1",
     "FT-POLAR-1",
     "FT-E-1",
+    "FT-MACLAURIN-1",
+    "FT-EULER-PROOF-1",
     "FT-COMPARE-1"
   ],
   "note": "geometry.demo on main path + post-CAP P-EULER/P-MAP. HOOK has no formula proof. Complex only after CAP.",
@@ -34,7 +36,9 @@
     "FT-COMPLEX-1": "P-COMPLEX",
     "FT-POLAR-1": "P-POLAR",
     "FT-E-1": "P-E",
+    "FT-MACLAURIN-1": "P-MACLAURIN",
     "FT-EULER-1": "P-EULER",
+    "FT-EULER-PROOF-1": "P-EULER-PROOF",
     "FT-COMPARE-1": "P-COMPARE",
     "FT-TRANSFORM-1": "P-MAP"
   },
@@ -57,7 +61,9 @@
     "P-COMPLEX",
     "P-POLAR",
     "P-E",
+    "P-MACLAURIN",
     "P-EULER",
+    "P-EULER-PROOF",
     "P-COMPARE",
     "P-MAP"
   ]
