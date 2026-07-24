@@ -295,8 +295,8 @@
     return str;
   }
 
-  /** Trusted HTML or plain math → display string (unicode scripts + √/∫). */
-  function formatMathHtml(s) {
+  /** Fallback when KaTeX (math_tex.js) is not loaded. */
+  function formatMathHtmlLocal(s) {
     var t = String(s == null ? "" : s);
     t = htmlScriptsToUnicode(t);
     t = formatTexScripts(t);
@@ -305,9 +305,46 @@
     return t;
   }
 
-  /** Plain text → escape HTML entities, then unicode math decorate. */
+  function formatMathHtml(s) {
+    if (FT.mathTex && typeof FT.mathTex.formatMathHtml === "function") {
+      return FT.mathTex.formatMathHtml(s);
+    }
+    if (FT.formatMathHtml && FT.formatMathHtml !== formatMathHtml) {
+      return FT.formatMathHtml(s);
+    }
+    return formatMathHtmlLocal(s);
+  }
+
   function escMath(s) {
-    return formatMathHtml(esc(s));
+    if (FT.mathTex && typeof FT.mathTex.renderInline === "function") {
+      return FT.mathTex.renderInline(s);
+    }
+    if (FT.escMath && FT.escMath !== escMath) {
+      return FT.escMath(s);
+    }
+    return formatMathHtmlLocal(esc(s));
+  }
+
+  function renderFormulaBlock(formulaHtml, formulaRead) {
+    if (FT.mathTex && typeof FT.mathTex.renderFormulaHtml === "function") {
+      var box = FT.mathTex.renderFormulaHtml(formulaHtml || "");
+      if (formulaRead) {
+        box = box.replace(
+          /<\/div>\s*$/,
+          '<div class="formula-read">よみ: ' + esc(formulaRead) + "</div></div>"
+        );
+      }
+      return box;
+    }
+    if (FT.readings) {
+      return FT.readings.formulaWithRead(
+        formatMathHtml(formulaHtml || ""),
+        formulaRead || null
+      );
+    }
+    return (
+      '<div class="formula-box">' + formatMathHtml(formulaHtml || "") + "</div>"
+    );
   }
 
   function getScript(nodeId) {
@@ -528,14 +565,7 @@
           esc(script.bridge_from.join(" → ")) +
           " → いまここ</p>"
         : "") +
-      (FT.readings
-        ? FT.readings.formulaWithRead(
-            formatMathHtml(script.formula_html || ""),
-            script.formula_read || null
-          )
-        : '<div class="formula-box">' +
-          formatMathHtml(script.formula_html || "") +
-          "</div>") +
+      renderFormulaBlock(script.formula_html || "", script.formula_read || null) +
       (FT.readings
         ? FT.readings.renderChips(script.reading_keys || null)
         : "") +
@@ -941,8 +971,13 @@
     return !!getScript(nodeId);
   }
 
-  FT.formatMathHtml = formatMathHtml;
-  FT.escMath = escMath;
+  // Prefer KaTeX bindings from math_tex.js; only install fallbacks if missing.
+  if (!FT.mathTex) {
+    FT.formatMathHtml = formatMathHtmlLocal;
+    FT.escMath = function (s) {
+      return formatMathHtmlLocal(esc(s));
+    };
+  }
 
   FT.proofUI = {
     getScript: getScript,
