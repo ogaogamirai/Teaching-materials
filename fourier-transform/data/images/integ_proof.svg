@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 460" width="100%" height="100%" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; border-radius: 12px;">
+  <!-- Title -->
+  <text x="310" y="35" fill="#38bdf8" font-size="20" font-weight="bold" text-anchor="middle">定積分の基礎：細切れ短冊の集計から「面積 ∫ f(x) dx」へ</text>
+
+  <!-- Left: Riemann Sum Rectangles -->
+  <g transform="translate(20, 50)">
+    <rect x="0" y="0" width="285" height="390" fill="rgba(30, 41, 59, 0.7)" rx="10" stroke="#334155" stroke-width="1.5"/>
+    <text x="142" y="30" fill="#fbbf24" font-size="16" font-weight="bold" text-anchor="middle">① 区分地上法（短冊の和）</text>
+
+    <!-- Axes -->
+    <line x1="30" y1="330" x2="265" y2="330" stroke="#64748b" stroke-width="1.5"/>
+    <line x1="40" y1="50" x2="40" y2="340" stroke="#64748b" stroke-width="1.5"/>
+
+    <!-- Rectangles (Riemann Sum) -->
+    <rect x="60" y="240" width="30" height="90" fill="rgba(56, 189, 248, 0.3)" stroke="#38bdf8" stroke-width="1"/>
+    <rect x="90" y="200" width="30" height="130" fill="rgba(56, 189, 248, 0.3)" stroke="#38bdf8" stroke-width="1"/>
+    <rect x="120" y="150" width="30" height="180" fill="rgba(56, 189, 248, 0.3)" stroke="#38bdf8" stroke-width="1"/>
+    <rect x="150" y="110" width="30" height="220" fill="rgba(56, 189, 248, 0.3)" stroke="#38bdf8" stroke-width="1"/>
+    <rect x="180" y="80" width="30" height="250" fill="rgba(56, 189, 248, 0.3)" stroke="#38bdf8" stroke-width="1"/>
+
+    <!-- Curve y = f(x) -->
+    <path d="M 40 280 Q 130 220 230 60" fill="none" stroke="#fbbf24" stroke-width="3"/>
+    <text x="215" y="50" fill="#fbbf24" font-size="13" font-weight="bold">y = f(x)</text>
+
+    <!-- Labels a and b -->
+    <text x="60" y="350" fill="#cbd5e1" font-size="13" font-weight="bold">a</text>
+    <text x="210" y="350" fill="#cbd5e1" font-size="13" font-weight="bold">b</text>
+
+    <!-- Formula Overlay -->
+    <rect x="15" y="300" width="255" height="70" fill="#0f172a" rx="6" stroke="#fbbf24" stroke-width="1"/>
+    <text x="25" y="325" fill="#fbbf24" font-size="13" font-weight="bold">短冊の面積の和 ➔ 定積分記号へ</text>
+    <text x="25" y="350" fill="#ffffff" font-size="14" font-weight="bold">Σ f(x) Δx  ➔  ∫_a^b f(x) dx</text>
+  </g>
+
+  <!-- Right: Fundamental Theorem of Calculus & Antiderivative -->
+  <g transform="translate(320, 50)">
+    <rect x="0" y="0" width="280" height="390" fill="rgba(30, 41, 59, 0.7)" rx="10" stroke="#0284c7" stroke-width="1.5"/>
+    <text x="140" y="30" fill="#22d3ee" font-size="16" font-weight="bold" text-anchor="middle">② 微積分学の基本定理</text>
+
+    <!-- Theorem Box -->
+    <rect x="15" y="50" width="250" height="135" fill="#0f172a" rx="8" stroke="#38bdf8" stroke-width="1"/>
+    <text x="25" y="75" fill="#38bdf8" font-size="14" font-weight="bold">定積分の計算：F(b) − F(a)</text>
+    <text x="25" y="105" fill="#ffffff" font-size="14" font-weight="bold">∫_a^b f(x) dx ＝ [ F(x) ]_a^b</text>
+    <text x="25" y="130" fill="#ffffff" font-size="13" font-weight="bold">＝ F(b) − F(a)</text>
+    <text x="25" y="160" fill="#a7f3d0" font-size="12" font-weight="bold">※ F(x) は微分すると f(x) に戻る原始関数！</text>
+
+    <!-- Example Box: ∫_0^2 x dx = 2 -->
+    <rect x="15" y="200" width="250" height="170" fill="#0f172a" rx="8" stroke="#fbbf24" stroke-width="1"/>
+    <text x="25" y="225" fill="#fbbf24" font-size="14" font-weight="bold">具体例：∫_0^2 x dx の手計算</text>
+    <text x="25" y="250" fill="#ffffff" font-size="12">x の原始関数 F(x) は (x² / 2)' ＝ x より x² / 2</text>
+    <text x="25" y="275" fill="#ffffff" font-size="13" font-weight="bold">∫_0^2 x dx ＝ [ x² / 2 ]_0^2</text>
+    <text x="25" y="305" fill="#ffffff" font-size="13" font-weight="bold">＝ (2² / 2) − (0² / 2) ＝ 2 − 0 ＝ 2 ！</text>
+    <text x="25" y="335" fill="#a7f3d0" font-size="12">底辺 2 × 高さ 2 ÷ 2 ＝ 2 の三角形面積と一致！</text>
+    <text x="25" y="355" fill="#cbd5e1" font-size="11">手計算と図形の面積が完璧に一致！</text>
+  </g>
+</svg>

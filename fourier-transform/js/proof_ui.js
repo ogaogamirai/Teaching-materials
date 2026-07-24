@@ -111,12 +111,81 @@
     });
   }
 
-  /** Apply root/integral formatting without HTML-escaping (for trusted HTML snippets). */
-  function formatMathHtml(s) {
-    return formatIntegral(formatRoot(String(s == null ? "" : s)));
+  var TEX_BASE = "[A-Za-z0-9πθφωαβγλμσΣ∑∏∂∞)]";
+
+  /**
+   * TeX-like sub/superscripts → <sub>/<sup>.
+   * Order matters: _{}^{} combo, then ^{}, then _{}, then bare ^ / _.
+   */
+  function formatTexScripts(s) {
+    if (!s) return "";
+    var str = String(s);
+    if (str.indexOf("^") < 0 && str.indexOf("_") < 0) return str;
+
+    // base_{low}^{up}
+    str = str.replace(
+      new RegExp(
+        "(" + TEX_BASE + "+)_\\{([^}]+)\\}\\^\\{([^}]+)\\}",
+        "g"
+      ),
+      function (m, base, low, up) {
+        return base + "<sub>" + low + "</sub><sup>" + up + "</sup>";
+      }
+    );
+    // base_{low}^upToken
+    str = str.replace(
+      new RegExp(
+        "(" + TEX_BASE + "+)_\\{([^}]+)\\}\\^(" + TEX_BASE + "+)",
+        "g"
+      ),
+      function (m, base, low, up) {
+        return base + "<sub>" + low + "</sub><sup>" + up + "</sup>";
+      }
+    );
+    // base^{up}
+    str = str.replace(
+      new RegExp("(" + TEX_BASE + "+)\\^\\{([^}]+)\\}", "g"),
+      function (m, base, up) {
+        return base + "<sup>" + up + "</sup>";
+      }
+    );
+    // base_{low}
+    str = str.replace(
+      new RegExp("(" + TEX_BASE + "+)_\\{([^}]+)\\}", "g"),
+      function (m, base, low) {
+        return base + "<sub>" + low + "</sub>";
+      }
+    );
+    // base^token
+    str = str.replace(
+      new RegExp(
+        "(" + TEX_BASE + "+)\\^([A-Za-z0-9+\\-πθφᵢₙₘ₀-₉¹²³]+)",
+        "g"
+      ),
+      function (m, base, up) {
+        return base + "<sup>" + up + "</sup>";
+      }
+    );
+    // a_n style (single letter base, short index) — avoid file paths (no / before)
+    str = str.replace(
+      /(^|[^\/\w])([A-Za-z])_([A-Za-z0-9ₙₘ]{1,6})\b/g,
+      function (m, pre, base, low) {
+        return pre + base + "<sub>" + low + "</sub>";
+      }
+    );
+    return str;
   }
 
-  /** Escape plain text, then decorate √ / ∫ for display. */
+  /** Apply TeX scripts + √ / ∫ (trusted HTML snippets OK). */
+  function formatMathHtml(s) {
+    var t = String(s == null ? "" : s);
+    t = formatTexScripts(t);
+    t = formatRoot(t);
+    t = formatIntegral(t);
+    return t;
+  }
+
+  /** Escape plain text, then decorate math. Safe for story/intuition/etc. */
   function escMath(s) {
     return formatMathHtml(esc(s));
   }
@@ -333,12 +402,12 @@
       '<div class="proof-body" id="proof-body">' +
       '<div class="intuition-line">' +
       '<span class="il-badge">まず一言</span> ' +
-      esc(script.intuition_1line) +
+      escMath(script.intuition_1line) +
       "</div>" +
       (sprint
         ? ""
         : '<p class="kv why-need"><strong>この式が要る理由:</strong> ' +
-          esc(script.why_needed) +
+          escMath(script.why_needed) +
           "</p>") +
       (script.bridge_from && script.bridge_from.length && !sprint
         ? '<p class="bridge-line"><strong>最短ブリッジ（直前）:</strong> ' +
@@ -364,7 +433,7 @@
       "><summary>もっとくわしく読む（説明は削っていません）</summary>" +
       '<div class="lesson-block">' +
       (script.why_needed && sprint
-        ? "<p><strong>要る理由:</strong> " + esc(script.why_needed) + "</p>"
+        ? "<p><strong>要る理由:</strong> " + escMath(script.why_needed) + "</p>"
         : "") +
       (script.bridge_from && script.bridge_from.length && sprint
         ? "<p><strong>ブリッジ:</strong> " +
@@ -400,12 +469,12 @@
       '<div id="puzzle-msg" class="kv"></div></div>' +
       (script.common_error
         ? '<p class="note-warn">よくあるまちがい: ' +
-          esc(script.common_error) +
+          escMath(script.common_error) +
           "</p>"
         : "") +
       (FT.readings ? FT.readings.renderGlossary(teach) : "") +
       '<p class="takeaway">人に話す用: ' +
-      esc(script.teach_line || "") +
+      escMath(script.teach_line || "") +
       "</p>" +
       skipActions +
       "</div></div>";
@@ -627,7 +696,9 @@
           .map(function (id) {
             const c = cardById(id);
             return (
-              '<div class="puzzle-slot">' + esc(c ? c.text : id) + "</div>"
+              '<div class="puzzle-slot">' +
+              escMath(c ? c.text : id) +
+              "</div>"
             );
           })
           .join("");
@@ -638,7 +709,7 @@
             '<button type="button" class="chip puzzle-card" data-cid="' +
             esc(c.id) +
             '">' +
-            esc(c.text) +
+            escMath(c.text) +
             "</button>"
           );
         })

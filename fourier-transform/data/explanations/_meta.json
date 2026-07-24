@@ -3,11 +3,16 @@
   "ref_nodes": [
     "FT-CIRCLE-1",
     "FT-ADD-TRIG-1",
-    "FT-INT-1",
+    "FT-DIFF-1",
+    "FT-INTEG-1",
     "FT-CALC-TRIG-1",
     "FT-CALC-ORTHO-1",
     "FT-ORTHO-1",
-    "FT-COEFF-1"
+    "FT-COEFF-1",
+    "FT-COMPLEX-1",
+    "FT-POLAR-1",
+    "FT-E-1",
+    "FT-COMPARE-1"
   ],
   "note": "geometry.demo on main path + post-CAP P-EULER/P-MAP. HOOK has no formula proof. Complex only after CAP.",
   "node_index": {
@@ -18,14 +23,19 @@
     "FT-ADD-TRIG-1": "P-ADD-TRIG",
     "FT-SUPER-1": "P-SUPER",
     "FT-SERIES-1": "P-SERIES",
-    "FT-INT-1": "P-INT",
+    "FT-DIFF-1": "P-DIFF",
+    "FT-INTEG-1": "P-INTEG",
     "FT-CALC-TRIG-1": "P-CALC-TRIG",
     "FT-CALC-ORTHO-1": "P-CALC-ORTHO",
     "FT-ORTHO-1": "P-ORTHO",
     "FT-COEFF-1": "P-COEFF",
     "FT-APP-1": "P-APP",
     "FT-CAP-1": "P-CAP",
+    "FT-COMPLEX-1": "P-COMPLEX",
+    "FT-POLAR-1": "P-POLAR",
+    "FT-E-1": "P-E",
     "FT-EULER-1": "P-EULER",
+    "FT-COMPARE-1": "P-COMPARE",
     "FT-TRANSFORM-1": "P-MAP"
   },
   "script_order": [
@@ -36,14 +46,19 @@
     "P-ADD-TRIG",
     "P-SUPER",
     "P-SERIES",
-    "P-INT",
+    "P-DIFF",
+    "P-INTEG",
     "P-CALC-TRIG",
     "P-CALC-ORTHO",
     "P-ORTHO",
     "P-COEFF",
     "P-APP",
     "P-CAP",
+    "P-COMPLEX",
+    "P-POLAR",
+    "P-E",
     "P-EULER",
+    "P-COMPARE",
     "P-MAP"
   ]
 }

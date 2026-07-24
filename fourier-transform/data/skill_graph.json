@@ -11,15 +11,21 @@
     "FT-ADD-TRIG-1",
     "FT-SUPER-1",
     "FT-SERIES-1",
-    "FT-INT-1",
+    "FT-DIFF-1",
+    "FT-INTEG-1",
     "FT-CALC-TRIG-1",
     "FT-CALC-ORTHO-1",
     "FT-ORTHO-1",
     "FT-COEFF-1",
     "FT-APP-1",
-    "FT-CAP-1"
+    "FT-CAP-1",
+    "FT-COMPLEX-1",
+    "FT-POLAR-1",
+    "FT-E-1",
+    "FT-EULER-1",
+    "FT-COMPARE-1"
   ],
-  "optional_after_cap": ["FT-EULER-1", "FT-TRANSFORM-1"],
+  "optional_after_cap": ["FT-TRANSFORM-1"],
   "insert_rules": {
     "FT-RATIO-1": {
       "before": "FT-CIRCLE-1",
@@ -130,16 +136,27 @@
       "remediation": ["FT-SUPER-1"],
       "chapters": ["sum"]
     },
-    "FT-INT-1": {
-      "title": "微分と定積分（面積集計）ハブ",
+    "FT-DIFF-1": {
+      "title": "微分の基礎と導出",
       "tier": "core",
-      "target_level": 2,
+      "target_level": 3,
       "demo": "ortho",
       "checks": ["C-INT-01"],
       "teachback": false,
       "hard_prereq": ["FT-SERIES-1"],
       "remediation": ["FT-SERIES-1"],
-      "goal_link": "直交性や係数で使われる 1 周期分の積分 ∫fg dx の意味と面積相殺を理解するために必要"
+      "goal_link": "割線の傾きから極限 h➔0 で接線の傾き f'(x) を導出し、(x²)' = 2x を手計算するために必要"
+    },
+    "FT-INTEG-1": {
+      "title": "定積分の基礎と導出",
+      "tier": "core",
+      "target_level": 3,
+      "demo": "ortho",
+      "checks": ["C-INT-01"],
+      "teachback": false,
+      "hard_prereq": ["FT-DIFF-1"],
+      "remediation": ["FT-DIFF-1"],
+      "goal_link": "区分地上法 Σ f(x) Δx から定積分 ∫_a^b f(x) dx を導出し、F(b)-F(a) で面積を求めるために必要"
     },
     "FT-CALC-TRIG-1": {
       "title": "三角関数の微積分証明",
@@ -148,8 +165,8 @@
       "demo": "ortho",
       "checks": ["C-INT-01"],
       "teachback": false,
-      "hard_prereq": ["FT-INT-1"],
-      "remediation": ["FT-INT-1"],
+      "hard_prereq": ["FT-INTEG-1"],
+      "remediation": ["FT-INTEG-1"],
       "goal_link": "(sin x)' = cos x や ∫ sin(ax)dx の証明を理解するために必要"
     },
     "FT-CALC-ORTHO-1": {
@@ -204,15 +221,59 @@
       "hard_prereq": ["FT-APP-1"],
       "remediation": []
     },
-    "FT-EULER-1": {
-      "title": "回転の言葉 e^{iθ}",
-      "tier": "optional",
+    "FT-COMPLEX-1": {
+      "title": "複素数と複素数平面の基礎",
+      "tier": "core",
       "target_level": 2,
       "demo": "euler",
       "checks": ["C-EUL-01"],
       "teachback": false,
       "hard_prereq": ["FT-CAP-1"],
-      "remediation": []
+      "remediation": [],
+      "goal_link": "i を掛けると90°回転する意味と、複素数の掛け算で角度が足し算になる性質を理解するために必要"
+    },
+    "FT-POLAR-1": {
+      "title": "極形式とド・モアブルの定理",
+      "tier": "core",
+      "target_level": 3,
+      "demo": "euler",
+      "checks": ["C-EUL-01"],
+      "teachback": false,
+      "hard_prereq": ["FT-COMPLEX-1"],
+      "remediation": ["FT-COMPLEX-1"],
+      "goal_link": "共役複素数 z̄ による z z̄ = |z|² と、ド・モアブルの定理 (cosθ+i sinθ)ⁿ = cos(nθ)+i sin(nθ) を理解するために必要"
+    },
+    "FT-E-1": {
+      "title": "ネイピア数 e とは何か？",
+      "tier": "core",
+      "target_level": 3,
+      "demo": "euler",
+      "checks": ["C-EUL-01"],
+      "teachback": false,
+      "hard_prereq": ["FT-POLAR-1"],
+      "remediation": ["FT-POLAR-1"],
+      "goal_link": "連続複利極限定義 lim(1+1/n)ⁿ=e、微積分の性質 (eˣ)'=eˣ、およびオイラーの公式で e が使われる理由を理解するために必要"
+    },
+    "FT-EULER-1": {
+      "title": "回転の言葉 e^{iθ}",
+      "tier": "core",
+      "target_level": 2,
+      "demo": "euler",
+      "checks": ["C-EUL-01"],
+      "teachback": false,
+      "hard_prereq": ["FT-E-1"],
+      "remediation": ["FT-E-1"]
+    },
+    "FT-COMPARE-1": {
+      "title": "実数 vs 複素数の完全対比",
+      "tier": "core",
+      "target_level": 3,
+      "demo": "transform",
+      "checks": ["C-EUL-01"],
+      "teachback": false,
+      "hard_prereq": ["FT-EULER-1"],
+      "remediation": ["FT-EULER-1"],
+      "goal_link": "実数表現 a_n, b_n と複素数表現 c_n e^{inx} の完全対比構造と進化のメリットを理解するために必要"
     },
     "FT-TRANSFORM-1": {
       "title": "連続と離散の地図",
@@ -221,7 +282,7 @@
       "demo": "transform",
       "checks": ["C-TR-01"],
       "teachback": false,
-      "hard_prereq": ["FT-EULER-1"],
+      "hard_prereq": ["FT-COMPARE-1"],
       "remediation": []
     }
   }
