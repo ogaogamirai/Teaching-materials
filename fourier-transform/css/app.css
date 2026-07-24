@@ -285,15 +285,44 @@ canvas.demo {
   background: #f8fafc; border: 1px solid var(--border); border-radius: 10px;
 }
 .formula-box {
-  font-family: "Cambria Math", "Times New Roman", "Segoe UI", serif;
-  font-size: 1.2rem; line-height: 1.65;
+  /* Prefer math fonts so unicode ⁿ ⁱ ˣ render as true superscripts */
+  font-family: "Cambria Math", "Segoe UI Symbol", "Times New Roman", "Segoe UI", sans-serif;
+  font-size: 1.2rem; line-height: 1.75;
   background: var(--formula-bg); color: var(--formula-text);
-  /* extra top padding: radical vinculum must not be clipped by scrollport */
   padding: 1.15rem 1rem 0.9rem;
   border-radius: 10px; margin: 0.5rem 0;
   border: 1px solid #7dd3fc; border-left: 4px solid var(--accent2);
   overflow-x: auto;
   overflow-y: visible;
+}
+/* Residual HTML sub/sup (should be rare after unicode conversion) */
+.formula-box sup,
+.intuition-line sup,
+.story-step sup,
+.proof-root sup,
+.guide-list sup {
+  font-size: 0.72em;
+  vertical-align: super;
+  line-height: 0;
+  position: relative;
+  top: -0.4em;
+}
+.formula-box sub,
+.intuition-line sub,
+.story-step sub,
+.proof-root sub,
+.guide-list sub {
+  font-size: 0.72em;
+  vertical-align: sub;
+  line-height: 0;
+  position: relative;
+  bottom: -0.12em;
+}
+.intuition-line,
+.story-step p,
+.why-need,
+.guide-list {
+  font-family: "Segoe UI", "Cambria Math", "Hiragino Sans", "Noto Sans JP", sans-serif;
 }
 .formula-read {
   margin-top: 0.55rem; padding-top: 0.5rem; border-top: 1px dashed #7dd3fc;

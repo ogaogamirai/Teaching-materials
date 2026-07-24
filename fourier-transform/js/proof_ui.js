@@ -111,65 +111,201 @@
     });
   }
 
+  /*
+   * FUNDAMENTAL FIX (2026-07-24): Do NOT rely on HTML <sup>/<sub>.
+   * Japanese UI fonts on Edge/Chromium often render them almost flat —
+   * captains see "einx" / "cn" even when DOM has correct tags.
+   * Always emit Unicode superscript/subscript code points.
+   */
+  var SUPER_MAP = {
+    "0": "⁰",
+    "1": "¹",
+    "2": "²",
+    "3": "³",
+    "4": "⁴",
+    "5": "⁵",
+    "6": "⁶",
+    "7": "⁷",
+    "8": "⁸",
+    "9": "⁹",
+    "+": "⁺",
+    "-": "⁻",
+    "−": "⁻",
+    "=": "⁼",
+    "(": "⁽",
+    ")": "⁾",
+    a: "ᵃ",
+    b: "ᵇ",
+    c: "ᶜ",
+    d: "ᵈ",
+    e: "ᵉ",
+    f: "ᶠ",
+    g: "ᵍ",
+    h: "ʰ",
+    i: "ⁱ",
+    j: "ʲ",
+    k: "ᵏ",
+    l: "ˡ",
+    m: "ᵐ",
+    n: "ⁿ",
+    o: "ᵒ",
+    p: "ᵖ",
+    r: "ʳ",
+    s: "ˢ",
+    t: "ᵗ",
+    u: "ᵘ",
+    v: "ᵛ",
+    w: "ʷ",
+    x: "ˣ",
+    y: "ʸ",
+    z: "ᶻ",
+    A: "ᴬ",
+    B: "ᴮ",
+    D: "ᴰ",
+    E: "ᴱ",
+    G: "ᴳ",
+    H: "ᴴ",
+    I: "ᴵ",
+    J: "ᴶ",
+    K: "ᴷ",
+    L: "ᴸ",
+    M: "ᴹ",
+    N: "ᴺ",
+    O: "ᴼ",
+    P: "ᴾ",
+    R: "ᴿ",
+    T: "ᵀ",
+    U: "ᵁ",
+    V: "ⱽ",
+    W: "ᵂ",
+    θ: "ᶿ",
+    "∞": "∞"
+  };
+  var SUB_U_MAP = {
+    "0": "₀",
+    "1": "₁",
+    "2": "₂",
+    "3": "₃",
+    "4": "₄",
+    "5": "₅",
+    "6": "₆",
+    "7": "₇",
+    "8": "₈",
+    "9": "₉",
+    "+": "₊",
+    "-": "₋",
+    "−": "₋",
+    "=": "₌",
+    "(": "₍",
+    ")": "₎",
+    a: "ₐ",
+    e: "ₑ",
+    h: "ₕ",
+    i: "ᵢ",
+    j: "ⱼ",
+    k: "ₖ",
+    l: "ₗ",
+    m: "ₘ",
+    n: "ₙ",
+    o: "ₒ",
+    p: "ₚ",
+    r: "ᵣ",
+    s: "ₛ",
+    t: "ₜ",
+    u: "ᵤ",
+    v: "ᵥ",
+    x: "ₓ",
+    "∞": "∞"
+  };
+
+  function mapRun(str, table) {
+    if (!str) return "";
+    var out = "";
+    for (var i = 0; i < str.length; i++) {
+      var ch = str.charAt(i);
+      if (table[ch] != null) out += table[ch];
+      else if (table[ch.toLowerCase()] != null && /[A-Z]/.test(ch))
+        out += table[ch.toLowerCase()];
+      else out += ch; // keep unknown (θ, π, commas…) as-is
+    }
+    return out;
+  }
+  function toSuper(s) {
+    return mapRun(String(s).replace(/\s+/g, ""), SUPER_MAP);
+  }
+  function toSub(s) {
+    return mapRun(String(s).replace(/\s+/g, ""), SUB_U_MAP);
+  }
+
+  /** Turn existing <sup>/<sub> HTML into unicode (root cause of "flat" display). */
+  function htmlScriptsToUnicode(s) {
+    if (!s) return "";
+    var str = String(s);
+    if (str.indexOf("<") < 0) return str;
+    str = str.replace(/<sup\b[^>]*>([\s\S]*?)<\/sup>/gi, function (m, inner) {
+      // strip nested tags inside sup
+      var plain = String(inner).replace(/<[^>]+>/g, "");
+      return toSuper(plain);
+    });
+    str = str.replace(/<sub\b[^>]*>([\s\S]*?)<\/sub>/gi, function (m, inner) {
+      var plain = String(inner).replace(/<[^>]+>/g, "");
+      return toSub(plain);
+    });
+    return str;
+  }
+
   /**
-   * TeX-like sub/superscripts → <sub>/<sup>.
-   * Base is a single symbol/letter (∑, e, a, …) — not a char-class run that
-   * fails on unicode edges. Order: _{}^{} combo → ^{} → _{} → bare.
+   * TeX-like ^{}/_{} → unicode super/sub (not HTML tags).
    */
   function formatTexScripts(s) {
     if (!s) return "";
     var str = String(s);
     if (str.indexOf("^") < 0 && str.indexOf("_") < 0) return str;
 
-    // X_{low}^{up}  e.g. ∑_{n=-∞}^{∞}
     str = str.replace(
       /([^\s\\<{])_\{([^}]+)\}\^\{([^}]+)\}/g,
       function (m, base, low, up) {
-        return base + "<sub>" + low + "</sub><sup>" + up + "</sup>";
+        return base + toSub(low) + toSuper(up);
       }
     );
-    // X_{low}^up  e.g. ∑_{n=1}^∞  or ∑_{n=1}^K
     str = str.replace(
-      /([^\s\\<{])_\{([^}]+)\}\^([A-Za-z0-9+\-πθφ∞∞KNnm]+)/g,
+      /([^\s\\<{])_\{([^}]+)\}\^([A-Za-z0-9+\-πθφ∞KNnm]+)/g,
       function (m, base, low, up) {
-        return base + "<sub>" + low + "</sub><sup>" + up + "</sup>";
+        return base + toSub(low) + toSuper(up);
       }
     );
-    // X^{up}  e.g. e^{inx}, e^{-iθ}, e^{A+B}
     str = str.replace(/([^\s\\<{])\^\{([^}]+)\}/g, function (m, base, up) {
-      return base + "<sup>" + up + "</sup>";
+      return base + toSuper(up);
     });
-    // X_{low}
     str = str.replace(/([^\s\\<{])_\{([^}]+)\}/g, function (m, base, low) {
-      return base + "<sub>" + low + "</sub>";
+      return base + toSub(low);
     });
-    // X^token  e.g. e^A (no braces)
     str = str.replace(
       /([A-Za-z0-9πθφωαβγλμσΣ∑∏])\^([A-Za-z0-9+\-πθφ∞]+)/g,
       function (m, base, up) {
-        return base + "<sup>" + up + "</sup>";
+        return base + toSuper(up);
       }
     );
-    // a_n style — avoid paths (no / before)
     str = str.replace(
       /(^|[^\/\w])([A-Za-z])_([A-Za-z0-9ₙₘ]{1,6})\b/g,
       function (m, pre, base, low) {
-        return pre + base + "<sub>" + low + "</sub>";
+        return pre + base + toSub(low);
       }
     );
     return str;
   }
 
-  /** Apply TeX scripts + √ / ∫ (trusted HTML snippets OK). */
+  /** Trusted HTML or plain math → display string (unicode scripts + √/∫). */
   function formatMathHtml(s) {
     var t = String(s == null ? "" : s);
+    t = htmlScriptsToUnicode(t);
     t = formatTexScripts(t);
     t = formatRoot(t);
     t = formatIntegral(t);
     return t;
   }
 
-  /** Escape plain text, then decorate math. Safe for story/intuition/etc. */
+  /** Plain text → escape HTML entities, then unicode math decorate. */
   function escMath(s) {
     return formatMathHtml(esc(s));
   }
