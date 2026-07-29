@@ -1,0 +1,16 @@
+# 第9章：コース③足跡
+vars: { d2.config.layout-engine: elk; d2.config.pad: 8 }
+
+title: "コース③ e5→e8" { near: top-center; style.font-size: 12; style.bold: true }
+
+chain: {
+  grid-columns: 6
+  horizontal-gap: 8
+  e1: "e1(1)" { style.border-radius: 6; style.font-size: 10 }
+  e3: "e3(0)" { style.border-radius: 6; style.font-size: 10 }
+  e4: "e4(0)" { style.border-radius: 6; style.font-size: 10 }
+  e5: "e5(1)" { style.border-radius: 6; style.font-size: 10 }
+  e8: "e8(1)" { style.fill: "#EBF8FF"; style.border-radius: 6; style.font-size: 10 }
+  ok: SUCCESS { style.fill: "#C6F6D5"; style.border-radius: 6; style.font-size: 10 }
+  e1 -> e3 -> e4 -> e5 -> e8 -> ok
+}

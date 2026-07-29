@@ -1,0 +1,51 @@
+# 第2章：TSP ミニマップ（4列・横方向）
+vars: { d2.config.layout-engine: elk; d2.config.pad: 12; direction: right }
+
+title: "ミニマップ — 2・3・4番目の選択" { near: top-center; style.font-size: 14; style.bold: true }
+
+start: "A" { style.fill: "#E3F2FD"; style.stroke: "#1565C0"; style.border-radius: 8; style.bold: true }
+
+step2: {
+  grid-rows: 3
+  vertical-gap: 6
+  style.fill: "#FAFAFA"
+  style.stroke: "#CBD5E0"
+  style.border-radius: 8
+  style.font-size: 12
+
+  b: B
+  c: C
+  d: D
+}
+
+step3: {
+  grid-rows: 3
+  vertical-gap: 6
+  style.fill: "#FAFAFA"
+  style.stroke: "#CBD5E0"
+  style.border-radius: 8
+  style.font-size: 12
+
+  b: B
+  c: C
+  d: D
+}
+
+end: "A帰還" { style.fill: "#EDF2F7"; style.stroke: "#718096"; style.border-radius: 8; style.font-size: 12 }
+
+start -> step2.b: "2" { style.font-size: 10 }
+start -> step2.c: "2" { style.font-size: 10 }
+start -> step2.d: "2" { style.font-size: 10 }
+
+step2.b -> step3.c: "3" { style.font-size: 10 }
+step2.b -> step3.d: "3" { style.font-size: 10 }
+step2.c -> step3.b: "3" { style.font-size: 10 }
+step2.c -> step3.d: "3" { style.font-size: 10 }
+step2.d -> step3.b: "3" { style.font-size: 10 }
+step2.d -> step3.c: "3" { style.font-size: 10 }
+
+step3.b -> end: "4" { style.font-size: 10 }
+step3.c -> end: "4" { style.font-size: 10 }
+step3.d -> end: "4" { style.font-size: 10 }
+
+note: "2→3→4番目の選択（都市名共有）" { near: bottom-center; style.font-size: 11; style.font-color: "#666" }

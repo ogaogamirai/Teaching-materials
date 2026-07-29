@@ -1,0 +1,28 @@
+# 第8章：Node_e5 共有 — 北/南はエッジラベル
+# ビルド: python tools/build_figures_d2.py
+
+vars: {
+  d2.config.layout-engine: dagre
+  d2.config.pad: 12
+  direction: right
+}
+
+title: "Node_e5 共有（0/1・北南はエッジ上）" {
+  near: top-center
+  style.font-size: 16
+  style.bold: true
+}
+
+n1: Node_e1 { style.fill: "#E3F2FD"; style.stroke: "#1565C0"; style.border-radius: 8 }
+n3: Node_e3 { style.fill: "#EBF8FF"; style.stroke: "#3182ce"; style.border-radius: 8 }
+n2: Node_e2 { style.fill: "#FFFAF0"; style.stroke: "#d69e2e"; style.border-radius: 8 }
+n4: Node_e4 { style.fill: "#FFFAF0"; style.stroke: "#d69e2e"; style.border-radius: 8 }
+n5: Node_e5 { style.fill: "#FFF5F5"; style.stroke: "#111"; style.stroke-width: 4; style.border-radius: 10; style.bold: true }
+ok: SUCCESS { style.fill: "#C6F6D5"; style.stroke: "#276749"; style.border-radius: 8 }
+
+n1 -> n3: "1・北" { style.stroke: "#3182ce"; style.font-size: 13 }
+n1 -> n2: "0・南" { style.stroke: "#d69e2e"; style.font-size: 13 }
+n3 -> n5: "1"
+n2 -> n4: "1"
+n4 -> n5: "1"
+n5 -> ok: "1" { style.stroke: "#276749"; style.stroke-width: 3 }

@@ -1,0 +1,14 @@
+# 第13章：ネットワーク信頼性
+vars: { d2.config.layout-engine: elk; d2.config.pad: 10 }
+
+title: "病院 H — 中継 X — 発電所 P" { near: top-center; style.font-size: 13; style.bold: true }
+
+chain: {
+  grid-columns: 3
+  horizontal-gap: 24
+  H: "病院 H" { style.fill: "#EBF8FF"; style.border-radius: 8; style.font-size: 11 }
+  X: "中継 X" { style.border-radius: 8; style.font-size: 11 }
+  P: "発電所 P" { style.fill: "#FFFAF0"; style.border-radius: 8; style.font-size: 11 }
+  H -> X: "線a" { style.font-size: 10 }
+  X -> P: "線b" { style.font-size: 10 }
+}

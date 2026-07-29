@@ -1,0 +1,25 @@
+# 第11章：アリスとボブのルート
+vars: { d2.config.layout-engine: elk; d2.config.pad: 20; direction: down }
+
+title: "アリスとボブの袋" { near: top-center; style.font-size: 16; style.bold: true }
+
+alice: "アリスの袋 A\nルート1: e1→e3\nルート2: e1→e5→e4" {
+  style.fill: "#EBF8FF"
+  style.stroke: "#3182ce"
+  style.border-radius: 12
+}
+bob: "ボブの袋 B\nルート3: e2→e4\nルート2: e1→e5→e4" {
+  style.fill: "#FFFAF0"
+  style.stroke: "#d69e2e"
+  style.border-radius: 12
+}
+
+common: "共通 = ルート2だけ\n積 A∩B" {
+  style.fill: "#C6F6D5"
+  style.stroke: "#276749"
+  style.border-radius: 10
+  style.bold: true
+}
+
+alice -> common
+bob -> common

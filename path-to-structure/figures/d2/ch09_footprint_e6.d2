@@ -1,0 +1,14 @@
+# 第9章：コース①足跡
+vars: { d2.config.layout-engine: elk; d2.config.pad: 8 }
+
+title: "コース① e1→e3→e6" { near: top-center; style.font-size: 12; style.bold: true }
+
+chain: {
+  grid-columns: 4
+  horizontal-gap: 12
+  e1: "e1(1)" { style.border-radius: 6; style.font-size: 11 }
+  e3: "e3(1)" { style.border-radius: 6; style.font-size: 11 }
+  e6: "e6(1)" { style.fill: "#EBF8FF"; style.border-radius: 6; style.font-size: 11 }
+  ok: SUCCESS { style.fill: "#C6F6D5"; style.border-radius: 6; style.font-size: 11 }
+  e1 -> e3 -> e6 -> ok
+}

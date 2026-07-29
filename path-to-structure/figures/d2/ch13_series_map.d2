@@ -1,0 +1,15 @@
+# 第13章：シリーズ全体マップ
+vars: { d2.config.layout-engine: elk; d2.config.pad: 10 }
+
+title: "シリーズ全体 — なぜこの順番か" { near: top-center; style.font-size: 13; style.bold: true }
+
+parts: {
+  grid-columns: 5
+  horizontal-gap: 10
+  pA: "A\n0–1章" { style.fill: "#EBF8FF"; style.border-radius: 8; style.font-size: 10 }
+  pB: "B\n2–3章" { style.fill: "#E9D8FD"; style.border-radius: 8; style.font-size: 10 }
+  pC: "C\n4–5章" { style.fill: "#FFFAF0"; style.border-radius: 8; style.font-size: 10 }
+  pD: "D\n6–9章" { style.fill: "#C6F6D5"; style.border-radius: 8; style.font-size: 10 }
+  pE: "E\n10–13章" { style.fill: "#FED7D7"; style.border-radius: 8; style.font-size: 10 }
+  pA -> pB -> pC -> pD -> pE
+}

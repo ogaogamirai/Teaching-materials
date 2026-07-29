@@ -1,0 +1,21 @@
+# 第4章：BDD 合体後
+vars: { d2.config.layout-engine: dagre; d2.config.pad: 12; direction: right }
+
+title: "BDD — 失敗・成功を共有した木" { near: top-center; style.font-size: 16; style.bold: true }
+
+e1: "e1?" { style.fill: "#E3F2FD"; style.stroke: "#1565C0"; style.border-radius: 8 }
+e2: "e2?" { style.border-radius: 8 }
+e3: "e3?" { style.border-radius: 8 }
+e4: "e4?" { style.border-radius: 8 }
+fail: FAIL { style.fill: "#FED7D7"; style.stroke: "#C53030"; style.border-radius: 8; style.bold: true }
+ok: SUCCESS { style.fill: "#C6F6D5"; style.stroke: "#276749"; style.border-radius: 8; style.bold: true }
+
+e1 -> e2: "0"
+e1 -> e3: "1"
+e2 -> fail: "0" { style.stroke-dash: 4 }
+e2 -> e4: "1"
+e3 -> fail: "0" { style.stroke-dash: 4 }
+e3 -> ok: "1"
+e4 -> ok: "1"
+
+note: "失敗1つ・成功1つにまとまった" { near: bottom-center; style.font-size: 12; style.font-color: "#666" }

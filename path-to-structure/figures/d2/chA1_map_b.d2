@@ -1,0 +1,33 @@
+# 付録A1：マップB（合流）
+vars: { d2.config.layout-engine: elk; d2.config.pad: 12; direction: right }
+
+title: "マップB — 前半は違う、後半 M→G を共有" { near: top-center; style.font-size: 14; style.bold: true }
+
+routes: {
+  grid-rows: 2
+  vertical-gap: 20
+  horizontal-gap: 8
+
+  north: {
+    direction: right
+    S: S { shape: circle; style.fill: "#E3F2FD"; style.font-size: 11 }
+    A: A { shape: circle; style.font-size: 11 }
+    C: C { shape: circle; style.font-size: 11 }
+    S -> A: e1 { style.font-size: 10 }
+    A -> C: e3 { style.font-size: 10 }
+  }
+
+  south: {
+    direction: right
+    S2: S { shape: circle; style.fill: "#E3F2FD"; style.font-size: 11 }
+    B: B { shape: circle; style.font-size: 11 }
+    S2 -> B: e2 { style.font-size: 10 }
+  }
+}
+
+M: M { shape: circle; style.fill: "#FFFAF0"; style.font-size: 11 }
+G: G { shape: circle; style.fill: "#C6F6D5"; style.stroke-width: 3; style.font-size: 11 }
+
+routes.north.C -> M: e5 { style.stroke: "#276749"; style.stroke-width: 2; style.font-size: 10 }
+routes.south.B -> M: e6 { style.font-size: 10 }
+M -> G: e7 { style.font-size: 10 }

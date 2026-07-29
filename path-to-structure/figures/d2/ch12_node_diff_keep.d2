@@ -1,0 +1,11 @@
+# 第12章：差（DIFF）0枝 — 残す例
+vars: { d2.config.layout-engine: elk; d2.config.pad: 20; direction: right }
+
+title: "差 — Aにだけある枝は残す" { near: top-center; style.font-size: 15; style.bold: true }
+
+A: "Node_A\n0→FAIL / 1→SUCCESS\n（Aにだけある）" { style.fill: "#EBF8FF"; style.border-radius: 8 }
+B: "Node_B\n0→FAIL / 1→FAIL\n（Bにはない）" { style.fill: "#FFFAF0"; style.border-radius: 8 }
+R: "差の1枝\n→ SUCCESS" { style.fill: "#C6F6D5"; style.stroke: "#276749"; style.border-radius: 8; style.bold: true }
+
+A -> R: "DIFF"
+B -> R: "DIFF"

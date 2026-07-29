@@ -1,0 +1,13 @@
+# 第11章：積の結果
+vars: { d2.config.layout-engine: elk; d2.config.pad: 8 }
+
+title: "積の結果 — e1→e5→e4" { near: top-center; style.font-size: 13; style.bold: true }
+
+chain: {
+  grid-columns: 3
+  horizontal-gap: 14
+  e1: "Node_e1" { style.border-radius: 8; style.font-size: 11 }
+  e5: "Node_e5" { style.border-radius: 8; style.font-size: 11 }
+  e4: "e4→OK" { style.fill: "#C6F6D5"; style.border-radius: 8; style.font-size: 11; style.bold: true }
+  e1 -> e5 -> e4
+}

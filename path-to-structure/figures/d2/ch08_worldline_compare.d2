@@ -1,0 +1,19 @@
+# 第8章：北南世界線比較
+vars: { d2.config.layout-engine: elk; d2.config.pad: 12; direction: right }
+
+title: "北と南 — Node_e5 を共有" { near: top-center; style.font-size: 14; style.bold: true }
+
+routes: {
+  grid-rows: 2
+  vertical-gap: 12
+
+  north: "北: e1→e3" { style.fill: "#EBF8FF"; style.stroke: "#3182ce"; style.border-radius: 8; style.font-size: 11 }
+  south: "南: e2→e4" { style.fill: "#FFFAF0"; style.stroke: "#d69e2e"; style.border-radius: 8; style.font-size: 11 }
+}
+
+e5: "Node_e5" { style.fill: "#C6F6D5"; style.stroke: "#276749"; style.border-radius: 8; style.bold: true; style.font-size: 11 }
+ok: SUCCESS { style.fill: "#C6F6D5"; style.border-radius: 6; style.font-size: 11 }
+
+routes.north -> e5
+routes.south -> e5
+e5 -> ok

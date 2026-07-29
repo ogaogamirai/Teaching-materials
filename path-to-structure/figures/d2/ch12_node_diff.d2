@@ -1,0 +1,13 @@
+# 第12章：差（DIFF）ノード例
+vars: { d2.config.layout-engine: elk; d2.config.pad: 20; direction: right }
+
+title: "差 — Bにもある SUCCESS は FAIL へ潰す" { near: top-center; style.font-size: 14; style.bold: true }
+
+A: "Node_A\n1→SUCCESS\n（アリスにある）" { style.fill: "#EBF8FF"; style.border-radius: 8 }
+B: "Node_B\n1→SUCCESS\n（除きたい側にも）" { style.fill: "#FFFAF0"; style.border-radius: 8 }
+R: "差の1枝\n→ FAIL" { style.fill: "#FED7D7"; style.stroke: "#C53030"; style.border-radius: 8; style.bold: true }
+
+A -> R: "DIFF"
+B -> R: "DIFF"
+
+note: "数の引き算ではなく、矢印が切られる" { near: bottom-center; style.font-size: 12; style.font-color: "#C53030" }

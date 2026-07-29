@@ -1,0 +1,28 @@
+# 第10章：避難袋
+vars: { d2.config.layout-engine: elk; d2.config.pad: 24; direction: right }
+
+title: "二つの避難袋（コントラスト）" { near: top-center; style.font-size: 16; style.bold: true }
+
+bagA: "袋A\n{ ルート1, ルート2 }" {
+  style.fill: "#EBF8FF"
+  style.stroke: "#3182ce"
+  style.border-radius: 12
+  style.bold: true
+}
+bagB: "袋B\n{ ルート2, ルート3 }" {
+  style.fill: "#FFFAF0"
+  style.stroke: "#d69e2e"
+  style.border-radius: 12
+  style.bold: true
+}
+
+r1: "ルート1\nAのみ" { style.border-radius: 8 }
+r2: "ルート2\n共通" { style.fill: "#C6F6D5"; style.stroke: "#276749"; style.border-radius: 8; style.bold: true }
+r3: "ルート3\nBのみ" { style.border-radius: 8 }
+
+bagA -> r1: { style.stroke-dash: 4 }
+bagA -> r2
+bagB -> r2
+bagB -> r3: { style.stroke-dash: 4 }
+
+note: "積 = ルート2だけ残る" { near: bottom-center; style.font-size: 12; style.font-color: "#276749" }

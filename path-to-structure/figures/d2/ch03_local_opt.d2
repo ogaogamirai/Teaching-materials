@@ -1,0 +1,13 @@
+# 第3章：局所最適の罠
+vars: { d2.config.layout-engine: elk; d2.config.pad: 20; direction: down }
+
+title: "2-opt の限界 — 局所最適（18）vs 大域（12）" { near: top-center; style.font-size: 16; style.bold: true }
+
+local: "近くの山\n距離 18" { style.fill: "#FFFAF0"; style.stroke: "#d69e2e"; style.border-radius: 10 }
+valley: "谷\n（一時的に悪化）" { style.fill: "#EDF2F7"; style.stroke: "#718096"; style.border-radius: 8 }
+global: "遠くの山\n距離 12" { style.fill: "#C6F6D5"; style.stroke: "#276749"; style.border-radius: 10; style.bold: true }
+
+local -> valley: "2-opt は拒否" { style.stroke-dash: 4; style.font-color: "#C53030" }
+valley -> global: "焼きなましなら可能" { style.stroke: "#276749" }
+
+note: "2-opt は谷を越えられない → 18 で止まる" { near: bottom-center; style.font-size: 12; style.font-color: "#666" }

@@ -1,0 +1,25 @@
+# 第11章：町マップ
+vars: { d2.config.layout-engine: elk; d2.config.pad: 16; direction: down }
+
+title: "町マップ — e1→e5→e4" { near: top-center; style.font-size: 14; style.bold: true }
+
+town: {
+  grid-rows: 2
+  grid-columns: 2
+  horizontal-gap: 56
+  vertical-gap: 44
+  style.fill: "#F7F8FE"
+  style.stroke: "#0D32B2"
+  style.border-radius: 12
+
+  A: A { shape: circle; style.font-size: 11 }
+  B: B { shape: circle; style.font-size: 11 }
+  C: C { shape: circle; style.font-size: 11 }
+  D: "D" { shape: circle; style.stroke-width: 3; style.font-size: 11 }
+
+  A -> B: e1 { style.stroke-width: 3; style.stroke: "#3182ce" }
+  A -> C: e2 { style.font-size: 10 }
+  B -> D: e3 { style.font-size: 10 }
+  C -> D: e4 { style.stroke-width: 3; style.stroke: "#276749" }
+  B -> C: e5 { style.stroke: "#d69e2e"; style.stroke-width: 3 }
+}

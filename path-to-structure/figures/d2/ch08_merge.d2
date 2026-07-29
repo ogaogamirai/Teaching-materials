@@ -1,0 +1,50 @@
+# 第8章：合流マップ
+# ビルド: python tools/build_figures_d2.py
+
+vars: {
+  d2.config.layout-engine: elk
+  d2.config.pad: 28
+  direction: down
+}
+
+title: "合流マップ — 前半は違う／後半は同じ e5" {
+  near: top-center
+  style.font-size: 17
+  style.bold: true
+}
+
+S: "スタート S" {
+  style.fill: "#E3F2FD"
+  style.stroke: "#1565C0"
+  style.border-radius: 10
+}
+A: A { style.border-radius: 8 }
+B: B { style.border-radius: 8 }
+M: "合流 M" {
+  style.fill: "#ffffff"
+  style.stroke: "#111111"
+  style.stroke-width: 4
+  style.border-radius: 10
+}
+G: "ゴール G" {
+  style.fill: "#C6F6D5"
+  style.stroke: "#276749"
+  style.border-radius: 10
+}
+
+S -> A: e1 { style.stroke: "#3182ce"; style.stroke-width: 3 }
+S -> B: e2 { style.stroke: "#d69e2e"; style.stroke-width: 3 }
+A -> M: e3 { style.stroke: "#3182ce"; style.stroke-width: 3 }
+B -> M: e4 { style.stroke: "#d69e2e"; style.stroke-width: 3 }
+M -> G: "e5（共有）" {
+  style.stroke: "#2f855a"
+  style.stroke-width: 5
+  style.font-color: "#276749"
+  style.bold: true
+}
+
+note: "北: S→e1→A→e3→M→e5→G ／ 南: S→e2→B→e4→M→e5→G" {
+  near: bottom-center
+  style.font-size: 11
+  style.font-color: "#666666"
+}

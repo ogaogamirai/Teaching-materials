@@ -1,0 +1,57 @@
+# 第9章：完成 ZDD — 三コースを横3行で展開
+# ビルド: python tools/build_figures_d2.py
+
+vars: {
+  d2.config.layout-engine: elk
+  d2.config.pad: 16
+  direction: right
+}
+
+title: "完成 ZDD — 受付 Node_e3（0/1 はエッジ上）" {
+  near: top-center
+  style.font-size: 16
+  style.bold: true
+}
+
+n1: Node_e1 { style.fill: "#E3F2FD"; style.stroke: "#1565C0"; style.border-radius: 8 }
+n3: Node_e3 { style.fill: "#FFF5F5"; style.stroke: "#111"; style.stroke-width: 4; style.border-radius: 10; style.bold: true }
+ok: SUCCESS { style.fill: "#C6F6D5"; style.stroke: "#276749"; style.border-radius: 8 }
+
+courses: {
+  grid-rows: 3
+  vertical-gap: 28
+  horizontal-gap: 36
+
+  c1: {
+    direction: right
+    n4: Node_e4 { style.fill: "#EBF8FF"; style.stroke: "#3182ce"; style.border-radius: 8 }
+    n5: Node_e5 { style.fill: "#F7F8FE"; style.stroke: "#0D32B2"; style.border-radius: 8 }
+    n8: Node_e8 { style.fill: "#F7F8FE"; style.stroke: "#0D32B2"; style.border-radius: 8 }
+    n4 -> n5: "0"
+    n5 -> n8: "1"
+    n8 -> ok: "1" { style.stroke: "#276749" }
+  }
+
+  c2: {
+    direction: right
+    n7: Node_e7 { style.fill: "#FFFAF0"; style.stroke: "#d69e2e"; style.border-radius: 8 }
+    n7 -> ok: "1" { style.stroke: "#276749" }
+  }
+
+  c3: {
+    direction: right
+    n6: Node_e6 { style.fill: "#F0FFF4"; style.stroke: "#38a169"; style.border-radius: 8 }
+    n6 -> ok: "1" { style.stroke: "#276749" }
+  }
+}
+
+n1 -> n3: "1" { style.stroke-width: 3 }
+n3 -> courses.c1.n4: "0・コ①" { style.stroke: "#3182ce"; style.font-size: 13 }
+n3 -> courses.c3.n6: "1・コ③" { style.stroke: "#38a169"; style.font-size: 13 }
+courses.c1.n4 -> courses.c2.n7: "1・コ②" { style.stroke: "#d69e2e"; style.font-size: 13 }
+
+note: "0 枝 → FAIL（省略）" {
+  near: bottom-center
+  style.font-size: 11
+  style.font-color: "#666666"
+}

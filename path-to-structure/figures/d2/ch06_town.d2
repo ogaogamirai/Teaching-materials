@@ -1,0 +1,41 @@
+# 第6・7章：四角い町（1×1）
+# ビルド: python tools/build_figures_d2.py
+
+vars: {
+  d2.config.layout-engine: elk
+  d2.config.theme-id: 300
+  d2.config.pad: 28
+}
+
+title: "四角い町 — 上回り A→B→D ／ 下回り A→C→D" {
+  near: top-center
+  style.font-size: 17
+  style.bold: true
+}
+
+town: {
+  grid-rows: 2
+  grid-columns: 2
+  horizontal-gap: 72
+  vertical-gap: 64
+  style.fill: "#F7F8FE"
+  style.stroke: "#0D32B2"
+  style.border-radius: 16
+  style.stroke-width: 2
+
+  A: A { shape: circle; style.fill: "#ffffff" }
+  B: B { shape: circle }
+  C: C { shape: circle }
+  D: "ゴール D" { shape: circle; style.stroke: "#111111"; style.stroke-width: 4 }
+
+  A -> B: e1 { style.stroke: "#3182ce"; style.stroke-width: 3 }
+  A -> C: e2 { style.stroke: "#d69e2e"; style.stroke-width: 3 }
+  B -> D: e3 { style.stroke: "#3182ce"; style.stroke-width: 3 }
+  C -> D: e4 { style.stroke: "#d69e2e"; style.stroke-width: 3 }
+}
+
+note: "第4・5・6・7章で同じ舞台" {
+  near: bottom-center
+  style.font-size: 12
+  style.font-color: "#666666"
+}

@@ -1,0 +1,41 @@
+# 第6章：過去／フロンティア／未来
+# ビルド: python tools/build_figures_d2.py
+
+vars: {
+  d2.config.layout-engine: elk
+  d2.config.pad: 24
+  direction: right
+}
+
+title: "覚えるのは境界だけ（全日記は捨ててよい）" {
+  near: top-center
+  style.font-size: 16
+  style.bold: true
+}
+
+past: "過去 | すでに確定" {
+  style.fill: "#EEEEEE"
+  style.stroke: "#888888"
+  style.border-radius: 10
+}
+frontier: "フロンティア | つながりのメモ" {
+  style.fill: "#FFFFFF"
+  style.stroke: "#111111"
+  style.stroke-width: 3
+  style.border-radius: 12
+  style.bold: true
+}
+future: "未来 | まだ見ていない" {
+  style.fill: "#F5F5F5"
+  style.stroke: "#888888"
+  style.border-radius: 10
+  style.stroke-dash: 5
+}
+
+past -> frontier -> future
+
+note: "ノートが同じなら、この先の仕事も同じ" {
+  near: bottom-center
+  style.font-size: 12
+  style.font-color: "#666666"
+}

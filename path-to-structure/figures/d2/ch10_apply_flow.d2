@@ -1,0 +1,14 @@
+# 第10章：Apply フロー
+vars: { d2.config.layout-engine: elk; d2.config.pad: 8 }
+
+title: "Apply — 袋を列挙せず合成" { near: top-center; style.font-size: 13; style.bold: true }
+
+flow: {
+  grid-columns: 4
+  horizontal-gap: 16
+  bagA: "袋A" { style.fill: "#fff"; style.stroke: "#222"; style.border-radius: 8; style.font-size: 11 }
+  apply: "Apply" { style.font-size: 11; style.bold: true }
+  bagB: "袋B" { style.fill: "#fff"; style.stroke: "#222"; style.border-radius: 8; style.font-size: 11 }
+  result: "新袋" { style.fill: "#fff"; style.stroke: "#111"; style.stroke-width: 2; style.border-radius: 8; style.font-size: 11; style.bold: true }
+  bagA -> apply -> bagB -> result
+}

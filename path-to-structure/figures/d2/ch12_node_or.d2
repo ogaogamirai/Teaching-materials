@@ -1,0 +1,13 @@
+# 第12章：和（OR）ノード例
+vars: { d2.config.layout-engine: elk; d2.config.pad: 20; direction: right }
+
+title: "和 — 片方でも SUCCESS なら SUCCESS" { near: top-center; style.font-size: 15; style.bold: true }
+
+A: "Node_A\n1→SUCCESS\n（上回りあり）" { style.fill: "#EBF8FF"; style.border-radius: 8 }
+B: "Node_B\n1→FAIL\n（上回りなし）" { style.fill: "#FFFAF0"; style.border-radius: 8 }
+R: "和の1枝\n→ SUCCESS" { style.fill: "#C6F6D5"; style.stroke: "#276749"; style.border-radius: 8; style.bold: true }
+
+A -> R: "OR"
+B -> R: "OR"
+
+note: "積なら FAIL / 和なら SUCCESS" { near: bottom-center; style.font-size: 12; style.font-color: "#666" }

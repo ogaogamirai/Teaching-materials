@@ -1,0 +1,43 @@
+# 第9章：三本分岐
+# ビルド: python tools/build_figures_d2.py
+
+vars: {
+  d2.config.layout-engine: elk
+  d2.config.pad: 28
+  direction: down
+}
+
+title: "マップ — 交差点 C から三本に分かれる" {
+  near: top-center
+  style.font-size: 17
+  style.bold: true
+}
+
+S: "スタート S" {
+  style.fill: "#E3F2FD"
+  style.stroke: "#1565C0"
+  style.border-radius: 10
+}
+C: "交差点 C | 窓口" {
+  style.fill: "#FFF5F5"
+  style.stroke: "#111111"
+  style.stroke-width: 4
+  style.border-radius: 12
+  style.bold: true
+}
+D: D { style.fill: "#EBF8FF"; style.stroke: "#3182ce"; style.border-radius: 8 }
+E: E { style.fill: "#FFFAF0"; style.stroke: "#d69e2e"; style.border-radius: 8 }
+F: F { style.fill: "#F0FFF4"; style.stroke: "#38a169"; style.border-radius: 8 }
+G: "ゴール G" {
+  style.fill: "#C6F6D5"
+  style.stroke: "#276749"
+  style.border-radius: 10
+}
+
+S -> C: e1 { style.stroke-width: 3 }
+C -> D: e3 { style.stroke: "#3182ce"; style.stroke-width: 3 }
+C -> E: e4 { style.stroke: "#d69e2e"; style.stroke-width: 3 }
+C -> F: e5 { style.stroke: "#38a169"; style.stroke-width: 3 }
+D -> G: e6 { style.stroke: "#3182ce" }
+E -> G: e7 { style.stroke: "#d69e2e" }
+F -> G: e8 { style.stroke: "#38a169" }

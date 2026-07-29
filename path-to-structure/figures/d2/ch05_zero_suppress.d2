@@ -1,0 +1,30 @@
+# 第5章：ゼロ抑制
+vars: { d2.config.layout-engine: elk; d2.config.pad: 20; direction: right }
+
+title: "ゼロ抑制 — 即死の質問を消す" { near: top-center; style.font-size: 16; style.bold: true }
+
+before: {
+  label: "消す前"
+  style.fill: "#FFFAF0"
+  style.stroke: "#d69e2e"
+  style.border-radius: 10
+
+  e: "e ?" { style.border-radius: 8 }
+  fail: FAIL { style.fill: "#FED7D7"; style.stroke: "#C53030"; style.border-radius: 8 }
+  next: A { style.border-radius: 8 }
+
+  e -> fail: "1（必ず失敗）" { style.stroke: "#C53030"; style.stroke-dash: 4 }
+  e -> next: "0"
+}
+
+after: {
+  label: "消したあと"
+  style.fill: "#F0FFF4"
+  style.stroke: "#276749"
+  style.border-radius: 10
+
+  next2: A { style.border-radius: 8 }
+  note2: "質問 e を削除\n0枝を直結" { style.font-size: 11; style.font-color: "#276749" }
+}
+
+before -> after: "ゼロ抑制" { style.stroke-width: 3; style.font-size: 14 }

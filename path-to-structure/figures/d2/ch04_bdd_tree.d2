@@ -1,0 +1,19 @@
+# 第4章：二分決定木
+vars: { d2.config.layout-engine: dagre; d2.config.pad: 12; direction: right }
+
+title: "二分決定木 — e1? → e2/e3 → …" { near: top-center; style.font-size: 16; style.bold: true }
+
+e1: "e1?" { style.fill: "#E3F2FD"; style.stroke: "#1565C0"; style.border-radius: 8 }
+e2: "e2?" { style.fill: "#F7F8FE"; style.stroke: "#0D32B2"; style.border-radius: 8 }
+e3: "e3?" { style.fill: "#F7F8FE"; style.stroke: "#0D32B2"; style.border-radius: 8 }
+e4: "e4?" { style.fill: "#F7F8FE"; style.stroke: "#0D32B2"; style.border-radius: 8 }
+fail: FAIL { style.fill: "#FED7D7"; style.stroke: "#C53030"; style.border-radius: 8 }
+ok: SUCCESS { style.fill: "#C6F6D5"; style.stroke: "#276749"; style.border-radius: 8 }
+
+e1 -> e2: "0" { style.stroke: "#d69e2e" }
+e1 -> e3: "1" { style.stroke: "#3182ce" }
+e2 -> fail: "0" { style.stroke-dash: 4 }
+e2 -> e4: "1"
+e3 -> fail: "0" { style.stroke-dash: 4 }
+e3 -> ok: "1（上回り）" { style.stroke: "#276749" }
+e4 -> ok: "1（下回り）" { style.stroke: "#276749" }

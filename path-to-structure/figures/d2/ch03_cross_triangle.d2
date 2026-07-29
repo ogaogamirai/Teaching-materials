@@ -1,0 +1,18 @@
+# 第3章：クロスの三角不等式
+vars: { d2.config.layout-engine: elk; d2.config.pad: 24; direction: down }
+
+title: "クロス = 寄り道（三角不等式）" { near: top-center; style.font-size: 16; style.bold: true }
+
+A: A { style.border-radius: 8 }
+B: B { style.border-radius: 8 }
+C: C { style.border-radius: 8 }
+D: D { style.border-radius: 8 }
+X: "X" { shape: circle; style.fill: "#FED7D7"; style.stroke: "#C53030" }
+
+A -> X: { style.stroke: "#C53030"; style.stroke-dash: 4 }
+X -> B: { style.stroke: "#C53030"; style.stroke-dash: 4 }
+C -> X: { style.stroke: "#C53030"; style.stroke-dash: 4 }
+X -> D: { style.stroke: "#C53030"; style.stroke-dash: 4 }
+
+A -> B: "直線の方が短い" { style.stroke: "#276749"; style.stroke-width: 3 }
+C -> D: "直線の方が短い" { style.stroke: "#276749"; style.stroke-width: 3 }

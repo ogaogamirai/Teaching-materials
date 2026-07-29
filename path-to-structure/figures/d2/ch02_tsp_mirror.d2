@@ -1,0 +1,19 @@
+# 第2章：①右回り vs ⑥左回り
+vars: { d2.config.layout-engine: elk; d2.config.pad: 24; direction: right }
+
+title: "① 右回り と ⑥ 左回り（双子）" { near: top-center; style.font-size: 16; style.bold: true }
+
+r: "① 右回り\nA → B → C → D → A" {
+  style.fill: "#EBF8FF"
+  style.stroke: "#3182ce"
+  style.border-radius: 12
+  style.bold: true
+}
+l: "⑥ 左回り\nA → D → C → B → A" {
+  style.fill: "#FFFAF0"
+  style.stroke: "#d69e2e"
+  style.border-radius: 12
+  style.bold: true
+}
+
+note: "同じ辺・同じ距離 → 6÷2 = 3 通り" { near: bottom-center; style.font-size: 12; style.font-color: "#666" }
