@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.7.1" preserveAspectRatio="xMinYMin meet" viewBox="0 0 2658 567"><svg class="d2-77495754 d2-svg" width="2658" height="567" viewBox="-101 -101 2658 567"><rect x="-101.000000" y="-101.000000" width="2658.000000" height="567.000000" rx="0.000000" fill="#FFFFFF" class=" fill-N7" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-77495754 .text-bold {
+	font-family: "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif; font-weight: 700;
+}
+
+.d2-77495754 .text-italic {
+	font-family: "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif; font-style: italic;
+}
+]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.d2-77495754 .fill-N1{fill:#0A0F25;}
+		.d2-77495754 .fill-N2{fill:#676C7E;}
+		.d2-77495754 .fill-N3{fill:#9499AB;}
+		.d2-77495754 .fill-N4{fill:#CFD2DD;}
+		.d2-77495754 .fill-N5{fill:#DEE1EB;}
+		.d2-77495754 .fill-N6{fill:#EEF1F8;}
+		.d2-77495754 .fill-N7{fill:#FFFFFF;}
+		.d2-77495754 .fill-B1{fill:#0D32B2;}
+		.d2-77495754 .fill-B2{fill:#0D32B2;}
+		.d2-77495754 .fill-B3{fill:#E3E9FD;}
+		.d2-77495754 .fill-B4{fill:#E3E9FD;}
+		.d2-77495754 .fill-B5{fill:#EDF0FD;}
+		.d2-77495754 .fill-B6{fill:#F7F8FE;}
+		.d2-77495754 .fill-AA2{fill:#4A6FF3;}
+		.d2-77495754 .fill-AA4{fill:#EDF0FD;}
+		.d2-77495754 .fill-AA5{fill:#F7F8FE;}
+		.d2-77495754 .fill-AB4{fill:#EDF0FD;}
+		.d2-77495754 .fill-AB5{fill:#F7F8FE;}
+		.d2-77495754 .stroke-N1{stroke:#0A0F25;}
+		.d2-77495754 .stroke-N2{stroke:#676C7E;}
+		.d2-77495754 .stroke-N3{stroke:#9499AB;}
+		.d2-77495754 .stroke-N4{stroke:#CFD2DD;}
+		.d2-77495754 .stroke-N5{stroke:#DEE1EB;}
+		.d2-77495754 .stroke-N6{stroke:#EEF1F8;}
+		.d2-77495754 .stroke-N7{stroke:#FFFFFF;}
+		.d2-77495754 .stroke-B1{stroke:#0D32B2;}
+		.d2-77495754 .stroke-B2{stroke:#0D32B2;}
+		.d2-77495754 .stroke-B3{stroke:#E3E9FD;}
+		.d2-77495754 .stroke-B4{stroke:#E3E9FD;}
+		.d2-77495754 .stroke-B5{stroke:#EDF0FD;}
+		.d2-77495754 .stroke-B6{stroke:#F7F8FE;}
+		.d2-77495754 .stroke-AA2{stroke:#4A6FF3;}
+		.d2-77495754 .stroke-AA4{stroke:#EDF0FD;}
+		.d2-77495754 .stroke-AA5{stroke:#F7F8FE;}
+		.d2-77495754 .stroke-AB4{stroke:#EDF0FD;}
+		.d2-77495754 .stroke-AB5{stroke:#F7F8FE;}
+		.d2-77495754 .background-color-N1{background-color:#0A0F25;}
+		.d2-77495754 .background-color-N2{background-color:#676C7E;}
+		.d2-77495754 .background-color-N3{background-color:#9499AB;}
+		.d2-77495754 .background-color-N4{background-color:#CFD2DD;}
+		.d2-77495754 .background-color-N5{background-color:#DEE1EB;}
+		.d2-77495754 .background-color-N6{background-color:#EEF1F8;}
+		.d2-77495754 .background-color-N7{background-color:#FFFFFF;}
+		.d2-77495754 .background-color-B1{background-color:#0D32B2;}
+		.d2-77495754 .background-color-B2{background-color:#0D32B2;}
+		.d2-77495754 .background-color-B3{background-color:#E3E9FD;}
+		.d2-77495754 .background-color-B4{background-color:#E3E9FD;}
+		.d2-77495754 .background-color-B5{background-color:#EDF0FD;}
+		.d2-77495754 .background-color-B6{background-color:#F7F8FE;}
+		.d2-77495754 .background-color-AA2{background-color:#4A6FF3;}
+		.d2-77495754 .background-color-AA4{background-color:#EDF0FD;}
+		.d2-77495754 .background-color-AA5{background-color:#F7F8FE;}
+		.d2-77495754 .background-color-AB4{background-color:#EDF0FD;}
+		.d2-77495754 .background-color-AB5{background-color:#F7F8FE;}
+		.d2-77495754 .color-N1{color:#0A0F25;}
+		.d2-77495754 .color-N2{color:#676C7E;}
+		.d2-77495754 .color-N3{color:#9499AB;}
+		.d2-77495754 .color-N4{color:#CFD2DD;}
+		.d2-77495754 .color-N5{color:#DEE1EB;}
+		.d2-77495754 .color-N6{color:#EEF1F8;}
+		.d2-77495754 .color-N7{color:#FFFFFF;}
+		.d2-77495754 .color-B1{color:#0D32B2;}
+		.d2-77495754 .color-B2{color:#0D32B2;}
+		.d2-77495754 .color-B3{color:#E3E9FD;}
+		.d2-77495754 .color-B4{color:#E3E9FD;}
+		.d2-77495754 .color-B5{color:#EDF0FD;}
+		.d2-77495754 .color-B6{color:#F7F8FE;}
+		.d2-77495754 .color-AA2{color:#4A6FF3;}
+		.d2-77495754 .color-AA4{color:#EDF0FD;}
+		.d2-77495754 .color-AA5{color:#F7F8FE;}
+		.d2-77495754 .color-AB4{color:#EDF0FD;}
+		.d2-77495754 .color-AB5{color:#F7F8FE;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.sketch-overlay-B1{fill:url(#streaks-darker-d2-77495754);mix-blend-mode:lighten}.sketch-overlay-B2{fill:url(#streaks-darker-d2-77495754);mix-blend-mode:lighten}.sketch-overlay-B3{fill:url(#streaks-bright-d2-77495754);mix-blend-mode:darken}.sketch-overlay-B4{fill:url(#streaks-bright-d2-77495754);mix-blend-mode:darken}.sketch-overlay-B5{fill:url(#streaks-bright-d2-77495754);mix-blend-mode:darken}.sketch-overlay-B6{fill:url(#streaks-bright-d2-77495754);mix-blend-mode:darken}.sketch-overlay-AA2{fill:url(#streaks-dark-d2-77495754);mix-blend-mode:overlay}.sketch-overlay-AA4{fill:url(#streaks-bright-d2-77495754);mix-blend-mode:darken}.sketch-overlay-AA5{fill:url(#streaks-bright-d2-77495754);mix-blend-mode:darken}.sketch-overlay-AB4{fill:url(#streaks-bright-d2-77495754);mix-blend-mode:darken}.sketch-overlay-AB5{fill:url(#streaks-bright-d2-77495754);mix-blend-mode:darken}.sketch-overlay-N1{fill:url(#streaks-darker-d2-77495754);mix-blend-mode:lighten}.sketch-overlay-N2{fill:url(#streaks-dark-d2-77495754);mix-blend-mode:overlay}.sketch-overlay-N3{fill:url(#streaks-normal-d2-77495754);mix-blend-mode:color-burn}.sketch-overlay-N4{fill:url(#streaks-normal-d2-77495754);mix-blend-mode:color-burn}.sketch-overlay-N5{fill:url(#streaks-bright-d2-77495754);mix-blend-mode:darken}.sketch-overlay-N6{fill:url(#streaks-bright-d2-77495754);mix-blend-mode:darken}.sketch-overlay-N7{fill:url(#streaks-bright-d2-77495754);mix-blend-mode:darken}.light-code{display: block}.dark-code{display: none}]]></style><g class="5p2Q5paZQQ=="><g class="shape" ><rect x="0.000000" y="262.000000" width="95.000000" height="66.000000" stroke="#0D32B2" fill="#F7F8FE" class=" stroke-B1 fill-B6" style="stroke-width:2;" /></g><text x="47.500000" y="300.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">材料A</text></g><g class="5p2Q5paZQg=="><g class="shape" ><rect x="407.000000" y="0.000000" width="95.000000" height="66.000000" stroke="#0D32B2" fill="#F7F8FE" class=" stroke-B1 fill-B6" style="stroke-width:2;" /></g><text x="454.500000" y="38.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">材料B</text></g><g class="5p2Q5paZQw=="><g class="shape" ><rect x="408.000000" y="126.000000" width="94.000000" height="66.000000" stroke="#0D32B2" fill="#F7F8FE" class=" stroke-B1 fill-B6" style="stroke-width:2;" /></g><text x="455.000000" y="164.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">材料C</text></g><g class="5bel56iLMQ=="><g class="shape" ><rect x="368.000000" y="262.000000" width="173.000000" height="66.000000" stroke="#0D32B2" fill="#F7F8FE" class=" stroke-B1 fill-B6" style="stroke-width:2;" /></g><text x="454.500000" y="300.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">切る（工程1）</text></g><g class="5bel56iLMg=="><g class="shape" ><rect x="1050.000000" y="0.000000" width="173.000000" height="66.000000" stroke="#0D32B2" fill="#F7F8FE" class=" stroke-B1 fill-B6" style="stroke-width:2;" /></g><text x="1136.500000" y="38.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">磨く（工程2）</text></g><g class="5bel56iLMw=="><g class="shape" ><rect x="1050.000000" y="126.000000" width="173.000000" height="66.000000" stroke="#0D32B2" fill="#F7F8FE" class=" stroke-B1 fill-B6" style="stroke-width:2;" /></g><text x="1136.500000" y="164.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">塗る（工程3）</text></g><g class="5bel56iLNA=="><g class="shape" ><rect x="1790.000000" y="155.000000" width="289.000000" height="82.000000" stroke="#b02a2a" fill="#fde2e2" style="stroke-width:2;" /></g><text x="1934.500000" y="193.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px"><tspan x="1934.500000" dy="0.000000">組み立て（工程4）</tspan><tspan x="1934.500000" dy="18.500000">1時間に10個 ← ボトルネック</tspan></text></g><g class="5a6M5oiQ5ZOB"><g class="shape" ><rect x="2352.000000" y="163.000000" width="104.000000" height="66.000000" stroke="#1b6e2e" fill="#e3f6e5" style="stroke-width:2;" /></g><text x="2404.000000" y="201.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">完成品</text></g><g class="5Zyo5bqr"><g class="shape" ><rect x="989.000000" y="299.000000" width="295.000000" height="66.000000" stroke="#a05a1c" fill="#fdeee2" style="stroke-width:2;" /></g><text x="1136.500000" y="337.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">在庫（工程4の前にたまる）</text></g><g class="KOadkOaWmUEgLSZndDsg5bel56iLMSlbMF0="><marker id="mk-d2-77495754-3488378134" markerWidth="10.000000" markerHeight="12.000000" refX="7.000000" refY="6.000000" viewBox="0.000000 0.000000 10.000000 12.000000" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0.000000,0.000000 10.000000,6.000000 0.000000,12.000000" fill="#0D32B2" class="connection fill-B1" stroke-width="2" /> </marker><path d="M 96.500000 295.000000 C 204.100006 295.000000 258.898987 295.000000 364.500000 295.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-77495754-3488378134)" mask="url(#d2-77495754)" /></g><g class="KOadkOaWmUIgLSZndDsg5bel56iLMilbMF0="><path d="M 504.000000 33.000000 C 712.400024 33.000000 822.000000 33.000000 1046.000000 33.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-77495754-3488378134)" mask="url(#d2-77495754)" /></g><g class="KOadkOaWmUMgLSZndDsg5bel56iLMylbMF0="><path d="M 504.500000 159.000000 C 712.500000 159.000000 822.000000 159.000000 1046.000000 159.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-77495754-3488378134)" mask="url(#d2-77495754)" /></g><g class="KOW3peeoizEgLSZndDsg5bel56iLNClbMF0="><path d="M 542.986662 284.269405 C 720.200012 263.700012 839.299988 258.500000 950.750000 258.500000 C 1062.199951 258.500000 1587.599976 250.500000 1786.049075 219.124652" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-77495754-3488378134)" mask="url(#d2-77495754)" /></g><g class="KOW3peeoizIgLSZndDsg5bel56iLNClbMF0="><path d="M 1225.000000 33.000000 C 1474.199951 33.000000 1596.441040 57.299999 1830.504473 152.986374" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-77495754-3488378134)" mask="url(#d2-77495754)" /></g><g class="KOW3peeoizMgLSZndDsg5bel56iLNClbMF0="><path d="M 1225.000000 159.000000 C 1474.199951 159.000000 1587.599976 163.600006 1786.016427 181.637857" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-77495754-3488378134)" mask="url(#d2-77495754)" /></g><g class="KOW3peeoizQgLSZndDsg5a6M5oiQ5ZOBKVswXQ=="><path d="M 2080.500000 195.500000 C 2188.100098 195.500000 2242.899902 195.500000 2348.500000 195.500000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-77495754-3488378134)" mask="url(#d2-77495754)" /></g><g class="KOW3peeoizEgLSZndDsg5Zyo5bqrKVswXQ=="><path d="M 542.986662 305.730595 C 720.200012 326.299988 809.799988 331.500000 985.000000 331.500000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-77495754-3488378134)" mask="url(#d2-77495754)" /><text x="764.500000" y="334.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">作っても（20個/時）</text></g><g class="KOWcqOW6qyAtJmd0OyDlt6XnqIs0KVswXQ=="><path d="M 1286.000000 331.500000 C 1486.400024 331.500000 1592.000000 312.500000 1808.219239 237.806081" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-77495754-3488378134)" mask="url(#d2-77495754)" /><text x="1554.500000" y="325.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">処理できるのは（10個/時）</text></g><mask id="d2-77495754" maskUnits="userSpaceOnUse" x="-101" y="-101" width="2658" height="567">
+<rect x="-101" y="-101" width="2658" height="567" fill="white"></rect>
+<rect x="675.000000" y="318.000000" width="179" height="21" fill="black"></rect>
+<rect x="1436.000000" y="309.000000" width="237" height="21" fill="black"></rect>
+</mask></svg></svg>
