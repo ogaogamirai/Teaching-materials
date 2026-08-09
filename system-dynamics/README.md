@@ -79,10 +79,43 @@ SD・TOC のありがたみが伝わる演習を**様々な角度**で用意し�
 - **数式は表示し説明する**: 使う数式は必ず意味・読み方つきで（P9）
 - **数理前提は理論ルートで補う**: 発展編の前提は math-bridge（P10）
 
-## 配布形式（将来）
+## 配布形式
 
-- **現行:** Markdown（`units/`・`math-bridge/`）
-- **将来:** 1つのHTMLファイルにまとめて配布・利用しやすくする（fourier の `index.html` 方式・file:// 可を想定）。数式は LaTeX 記法で書いておき、KaTeX でレンダリング
+- **現行:** Markdown（`units/`・`math-bridge/`）が原稿。`index.html` はビルド生成物（統合版）
+- **ビルド:** `python tools/build_sd_html.py` → 全章を1HTMLに統合（KaTeX vendor 同梱・図インライン・file:// 可）
+- **検証:** `python tools/verify_sd.py` → 数式 compile・図参照・太字×括弧・矢印の向きを機械検証（緑まで）
+- **数式:** 日本語はビルド時に自動 `\text{}` 化（math_protect.py）。LaTeX 記法が正本
+
+## 図（SVG）の規約
+
+教材の図は **手書き SVG**（`figures/*.svg`）。矢印の向きは機械検証される。
+
+### SVG の書き方（規約）
+
+```xml
+<!-- ノード: data-node="id" を付けた <g> に寸法を持つ <rect> を1つ含める -->
+<g data-node="followers">
+  <rect x="105" y="60" width="120" height="45" class="node"/>
+  <text ...>フォロワー</text>
+</g>
+
+<!-- エッジ: data-edge="from->to" を付けた <g> に <path> と <polygon class="arrow"> -->
+<!-- 矢印ポリゴンの【先頭頂点 = 尖った先（tip）】の規則 -->
+<g data-edge="followers->viewers">
+  <path class="edge" d="M 165 105 L 165 228"/>
+  <polygon class="arrow" points="165,238 156,224 174,224"/>  <!-- 先頭(165,238)がtip -->
+</g>
+```
+
+### 矢印の向きの規則
+
+- **矢印ポリゴンの先頭頂点 = 尖った先（tip）**。verify は「tip が from から to の向きを指すか」を内積で検証
+- **CRT などの因果図は「原因 → 結果」＝下から上**に矢印を向ける（Root が下、UDE が上）
+
+### 手直し時の注意
+
+- 図を追加・修正したら必ず `python tools/verify_sd.py` で矢印の向きを確認する
+- 手書き SVG は「ノード位置」と「矢印の向き」を別々に管理できるので、D2 のフォント埋込（図ごと10KB+）を避けられる
 
 ## 構成
 
@@ -93,6 +126,10 @@ SD・TOC のありがたみが伝わる演習を**様々な角度**で用意し�
 | `units/exercises/*.md` | 選択式演習の題材カード（EX1〜EX8） |
 | `units/exercises/solutions/*.md` | 演習の解答・解説（EX1〜EX10） |
 | `math-bridge/B*.md` | 数理前提の補助Unit（理論ルート） |
+| `figures/*.svg` | 手書き SVG 図（data-node/data-edge 宣言つき） |
+| `tools/` | ビルド（build_sd_html.py）・検証（verify_sd.py）・数式保護（math_protect.py） |
+| `vendor/katex/` | KaTeX 同梱（オフライン可） |
+| `index.html` | ビルド生成物（配布物） |
 | `README.md` | このファイル |
 
 ## 補足: SD と OR（オペレーションリサーチ）の関係
@@ -100,6 +137,6 @@ SD・TOC のありがたみが伝わる演習を**様々な角度**で用意し�
 - **OR（解く）**: 最適解・最適化（線形計画・待ち行列・確率）。「この計画が最適」を答える
 - **SD（理解する）**: 構造・フィードバック・時間的振る舞い。「なぜそうなるのか」を理解する
 - **補完関係**: 身近な問題では OR が強く見えるが、気候変動・感染症・都市・経営戦略などの**複雑で大きな問題**では SD の構造理解が真価を発揮する
-- 教材では Unit 12（構想）でこの SD の強みを実例から体験する予定
+- 教材では Unit 12 でこの SD の強みを実例から体験する
 
-*2026-08-09 — 新設。キャプテンと対話で1ユニットずつ作成。v0.7: Unit12（構想）追加・SDとORの関係を明記。*
+*2026-08-09 — 新設。キャプテンと対話で1ユニットずつ作成。v0.7: Unit12 追加・SDとORの関係を明記。v0.8: 1HTMLビルド基盤（tools/・vendor/katex・手書きSVG+矢印検証）。*

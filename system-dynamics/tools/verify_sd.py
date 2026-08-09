@@ -55,6 +55,168 @@ def check_figure_files(issues: list[str]) -> None:
                 issues.append(f"Missing figure file: {f}")
 
 
+# ---------------------------------------------------------------------------
+# L3 Figure arrow-direction verification
+# ---------------------------------------------------------------------------
+
+def _polygon_centroid(points_str: str) -> tuple[float, float]:
+    """Return (cx, cy) of a polygon points attribute."""
+    pts = [float(v) for v in points_str.replace(",", " ").split()]
+    xs, ys = pts[0::2], pts[1::2]
+    return sum(xs) / len(xs), sum(ys) / len(ys)
+
+
+def _polygon_tip(points_str: str) -> tuple[float, float]:
+    """Return the vertex farthest from the centroid (the arrow's pointy tip)."""
+    pts = [float(v) for v in points_str.replace(",", " ").split()]
+    xs, ys = pts[0::2], pts[1::2]
+    cx, cy = sum(xs) / len(xs), sum(ys) / len(ys)
+    best_i, best_d = 0, -1.0
+    for i in range(len(xs)):
+        d = (xs[i] - cx) ** 2 + (ys[i] - cy) ** 2
+        if d > best_d:
+            best_d, best_i = d, i
+    return xs[best_i], ys[best_i]
+
+
+def _node_center(node_el: dict) -> tuple[float, float]:
+    """Compute center of a node from its x/y/width/height (or cx/cy)."""
+    try:
+        if node_el.get("cx") and node_el.get("cy"):
+            return float(node_el["cx"]), float(node_el["cy"])
+        x = float(node_el.get("x", 0) or 0)
+        y = float(node_el.get("y", 0) or 0)
+        w = float(node_el.get("width", 0) or 0)
+        h = float(node_el.get("height", 0) or 0)
+        return x + w / 2, y + h / 2
+    except (ValueError, TypeError):
+        return (0.0, 0.0)
+
+
+def check_svg_arrows(figures_dir: Path, issues: list[str]) -> None:
+    """Verify each SVG's data-edge declarations point from source to target.
+
+    Contract:
+      - Each node: <rect ... data-node="id" x y width height>
+      - Each edge: <path data-edge="from->to" .../> plus <polygon class="arrow"/>
+        whose centroid should lie nearer the *target* than the *source*.
+    """
+    import xml.etree.ElementTree as ET
+
+    for svg_path in sorted(figures_dir.glob("*.svg")):
+        try:
+            tree = ET.parse(svg_path)
+        except ET.ParseError as exc:
+            issues.append(f"{svg_path.name}: XML parse error: {exc}")
+            continue
+
+        root = tree.getroot()
+        ns = {"svg": "http://www.w3.org/2000/svg"}
+
+        # Collect node declarations (data-node on any shape, incl. <g>).
+        nodes: dict[str, tuple[float, float]] = {}
+        for el in root.iter():
+            nid = el.get("data-node")
+            if nid and nid not in nodes:
+                # If this is a <g>, look for a child <rect>/<ellipse>/<circle> for geometry.
+                shape = None
+                for child in el.iter():
+                    if child.tag.endswith(("rect", "ellipse", "circle")) and child is not el:
+                        shape = child
+                        break
+                if shape is not None:
+                    nodes[nid] = _node_center(
+                        {k: shape.get(k, "") for k in
+                         ("x", "y", "width", "height", "cx", "cy")}
+                    )
+                else:
+                    nodes[nid] = _node_center(
+                        {k: el.get(k, "") for k in
+                         ("x", "y", "width", "height", "cx", "cy")}
+                    )
+
+        # Check each data-edge.
+        edge_count = 0
+        for el in root.iter():
+            edge = el.get("data-edge")
+            if not edge:
+                continue
+            edge_count += 1
+            parts = edge.split("->")
+            if len(parts) != 2:
+                issues.append(f"{svg_path.name}: malformed data-edge '{edge}'")
+                continue
+            src, tgt = parts[0].strip(), parts[1].strip()
+            if src not in nodes or tgt not in nodes:
+                issues.append(
+                    f"{svg_path.name}: data-edge '{edge}' references unknown node "
+                    f"(have: {sorted(nodes)})"
+                )
+                continue
+
+            sx, sy = nodes[src]
+            tx, ty = nodes[tgt]
+
+            # Arrow polygon must be inside the same <g> (or be a sibling) as the
+            # element carrying data-edge.
+            arrow = None
+            container = el  # element with data-edge (usually <g>)
+            for child in container.iter():
+                if child.get("class") == "arrow":
+                    arrow = child
+                    break
+            if arrow is None:
+                issues.append(f"{svg_path.name}: edge '{edge}' has no <polygon class='arrow'> in its <g>")
+                continue
+
+            pts = arrow.get("points", "")
+            # Direction from source to target.
+            dx, dy = tx - sx, ty - sy
+            # Arrow polygon convention: the FIRST vertex is the tip.
+            coords = [float(v) for v in pts.replace(",", " ").split()]
+            tip_x, tip_y = coords[0], coords[1]
+            # Arrow tip should point toward the target (positive dot product).
+            dot = dx * (tip_x - sx) + dy * (tip_y - sy)
+            if dot <= 0:
+                issues.append(
+                    f"{svg_path.name}: edge '{edge}' arrow tip points away from target "
+                    f"(tip=({tip_x:.0f},{tip_y:.0f}) src=({sx:.0f},{sy:.0f}) tgt=({tx:.0f},{ty:.0f}))"
+                )
+
+        # Every edge must have an arrow.
+        if edge_count == 0 and list(figures_dir.glob("*.svg")):
+            # Only warn if there are data-edges expected but none found for this file
+            # (skip: some figures have no edges, that's fine).
+            pass
+
+
+def check_svg_node_edges_consistent(figures_dir: Path, issues: list[str]) -> None:
+    """Every data-edge's from/to must be a declared data-node."""
+    import xml.etree.ElementTree as ET
+
+    for svg_path in sorted(figures_dir.glob("*.svg")):
+        try:
+            tree = ET.parse(svg_path)
+        except ET.ParseError:
+            continue
+        root = tree.getroot()
+        node_ids = {
+            el.get("data-node")
+            for el in root.iter()
+            if el.get("data-node")
+        }
+        for el in root.iter():
+            edge = el.get("data-edge")
+            if not edge:
+                continue
+            for part in edge.split("->"):
+                part = part.strip()
+                if part and part not in node_ids:
+                    issues.append(
+                        f"{svg_path.name}: data-edge '{edge}' node '{part}' not a data-node"
+                    )
+
+
 def check_bold_bracket(html: str, issues: list[str]) -> None:
     """Bold that leaks outside brackets (e.g. **text**（補足）)."""
     # Heuristic: closing ** immediately before a full-width open bracket.
@@ -127,6 +289,8 @@ def main() -> int:
         check_inline_figures_exist(html, issues)
         check_figure_files(issues)
         check_bold_bracket(html, issues)
+        check_svg_node_edges_consistent(FIGURES_DIR, issues)
+        check_svg_arrows(FIGURES_DIR, issues)
 
     check_math_compile(issues)
 
