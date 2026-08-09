@@ -60,7 +60,7 @@ Step4 対立を「蒸発」させる前提を探す（Injection）
   [行動A] 夜遅くまでスマホを見る      ←→   [行動B] 早く寝る
 ```
 
-![fig](figures/unit8_evaporating_cloud.svg)
+![fig:蒸発する雲 — 対立する2つの行動（A・B）は、実は共通の目的Cから出ている](figures/unit8_evaporating_cloud.svg)
 
 **対立しているのは「行動A vs 行動B」。でも目的C（元気に過ごしたい）は共通。**
 

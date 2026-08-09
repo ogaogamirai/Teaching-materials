@@ -1,88 +1,101 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="660" height="380" viewBox="0 0 660 380" role="img" aria-label="正のループ（増えるともっと増える）と負のループ（増えると抑える）">
-  <style>
-    .node-green { fill: #e3f6e5; stroke: #1b6e2e; stroke-width: 2; rx: 8; }
-    .node-orange { fill: #fdeee2; stroke: #a05a1c; stroke-width: 2; rx: 8; }
-    .node-mid { fill: #eef4fb; stroke: #243b53; stroke-width: 2; rx: 8; }
-    .edge { stroke: #243b53; stroke-width: 2.5; fill: none; }
-    .edge-green { stroke: #1b6e2e; stroke-width: 2.5; fill: none; }
-    .edge-orange { stroke: #a05a1c; stroke-width: 2.5; fill: none; }
-    .arrow { fill: #243b53; }
-    .label { font-family: "Yu Gothic UI", sans-serif; font-size: 15px; fill: #1f2933; }
-    .label-small { font-family: "Yu Gothic UI", sans-serif; font-size: 12px; fill: #52606d; }
-    .title { font-family: "Yu Gothic UI", sans-serif; font-size: 16px; font-weight: bold; fill: #243b53; }
-    .plus { font-family: "Yu Gothic UI", sans-serif; font-size: 22px; font-weight: bold; fill: #1b6e2e; }
-    .minus { font-family: "Yu Gothic UI", sans-serif; font-size: 22px; font-weight: bold; fill: #a05a1c; }
-  </style>
+<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.7.1" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1457 642"><svg class="d2-3172964011 d2-svg" width="1457" height="642" viewBox="-101 -101 1457 642"><rect x="-101.000000" y="-101.000000" width="1457.000000" height="642.000000" rx="0.000000" fill="#FFFFFF" class=" fill-N7" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-3172964011 .text-bold {
+	font-family: "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif; font-weight: 700;
+}
 
-  <!-- ===== 正のループ（左） ===== -->
-  <text x="165" y="30" class="title" text-anchor="middle">正のループ（増えるともっと増える）</text>
+.d2-3172964011 .text-italic {
+	font-family: "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif; font-style: italic;
+}
+]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
 
-  <!-- ノード -->
-  <g data-node="followers">
-    <rect x="105" y="60" width="120" height="45" class="node-green"/>
-    <text x="165" y="86" class="label" text-anchor="middle" font-weight="bold">フォロワー</text>
-  </g>
-
-  <g data-node="viewers">
-    <rect x="105" y="230" width="120" height="45" class="node-mid"/>
-    <text x="165" y="256" class="label" text-anchor="middle">見る人が増える</text>
-  </g>
-
-  <g data-node="grow">
-    <rect x="105" y="310" width="120" height="40" class="node-mid"/>
-    <text x="165" y="334" class="label" text-anchor="middle">さらに増える</text>
-  </g>
-
-  <!-- エッジ（時計回り） -->
-  <g data-edge="followers->viewers">
-    <path class="edge-green" d="M 165 105 L 165 228"/>
-    <polygon class="arrow" points="165,238 156,224 174,224"/>
-  </g>
-  <g data-edge="viewers->grow">
-    <path class="edge-green" d="M 165 275 L 165 308"/>
-    <polygon class="arrow" points="165,316 156,304 174,304"/>
-  </g>
-  <g data-edge="grow->followers">
-    <path class="edge-green" d="M 110 310 C 40 300, 40 110, 115 88"/>
-    <polygon class="arrow" points="122,84 108,96 100,84"/>
-  </g>
-
-  <text x="65" y="205" class="plus">＋</text>
-  <text x="60" y="295" class="plus">＋</text>
-  <text x="235" y="180" class="label-small">増えると、さらに増える（雪だるま）</text>
-
-  <!-- ===== 負のループ（右） ===== -->
-  <text x="495" y="30" class="title" text-anchor="middle">負のループ（増えると抑える）</text>
-
-  <g data-node="temp">
-    <rect x="435" y="60" width="120" height="45" class="node-orange"/>
-    <text x="495" y="86" class="label" text-anchor="middle" font-weight="bold">室温</text>
-  </g>
-
-  <g data-node="hot">
-    <rect x="435" y="230" width="120" height="45" class="node-mid"/>
-    <text x="495" y="256" class="label" text-anchor="middle">暑いと感じる</text>
-  </g>
-
-  <g data-node="ac">
-    <rect x="435" y="310" width="120" height="40" class="node-mid"/>
-    <text x="495" y="334" class="label" text-anchor="middle">エアコンを下げる</text>
-  </g>
-
-  <g data-edge="temp->hot">
-    <path class="edge-orange" d="M 495 105 L 495 228"/>
-    <polygon class="arrow" points="495,238 486,224 504,224"/>
-  </g>
-  <g data-edge="hot->ac">
-    <path class="edge-orange" d="M 495 275 L 495 308"/>
-    <polygon class="arrow" points="495,316 486,304 504,304"/>
-  </g>
-  <g data-edge="ac->temp">
-    <path class="edge-orange" d="M 440 310 C 370 300, 370 110, 445 88"/>
-    <polygon class="arrow" points="452,84 438,96 430,84"/>
-  </g>
-
-  <text x="395" y="205" class="minus">−</text>
-  <text x="390" y="295" class="minus">−</text>
-  <text x="565" y="180" class="label-small">増えると、抑える方向（バランス）</text>
-</svg>
+		.d2-3172964011 .fill-N1{fill:#0A0F25;}
+		.d2-3172964011 .fill-N2{fill:#676C7E;}
+		.d2-3172964011 .fill-N3{fill:#9499AB;}
+		.d2-3172964011 .fill-N4{fill:#CFD2DD;}
+		.d2-3172964011 .fill-N5{fill:#DEE1EB;}
+		.d2-3172964011 .fill-N6{fill:#EEF1F8;}
+		.d2-3172964011 .fill-N7{fill:#FFFFFF;}
+		.d2-3172964011 .fill-B1{fill:#0D32B2;}
+		.d2-3172964011 .fill-B2{fill:#0D32B2;}
+		.d2-3172964011 .fill-B3{fill:#E3E9FD;}
+		.d2-3172964011 .fill-B4{fill:#E3E9FD;}
+		.d2-3172964011 .fill-B5{fill:#EDF0FD;}
+		.d2-3172964011 .fill-B6{fill:#F7F8FE;}
+		.d2-3172964011 .fill-AA2{fill:#4A6FF3;}
+		.d2-3172964011 .fill-AA4{fill:#EDF0FD;}
+		.d2-3172964011 .fill-AA5{fill:#F7F8FE;}
+		.d2-3172964011 .fill-AB4{fill:#EDF0FD;}
+		.d2-3172964011 .fill-AB5{fill:#F7F8FE;}
+		.d2-3172964011 .stroke-N1{stroke:#0A0F25;}
+		.d2-3172964011 .stroke-N2{stroke:#676C7E;}
+		.d2-3172964011 .stroke-N3{stroke:#9499AB;}
+		.d2-3172964011 .stroke-N4{stroke:#CFD2DD;}
+		.d2-3172964011 .stroke-N5{stroke:#DEE1EB;}
+		.d2-3172964011 .stroke-N6{stroke:#EEF1F8;}
+		.d2-3172964011 .stroke-N7{stroke:#FFFFFF;}
+		.d2-3172964011 .stroke-B1{stroke:#0D32B2;}
+		.d2-3172964011 .stroke-B2{stroke:#0D32B2;}
+		.d2-3172964011 .stroke-B3{stroke:#E3E9FD;}
+		.d2-3172964011 .stroke-B4{stroke:#E3E9FD;}
+		.d2-3172964011 .stroke-B5{stroke:#EDF0FD;}
+		.d2-3172964011 .stroke-B6{stroke:#F7F8FE;}
+		.d2-3172964011 .stroke-AA2{stroke:#4A6FF3;}
+		.d2-3172964011 .stroke-AA4{stroke:#EDF0FD;}
+		.d2-3172964011 .stroke-AA5{stroke:#F7F8FE;}
+		.d2-3172964011 .stroke-AB4{stroke:#EDF0FD;}
+		.d2-3172964011 .stroke-AB5{stroke:#F7F8FE;}
+		.d2-3172964011 .background-color-N1{background-color:#0A0F25;}
+		.d2-3172964011 .background-color-N2{background-color:#676C7E;}
+		.d2-3172964011 .background-color-N3{background-color:#9499AB;}
+		.d2-3172964011 .background-color-N4{background-color:#CFD2DD;}
+		.d2-3172964011 .background-color-N5{background-color:#DEE1EB;}
+		.d2-3172964011 .background-color-N6{background-color:#EEF1F8;}
+		.d2-3172964011 .background-color-N7{background-color:#FFFFFF;}
+		.d2-3172964011 .background-color-B1{background-color:#0D32B2;}
+		.d2-3172964011 .background-color-B2{background-color:#0D32B2;}
+		.d2-3172964011 .background-color-B3{background-color:#E3E9FD;}
+		.d2-3172964011 .background-color-B4{background-color:#E3E9FD;}
+		.d2-3172964011 .background-color-B5{background-color:#EDF0FD;}
+		.d2-3172964011 .background-color-B6{background-color:#F7F8FE;}
+		.d2-3172964011 .background-color-AA2{background-color:#4A6FF3;}
+		.d2-3172964011 .background-color-AA4{background-color:#EDF0FD;}
+		.d2-3172964011 .background-color-AA5{background-color:#F7F8FE;}
+		.d2-3172964011 .background-color-AB4{background-color:#EDF0FD;}
+		.d2-3172964011 .background-color-AB5{background-color:#F7F8FE;}
+		.d2-3172964011 .color-N1{color:#0A0F25;}
+		.d2-3172964011 .color-N2{color:#676C7E;}
+		.d2-3172964011 .color-N3{color:#9499AB;}
+		.d2-3172964011 .color-N4{color:#CFD2DD;}
+		.d2-3172964011 .color-N5{color:#DEE1EB;}
+		.d2-3172964011 .color-N6{color:#EEF1F8;}
+		.d2-3172964011 .color-N7{color:#FFFFFF;}
+		.d2-3172964011 .color-B1{color:#0D32B2;}
+		.d2-3172964011 .color-B2{color:#0D32B2;}
+		.d2-3172964011 .color-B3{color:#E3E9FD;}
+		.d2-3172964011 .color-B4{color:#E3E9FD;}
+		.d2-3172964011 .color-B5{color:#EDF0FD;}
+		.d2-3172964011 .color-B6{color:#F7F8FE;}
+		.d2-3172964011 .color-AA2{color:#4A6FF3;}
+		.d2-3172964011 .color-AA4{color:#EDF0FD;}
+		.d2-3172964011 .color-AA5{color:#F7F8FE;}
+		.d2-3172964011 .color-AB4{color:#EDF0FD;}
+		.d2-3172964011 .color-AB5{color:#F7F8FE;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.sketch-overlay-B1{fill:url(#streaks-darker-d2-3172964011);mix-blend-mode:lighten}.sketch-overlay-B2{fill:url(#streaks-darker-d2-3172964011);mix-blend-mode:lighten}.sketch-overlay-B3{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-B4{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-B5{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-B6{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-AA2{fill:url(#streaks-dark-d2-3172964011);mix-blend-mode:overlay}.sketch-overlay-AA4{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-AA5{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-AB4{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-AB5{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-N1{fill:url(#streaks-darker-d2-3172964011);mix-blend-mode:lighten}.sketch-overlay-N2{fill:url(#streaks-dark-d2-3172964011);mix-blend-mode:overlay}.sketch-overlay-N3{fill:url(#streaks-normal-d2-3172964011);mix-blend-mode:color-burn}.sketch-overlay-N4{fill:url(#streaks-normal-d2-3172964011);mix-blend-mode:color-burn}.sketch-overlay-N5{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-N6{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-N7{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.light-code{display: block}.dark-code{display: none}]]></style><g class="5q2j44Gu44Or44O844OX"><g class="shape" ><rect x="0.000000" y="0.000000" width="387.000000" height="66.000000" stroke="#1b6e2e" fill="#e3f6e5" style="stroke-width:2;" /></g><text x="193.500000" y="38.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">正のループ（増えるともっと増える）</text></g><g class="44OV44Kp44Ot44Ov44O8"><g class="shape" ><rect x="447.000000" y="0.000000" width="145.000000" height="66.000000" stroke="#1b6e2e" fill="#e3f6e5" style="stroke-width:2;" /></g><text x="519.500000" y="38.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">フォロワー</text></g><g class="6KaL44KL5Lq644GM5aKX44GI44KL"><g class="shape" ><rect x="303.000000" y="187.000000" width="185.000000" height="66.000000" stroke="#243b53" fill="#eef4fb" style="stroke-width:2;" /></g><text x="395.500000" y="225.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">見る人が増える</text></g><g class="44GV44KJ44Gr5aKX44GI44KL"><g class="shape" ><rect x="437.000000" y="374.000000" width="165.000000" height="66.000000" stroke="#243b53" fill="#eef4fb" style="stroke-width:2;" /></g><text x="519.500000" y="412.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">さらに増える</text></g><g class="6LKg44Gu44Or44O844OX"><g class="shape" ><rect x="652.000000" y="0.000000" width="327.000000" height="66.000000" stroke="#a05a1c" fill="#fdeee2" style="stroke-width:2;" /></g><text x="815.500000" y="38.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">負のループ（増えると抑える）</text></g><g class="5a6k5rip"><g class="shape" ><rect x="1039.000000" y="0.000000" width="84.000000" height="66.000000" stroke="#a05a1c" fill="#fdeee2" style="stroke-width:2;" /></g><text x="1081.000000" y="38.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">室温</text></g><g class="5pqR44GE44Go5oSf44GY44KL"><g class="shape" ><rect x="837.000000" y="187.000000" width="165.000000" height="66.000000" stroke="#243b53" fill="#eef4fb" style="stroke-width:2;" /></g><text x="919.500000" y="225.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">暑いと感じる</text></g><g class="44Ko44Ki44Kz44Oz44KS5LiL44GS44KL"><g class="shape" ><rect x="979.000000" y="374.000000" width="205.000000" height="66.000000" stroke="#243b53" fill="#eef4fb" style="stroke-width:2;" /></g><text x="1081.500000" y="412.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">エアコンを下げる</text></g><g class="KOODleOCqeODreODr-ODvCAtJmd0OyDopovjgovkurrjgYzlopfjgYjjgospWzBd"><marker id="mk-d2-3172964011-3488378134" markerWidth="10.000000" markerHeight="12.000000" refX="7.000000" refY="6.000000" viewBox="0.000000 0.000000 10.000000 12.000000" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0.000000,0.000000 10.000000,6.000000 0.000000,12.000000" fill="#0D32B2" class="connection fill-B1" stroke-width="2" /> </marker><path d="M 473.909593 66.712685 C 411.500000 114.300003 395.500000 138.699997 395.500000 183.500000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3172964011-3488378134)" mask="url(#d2-3172964011)" /><text x="412.000000" y="119.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">増える</text></g><g class="KOimi-OCi-S6uuOBjOWil-OBiOOCiyAtJmd0OyDjgZXjgonjgavlopfjgYjjgospWzBd"><path d="M 395.500000 254.500000 C 395.500000 301.299988 411.299988 325.700012 471.333978 372.055351" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3172964011-3488378134)" mask="url(#d2-3172964011)" /><text x="412.000000" y="332.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">見る人が多い</text></g><g class="KOOBleOCieOBq-Wil-OBiOOCiyAtJmd0OyDjg5Xjgqnjg63jg6_jg7wpWzBd"><path d="M 577.979347 373.495332 C 660.250000 325.700012 681.250000 294.799988 681.250000 266.750000 C 681.250000 238.699997 660.450012 114.300003 580.700293 67.523729" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3172964011-3488378134)" mask="url(#d2-3172964011)" /><text x="678.500000" y="228.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">さらにフォロワーが増える</text></g><g class="KOWupOa4qSAtJmd0OyDmmpHjgYTjgajmhJ_jgZjjgospWzBd"><path d="M 1037.516187 58.496942 C 943.250000 112.699997 919.250000 138.699997 919.250000 183.500000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3172964011-3488378134)" mask="url(#d2-3172964011)" /><text x="954.500000" y="112.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">暑い</text></g><g class="KOaakeOBhOOBqOaEn-OBmOOCiyAtJmd0OyDjgqjjgqLjgrPjg7PjgpLkuIvjgZLjgospWzBd"><path d="M 919.250000 254.500000 C 919.250000 301.299988 940.049988 325.700012 1019.799707 372.476271" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3172964011-3488378134)" mask="url(#d2-3172964011)" /><text x="946.500000" y="335.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">調整</text></g><g class="KOOCqOOCouOCs-ODs-OCkuS4i-OBkuOCiyAtJmd0OyDlrqTmuKkpWzBd"><path d="M 1117.208375 373.131372 C 1167.750000 325.700012 1180.750000 294.799988 1180.750000 266.750000 C 1180.750000 238.699997 1167.949951 114.300003 1119.645474 68.259752" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3172964011-3488378134)" mask="url(#d2-3172964011)" /><text x="1179.000000" y="227.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">冷える（抑える）</text></g><mask id="d2-3172964011" maskUnits="userSpaceOnUse" x="-101" y="-101" width="1457" height="642">
+<rect x="-101" y="-101" width="1457" height="642" fill="white"></rect>
+<rect x="381.000000" y="103.000000" width="62" height="21" fill="black"></rect>
+<rect x="352.000000" y="316.000000" width="120" height="21" fill="black"></rect>
+<rect x="561.000000" y="212.000000" width="235" height="21" fill="black"></rect>
+<rect x="933.000000" y="96.000000" width="43" height="21" fill="black"></rect>
+<rect x="925.000000" y="319.000000" width="43" height="21" fill="black"></rect>
+<rect x="1100.000000" y="211.000000" width="158" height="21" fill="black"></rect>
+</mask></svg></svg>

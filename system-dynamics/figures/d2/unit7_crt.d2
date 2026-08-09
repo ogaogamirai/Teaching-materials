@@ -1,0 +1,85 @@
+# Unit 7 — CRT（現状問題ツリー）: 5つの症状 → 共通原因 → Root
+direction: down
+
+朝起きられない: 朝、起きられない {
+  shape: rectangle
+  style: {
+    fill: '#fdeee2'
+    stroke: '#a05a1c'
+  }
+}
+
+朝ごはんを食べない: 朝ごはんを食べない {
+  shape: rectangle
+  style: {
+    fill: '#fdeee2'
+    stroke: '#a05a1c'
+  }
+}
+
+授業中に眠くなる: 授業中に眠くなる {
+  shape: rectangle
+  style: {
+    fill: '#fdeee2'
+    stroke: '#a05a1c'
+  }
+}
+
+成績が下がる: 成績が下がる {
+  shape: rectangle
+  style: {
+    fill: '#fdeee2'
+    stroke: '#a05a1c'
+  }
+}
+
+友達と衝突する: 友達と衝突する {
+  shape: rectangle
+  style: {
+    fill: '#fdeee2'
+    stroke: '#a05a1c'
+  }
+}
+
+エネルギー不足: エネルギー不足 {
+  shape: rectangle
+  style: {
+    fill: '#eef4fb'
+    stroke: '#243b53'
+  }
+}
+
+集中力が続かない: 集中力が続かない {
+  shape: rectangle
+  style: {
+    fill: '#eef4fb'
+    stroke: '#243b53'
+  }
+}
+
+睡眠不足: 睡眠不足（共通の原因） {
+  shape: rectangle
+  style: {
+    fill: '#eef4fb'
+    stroke: '#243b53'
+  }
+}
+
+Root: 夜更かし（スマホ） {
+  shape: rectangle
+  style: {
+    fill: '#fde2e2'
+    stroke: '#b02a2a'
+  }
+}
+
+# 因果: 原因（下）→ 結果（上）。D2 の direction: down で、
+# ソース順に「上→下」となるため、Root を先に書いて上に置く。
+Root -> 睡眠不足
+睡眠不足 -> エネルギー不足
+睡眠不足 -> 集中力が続かない
+エネルギー不足 -> 朝起きられない
+エネルギー不足 -> 朝ごはんを食べない
+集中力が続かない -> 授業中に眠くなる
+集中力が続かない -> 成績が下がる
+睡眠不足 -> 友達と衝突する

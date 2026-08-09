@@ -1,76 +1,96 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="720" height="370" viewBox="0 0 720 370" role="img" aria-label="蒸発する雲：対立する2つの行動が、共通の目的Cに合流する">
-  <style>
-    .goal { fill: #e3f6e5; stroke: #1b6e2e; stroke-width: 2.5; rx: 10; }
-    .req { fill: #eef4fb; stroke: #243b53; stroke-width: 2; rx: 8; }
-    .act-a { fill: #fdeee2; stroke: #a05a1c; stroke-width: 2; rx: 8; }
-    .act-b { fill: #fdeee2; stroke: #a05a1c; stroke-width: 2; rx: 8; }
-    .edge { stroke: #627d98; stroke-width: 2; fill: none; }
-    .conflict { stroke: #b02a2a; stroke-width: 3; fill: none; stroke-dasharray: 6,4; }
-    .arrow { fill: #627d98; }
-    .label { font-family: "Yu Gothic UI", sans-serif; font-size: 15px; fill: #1f2933; }
-    .label-small { font-family: "Yu Gothic UI", sans-serif; font-size: 12px; fill: #52606d; }
-    .conflict-text { font-family: "Yu Gothic UI", sans-serif; font-size: 14px; font-weight: bold; fill: #b02a2a; }
-  </style>
+<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.7.1" preserveAspectRatio="xMinYMin meet" viewBox="0 0 914 803"><svg class="d2-882420370 d2-svg" width="914" height="803" viewBox="-101 -101 914 803"><rect x="-101.000000" y="-101.000000" width="914.000000" height="803.000000" rx="0.000000" fill="#FFFFFF" class=" fill-N7" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-882420370 .text-bold {
+	font-family: "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif; font-weight: 700;
+}
 
-  <!-- 目的C（上）→ 要求 → 行動（下）の矢印 -->
+.d2-882420370 .text-italic {
+	font-family: "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif; font-style: italic;
+}
+]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
 
-  <!-- 目的C -->
-  <g data-node="goal">
-    <rect x="210" y="20" width="300" height="60" class="goal"/>
-    <text x="360" y="46" class="label" text-anchor="middle" font-weight="bold">目的C（共通の上位目的）</text>
-    <text x="360" y="66" class="label-small" text-anchor="middle">例: チームを強くしたい</text>
-  </g>
-
-  <!-- 要求A / 要求B -->
-  <g data-node="reqa">
-    <rect x="60" y="150" width="200" height="55" class="req"/>
-    <text x="160" y="174" class="label" text-anchor="middle" font-weight="bold">要求A</text>
-    <text x="160" y="194" class="label-small" text-anchor="middle">規律を守ってほしい</text>
-  </g>
-
-  <g data-node="reqb">
-    <rect x="460" y="150" width="200" height="55" class="req"/>
-    <text x="560" y="174" class="label" text-anchor="middle" font-weight="bold">要求B</text>
-    <text x="560" y="194" class="label-small" text-anchor="middle">自分の考えで工夫したい</text>
-  </g>
-
-  <!-- 行動A / 行動B -->
-  <g data-node="acta">
-    <rect x="60" y="290" width="200" height="55" class="act-a"/>
-    <text x="160" y="314" class="label" text-anchor="middle" font-weight="bold">行動A</text>
-    <text x="160" y="334" class="label-small" text-anchor="middle">先輩の指示に従わせる</text>
-  </g>
-
-  <g data-node="actb">
-    <rect x="460" y="290" width="200" height="55" class="act-b"/>
-    <text x="560" y="314" class="label" text-anchor="middle" font-weight="bold">行動B</text>
-    <text x="560" y="334" class="label-small" text-anchor="middle">自分の練習を試す</text>
-  </g>
-
-  <!-- 目的C → 要求A / 要求B -->
-  <g data-edge="goal->reqa">
-    <path class="edge" d="M 290 80 L 180 148"/>
-    <polygon class="arrow" points="176,154 188,142 190,154"/>
-  </g>
-  <g data-edge="goal->reqb">
-    <path class="edge" d="M 430 80 L 540 148"/>
-    <polygon class="arrow" points="544,154 532,142 530,154"/>
-  </g>
-
-  <!-- 要求A → 行動A / 要求B → 行動B -->
-  <g data-edge="reqa->acta">
-    <path class="edge" d="M 160 205 L 160 288"/>
-    <polygon class="arrow" points="160,296 152,284 168,284"/>
-  </g>
-  <g data-edge="reqb->actb">
-    <path class="edge" d="M 560 205 L 560 288"/>
-    <polygon class="arrow" points="560,296 552,284 568,284"/>
-  </g>
-
-  <!-- 対立（ジグザグ線） -->
-  <path d="M 260 317 L 320 302 L 380 332 L 440 317 L 460 317" class="conflict"/>
-  <text x="360" y="278" class="conflict-text" text-anchor="middle">対立！</text>
-
-  <!-- 注記 -->
-  <text x="360" y="365" class="label-small" text-anchor="middle">実は目的Cは共通。対立の「前提」を外すと、両方かなえられる</text>
-</svg>
+		.d2-882420370 .fill-N1{fill:#0A0F25;}
+		.d2-882420370 .fill-N2{fill:#676C7E;}
+		.d2-882420370 .fill-N3{fill:#9499AB;}
+		.d2-882420370 .fill-N4{fill:#CFD2DD;}
+		.d2-882420370 .fill-N5{fill:#DEE1EB;}
+		.d2-882420370 .fill-N6{fill:#EEF1F8;}
+		.d2-882420370 .fill-N7{fill:#FFFFFF;}
+		.d2-882420370 .fill-B1{fill:#0D32B2;}
+		.d2-882420370 .fill-B2{fill:#0D32B2;}
+		.d2-882420370 .fill-B3{fill:#E3E9FD;}
+		.d2-882420370 .fill-B4{fill:#E3E9FD;}
+		.d2-882420370 .fill-B5{fill:#EDF0FD;}
+		.d2-882420370 .fill-B6{fill:#F7F8FE;}
+		.d2-882420370 .fill-AA2{fill:#4A6FF3;}
+		.d2-882420370 .fill-AA4{fill:#EDF0FD;}
+		.d2-882420370 .fill-AA5{fill:#F7F8FE;}
+		.d2-882420370 .fill-AB4{fill:#EDF0FD;}
+		.d2-882420370 .fill-AB5{fill:#F7F8FE;}
+		.d2-882420370 .stroke-N1{stroke:#0A0F25;}
+		.d2-882420370 .stroke-N2{stroke:#676C7E;}
+		.d2-882420370 .stroke-N3{stroke:#9499AB;}
+		.d2-882420370 .stroke-N4{stroke:#CFD2DD;}
+		.d2-882420370 .stroke-N5{stroke:#DEE1EB;}
+		.d2-882420370 .stroke-N6{stroke:#EEF1F8;}
+		.d2-882420370 .stroke-N7{stroke:#FFFFFF;}
+		.d2-882420370 .stroke-B1{stroke:#0D32B2;}
+		.d2-882420370 .stroke-B2{stroke:#0D32B2;}
+		.d2-882420370 .stroke-B3{stroke:#E3E9FD;}
+		.d2-882420370 .stroke-B4{stroke:#E3E9FD;}
+		.d2-882420370 .stroke-B5{stroke:#EDF0FD;}
+		.d2-882420370 .stroke-B6{stroke:#F7F8FE;}
+		.d2-882420370 .stroke-AA2{stroke:#4A6FF3;}
+		.d2-882420370 .stroke-AA4{stroke:#EDF0FD;}
+		.d2-882420370 .stroke-AA5{stroke:#F7F8FE;}
+		.d2-882420370 .stroke-AB4{stroke:#EDF0FD;}
+		.d2-882420370 .stroke-AB5{stroke:#F7F8FE;}
+		.d2-882420370 .background-color-N1{background-color:#0A0F25;}
+		.d2-882420370 .background-color-N2{background-color:#676C7E;}
+		.d2-882420370 .background-color-N3{background-color:#9499AB;}
+		.d2-882420370 .background-color-N4{background-color:#CFD2DD;}
+		.d2-882420370 .background-color-N5{background-color:#DEE1EB;}
+		.d2-882420370 .background-color-N6{background-color:#EEF1F8;}
+		.d2-882420370 .background-color-N7{background-color:#FFFFFF;}
+		.d2-882420370 .background-color-B1{background-color:#0D32B2;}
+		.d2-882420370 .background-color-B2{background-color:#0D32B2;}
+		.d2-882420370 .background-color-B3{background-color:#E3E9FD;}
+		.d2-882420370 .background-color-B4{background-color:#E3E9FD;}
+		.d2-882420370 .background-color-B5{background-color:#EDF0FD;}
+		.d2-882420370 .background-color-B6{background-color:#F7F8FE;}
+		.d2-882420370 .background-color-AA2{background-color:#4A6FF3;}
+		.d2-882420370 .background-color-AA4{background-color:#EDF0FD;}
+		.d2-882420370 .background-color-AA5{background-color:#F7F8FE;}
+		.d2-882420370 .background-color-AB4{background-color:#EDF0FD;}
+		.d2-882420370 .background-color-AB5{background-color:#F7F8FE;}
+		.d2-882420370 .color-N1{color:#0A0F25;}
+		.d2-882420370 .color-N2{color:#676C7E;}
+		.d2-882420370 .color-N3{color:#9499AB;}
+		.d2-882420370 .color-N4{color:#CFD2DD;}
+		.d2-882420370 .color-N5{color:#DEE1EB;}
+		.d2-882420370 .color-N6{color:#EEF1F8;}
+		.d2-882420370 .color-N7{color:#FFFFFF;}
+		.d2-882420370 .color-B1{color:#0D32B2;}
+		.d2-882420370 .color-B2{color:#0D32B2;}
+		.d2-882420370 .color-B3{color:#E3E9FD;}
+		.d2-882420370 .color-B4{color:#E3E9FD;}
+		.d2-882420370 .color-B5{color:#EDF0FD;}
+		.d2-882420370 .color-B6{color:#F7F8FE;}
+		.d2-882420370 .color-AA2{color:#4A6FF3;}
+		.d2-882420370 .color-AA4{color:#EDF0FD;}
+		.d2-882420370 .color-AA5{color:#F7F8FE;}
+		.d2-882420370 .color-AB4{color:#EDF0FD;}
+		.d2-882420370 .color-AB5{color:#F7F8FE;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.sketch-overlay-B1{fill:url(#streaks-darker-d2-882420370);mix-blend-mode:lighten}.sketch-overlay-B2{fill:url(#streaks-darker-d2-882420370);mix-blend-mode:lighten}.sketch-overlay-B3{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-B4{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-B5{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-B6{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-AA2{fill:url(#streaks-dark-d2-882420370);mix-blend-mode:overlay}.sketch-overlay-AA4{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-AA5{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-AB4{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-AB5{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-N1{fill:url(#streaks-darker-d2-882420370);mix-blend-mode:lighten}.sketch-overlay-N2{fill:url(#streaks-dark-d2-882420370);mix-blend-mode:overlay}.sketch-overlay-N3{fill:url(#streaks-normal-d2-882420370);mix-blend-mode:color-burn}.sketch-overlay-N4{fill:url(#streaks-normal-d2-882420370);mix-blend-mode:color-burn}.sketch-overlay-N5{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-N6{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-N7{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.light-code{display: block}.dark-code{display: none}]]></style><g class="55uu55qEQw=="><g class="shape" ><rect x="224.000000" y="0.000000" width="275.000000" height="82.000000" stroke="#1b6e2e" fill="#e3f6e5" style="stroke-width:2;" /></g><text x="361.500000" y="38.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px"><tspan x="361.500000" dy="0.000000">目的C（共通の上位目的）</tspan><tspan x="361.500000" dy="18.500000">例: チームを強くしたい</tspan></text></g><g class="6KaB5rGCQQ=="><g class="shape" ><rect x="407.000000" y="182.000000" width="295.000000" height="66.000000" stroke="#243b53" fill="#eef4fb" style="stroke-width:2;" /></g><text x="554.500000" y="220.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">要求A：規律を守ってほしい</text></g><g class="6KaB5rGCQg=="><g class="shape" ><rect x="0.000000" y="348.000000" width="336.000000" height="66.000000" stroke="#243b53" fill="#eef4fb" style="stroke-width:2;" /></g><text x="168.000000" y="386.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">要求B：自分の考えで工夫したい</text></g><g class="6KGM5YuVQQ=="><g class="shape" ><rect x="396.000000" y="348.000000" width="316.000000" height="66.000000" stroke="#a05a1c" fill="#fdeee2" style="stroke-width:2;" /></g><text x="554.000000" y="386.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">行動A：先輩の指示に従わせる</text></g><g class="6KGM5YuVQg=="><g class="shape" ><rect x="223.000000" y="535.000000" width="276.000000" height="66.000000" stroke="#a05a1c" fill="#fdeee2" style="stroke-width:2;" /></g><text x="361.000000" y="573.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">行動B：自分の練習を試す</text></g><g class="KOebrueahEMgLSZndDsg6KaB5rGCQSlbMF0="><marker id="mk-d2-882420370-4079600274" markerWidth="10.000000" markerHeight="12.000000" refX="7.000000" refY="6.000000" viewBox="0.000000 0.000000 10.000000 12.000000" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0.000000,0.000000 10.000000,6.000000 0.000000,12.000000" fill="#627d98" class="connection" stroke-width="2" /> </marker><path d="M 449.808863 82.853237 C 532.799988 122.000000 554.000000 142.000000 554.000000 178.000000" stroke="#627d98" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-882420370-4079600274)" mask="url(#d2-882420370)" /></g><g class="KOebrueahEMgLSZndDsg6KaB5rGCQilbMF0="><path d="M 272.191137 82.853237 C 189.199997 122.000000 168.000000 148.600006 168.000000 173.500000 C 168.000000 198.399994 168.000000 308.000000 168.000000 344.000000" stroke="#627d98" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-882420370-4079600274)" mask="url(#d2-882420370)" /></g><g class="KOimgeaxgkEgLSZndDsg6KGM5YuVQSlbMF0="><path d="M 554.000000 250.000000 C 554.000000 288.000000 554.000000 308.000000 554.000000 344.000000" stroke="#627d98" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-882420370-4079600274)" mask="url(#d2-882420370)" /></g><g class="KOimgeaxgkIgLSZndDsg6KGM5YuVQilbMF0="><path d="M 168.000000 415.500000 C 168.000000 462.299988 192.800003 486.700012 288.410788 533.734340" stroke="#627d98" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-882420370-4079600274)" mask="url(#d2-882420370)" /></g><g class="KOihjOWLlUEgLS0g6KGM5YuVQilbMF0="><path d="M 554.000000 415.500000 C 554.000000 462.299988 529.200012 486.700012 431.794606 534.617170" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" mask="url(#d2-882420370)" /><text x="517.000000" y="498.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">対立！</text></g><mask id="d2-882420370" maskUnits="userSpaceOnUse" x="-101" y="-101" width="914" height="803">
+<rect x="-101" y="-101" width="914" height="803" fill="white"></rect>
+<rect x="486.000000" y="482.000000" width="62" height="21" fill="black"></rect>
+</mask></svg></svg>

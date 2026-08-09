@@ -1,0 +1,64 @@
+# Unit 8 — 蒸発する雲: 目的C（共通）→ 要求A/B → 行動A/B（対立）
+direction: down
+
+目的C: 目的C（共通の上位目的）\n例: チームを強くしたい {
+  shape: rectangle
+  style: {
+    fill: '#e3f6e5'
+    stroke: '#1b6e2e'
+  }
+}
+
+要求A: 要求A：規律を守ってほしい {
+  shape: rectangle
+  style: {
+    fill: '#eef4fb'
+    stroke: '#243b53'
+  }
+}
+
+要求B: 要求B：自分の考えで工夫したい {
+  shape: rectangle
+  style: {
+    fill: '#eef4fb'
+    stroke: '#243b53'
+  }
+}
+
+行動A: 行動A：先輩の指示に従わせる {
+  shape: rectangle
+  style: {
+    fill: '#fdeee2'
+    stroke: '#a05a1c'
+  }
+}
+
+行動B: 行動B：自分の練習を試す {
+  shape: rectangle
+  style: {
+    fill: '#fdeee2'
+    stroke: '#a05a1c'
+  }
+}
+
+目的C -> 要求A: {
+  style: {
+    stroke: '#627d98'
+  }
+}
+目的C -> 要求B: {
+  style: {
+    stroke: '#627d98'
+  }
+}
+要求A -> 行動A: {
+  style: {
+    stroke: '#627d98'
+  }
+}
+要求B -> 行動B: {
+  style: {
+    stroke: '#627d98'
+  }
+}
+行動A -- 行動B: 対立！

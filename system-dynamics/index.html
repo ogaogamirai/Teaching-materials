@@ -75,6 +75,8 @@
     .chapter-body hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
     .figure { margin: 1.25rem 0; text-align: center; }
     .figure-svg svg { max-width: 100%; height: auto; }
+    .figure-svg { overflow-x: auto; }
+    .figure-caption { font-size: 0.85rem; color: var(--muted); margin-top: 0.4rem; }
     .sources { font-size: 0.9rem; color: var(--muted); }
     @media print {
       body { background: #fff; }
@@ -110,7 +112,7 @@
       <h1>システムダイナミクス×TOC 学習教材</h1>
       <p class="tagline">見る（SD: 構造の全体像）→ 直す（TOC: 制約への集中）→ 抽象化（自分たちの言葉で）</p>
       <p>中学2年生〜一般社会人。Markdown 正本から自動生成した統合版です。</p>
-      <p>生成日時: 2026-08-09 16:03 +0900</p>
+      <p>生成日時: 2026-08-09 16:28 +0900</p>
     </header>
 
     <nav class="toc" aria-label="章一覧">
@@ -389,7 +391,7 @@
   <!-- ルール -->
   <text x="140" y="288" class="label-small" text-anchor="middle">水位の変化 ＝ 入り − 出（入りが多ければ上がる・出が多ければ下がる）</text>
 </svg>
-</div></figure>
+</div><figcaption class="figure-caption">お風呂の水位（ストック）は、蛇口の水（入りフロー）と排水口の水（出フロー）で決まる</figcaption></figure>
 
 <p>水位は、どうして上がったり下がったりするのでしょう？ 実は、たった1つのルールで説明できます。</p>
 <h2>2. なぜこれを学ぶのか？（Value）</h2>
@@ -676,95 +678,107 @@ $$ \frac{d(\text{水位})}{dt} = \text{入り} - \text{出} $$
 <li>バランスを取って「ちょうどいい」に落ち着く</li>
 <li>例: 室温調整・満腹・混雑回避</li>
 </ul>
-<figure class="figure"><div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" width="660" height="380" viewBox="0 0 660 380" role="img" aria-label="正のループ（増えるともっと増える）と負のループ（増えると抑える）">
-  <style>
-    .node-green { fill: #e3f6e5; stroke: #1b6e2e; stroke-width: 2; rx: 8; }
-    .node-orange { fill: #fdeee2; stroke: #a05a1c; stroke-width: 2; rx: 8; }
-    .node-mid { fill: #eef4fb; stroke: #243b53; stroke-width: 2; rx: 8; }
-    .edge { stroke: #243b53; stroke-width: 2.5; fill: none; }
-    .edge-green { stroke: #1b6e2e; stroke-width: 2.5; fill: none; }
-    .edge-orange { stroke: #a05a1c; stroke-width: 2.5; fill: none; }
-    .arrow { fill: #243b53; }
-    .label { font-family: "Yu Gothic UI", sans-serif; font-size: 15px; fill: #1f2933; }
-    .label-small { font-family: "Yu Gothic UI", sans-serif; font-size: 12px; fill: #52606d; }
-    .title { font-family: "Yu Gothic UI", sans-serif; font-size: 16px; font-weight: bold; fill: #243b53; }
-    .plus { font-family: "Yu Gothic UI", sans-serif; font-size: 22px; font-weight: bold; fill: #1b6e2e; }
-    .minus { font-family: "Yu Gothic UI", sans-serif; font-size: 22px; font-weight: bold; fill: #a05a1c; }
-  </style>
+<figure class="figure"><div class="figure-svg"><svg class="d2-3172964011 d2-svg" width="1457" height="642" viewBox="-101 -101 1457 642"><rect x="-101.000000" y="-101.000000" width="1457.000000" height="642.000000" rx="0.000000" fill="#FFFFFF" class=" fill-N7" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-3172964011 .text-bold {
+    font-family: "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif; font-weight: 700;
+}
 
-  <!-- ===== 正のループ（左） ===== -->
-  <text x="165" y="30" class="title" text-anchor="middle">正のループ（増えるともっと増える）</text>
+.d2-3172964011 .text-italic {
+    font-family: "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif; font-style: italic;
+}
+]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
 
-  <!-- ノード -->
-  <g data-node="followers">
-    <rect x="105" y="60" width="120" height="45" class="node-green"/>
-    <text x="165" y="86" class="label" text-anchor="middle" font-weight="bold">フォロワー</text>
-  </g>
-
-  <g data-node="viewers">
-    <rect x="105" y="230" width="120" height="45" class="node-mid"/>
-    <text x="165" y="256" class="label" text-anchor="middle">見る人が増える</text>
-  </g>
-
-  <g data-node="grow">
-    <rect x="105" y="310" width="120" height="40" class="node-mid"/>
-    <text x="165" y="334" class="label" text-anchor="middle">さらに増える</text>
-  </g>
-
-  <!-- エッジ（時計回り） -->
-  <g data-edge="followers->viewers">
-    <path class="edge-green" d="M 165 105 L 165 228"/>
-    <polygon class="arrow" points="165,238 156,224 174,224"/>
-  </g>
-  <g data-edge="viewers->grow">
-    <path class="edge-green" d="M 165 275 L 165 308"/>
-    <polygon class="arrow" points="165,316 156,304 174,304"/>
-  </g>
-  <g data-edge="grow->followers">
-    <path class="edge-green" d="M 110 310 C 40 300, 40 110, 115 88"/>
-    <polygon class="arrow" points="122,84 108,96 100,84"/>
-  </g>
-
-  <text x="65" y="205" class="plus">＋</text>
-  <text x="60" y="295" class="plus">＋</text>
-  <text x="235" y="180" class="label-small">増えると、さらに増える（雪だるま）</text>
-
-  <!-- ===== 負のループ（右） ===== -->
-  <text x="495" y="30" class="title" text-anchor="middle">負のループ（増えると抑える）</text>
-
-  <g data-node="temp">
-    <rect x="435" y="60" width="120" height="45" class="node-orange"/>
-    <text x="495" y="86" class="label" text-anchor="middle" font-weight="bold">室温</text>
-  </g>
-
-  <g data-node="hot">
-    <rect x="435" y="230" width="120" height="45" class="node-mid"/>
-    <text x="495" y="256" class="label" text-anchor="middle">暑いと感じる</text>
-  </g>
-
-  <g data-node="ac">
-    <rect x="435" y="310" width="120" height="40" class="node-mid"/>
-    <text x="495" y="334" class="label" text-anchor="middle">エアコンを下げる</text>
-  </g>
-
-  <g data-edge="temp->hot">
-    <path class="edge-orange" d="M 495 105 L 495 228"/>
-    <polygon class="arrow" points="495,238 486,224 504,224"/>
-  </g>
-  <g data-edge="hot->ac">
-    <path class="edge-orange" d="M 495 275 L 495 308"/>
-    <polygon class="arrow" points="495,316 486,304 504,304"/>
-  </g>
-  <g data-edge="ac->temp">
-    <path class="edge-orange" d="M 440 310 C 370 300, 370 110, 445 88"/>
-    <polygon class="arrow" points="452,84 438,96 430,84"/>
-  </g>
-
-  <text x="395" y="205" class="minus">−</text>
-  <text x="390" y="295" class="minus">−</text>
-  <text x="565" y="180" class="label-small">増えると、抑える方向（バランス）</text>
-</svg>
-</div></figure>
+        .d2-3172964011 .fill-N1{fill:#0A0F25;}
+        .d2-3172964011 .fill-N2{fill:#676C7E;}
+        .d2-3172964011 .fill-N3{fill:#9499AB;}
+        .d2-3172964011 .fill-N4{fill:#CFD2DD;}
+        .d2-3172964011 .fill-N5{fill:#DEE1EB;}
+        .d2-3172964011 .fill-N6{fill:#EEF1F8;}
+        .d2-3172964011 .fill-N7{fill:#FFFFFF;}
+        .d2-3172964011 .fill-B1{fill:#0D32B2;}
+        .d2-3172964011 .fill-B2{fill:#0D32B2;}
+        .d2-3172964011 .fill-B3{fill:#E3E9FD;}
+        .d2-3172964011 .fill-B4{fill:#E3E9FD;}
+        .d2-3172964011 .fill-B5{fill:#EDF0FD;}
+        .d2-3172964011 .fill-B6{fill:#F7F8FE;}
+        .d2-3172964011 .fill-AA2{fill:#4A6FF3;}
+        .d2-3172964011 .fill-AA4{fill:#EDF0FD;}
+        .d2-3172964011 .fill-AA5{fill:#F7F8FE;}
+        .d2-3172964011 .fill-AB4{fill:#EDF0FD;}
+        .d2-3172964011 .fill-AB5{fill:#F7F8FE;}
+        .d2-3172964011 .stroke-N1{stroke:#0A0F25;}
+        .d2-3172964011 .stroke-N2{stroke:#676C7E;}
+        .d2-3172964011 .stroke-N3{stroke:#9499AB;}
+        .d2-3172964011 .stroke-N4{stroke:#CFD2DD;}
+        .d2-3172964011 .stroke-N5{stroke:#DEE1EB;}
+        .d2-3172964011 .stroke-N6{stroke:#EEF1F8;}
+        .d2-3172964011 .stroke-N7{stroke:#FFFFFF;}
+        .d2-3172964011 .stroke-B1{stroke:#0D32B2;}
+        .d2-3172964011 .stroke-B2{stroke:#0D32B2;}
+        .d2-3172964011 .stroke-B3{stroke:#E3E9FD;}
+        .d2-3172964011 .stroke-B4{stroke:#E3E9FD;}
+        .d2-3172964011 .stroke-B5{stroke:#EDF0FD;}
+        .d2-3172964011 .stroke-B6{stroke:#F7F8FE;}
+        .d2-3172964011 .stroke-AA2{stroke:#4A6FF3;}
+        .d2-3172964011 .stroke-AA4{stroke:#EDF0FD;}
+        .d2-3172964011 .stroke-AA5{stroke:#F7F8FE;}
+        .d2-3172964011 .stroke-AB4{stroke:#EDF0FD;}
+        .d2-3172964011 .stroke-AB5{stroke:#F7F8FE;}
+        .d2-3172964011 .background-color-N1{background-color:#0A0F25;}
+        .d2-3172964011 .background-color-N2{background-color:#676C7E;}
+        .d2-3172964011 .background-color-N3{background-color:#9499AB;}
+        .d2-3172964011 .background-color-N4{background-color:#CFD2DD;}
+        .d2-3172964011 .background-color-N5{background-color:#DEE1EB;}
+        .d2-3172964011 .background-color-N6{background-color:#EEF1F8;}
+        .d2-3172964011 .background-color-N7{background-color:#FFFFFF;}
+        .d2-3172964011 .background-color-B1{background-color:#0D32B2;}
+        .d2-3172964011 .background-color-B2{background-color:#0D32B2;}
+        .d2-3172964011 .background-color-B3{background-color:#E3E9FD;}
+        .d2-3172964011 .background-color-B4{background-color:#E3E9FD;}
+        .d2-3172964011 .background-color-B5{background-color:#EDF0FD;}
+        .d2-3172964011 .background-color-B6{background-color:#F7F8FE;}
+        .d2-3172964011 .background-color-AA2{background-color:#4A6FF3;}
+        .d2-3172964011 .background-color-AA4{background-color:#EDF0FD;}
+        .d2-3172964011 .background-color-AA5{background-color:#F7F8FE;}
+        .d2-3172964011 .background-color-AB4{background-color:#EDF0FD;}
+        .d2-3172964011 .background-color-AB5{background-color:#F7F8FE;}
+        .d2-3172964011 .color-N1{color:#0A0F25;}
+        .d2-3172964011 .color-N2{color:#676C7E;}
+        .d2-3172964011 .color-N3{color:#9499AB;}
+        .d2-3172964011 .color-N4{color:#CFD2DD;}
+        .d2-3172964011 .color-N5{color:#DEE1EB;}
+        .d2-3172964011 .color-N6{color:#EEF1F8;}
+        .d2-3172964011 .color-N7{color:#FFFFFF;}
+        .d2-3172964011 .color-B1{color:#0D32B2;}
+        .d2-3172964011 .color-B2{color:#0D32B2;}
+        .d2-3172964011 .color-B3{color:#E3E9FD;}
+        .d2-3172964011 .color-B4{color:#E3E9FD;}
+        .d2-3172964011 .color-B5{color:#EDF0FD;}
+        .d2-3172964011 .color-B6{color:#F7F8FE;}
+        .d2-3172964011 .color-AA2{color:#4A6FF3;}
+        .d2-3172964011 .color-AA4{color:#EDF0FD;}
+        .d2-3172964011 .color-AA5{color:#F7F8FE;}
+        .d2-3172964011 .color-AB4{color:#EDF0FD;}
+        .d2-3172964011 .color-AB5{color:#F7F8FE;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.sketch-overlay-B1{fill:url(#streaks-darker-d2-3172964011);mix-blend-mode:lighten}.sketch-overlay-B2{fill:url(#streaks-darker-d2-3172964011);mix-blend-mode:lighten}.sketch-overlay-B3{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-B4{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-B5{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-B6{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-AA2{fill:url(#streaks-dark-d2-3172964011);mix-blend-mode:overlay}.sketch-overlay-AA4{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-AA5{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-AB4{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-AB5{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-N1{fill:url(#streaks-darker-d2-3172964011);mix-blend-mode:lighten}.sketch-overlay-N2{fill:url(#streaks-dark-d2-3172964011);mix-blend-mode:overlay}.sketch-overlay-N3{fill:url(#streaks-normal-d2-3172964011);mix-blend-mode:color-burn}.sketch-overlay-N4{fill:url(#streaks-normal-d2-3172964011);mix-blend-mode:color-burn}.sketch-overlay-N5{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-N6{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.sketch-overlay-N7{fill:url(#streaks-bright-d2-3172964011);mix-blend-mode:darken}.light-code{display: block}.dark-code{display: none}]]></style><g class="5q2j44Gu44Or44O844OX"><g class="shape" ><rect x="0.000000" y="0.000000" width="387.000000" height="66.000000" stroke="#1b6e2e" fill="#e3f6e5" style="stroke-width:2;" /></g><text x="193.500000" y="38.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">正のループ（増えるともっと増える）</text></g><g class="44OV44Kp44Ot44Ov44O8"><g class="shape" ><rect x="447.000000" y="0.000000" width="145.000000" height="66.000000" stroke="#1b6e2e" fill="#e3f6e5" style="stroke-width:2;" /></g><text x="519.500000" y="38.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">フォロワー</text></g><g class="6KaL44KL5Lq644GM5aKX44GI44KL"><g class="shape" ><rect x="303.000000" y="187.000000" width="185.000000" height="66.000000" stroke="#243b53" fill="#eef4fb" style="stroke-width:2;" /></g><text x="395.500000" y="225.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">見る人が増える</text></g><g class="44GV44KJ44Gr5aKX44GI44KL"><g class="shape" ><rect x="437.000000" y="374.000000" width="165.000000" height="66.000000" stroke="#243b53" fill="#eef4fb" style="stroke-width:2;" /></g><text x="519.500000" y="412.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">さらに増える</text></g><g class="6LKg44Gu44Or44O844OX"><g class="shape" ><rect x="652.000000" y="0.000000" width="327.000000" height="66.000000" stroke="#a05a1c" fill="#fdeee2" style="stroke-width:2;" /></g><text x="815.500000" y="38.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">負のループ（増えると抑える）</text></g><g class="5a6k5rip"><g class="shape" ><rect x="1039.000000" y="0.000000" width="84.000000" height="66.000000" stroke="#a05a1c" fill="#fdeee2" style="stroke-width:2;" /></g><text x="1081.000000" y="38.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">室温</text></g><g class="5pqR44GE44Go5oSf44GY44KL"><g class="shape" ><rect x="837.000000" y="187.000000" width="165.000000" height="66.000000" stroke="#243b53" fill="#eef4fb" style="stroke-width:2;" /></g><text x="919.500000" y="225.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">暑いと感じる</text></g><g class="44Ko44Ki44Kz44Oz44KS5LiL44GS44KL"><g class="shape" ><rect x="979.000000" y="374.000000" width="205.000000" height="66.000000" stroke="#243b53" fill="#eef4fb" style="stroke-width:2;" /></g><text x="1081.500000" y="412.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">エアコンを下げる</text></g><g class="KOODleOCqeODreODr-ODvCAtJmd0OyDopovjgovkurrjgYzlopfjgYjjgospWzBd"><marker id="mk-d2-3172964011-3488378134" markerWidth="10.000000" markerHeight="12.000000" refX="7.000000" refY="6.000000" viewBox="0.000000 0.000000 10.000000 12.000000" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0.000000,0.000000 10.000000,6.000000 0.000000,12.000000" fill="#0D32B2" class="connection fill-B1" stroke-width="2" /> </marker><path d="M 473.909593 66.712685 C 411.500000 114.300003 395.500000 138.699997 395.500000 183.500000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3172964011-3488378134)" mask="url(#d2-3172964011)" /><text x="412.000000" y="119.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">増える</text></g><g class="KOimi-OCi-S6uuOBjOWil-OBiOOCiyAtJmd0OyDjgZXjgonjgavlopfjgYjjgospWzBd"><path d="M 395.500000 254.500000 C 395.500000 301.299988 411.299988 325.700012 471.333978 372.055351" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3172964011-3488378134)" mask="url(#d2-3172964011)" /><text x="412.000000" y="332.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">見る人が多い</text></g><g class="KOOBleOCieOBq-Wil-OBiOOCiyAtJmd0OyDjg5Xjgqnjg63jg6_jg7wpWzBd"><path d="M 577.979347 373.495332 C 660.250000 325.700012 681.250000 294.799988 681.250000 266.750000 C 681.250000 238.699997 660.450012 114.300003 580.700293 67.523729" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3172964011-3488378134)" mask="url(#d2-3172964011)" /><text x="678.500000" y="228.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">さらにフォロワーが増える</text></g><g class="KOWupOa4qSAtJmd0OyDmmpHjgYTjgajmhJ_jgZjjgospWzBd"><path d="M 1037.516187 58.496942 C 943.250000 112.699997 919.250000 138.699997 919.250000 183.500000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3172964011-3488378134)" mask="url(#d2-3172964011)" /><text x="954.500000" y="112.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">暑い</text></g><g class="KOaakeOBhOOBqOaEn-OBmOOCiyAtJmd0OyDjgqjjgqLjgrPjg7PjgpLkuIvjgZLjgospWzBd"><path d="M 919.250000 254.500000 C 919.250000 301.299988 940.049988 325.700012 1019.799707 372.476271" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3172964011-3488378134)" mask="url(#d2-3172964011)" /><text x="946.500000" y="335.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">調整</text></g><g class="KOOCqOOCouOCs-ODs-OCkuS4i-OBkuOCiyAtJmd0OyDlrqTmuKkpWzBd"><path d="M 1117.208375 373.131372 C 1167.750000 325.700012 1180.750000 294.799988 1180.750000 266.750000 C 1180.750000 238.699997 1167.949951 114.300003 1119.645474 68.259752" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3172964011-3488378134)" mask="url(#d2-3172964011)" /><text x="1179.000000" y="227.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">冷える（抑える）</text></g><mask id="d2-3172964011" maskUnits="userSpaceOnUse" x="-101" y="-101" width="1457" height="642">
+<rect x="-101" y="-101" width="1457" height="642" fill="white"></rect>
+<rect x="381.000000" y="103.000000" width="62" height="21" fill="black"></rect>
+<rect x="352.000000" y="316.000000" width="120" height="21" fill="black"></rect>
+<rect x="561.000000" y="212.000000" width="235" height="21" fill="black"></rect>
+<rect x="933.000000" y="96.000000" width="43" height="21" fill="black"></rect>
+<rect x="925.000000" y="319.000000" width="43" height="21" fill="black"></rect>
+<rect x="1100.000000" y="211.000000" width="158" height="21" fill="black"></rect>
+</mask></svg></div><figcaption class="figure-caption">正のループ（増えるともっと増える）と負のループ（増えると抑える）</figcaption></figure>
 
 <h2>4. ループの図の書き方（Interact）</h2>
 <p>ループを図にするときの基本形：</p>
@@ -1946,113 +1960,98 @@ Step5 Root（根本原因）を特定する
 <li>「朝起きられない」「成績が下がる」「友達と衝突する」… <strong>見た目はバラバラの5つの症状</strong></li>
 <li>でも因果を辿ると、<strong>全部が「睡眠不足」→「夜更かし」→「スマホ」という1本の Root に集まる</strong></li>
 </ul>
-<figure class="figure"><div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" width="760" height="420" viewBox="0 0 760 420" role="img" aria-label="CRT現状問題ツリー：散らばった5つの症状が1つの根本原因に収束する">
-  <style>
-    .ude { fill: #fdeee2; stroke: #a05a1c; stroke-width: 2; rx: 8; }
-    .cause { fill: #eef4fb; stroke: #243b53; stroke-width: 2; rx: 8; }
-    .root { fill: #fde2e2; stroke: #b02a2a; stroke-width: 3; rx: 8; }
-    .edge { stroke: #627d98; stroke-width: 2; fill: none; }
-    .arrow { fill: #627d98; }
-    .label { font-family: "Yu Gothic UI", sans-serif; font-size: 14px; fill: #1f2933; }
-    .label-small { font-family: "Yu Gothic UI", sans-serif; font-size: 12px; fill: #52606d; }
-    .tag { font-family: "Yu Gothic UI", sans-serif; font-size: 11px; fill: #52606d; }
-  </style>
+<figure class="figure"><div class="figure-svg"><svg class="d2-2791078564 d2-svg" width="1280" height="766" viewBox="-101 -101 1280 766"><rect x="-101.000000" y="-101.000000" width="1280.000000" height="766.000000" rx="0.000000" fill="#FFFFFF" class=" fill-N7" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-2791078564 .text-bold {
+    font-family: "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif; font-weight: 700;
+}
+]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
 
-  <!-- ===== ノード宣言（data-node） =====
-       CRT の矢印は「原因 → 結果」=「下 → 上」。
-       Root（下）→ 睡眠不足（中）→ UDE（上）の順に上向き。
-  -->
+        .d2-2791078564 .fill-N1{fill:#0A0F25;}
+        .d2-2791078564 .fill-N2{fill:#676C7E;}
+        .d2-2791078564 .fill-N3{fill:#9499AB;}
+        .d2-2791078564 .fill-N4{fill:#CFD2DD;}
+        .d2-2791078564 .fill-N5{fill:#DEE1EB;}
+        .d2-2791078564 .fill-N6{fill:#EEF1F8;}
+        .d2-2791078564 .fill-N7{fill:#FFFFFF;}
+        .d2-2791078564 .fill-B1{fill:#0D32B2;}
+        .d2-2791078564 .fill-B2{fill:#0D32B2;}
+        .d2-2791078564 .fill-B3{fill:#E3E9FD;}
+        .d2-2791078564 .fill-B4{fill:#E3E9FD;}
+        .d2-2791078564 .fill-B5{fill:#EDF0FD;}
+        .d2-2791078564 .fill-B6{fill:#F7F8FE;}
+        .d2-2791078564 .fill-AA2{fill:#4A6FF3;}
+        .d2-2791078564 .fill-AA4{fill:#EDF0FD;}
+        .d2-2791078564 .fill-AA5{fill:#F7F8FE;}
+        .d2-2791078564 .fill-AB4{fill:#EDF0FD;}
+        .d2-2791078564 .fill-AB5{fill:#F7F8FE;}
+        .d2-2791078564 .stroke-N1{stroke:#0A0F25;}
+        .d2-2791078564 .stroke-N2{stroke:#676C7E;}
+        .d2-2791078564 .stroke-N3{stroke:#9499AB;}
+        .d2-2791078564 .stroke-N4{stroke:#CFD2DD;}
+        .d2-2791078564 .stroke-N5{stroke:#DEE1EB;}
+        .d2-2791078564 .stroke-N6{stroke:#EEF1F8;}
+        .d2-2791078564 .stroke-N7{stroke:#FFFFFF;}
+        .d2-2791078564 .stroke-B1{stroke:#0D32B2;}
+        .d2-2791078564 .stroke-B2{stroke:#0D32B2;}
+        .d2-2791078564 .stroke-B3{stroke:#E3E9FD;}
+        .d2-2791078564 .stroke-B4{stroke:#E3E9FD;}
+        .d2-2791078564 .stroke-B5{stroke:#EDF0FD;}
+        .d2-2791078564 .stroke-B6{stroke:#F7F8FE;}
+        .d2-2791078564 .stroke-AA2{stroke:#4A6FF3;}
+        .d2-2791078564 .stroke-AA4{stroke:#EDF0FD;}
+        .d2-2791078564 .stroke-AA5{stroke:#F7F8FE;}
+        .d2-2791078564 .stroke-AB4{stroke:#EDF0FD;}
+        .d2-2791078564 .stroke-AB5{stroke:#F7F8FE;}
+        .d2-2791078564 .background-color-N1{background-color:#0A0F25;}
+        .d2-2791078564 .background-color-N2{background-color:#676C7E;}
+        .d2-2791078564 .background-color-N3{background-color:#9499AB;}
+        .d2-2791078564 .background-color-N4{background-color:#CFD2DD;}
+        .d2-2791078564 .background-color-N5{background-color:#DEE1EB;}
+        .d2-2791078564 .background-color-N6{background-color:#EEF1F8;}
+        .d2-2791078564 .background-color-N7{background-color:#FFFFFF;}
+        .d2-2791078564 .background-color-B1{background-color:#0D32B2;}
+        .d2-2791078564 .background-color-B2{background-color:#0D32B2;}
+        .d2-2791078564 .background-color-B3{background-color:#E3E9FD;}
+        .d2-2791078564 .background-color-B4{background-color:#E3E9FD;}
+        .d2-2791078564 .background-color-B5{background-color:#EDF0FD;}
+        .d2-2791078564 .background-color-B6{background-color:#F7F8FE;}
+        .d2-2791078564 .background-color-AA2{background-color:#4A6FF3;}
+        .d2-2791078564 .background-color-AA4{background-color:#EDF0FD;}
+        .d2-2791078564 .background-color-AA5{background-color:#F7F8FE;}
+        .d2-2791078564 .background-color-AB4{background-color:#EDF0FD;}
+        .d2-2791078564 .background-color-AB5{background-color:#F7F8FE;}
+        .d2-2791078564 .color-N1{color:#0A0F25;}
+        .d2-2791078564 .color-N2{color:#676C7E;}
+        .d2-2791078564 .color-N3{color:#9499AB;}
+        .d2-2791078564 .color-N4{color:#CFD2DD;}
+        .d2-2791078564 .color-N5{color:#DEE1EB;}
+        .d2-2791078564 .color-N6{color:#EEF1F8;}
+        .d2-2791078564 .color-N7{color:#FFFFFF;}
+        .d2-2791078564 .color-B1{color:#0D32B2;}
+        .d2-2791078564 .color-B2{color:#0D32B2;}
+        .d2-2791078564 .color-B3{color:#E3E9FD;}
+        .d2-2791078564 .color-B4{color:#E3E9FD;}
+        .d2-2791078564 .color-B5{color:#EDF0FD;}
+        .d2-2791078564 .color-B6{color:#F7F8FE;}
+        .d2-2791078564 .color-AA2{color:#4A6FF3;}
+        .d2-2791078564 .color-AA4{color:#EDF0FD;}
+        .d2-2791078564 .color-AA5{color:#F7F8FE;}
+        .d2-2791078564 .color-AB4{color:#EDF0FD;}
+        .d2-2791078564 .color-AB5{color:#F7F8FE;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.sketch-overlay-B1{fill:url(#streaks-darker-d2-2791078564);mix-blend-mode:lighten}.sketch-overlay-B2{fill:url(#streaks-darker-d2-2791078564);mix-blend-mode:lighten}.sketch-overlay-B3{fill:url(#streaks-bright-d2-2791078564);mix-blend-mode:darken}.sketch-overlay-B4{fill:url(#streaks-bright-d2-2791078564);mix-blend-mode:darken}.sketch-overlay-B5{fill:url(#streaks-bright-d2-2791078564);mix-blend-mode:darken}.sketch-overlay-B6{fill:url(#streaks-bright-d2-2791078564);mix-blend-mode:darken}.sketch-overlay-AA2{fill:url(#streaks-dark-d2-2791078564);mix-blend-mode:overlay}.sketch-overlay-AA4{fill:url(#streaks-bright-d2-2791078564);mix-blend-mode:darken}.sketch-overlay-AA5{fill:url(#streaks-bright-d2-2791078564);mix-blend-mode:darken}.sketch-overlay-AB4{fill:url(#streaks-bright-d2-2791078564);mix-blend-mode:darken}.sketch-overlay-AB5{fill:url(#streaks-bright-d2-2791078564);mix-blend-mode:darken}.sketch-overlay-N1{fill:url(#streaks-darker-d2-2791078564);mix-blend-mode:lighten}.sketch-overlay-N2{fill:url(#streaks-dark-d2-2791078564);mix-blend-mode:overlay}.sketch-overlay-N3{fill:url(#streaks-normal-d2-2791078564);mix-blend-mode:color-burn}.sketch-overlay-N4{fill:url(#streaks-normal-d2-2791078564);mix-blend-mode:color-burn}.sketch-overlay-N5{fill:url(#streaks-bright-d2-2791078564);mix-blend-mode:darken}.sketch-overlay-N6{fill:url(#streaks-bright-d2-2791078564);mix-blend-mode:darken}.sketch-overlay-N7{fill:url(#streaks-bright-d2-2791078564);mix-blend-mode:darken}.light-code{display: block}.dark-code{display: none}]]></style><g class="5pyd6LW344GN44KJ44KM44Gq44GE"><g class="shape" ><rect x="97.000000" y="498.000000" width="205.000000" height="66.000000" stroke="#a05a1c" fill="#fdeee2" style="stroke-width:2;" /></g><text x="199.500000" y="536.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">朝、起きられない</text></g><g class="5pyd44GU44Gv44KT44KS6aOf44G544Gq44GE"><g class="shape" ><rect x="362.000000" y="498.000000" width="226.000000" height="66.000000" stroke="#a05a1c" fill="#fdeee2" style="stroke-width:2;" /></g><text x="475.000000" y="536.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">朝ごはんを食べない</text></g><g class="5o6I5qWt5Lit44Gr55yg44GP44Gq44KL"><g class="shape" ><rect x="648.000000" y="498.000000" width="205.000000" height="66.000000" stroke="#a05a1c" fill="#fdeee2" style="stroke-width:2;" /></g><text x="750.500000" y="536.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">授業中に眠くなる</text></g><g class="5oiQ57i-44GM5LiL44GM44KL"><g class="shape" ><rect x="913.000000" y="498.000000" width="165.000000" height="66.000000" stroke="#a05a1c" fill="#fdeee2" style="stroke-width:2;" /></g><text x="995.500000" y="536.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">成績が下がる</text></g><g class="5Y-L6YGU44Go6KGd56qB44GZ44KL"><g class="shape" ><rect x="0.000000" y="332.000000" width="185.000000" height="66.000000" stroke="#a05a1c" fill="#fdeee2" style="stroke-width:2;" /></g><text x="92.500000" y="370.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">友達と衝突する</text></g><g class="44Ko44ON44Or44Ku44O85LiN6Laz"><g class="shape" ><rect x="245.000000" y="332.000000" width="185.000000" height="66.000000" stroke="#243b53" fill="#eef4fb" style="stroke-width:2;" /></g><text x="337.500000" y="370.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">エネルギー不足</text></g><g class="6ZuG5Lit5Yqb44GM57aa44GL44Gq44GE"><g class="shape" ><rect x="771.000000" y="332.000000" width="205.000000" height="66.000000" stroke="#243b53" fill="#eef4fb" style="stroke-width:2;" /></g><text x="873.500000" y="370.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">集中力が続かない</text></g><g class="552h55yg5LiN6Laz"><g class="shape" ><rect x="205.000000" y="166.000000" width="266.000000" height="66.000000" stroke="#243b53" fill="#eef4fb" style="stroke-width:2;" /></g><text x="338.000000" y="204.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">睡眠不足（共通の原因）</text></g><g class="Um9vdA=="><g class="shape" ><rect x="225.000000" y="0.000000" width="226.000000" height="66.000000" stroke="#b02a2a" fill="#fde2e2" style="stroke-width:2;" /></g><text x="338.000000" y="38.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">夜更かし（スマホ）</text></g><g class="KFJvb3QgLSZndDsg552h55yg5LiN6LazKVswXQ=="><marker id="mk-d2-2791078564-3488378134" markerWidth="10.000000" markerHeight="12.000000" refX="7.000000" refY="6.000000" viewBox="0.000000 0.000000 10.000000 12.000000" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0.000000,0.000000 10.000000,6.000000 0.000000,12.000000" fill="#0D32B2" class="connection fill-B1" stroke-width="2" /> </marker><path d="M 337.500000 68.000000 C 337.500000 106.000000 337.500000 126.000000 337.500000 162.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2791078564-3488378134)" mask="url(#d2-2791078564)" /></g><g class="KOedoeecoOS4jei2syAtJmd0OyDjgqjjg43jg6vjgq7jg7zkuI3otrMpWzBd"><path d="M 337.500000 234.000000 C 337.500000 272.000000 337.500000 292.000000 337.500000 328.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2791078564-3488378134)" mask="url(#d2-2791078564)" /></g><g class="KOedoeecoOS4jei2syAtJmd0OyDpm4bkuK3lipvjgYzntprjgYvjgarjgYQpWzBd"><path d="M 473.476307 219.910940 C 792.900024 269.519989 873.250000 292.000000 873.250000 328.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2791078564-3488378134)" mask="url(#d2-2791078564)" /></g><g class="KOOCqOODjeODq-OCruODvOS4jei2syAtJmd0OyDmnJ3otbfjgY3jgonjgozjgarjgYQpWzBd"><path d="M 281.036838 399.032025 C 216.350006 438.000000 199.750000 458.000000 199.750000 494.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2791078564-3488378134)" mask="url(#d2-2791078564)" /></g><g class="KOOCqOODjeODq-OCruODvOS4jei2syAtJmd0OyDmnJ3jgZTjga_jgpPjgpLpo5_jgbnjgarjgYQpWzBd"><path d="M 393.963162 399.032025 C 458.649994 438.000000 475.250000 458.000000 475.250000 494.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2791078564-3488378134)" mask="url(#d2-2791078564)" /></g><g class="KOmbhuS4reWKm-OBjOe2muOBi-OBquOBhCAtJmd0OyDmjojmpa3kuK3jgavnnKDjgY_jgarjgospWzBd"><path d="M 823.092822 399.119715 C 765.549988 438.000000 750.750000 458.000000 750.750000 494.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2791078564-3488378134)" mask="url(#d2-2791078564)" /></g><g class="KOmbhuS4reWKm-OBjOe2muOBi-OBquOBhCAtJmd0OyDmiJDnuL7jgYzkuIvjgYzjgospWzBd"><path d="M 923.407178 399.119715 C 980.950012 438.000000 995.750000 458.000000 995.750000 494.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2791078564-3488378134)" mask="url(#d2-2791078564)" /></g><g class="KOedoeecoOS4jei2syAtJmd0OyDlj4vpgZTjgajooZ3nqoHjgZnjgospWzBd"><path d="M 238.605209 232.640132 C 122.099998 272.000000 92.500000 292.000000 92.500000 328.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2791078564-3488378134)" mask="url(#d2-2791078564)" /></g><mask id="d2-2791078564" maskUnits="userSpaceOnUse" x="-101" y="-101" width="1280" height="766">
+<rect x="-101" y="-101" width="1280" height="766" fill="white"></rect>
 
-  <!-- UDE 行（上部・症状） -->
-  <rect data-node="ude1" x="20" y="330" width="130" height="42" class="ude"/>
-  <text x="85" y="347" class="label" text-anchor="middle">朝、起きられない</text>
-  <text x="85" y="364" class="tag" text-anchor="middle">UDE1</text>
-
-  <rect data-node="ude2" x="180" y="330" width="130" height="42" class="ude"/>
-  <text x="245" y="347" class="label" text-anchor="middle">朝ごはんを食べない</text>
-  <text x="245" y="364" class="tag" text-anchor="middle">UDE2</text>
-
-  <rect data-node="ude3" x="340" y="330" width="130" height="42" class="ude"/>
-  <text x="405" y="347" class="label" text-anchor="middle">授業中に眠くなる</text>
-  <text x="405" y="364" class="tag" text-anchor="middle">UDE3</text>
-
-  <rect data-node="ude4" x="500" y="330" width="120" height="42" class="ude"/>
-  <text x="560" y="347" class="label" text-anchor="middle">成績が下がる</text>
-  <text x="560" y="364" class="tag" text-anchor="middle">UDE4</text>
-
-  <rect data-node="ude5" x="640" y="330" width="110" height="42" class="ude"/>
-  <text x="695" y="347" class="label" text-anchor="middle">友達と衝突する</text>
-  <text x="695" y="364" class="tag" text-anchor="middle">UDE5</text>
-
-  <!-- Cause 中間行（中段） -->
-  <rect data-node="cause1" x="95" y="180" width="150" height="40" class="cause"/>
-  <text x="170" y="205" class="label" text-anchor="middle">エネルギー不足</text>
-
-  <rect data-node="cause2" x="365" y="180" width="140" height="40" class="cause"/>
-  <text x="435" y="205" class="label" text-anchor="middle">集中力が続かない</text>
-
-  <!-- 合流点：睡眠不足 -->
-  <rect data-node="sleep" x="260" y="60" width="170" height="50" class="cause"/>
-  <text x="345" y="83" class="label" text-anchor="middle" font-weight="bold">睡眠不足</text>
-  <text x="345" y="101" class="tag" text-anchor="middle">共通の原因（合流）</text>
-
-  <!-- Root（最下段） -->
-  <rect data-node="root" x="280" y="340" width="210" height="60" class="root"/>
-  <text x="385" y="366" class="label" text-anchor="middle" font-weight="bold">夜更かし（スマホ）</text>
-  <text x="385" y="387" class="tag" text-anchor="middle">Root（根本原因）</text>
-
-  <!-- ===== エッジ宣言（<g data-edge="from->to">）＝ 原因 → 結果 =====
-       Root → 睡眠不足 → UDE/Cause。矢印は上向き（原因から結果へ）。
-  -->
-
-  <!-- Root → 睡眠不足 -->
-  <g data-edge="root->sleep">
-    <path class="edge" d="M 345 340 L 335 112"/>
-    <polygon class="arrow" points="332,102 342,118 322,116"/>
-  </g>
-
-  <!-- 睡眠不足 → エネルギー不足 -->
-  <g data-edge="sleep->cause1">
-    <path class="edge" d="M 300 60 L 185 178"/>
-    <polygon class="arrow" points="180,186 194,174 190,190"/>
-  </g>
-
-  <!-- 睡眠不足 → 集中力不足 -->
-  <g data-edge="sleep->cause2">
-    <path class="edge" d="M 390 60 L 425 178"/>
-    <polygon class="arrow" points="428,186 418,174 434,190"/>
-  </g>
-
-  <!-- エネルギー不足 → 朝起きられない / 朝ごはん -->
-  <g data-edge="cause1->ude1">
-    <path class="edge" d="M 150 220 L 100 328"/>
-    <polygon class="arrow" points="97,338 107,320 107,332"/>
-  </g>
-  <g data-edge="cause1->ude2">
-    <path class="edge" d="M 190 220 L 235 328"/>
-    <polygon class="arrow" points="238,338 228,320 228,332"/>
-  </g>
-
-  <!-- 集中力不足 → 授業中に眠くなる / 成績が下がる -->
-  <g data-edge="cause2->ude3">
-    <path class="edge" d="M 405 220 L 405 328"/>
-    <polygon class="arrow" points="405,338 399,320 411,320"/>
-  </g>
-  <g data-edge="cause2->ude4">
-    <path class="edge" d="M 455 220 L 550 328"/>
-    <polygon class="arrow" points="553,338 543,320 543,332"/>
-  </g>
-
-  <!-- 睡眠不足 → 友達と衝突（簡略：睡眠不足→UDE5 に直結表示） -->
-  <g data-edge="sleep->ude5">
-    <path class="edge" d="M 420 60 L 680 328"/>
-    <polygon class="arrow" points="683,338 673,320 673,332"/>
-  </g>
-
-  <!-- 注記 -->
-  <text x="385" y="415" class="label-small" text-anchor="middle">矢印は「原因 → 結果」＝下から上。散らばった5症状が1つの Root に収束する</text>
-</svg>
-</div></figure>
+</mask></svg></div><figcaption class="figure-caption">CRT — 散らばった5つの症状が、因果を辿ると1つの根本原因（Root）に収束する</figcaption></figure>
 
 <blockquote>
 <p><strong>Root（根本原因）= 夜更かし（寝る前にスマホを見てしまう）</strong></p>
@@ -2204,83 +2203,102 @@ Step4 対立を「蒸発」させる前提を探す（Injection）
      │                                         │
   [行動A] 夜遅くまでスマホを見る      ←→   [行動B] 早く寝る
 </code></pre>
-<figure class="figure"><div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" width="720" height="370" viewBox="0 0 720 370" role="img" aria-label="蒸発する雲：対立する2つの行動が、共通の目的Cに合流する">
-  <style>
-    .goal { fill: #e3f6e5; stroke: #1b6e2e; stroke-width: 2.5; rx: 10; }
-    .req { fill: #eef4fb; stroke: #243b53; stroke-width: 2; rx: 8; }
-    .act-a { fill: #fdeee2; stroke: #a05a1c; stroke-width: 2; rx: 8; }
-    .act-b { fill: #fdeee2; stroke: #a05a1c; stroke-width: 2; rx: 8; }
-    .edge { stroke: #627d98; stroke-width: 2; fill: none; }
-    .conflict { stroke: #b02a2a; stroke-width: 3; fill: none; stroke-dasharray: 6,4; }
-    .arrow { fill: #627d98; }
-    .label { font-family: "Yu Gothic UI", sans-serif; font-size: 15px; fill: #1f2933; }
-    .label-small { font-family: "Yu Gothic UI", sans-serif; font-size: 12px; fill: #52606d; }
-    .conflict-text { font-family: "Yu Gothic UI", sans-serif; font-size: 14px; font-weight: bold; fill: #b02a2a; }
-  </style>
+<figure class="figure"><div class="figure-svg"><svg class="d2-882420370 d2-svg" width="914" height="803" viewBox="-101 -101 914 803"><rect x="-101.000000" y="-101.000000" width="914.000000" height="803.000000" rx="0.000000" fill="#FFFFFF" class=" fill-N7" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-882420370 .text-bold {
+    font-family: "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif; font-weight: 700;
+}
 
-  <!-- 目的C（上）→ 要求 → 行動（下）の矢印 -->
+.d2-882420370 .text-italic {
+    font-family: "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif; font-style: italic;
+}
+]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
 
-  <!-- 目的C -->
-  <g data-node="goal">
-    <rect x="210" y="20" width="300" height="60" class="goal"/>
-    <text x="360" y="46" class="label" text-anchor="middle" font-weight="bold">目的C（共通の上位目的）</text>
-    <text x="360" y="66" class="label-small" text-anchor="middle">例: チームを強くしたい</text>
-  </g>
-
-  <!-- 要求A / 要求B -->
-  <g data-node="reqa">
-    <rect x="60" y="150" width="200" height="55" class="req"/>
-    <text x="160" y="174" class="label" text-anchor="middle" font-weight="bold">要求A</text>
-    <text x="160" y="194" class="label-small" text-anchor="middle">規律を守ってほしい</text>
-  </g>
-
-  <g data-node="reqb">
-    <rect x="460" y="150" width="200" height="55" class="req"/>
-    <text x="560" y="174" class="label" text-anchor="middle" font-weight="bold">要求B</text>
-    <text x="560" y="194" class="label-small" text-anchor="middle">自分の考えで工夫したい</text>
-  </g>
-
-  <!-- 行動A / 行動B -->
-  <g data-node="acta">
-    <rect x="60" y="290" width="200" height="55" class="act-a"/>
-    <text x="160" y="314" class="label" text-anchor="middle" font-weight="bold">行動A</text>
-    <text x="160" y="334" class="label-small" text-anchor="middle">先輩の指示に従わせる</text>
-  </g>
-
-  <g data-node="actb">
-    <rect x="460" y="290" width="200" height="55" class="act-b"/>
-    <text x="560" y="314" class="label" text-anchor="middle" font-weight="bold">行動B</text>
-    <text x="560" y="334" class="label-small" text-anchor="middle">自分の練習を試す</text>
-  </g>
-
-  <!-- 目的C → 要求A / 要求B -->
-  <g data-edge="goal->reqa">
-    <path class="edge" d="M 290 80 L 180 148"/>
-    <polygon class="arrow" points="176,154 188,142 190,154"/>
-  </g>
-  <g data-edge="goal->reqb">
-    <path class="edge" d="M 430 80 L 540 148"/>
-    <polygon class="arrow" points="544,154 532,142 530,154"/>
-  </g>
-
-  <!-- 要求A → 行動A / 要求B → 行動B -->
-  <g data-edge="reqa->acta">
-    <path class="edge" d="M 160 205 L 160 288"/>
-    <polygon class="arrow" points="160,296 152,284 168,284"/>
-  </g>
-  <g data-edge="reqb->actb">
-    <path class="edge" d="M 560 205 L 560 288"/>
-    <polygon class="arrow" points="560,296 552,284 568,284"/>
-  </g>
-
-  <!-- 対立（ジグザグ線） -->
-  <path d="M 260 317 L 320 302 L 380 332 L 440 317 L 460 317" class="conflict"/>
-  <text x="360" y="278" class="conflict-text" text-anchor="middle">対立！</text>
-
-  <!-- 注記 -->
-  <text x="360" y="365" class="label-small" text-anchor="middle">実は目的Cは共通。対立の「前提」を外すと、両方かなえられる</text>
-</svg>
-</div></figure>
+        .d2-882420370 .fill-N1{fill:#0A0F25;}
+        .d2-882420370 .fill-N2{fill:#676C7E;}
+        .d2-882420370 .fill-N3{fill:#9499AB;}
+        .d2-882420370 .fill-N4{fill:#CFD2DD;}
+        .d2-882420370 .fill-N5{fill:#DEE1EB;}
+        .d2-882420370 .fill-N6{fill:#EEF1F8;}
+        .d2-882420370 .fill-N7{fill:#FFFFFF;}
+        .d2-882420370 .fill-B1{fill:#0D32B2;}
+        .d2-882420370 .fill-B2{fill:#0D32B2;}
+        .d2-882420370 .fill-B3{fill:#E3E9FD;}
+        .d2-882420370 .fill-B4{fill:#E3E9FD;}
+        .d2-882420370 .fill-B5{fill:#EDF0FD;}
+        .d2-882420370 .fill-B6{fill:#F7F8FE;}
+        .d2-882420370 .fill-AA2{fill:#4A6FF3;}
+        .d2-882420370 .fill-AA4{fill:#EDF0FD;}
+        .d2-882420370 .fill-AA5{fill:#F7F8FE;}
+        .d2-882420370 .fill-AB4{fill:#EDF0FD;}
+        .d2-882420370 .fill-AB5{fill:#F7F8FE;}
+        .d2-882420370 .stroke-N1{stroke:#0A0F25;}
+        .d2-882420370 .stroke-N2{stroke:#676C7E;}
+        .d2-882420370 .stroke-N3{stroke:#9499AB;}
+        .d2-882420370 .stroke-N4{stroke:#CFD2DD;}
+        .d2-882420370 .stroke-N5{stroke:#DEE1EB;}
+        .d2-882420370 .stroke-N6{stroke:#EEF1F8;}
+        .d2-882420370 .stroke-N7{stroke:#FFFFFF;}
+        .d2-882420370 .stroke-B1{stroke:#0D32B2;}
+        .d2-882420370 .stroke-B2{stroke:#0D32B2;}
+        .d2-882420370 .stroke-B3{stroke:#E3E9FD;}
+        .d2-882420370 .stroke-B4{stroke:#E3E9FD;}
+        .d2-882420370 .stroke-B5{stroke:#EDF0FD;}
+        .d2-882420370 .stroke-B6{stroke:#F7F8FE;}
+        .d2-882420370 .stroke-AA2{stroke:#4A6FF3;}
+        .d2-882420370 .stroke-AA4{stroke:#EDF0FD;}
+        .d2-882420370 .stroke-AA5{stroke:#F7F8FE;}
+        .d2-882420370 .stroke-AB4{stroke:#EDF0FD;}
+        .d2-882420370 .stroke-AB5{stroke:#F7F8FE;}
+        .d2-882420370 .background-color-N1{background-color:#0A0F25;}
+        .d2-882420370 .background-color-N2{background-color:#676C7E;}
+        .d2-882420370 .background-color-N3{background-color:#9499AB;}
+        .d2-882420370 .background-color-N4{background-color:#CFD2DD;}
+        .d2-882420370 .background-color-N5{background-color:#DEE1EB;}
+        .d2-882420370 .background-color-N6{background-color:#EEF1F8;}
+        .d2-882420370 .background-color-N7{background-color:#FFFFFF;}
+        .d2-882420370 .background-color-B1{background-color:#0D32B2;}
+        .d2-882420370 .background-color-B2{background-color:#0D32B2;}
+        .d2-882420370 .background-color-B3{background-color:#E3E9FD;}
+        .d2-882420370 .background-color-B4{background-color:#E3E9FD;}
+        .d2-882420370 .background-color-B5{background-color:#EDF0FD;}
+        .d2-882420370 .background-color-B6{background-color:#F7F8FE;}
+        .d2-882420370 .background-color-AA2{background-color:#4A6FF3;}
+        .d2-882420370 .background-color-AA4{background-color:#EDF0FD;}
+        .d2-882420370 .background-color-AA5{background-color:#F7F8FE;}
+        .d2-882420370 .background-color-AB4{background-color:#EDF0FD;}
+        .d2-882420370 .background-color-AB5{background-color:#F7F8FE;}
+        .d2-882420370 .color-N1{color:#0A0F25;}
+        .d2-882420370 .color-N2{color:#676C7E;}
+        .d2-882420370 .color-N3{color:#9499AB;}
+        .d2-882420370 .color-N4{color:#CFD2DD;}
+        .d2-882420370 .color-N5{color:#DEE1EB;}
+        .d2-882420370 .color-N6{color:#EEF1F8;}
+        .d2-882420370 .color-N7{color:#FFFFFF;}
+        .d2-882420370 .color-B1{color:#0D32B2;}
+        .d2-882420370 .color-B2{color:#0D32B2;}
+        .d2-882420370 .color-B3{color:#E3E9FD;}
+        .d2-882420370 .color-B4{color:#E3E9FD;}
+        .d2-882420370 .color-B5{color:#EDF0FD;}
+        .d2-882420370 .color-B6{color:#F7F8FE;}
+        .d2-882420370 .color-AA2{color:#4A6FF3;}
+        .d2-882420370 .color-AA4{color:#EDF0FD;}
+        .d2-882420370 .color-AA5{color:#F7F8FE;}
+        .d2-882420370 .color-AB4{color:#EDF0FD;}
+        .d2-882420370 .color-AB5{color:#F7F8FE;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.sketch-overlay-B1{fill:url(#streaks-darker-d2-882420370);mix-blend-mode:lighten}.sketch-overlay-B2{fill:url(#streaks-darker-d2-882420370);mix-blend-mode:lighten}.sketch-overlay-B3{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-B4{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-B5{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-B6{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-AA2{fill:url(#streaks-dark-d2-882420370);mix-blend-mode:overlay}.sketch-overlay-AA4{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-AA5{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-AB4{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-AB5{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-N1{fill:url(#streaks-darker-d2-882420370);mix-blend-mode:lighten}.sketch-overlay-N2{fill:url(#streaks-dark-d2-882420370);mix-blend-mode:overlay}.sketch-overlay-N3{fill:url(#streaks-normal-d2-882420370);mix-blend-mode:color-burn}.sketch-overlay-N4{fill:url(#streaks-normal-d2-882420370);mix-blend-mode:color-burn}.sketch-overlay-N5{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-N6{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.sketch-overlay-N7{fill:url(#streaks-bright-d2-882420370);mix-blend-mode:darken}.light-code{display: block}.dark-code{display: none}]]></style><g class="55uu55qEQw=="><g class="shape" ><rect x="224.000000" y="0.000000" width="275.000000" height="82.000000" stroke="#1b6e2e" fill="#e3f6e5" style="stroke-width:2;" /></g><text x="361.500000" y="38.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px"><tspan x="361.500000" dy="0.000000">目的C（共通の上位目的）</tspan><tspan x="361.500000" dy="18.500000">例: チームを強くしたい</tspan></text></g><g class="6KaB5rGCQQ=="><g class="shape" ><rect x="407.000000" y="182.000000" width="295.000000" height="66.000000" stroke="#243b53" fill="#eef4fb" style="stroke-width:2;" /></g><text x="554.500000" y="220.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">要求A：規律を守ってほしい</text></g><g class="6KaB5rGCQg=="><g class="shape" ><rect x="0.000000" y="348.000000" width="336.000000" height="66.000000" stroke="#243b53" fill="#eef4fb" style="stroke-width:2;" /></g><text x="168.000000" y="386.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">要求B：自分の考えで工夫したい</text></g><g class="6KGM5YuVQQ=="><g class="shape" ><rect x="396.000000" y="348.000000" width="316.000000" height="66.000000" stroke="#a05a1c" fill="#fdeee2" style="stroke-width:2;" /></g><text x="554.000000" y="386.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">行動A：先輩の指示に従わせる</text></g><g class="6KGM5YuVQg=="><g class="shape" ><rect x="223.000000" y="535.000000" width="276.000000" height="66.000000" stroke="#a05a1c" fill="#fdeee2" style="stroke-width:2;" /></g><text x="361.000000" y="573.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">行動B：自分の練習を試す</text></g><g class="KOebrueahEMgLSZndDsg6KaB5rGCQSlbMF0="><marker id="mk-d2-882420370-4079600274" markerWidth="10.000000" markerHeight="12.000000" refX="7.000000" refY="6.000000" viewBox="0.000000 0.000000 10.000000 12.000000" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0.000000,0.000000 10.000000,6.000000 0.000000,12.000000" fill="#627d98" class="connection" stroke-width="2" /> </marker><path d="M 449.808863 82.853237 C 532.799988 122.000000 554.000000 142.000000 554.000000 178.000000" stroke="#627d98" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-882420370-4079600274)" mask="url(#d2-882420370)" /></g><g class="KOebrueahEMgLSZndDsg6KaB5rGCQilbMF0="><path d="M 272.191137 82.853237 C 189.199997 122.000000 168.000000 148.600006 168.000000 173.500000 C 168.000000 198.399994 168.000000 308.000000 168.000000 344.000000" stroke="#627d98" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-882420370-4079600274)" mask="url(#d2-882420370)" /></g><g class="KOimgeaxgkEgLSZndDsg6KGM5YuVQSlbMF0="><path d="M 554.000000 250.000000 C 554.000000 288.000000 554.000000 308.000000 554.000000 344.000000" stroke="#627d98" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-882420370-4079600274)" mask="url(#d2-882420370)" /></g><g class="KOimgeaxgkIgLSZndDsg6KGM5YuVQilbMF0="><path d="M 168.000000 415.500000 C 168.000000 462.299988 192.800003 486.700012 288.410788 533.734340" stroke="#627d98" fill="none" class="connection" style="stroke-width:2;" marker-end="url(#mk-d2-882420370-4079600274)" mask="url(#d2-882420370)" /></g><g class="KOihjOWLlUEgLS0g6KGM5YuVQilbMF0="><path d="M 554.000000 415.500000 C 554.000000 462.299988 529.200012 486.700012 431.794606 534.617170" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" mask="url(#d2-882420370)" /><text x="517.000000" y="498.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">対立！</text></g><mask id="d2-882420370" maskUnits="userSpaceOnUse" x="-101" y="-101" width="914" height="803">
+<rect x="-101" y="-101" width="914" height="803" fill="white"></rect>
+<rect x="486.000000" y="482.000000" width="62" height="21" fill="black"></rect>
+</mask></svg></div><figcaption class="figure-caption">蒸発する雲 — 対立する2つの行動（A・B）は、実は共通の目的Cから出ている</figcaption></figure>
 
 <p><strong>対立しているのは「行動A vs 行動B」。でも目的C（元気に過ごしたい）は共通。</strong></p>
 <h3>対立の「前提」を探す（ここが肝心）</h3>

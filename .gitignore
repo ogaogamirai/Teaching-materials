@@ -12,3 +12,7 @@ scratch/
 # editor
 .vscode/
 .idea/
+
+# system-dynamics: D2 binary (use path-to-structure's d2-bin) and raw renders
+system-dynamics/tools/d2-bin/
+system-dynamics/figures/d2/*_raw.svg

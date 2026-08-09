@@ -1,0 +1,71 @@
+# Unit 3 — フィードバックループ: 正のループと負のループ
+
+# ===== 正のループ（増えるともっと増える） =====
+正のループ: 正のループ（増えるともっと増える） {
+  shape: rectangle
+  style: {
+    fill: '#e3f6e5'
+    stroke: '#1b6e2e'
+  }
+}
+
+フォロワー: フォロワー {
+  shape: rectangle
+  style: {
+    fill: '#e3f6e5'
+    stroke: '#1b6e2e'
+  }
+}
+見る人が増える: 見る人が増える {
+  shape: rectangle
+  style: {
+    fill: '#eef4fb'
+    stroke: '#243b53'
+  }
+}
+さらに増える: さらに増える {
+  shape: rectangle
+  style: {
+    fill: '#eef4fb'
+    stroke: '#243b53'
+  }
+}
+
+フォロワー -> 見る人が増える: 増える
+見る人が増える -> さらに増える: 見る人が多い
+さらに増える -> フォロワー: さらにフォロワーが増える
+
+# ===== 負のループ（増えると抑える） =====
+負のループ: 負のループ（増えると抑える） {
+  shape: rectangle
+  style: {
+    fill: '#fdeee2'
+    stroke: '#a05a1c'
+  }
+}
+
+室温: 室温 {
+  shape: rectangle
+  style: {
+    fill: '#fdeee2'
+    stroke: '#a05a1c'
+  }
+}
+暑いと感じる: 暑いと感じる {
+  shape: rectangle
+  style: {
+    fill: '#eef4fb'
+    stroke: '#243b53'
+  }
+}
+エアコンを下げる: エアコンを下げる {
+  shape: rectangle
+  style: {
+    fill: '#eef4fb'
+    stroke: '#243b53'
+  }
+}
+
+室温 -> 暑いと感じる: 暑い
+暑いと感じる -> エアコンを下げる: 調整
+エアコンを下げる -> 室温: 冷える（抑える）

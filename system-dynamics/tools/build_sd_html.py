@@ -126,23 +126,41 @@ def chapter_label(group: str, path: Path) -> str:
 # Inline SVG figures
 # ---------------------------------------------------------------------------
 
-def inline_figure(path: Path) -> str:
-    """Return an <figure> with the SVG inlined (self-contained)."""
+def inline_figure(path: Path, caption: str = "") -> str:
+    """Return an <figure> with the SVG inlined (self-contained).
+
+    Handles D2-rendered SVGs: strips the XML declaration and any
+    leading <?xml?>, and removes the outer wrapper only if there is a
+    single nested <svg> with its own viewBox (to avoid huge blank padding).
+    """
     try:
         svg_text = path.read_text(encoding="utf-8")
     except FileNotFoundError:
         return f'<!-- figure missing: {path.name} -->'
-    return f'<figure class="figure"><div class="figure-svg">{svg_text}</div></figure>'
+    # Drop XML declaration.
+    svg_text = re.sub(r'^\s*<\?xml[^?]*\?>\s*', '', svg_text, flags=re.DOTALL)
+    # Drop data-d2-version attribute on outer svg (cosmetic).
+    svg_text = re.sub(r'\s+data-d2-version="[^"]*"', '', svg_text)
+    # If outer <svg> has a single child <svg>, unwrap to keep the inner one.
+    m = re.match(r'\s*<svg\b[^>]*>\s*(<svg\b.*</svg>)\s*</svg>\s*$', svg_text, re.DOTALL)
+    if m:
+        svg_text = m.group(1)
+    fig = f'<figure class="figure"><div class="figure-svg">{svg_text}</div>'
+    if caption:
+        fig += f'<figcaption class="figure-caption">{html.escape(caption)}</figcaption>'
+    fig += '</figure>'
+    return fig
 
 
 def replace_figure_refs(md_text: str) -> str:
-    """Replace `![fig](figures/foo.svg)` (or ```figures/foo.svg``` blocks)
+    """Replace `![fig](figures/foo.svg)` (with optional `![fig:caption](...)`)
     with inline SVG figures."""
-    pattern = re.compile(r"!\[fig\]\(figures/([^)]+\.svg)\)")
+    pattern = re.compile(r"!\[fig(?::([^\]]*))?\]\(figures/([^)]+\.svg)\)")
     def repl(match: re.Match[str]) -> str:
-        name = match.group(1)
+        caption = (match.group(1) or "").strip()
+        name = match.group(2)
         f = FIGURES_DIR / name
-        return inline_figure(f)
+        return inline_figure(f, caption)
     return pattern.sub(repl, md_text)
 
 
@@ -341,6 +359,8 @@ def build_document(chapters: list[tuple[str, Path]]) -> str:
     .chapter-body hr {{ border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }}
     .figure {{ margin: 1.25rem 0; text-align: center; }}
     .figure-svg svg {{ max-width: 100%; height: auto; }}
+    .figure-svg {{ overflow-x: auto; }}
+    .figure-caption {{ font-size: 0.85rem; color: var(--muted); margin-top: 0.4rem; }}
     .sources {{ font-size: 0.9rem; color: var(--muted); }}
     @media print {{
       body {{ background: #fff; }}

@@ -56,7 +56,7 @@ Unit 2 で「ストックとフロー」を学びました。しかし、そこ�
 - バランスを取って「ちょうどいい」に落ち着く
 - 例: 室温調整・満腹・混雑回避
 
-![fig](figures/unit3_feedback_loops.svg)
+![fig:正のループ（増えるともっと増える）と負のループ（増えると抑える）](figures/unit3_feedback_loops.svg)
 
 ## 4. ループの図の書き方（Interact）
 
