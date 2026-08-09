@@ -1,0 +1,177 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 440" width="100%" height="100%">
+  <defs>
+    <!-- 背景グラデーション -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F8FAFC" />
+    </linearGradient>
+
+    <!-- お湯（ストック）の質感グラデーション -->
+    <linearGradient id="waterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#0284C7" stop-opacity="0.9" />
+    </linearGradient>
+
+    <!-- 水流（フロー）グラデーション -->
+    <linearGradient id="streamGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7DD3FC" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#0284C7" stop-opacity="0.9" />
+    </linearGradient>
+
+    <!-- 蛇口の金属グラデーション -->
+    <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#94A3B8" />
+      <stop offset="50%" stop-color="#CBD5E1" />
+      <stop offset="100%" stop-color="#64748B" />
+    </linearGradient>
+
+    <!-- シャドウ効果 -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0F172A" flood-opacity="0.06" />
+    </filter>
+
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.08" />
+    </filter>
+
+    <!-- 矢印マーカー -->
+    <marker id="arrowIn" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#0284C7" />
+    </marker>
+    <marker id="arrowOut" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#EF4444" />
+    </marker>
+  </defs>
+
+  <style>
+    .font-base {
+      font-family: "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    }
+    .title { font-size: 18px; font-weight: 700; fill: #1E293B; }
+    .subtitle { font-size: 13px; fill: #64748B; }
+    .label-title { font-size: 13px; font-weight: 700; }
+    .label-desc { font-size: 11px; fill: #475569; }
+    .formula-title { font-size: 13px; font-weight: 700; fill: #FFFFFF; }
+    .rule-title { font-size: 11px; font-weight: 700; }
+  </style>
+
+  <!-- 外枠・背景カード -->
+  <rect x="10" y="10" width="740" height="420" rx="16" fill="url(#bgGrad)" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow)" class="font-base" />
+
+  <!-- タイトルセクション -->
+  <g transform="translate(35, 40)" class="font-base">
+    <text class="title" x="0" y="0">ストック（たまる量）とフロー（流れる量）：お風呂のモデル</text>
+    <text class="subtitle" x="0" y="22">水位の変化は、入ってくるお湯（フローIN）と出ていくお湯（フローOUT）の引き算で決まる</text>
+  </g>
+
+  <!-- ==================== イラスト描画エリア ==================== -->
+  
+  <!-- 浴槽 (本体) -->
+  <g transform="translate(180, 160)">
+    <!-- 浴槽影 -->
+    <rect x="-5" y="10" width="370" height="145" rx="20" fill="#0F172A" opacity="0.05" />
+
+    <!-- 浴槽の外枠（陶器部分） -->
+    <rect x="0" y="0" width="360" height="140" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="3" filter="url(#cardShadow)" />
+    <!-- 浴槽の内側縁 -->
+    <rect x="12" y="12" width="336" height="116" rx="12" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1.5" />
+
+    <!-- 浴槽内のお湯（ストック） -->
+    <rect x="16" y="45" width="328" height="78" rx="8" fill="url(#waterGrad)" />
+
+    <!-- 水面の波線効果 -->
+    <path d="M 16 45 Q 98 40 180 45 T 344 45" fill="none" stroke="#E0F2FE" stroke-width="2.5" opacity="0.8" />
+    <path d="M 16 52 Q 98 56 180 52 T 344 52" fill="none" stroke="#7DD3FC" stroke-width="1.5" opacity="0.5" />
+
+    <!-- 水位の測定目盛りガイド -->
+    <line x1="330" y1="30" x2="330" y2="115" stroke="#0284C7" stroke-width="1.5" stroke-dasharray="3,3" />
+    <line x1="323" y1="45" x2="337" y2="45" stroke="#0284C7" stroke-width="2" />
+    <line x1="325" y1="65" x2="335" y2="65" stroke="#0284C7" stroke-width="1" />
+    <line x1="325" y1="85" x2="335" y2="85" stroke="#0284C7" stroke-width="1" />
+
+    <!-- 排水口イラスト (右下) -->
+    <circle cx="280" cy="108" r="14" fill="#64748B" stroke="#475569" stroke-width="2" />
+    <circle cx="280" cy="108" r="9" fill="#1E293B" />
+    <!-- 渦巻き水流エフェクト -->
+    <path d="M 275 104 Q 282 102 284 108" stroke="#7DD3FC" stroke-width="1.5" fill="none" />
+  </g>
+
+  <!-- 蛇口 (左上) -->
+  <g transform="translate(130, 110)">
+    <!-- 水道管 -->
+    <rect x="0" y="30" width="85" height="18" rx="4" fill="url(#metalGrad)" stroke="#475569" stroke-width="1" />
+    <!-- 吐水口 -->
+    <path d="M 70 30 L 95 30 L 95 65 L 75 65 Z" fill="url(#metalGrad)" stroke="#475569" stroke-width="1" />
+    <!-- ハンドル -->
+    <rect x="35" y="15" width="16" height="15" rx="2" fill="#64748B" />
+    <rect x="25" y="10" width="36" height="7" rx="3" fill="#475569" />
+
+    <!-- 蛇口からの注ぎ水流（フローIN） -->
+    <rect x="78" y="65" width="14" height="70" rx="4" fill="url(#streamGrad)" opacity="0.85" />
+    <!-- 水滴エフェクト -->
+    <circle cx="85" cy="85" r="3" fill="#E0F2FE" opacity="0.7" />
+    <circle cx="82" cy="115" r="2.5" fill="#E0F2FE" opacity="0.7" />
+  </g>
+
+  <!-- 排水（フローOUT：右下からの流れ出し） -->
+  <g transform="translate(460, 275)">
+    <!-- 水の流出アニメーション表現 -->
+    <path d="M 0 0 C 20 20 30 40 50 55" stroke="#0284C7" stroke-width="12" fill="none" opacity="0.8" stroke-linecap="round" />
+    <path d="M 0 0 C 20 20 30 40 50 55" stroke="#7DD3FC" stroke-width="5" fill="none" opacity="0.9" stroke-linecap="round" />
+  </g>
+
+  <!-- ==================== 吹き出し・注釈カード ==================== -->
+
+  <!-- 1. フローIN (蛇口) コールアウト -->
+  <g transform="translate(70, 95)" class="font-base" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="135" height="48" rx="8" fill="#FFFFFF" stroke="#0284C7" stroke-width="1.5" />
+    <text class="label-title" x="67.5" y="18" fill="#0284C7" text-anchor="middle">🚰 蛇口（入り）</text>
+    <text class="label-desc" x="67.5" y="34" fill="#0369A1" text-anchor="middle" font-weight="700">フロー IN（流れる量）</text>
+    <!-- 矢印 -->
+    <path d="M 135 24 L 155 45" stroke="#0284C7" stroke-width="2" marker-end="url(#arrowIn)" />
+  </g>
+
+  <!-- 2. ストック (水位) コールアウト -->
+  <g transform="translate(290, 115)" class="font-base" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="140" height="50" rx="8" fill="#FFFFFF" stroke="#0F172A" stroke-width="1.5" />
+    <text class="label-title" x="70" y="18" fill="#0F172A" text-anchor="middle">🛁 水位（たまっている水）</text>
+    <text class="label-desc" x="70" y="34" fill="#2563EB" text-anchor="middle" font-weight="700">ストック Stock（その瞬間の量）</text>
+    <path d="M 70 50 L 70 85" stroke="#0F172A" stroke-width="1.5" stroke-dasharray="3,3" />
+    <circle cx="70" cy="85" r="3" fill="#0F172A" />
+  </g>
+
+  <!-- 3. フローOUT (排水口) コールアウト -->
+  <g transform="translate(540, 315)" class="font-base" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="145" height="48" rx="8" fill="#FFFFFF" stroke="#EF4444" stroke-width="1.5" />
+    <text class="label-title" x="72.5" y="18" fill="#DC2626" text-anchor="middle">🕳️ 排水口（出）</text>
+    <text class="label-desc" x="72.5" y="34" fill="#B91C1C" text-anchor="middle" font-weight="700">フロー OUT（減る量）</text>
+    <path d="M 0 24 L -25 15" stroke="#EF4444" stroke-width="2" marker-end="url(#arrowOut)" />
+  </g>
+
+  <!-- ==================== 下部：基本法則 & 3パターンカード ==================== -->
+
+  <!-- 中央メインルール公式バッジ -->
+  <g transform="translate(380, 345)" class="font-base" filter="url(#cardShadow)">
+    <rect x="-240" y="-15" width="480" height="32" rx="16" fill="#0F172A" />
+    <text class="formula-title" x="0" y="5" text-anchor="middle">水位の変化 ＝ 入る量（フローIN） − 出る量（フローOUT）</text>
+  </g>
+
+  <!-- 3つの変化パターンミニカード -->
+  <g transform="translate(100, 375)" class="font-base">
+    <!-- パターン1: 上がる -->
+    <rect x="0" y="0" width="170" height="38" rx="8" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1" />
+    <text class="rule-title" x="85" y="16" fill="#1E4ED8" text-anchor="middle">① 入り ＞ 出</text>
+    <text class="label-desc" x="85" y="30" fill="#1D4ED8" text-anchor="middle" font-weight="700">➔ 水位が上がる ⬆️</text>
+
+    <!-- パターン2: 一定 -->
+    <rect x="195" y="0" width="170" height="38" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1" />
+    <text class="rule-title" x="280" y="16" fill="#475569" text-anchor="middle">② 入り ＝ 出</text>
+    <text class="label-desc" x="280" y="30" fill="#334155" text-anchor="middle" font-weight="700">➔ 水位は一定 ➡️</text>
+
+    <!-- パターン3: 下がる -->
+    <rect x="390" y="0" width="170" height="38" rx="8" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1" />
+    <text class="rule-title" x="475" y="16" fill="#DC2626" text-anchor="middle">③ 入り ＜ 出</text>
+    <text class="label-desc" x="475" y="30" fill="#B91C1C" text-anchor="middle" font-weight="700">➔ 水位が下がる ⬇️</text>
+  </g>
+
+</svg>
