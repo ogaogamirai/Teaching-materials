@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460" width="100%" height="100%">
+  <defs>
+    <!-- グラデーション定義 -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F8FAFC" />
+    </linearGradient>
+
+    <linearGradient id="waveGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EF4444" stop-opacity="0.12" />
+      <stop offset="50%" stop-color="#10B981" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#3B82F6" stop-opacity="0.12" />
+    </linearGradient>
+
+    <!-- ドロップシャドウ -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0F172A" flood-opacity="0.06" />
+    </filter>
+    
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.08" />
+    </filter>
+
+    <!-- マーカー -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#64748B" />
+    </marker>
+  </defs>
+
+  <style>
+    .font-base {
+      font-family: "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    }
+    .title { font-size: 18px; font-weight: 700; fill: #1E293B; }
+    .subtitle { font-size: 13px; fill: #64748B; }
+    .axis-label { font-size: 13px; font-weight: 600; fill: #475569; }
+    .grid-label { font-size: 12px; font-weight: 600; }
+    .card-title { font-size: 12px; font-weight: 700; }
+    .card-desc { font-size: 11px; fill: #475569; }
+    .badge-text { font-size: 11px; font-weight: 700; fill: #FFFFFF; }
+  </style>
+
+  <!-- 外枠・背景カード -->
+  <rect x="10" y="10" width="740" height="440" rx="16" fill="url(#bgGrad)" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow)" class="font-base" />
+
+  <!-- タイトルセクション -->
+  <g transform="translate(35, 40)" class="font-base">
+    <text class="title" x="0" y="0">時間の遅れによる「やりすぎのジグザグ」（味付けの例）</text>
+    <text class="subtitle" x="0" y="22">効き目が出るまでに「空白の時間」があるため、行動が行き過ぎて揺れ続ける</text>
+  </g>
+
+  <!-- 右上ヘッダーバッジ -->
+  <g transform="translate(570, 28)" class="font-base" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="145" height="30" rx="6" fill="#1E293B" />
+    <text x="72.5" y="19" text-anchor="middle" font-size="11" font-weight="700" fill="#F8FAFC">行ったり来たりの「揺れ」</text>
+  </g>
+
+  <!-- グラフ領域背景グリッド & 目盛り -->
+  <!-- グラフ範囲: Left=110, Right=700, Top=135, Bottom=345 (Height=210) -->
+
+  <!-- 目盛り背景領域 -->
+  <rect x="110" y="135" width="590" height="70" fill="#FEF2F2" opacity="0.5" />
+  <rect x="110" y="205" width="590" height="70" fill="#ECFDF5" opacity="0.5" />
+  <rect x="110" y="275" width="590" height="70" fill="#EFF6FF" opacity="0.5" />
+
+  <!-- 目盛り線（水平） -->
+  <!-- 上限: 濃すぎる -->
+  <line x1="110" y1="155" x2="700" y2="155" stroke="#FCA5A5" stroke-width="1" stroke-dasharray="4,4" />
+  <text x="95" y="159" text-anchor="end" class="font-base grid-label" fill="#DC2626">濃すぎる</text>
+  <text x="95" y="173" text-anchor="end" class="font-base" font-size="10" fill="#EF4444">（しょっぱい）</text>
+
+  <!-- 中央: 目標値（ちょうどよい） -->
+  <line x1="110" y1="240" x2="700" y2="240" stroke="#10B981" stroke-width="2" stroke-dasharray="6,4" />
+  <rect x="605" y="226" width="95" height="26" rx="13" fill="#10B981" />
+  <text x="652.5" y="243" text-anchor="middle" class="font-base badge-text">目標の味</text>
+  <text x="95" y="244" text-anchor="end" class="font-base grid-label" fill="#059669">ちょうどよい</text>
+
+  <!-- 下限: 薄すぎる -->
+  <line x1="110" y1="325" x2="700" y2="325" stroke="#93C5FD" stroke-width="1" stroke-dasharray="4,4" />
+  <text x="95" y="329" text-anchor="end" class="font-base grid-label" fill="#2563EB">薄すぎる</text>
+
+  <!-- 軸線 -->
+  <!-- Y軸 -->
+  <line x1="110" y1="135" x2="110" y2="350" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)" />
+  <text x="110" y="120" text-anchor="middle" class="font-base axis-label">味の濃さ</text>
+
+  <!-- X軸 -->
+  <line x1="110" y1="350" x2="710" y2="350" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)" />
+  <text x="710" y="370" text-anchor="end" class="font-base axis-label">時間 ──▶</text>
+
+  <!-- ジグザグ波形描画 -->
+  <!-- Points:
+       P1 (130, 315) : 薄い
+       P2 (220, 315) : 遅れ中
+       P3 (310, 155) : 濃すぎる（ピーク）
+       P4 (390, 155) : 水を足す
+       P5 (500, 315) : 薄すぎる（ボトム）
+       P6 (580, 200) : 減衰波
+       P7 (660, 240) : 目標値へ収束
+  -->
+  
+  <!-- 波形の影/グラデーション領域 -->
+  <path d="M 130 315 L 220 315 L 310 155 L 390 155 L 500 315 L 580 200 L 660 240 L 660 350 L 130 350 Z" fill="url(#waveGrad)" />
+
+  <!-- メイン波形ライン -->
+  <path d="M 130 315 L 220 315 L 310 155 L 390 155 L 500 315 L 580 200 L 660 240" 
+        stroke="#D97706" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" fill="none" />
+
+  <!-- ポイントマーカー -->
+  <circle cx="130" cy="315" r="5" fill="#2563EB" stroke="#FFFFFF" stroke-width="2" />
+  <circle cx="220" cy="315" r="5" fill="#D97706" stroke="#FFFFFF" stroke-width="2" />
+  <circle cx="310" cy="155" r="6" fill="#DC2626" stroke="#FFFFFF" stroke-width="2" />
+  <circle cx="390" cy="155" r="5" fill="#D97706" stroke="#FFFFFF" stroke-width="2" />
+  <circle cx="500" cy="315" r="6" fill="#2563EB" stroke="#FFFFFF" stroke-width="2" />
+  <circle cx="580" cy="200" r="5" fill="#D97706" stroke="#FFFFFF" stroke-width="2" />
+
+  <!-- 注釈カード 1: 塩を足す (左下) -->
+  <g transform="translate(120, 362)" class="font-base" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="135" height="48" rx="8" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.5" />
+    <text class="card-title" x="67.5" y="18" fill="#1D4ED8" text-anchor="middle">① 薄い → 塩を足す</text>
+    <text class="card-desc" x="67.5" y="34" text-anchor="middle">「まだ薄い」とまた追加</text>
+    <path d="M 30 -12 L 30 0" stroke="#3B82F6" stroke-width="1.5" />
+  </g>
+
+  <!-- 注釈 2: 遅れの発生（中央下） -->
+  <g transform="translate(245, 265)" class="font-base">
+    <rect x="-45" y="-12" width="90" height="24" rx="12" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1" />
+    <text x="0" y="4" text-anchor="middle" font-size="11" font-weight="700" fill="#B45309">時間の遅れ ⏳</text>
+  </g>
+
+  <!-- 注釈カード 3: やりすぎ（濃い） (中央上・右側にオフセットしてタイトルとの被りを回避) -->
+  <g transform="translate(350, 110)" class="font-base" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="145" height="50" rx="8" fill="#FFFFFF" stroke="#EF4444" stroke-width="1.5" />
+    <text class="card-title" x="72.5" y="18" fill="#DC2626" text-anchor="middle">② 一気に濃すぎる！</text>
+    <text class="card-desc" x="72.5" y="34" text-anchor="middle">遅れて全部効き「やりすぎ」</text>
+    <!-- ピーク (310, 155) への吹き出し線 -->
+    <path d="M 0 35 L -35 42" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="3,3" />
+    <circle cx="-35" cy="42" r="3" fill="#EF4444" />
+  </g>
+
+  <!-- 注釈カード 4: 水を足して逆向きにやりすぎ (右下) -->
+  <g transform="translate(480, 362)" class="font-base" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="135" height="48" rx="8" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.5" />
+    <text class="card-title" x="67.5" y="18" fill="#1D4ED8" text-anchor="middle">③ 慌てて水を足す</text>
+    <text class="card-desc" x="67.5" y="34" text-anchor="middle">今度は一気に「薄すぎる」</text>
+    <path d="M 35 -12 L 35 0" stroke="#3B82F6" stroke-width="1.5" />
+  </g>
+</svg>

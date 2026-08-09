@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460" width="100%" height="100%">
+  <defs>
+    <!-- グラデーション定義 -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F8FAFC" />
+    </linearGradient>
+
+    <!-- 過去・未来領域グラデーション -->
+    <linearGradient id="pastBg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F1F5F9" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#F8FAFC" stop-opacity="0.2" />
+    </linearGradient>
+
+    <linearGradient id="futureBg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FEF2F2" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#FEF2F2" stop-opacity="0.8" />
+    </linearGradient>
+
+    <!-- ドロップシャドウ -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0F172A" flood-opacity="0.06" />
+    </filter>
+    
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.08" />
+    </filter>
+
+    <!-- マーカー -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#64748B" />
+    </marker>
+  </defs>
+
+  <style>
+    .font-base {
+      font-family: "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    }
+    .title { font-size: 18px; font-weight: 700; fill: #1E293B; }
+    .subtitle { font-size: 13px; fill: #64748B; }
+    .axis-label { font-size: 13px; font-weight: 600; fill: #475569; }
+    .zone-label { font-size: 12px; font-weight: 700; }
+    .card-title { font-size: 12px; font-weight: 700; }
+    .card-desc { font-size: 11px; fill: #475569; }
+    .legend-text { font-size: 12px; font-weight: 700; }
+  </style>
+
+  <!-- 外枠・背景カード -->
+  <rect x="10" y="10" width="740" height="440" rx="16" fill="url(#bgGrad)" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow)" class="font-base" />
+
+  <!-- タイトルセクション -->
+  <g transform="translate(35, 40)" class="font-base">
+    <text class="title" x="0" y="0">参照モード（Reference Mode）：「このままだとどうなる」を描く</text>
+    <text class="subtitle" x="0" y="22">過去から現在までの動きをもとに、構造を放置した場合の未来予測（BOT）を可視化する</text>
+  </g>
+
+  <!-- 軸上部の Y軸ラベル (サブタイトルと距離をとってクリアに配置) -->
+  <text x="110" y="118" text-anchor="middle" class="font-base axis-label">金額 / 数量</text>
+
+  <!-- グラフ領域背景区分（過去／未来） -->
+  <!-- Left=110, Right=700 (Width=590), Top=135, Bottom=345 (Height=210) -->
+  <!-- 現在位置: x=340 -->
+
+  <!-- 過去ゾーン -->
+  <rect x="110" y="135" width="230" height="210" fill="url(#pastBg)" />
+  <!-- 未来ゾーン -->
+  <rect x="340" y="135" width="360" height="210" fill="url(#futureBg)" />
+
+  <!-- ゾーンヘッダーラベル (グラフ枠の直上 y=125 に配置して曲線との交差を防止) -->
+  <text x="225" y="125" text-anchor="middle" class="font-base zone-label" fill="#64748B">【 過去 〜 これまで 】</text>
+  <text x="520" y="125" text-anchor="middle" class="font-base zone-label" fill="#EF4444">【 未来（参照モード・予測） 】</text>
+
+  <!-- 軸線 -->
+  <!-- Y軸 -->
+  <line x1="110" y1="135" x2="110" y2="345" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)" />
+
+  <!-- X軸 -->
+  <line x1="110" y1="345" x2="710" y2="345" stroke="#64748B" stroke-width="2" marker-end="url(#arrow)" />
+  <text x="710" y="368" text-anchor="end" class="font-base axis-label">時間 ──▶</text>
+
+  <!-- 「現在」垂直ライン -->
+  <line x1="340" y1="135" x2="340" y2="345" stroke="#0F172A" stroke-width="2" stroke-dasharray="4,4" />
+  <rect x="305" y="350" width="70" height="24" rx="12" fill="#0F172A" />
+  <text x="340" y="366" text-anchor="middle" class="font-base" font-size="11" font-weight="700" fill="#FFFFFF">現 在</text>
+
+  <!-- グラフ曲線描画 -->
+
+  <!-- 1. 売上曲線（伸ばすライン）
+       過去: (130, 290) -> (240, 230) -> (340, 185)
+       未来: (340, 185) -> (500, 150) -> (660, 135)
+  -->
+  <path d="M 130 290 Q 240 230 340 185 T 660 135" 
+        stroke="#2563EB" stroke-width="3.5" fill="none" stroke-linecap="round" />
+
+  <!-- 2. 利益曲線（下降→未来予測破線）
+       過去: (130, 270) -> (240, 195) -> (340, 230) [現在で低下傾向]
+       未来破線: (340, 230) -> (480, 275) -> (660, 315) [放置で赤字へ落とし込み]
+  -->
+  <!-- 実線部分（過去〜現在） -->
+  <path d="M 130 270 Q 220 190 340 230" 
+        stroke="#DC2626" stroke-width="3.5" fill="none" stroke-linecap="round" />
+  
+  <!-- 破線部分（現在〜未来：参照モード） -->
+  <path d="M 340 230 Q 480 275 660 315" 
+        stroke="#DC2626" stroke-width="3.5" stroke-dasharray="7,5" fill="none" stroke-linecap="round" />
+
+  <!-- ポイントマーカー -->
+  <circle cx="340" cy="185" r="5" fill="#2563EB" stroke="#FFFFFF" stroke-width="2" />
+  <circle cx="340" cy="230" r="6" fill="#DC2626" stroke="#FFFFFF" stroke-width="2" />
+  <circle cx="660" cy="315" r="5" fill="#DC2626" stroke="#FFFFFF" stroke-width="2" />
+
+  <!-- 凡例カード (右上・売上ラインの上) -->
+  <g transform="translate(540, 145)" class="font-base" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="145" height="58" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+    <!-- 売上凡例 -->
+    <line x1="12" y1="20" x2="35" y2="20" stroke="#2563EB" stroke-width="3" />
+    <text class="legend-text" x="42" y="24" fill="#1E293B">売上（表面上昇）</text>
+    <!-- 利益凡例 -->
+    <line x1="12" y1="40" x2="35" y2="40" stroke="#DC2626" stroke-width="3" stroke-dasharray="4,2" />
+    <text class="legend-text" x="42" y="44" fill="#1E293B">利益（悪化予測）</text>
+  </g>
+
+  <!-- 注釈吹き出し 1: 売上は伸びているが… (左上) -->
+  <g transform="translate(170, 160)" class="font-base" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="140" height="44" rx="8" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.5" />
+    <text class="card-title" x="70" y="17" fill="#1D4ED8" text-anchor="middle">売上は伸びている</text>
+    <text class="card-desc" x="70" y="32" text-anchor="middle">一見順調に見えるが…</text>
+    <path d="M 70 44 L 70 54" stroke="#3B82F6" stroke-width="1.5" />
+  </g>
+
+  <!-- 注釈吹き出し 2: 利益の減少傾向 (中央下) -->
+  <g transform="translate(230, 255)" class="font-base" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="150" height="46" rx="8" fill="#FFFFFF" stroke="#EF4444" stroke-width="1.5" />
+    <text class="card-title" x="75" y="17" fill="#DC2626" text-anchor="middle">利益（ストック）減少</text>
+    <text class="card-desc" x="75" y="32" text-anchor="middle">値下げで利益率が圧迫</text>
+    <path d="M 95 -10 L 95 0" stroke="#EF4444" stroke-width="1.5" />
+  </g>
+
+  <!-- 注釈吹き出し 3: 参照モードの警告 (右下・文字はみ出し解消) -->
+  <g transform="translate(440, 260)" class="font-base" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="195" height="52" rx="8" fill="#FEF2F2" stroke="#DC2626" stroke-width="1.5" />
+    <text class="card-title" x="97.5" y="19" fill="#B91C1C" text-anchor="middle">⚠️ 放置するとどうなるか</text>
+    <text class="card-desc" x="97.5" y="36" text-anchor="middle" font-weight="700">利益が急落し赤字に転落</text>
+    <!-- 指向線 -->
+    <path d="M 195 26 L 218 50" stroke="#DC2626" stroke-width="1.5" stroke-dasharray="3,3" />
+  </g>
+
+  <!-- 結論下部解説バッジ -->
+  <g transform="translate(380, 416)" class="font-base">
+    <rect x="-240" y="-14" width="480" height="28" rx="14" fill="#0F172A" />
+    <text x="0" y="4" text-anchor="middle" font-size="12" font-weight="700" fill="#F8FAFC">SDのStep1: 問題を「時間変化の動き（参照モード）」としてまず描く</text>
+  </g>
+</svg>
