@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360" role="img" aria-label="正のループ（増えるともっと増える）と負のループ（増えると抑える）">
+  <style>
+    .box { fill: #eef4fb; stroke: #243b53; stroke-width: 2; rx: 8; }
+    .box-green { fill: #e3f6e5; stroke: #1b6e2e; stroke-width: 2; rx: 8; }
+    .box-orange { fill: #fdeee2; stroke: #a05a1c; stroke-width: 2; rx: 8; }
+    .loop { stroke: #243b53; stroke-width: 2.5; fill: none; }
+    .loop-green { stroke: #1b6e2e; stroke-width: 2.5; fill: none; }
+    .loop-orange { stroke: #a05a1c; stroke-width: 2.5; fill: none; }
+    .arrow { fill: #243b53; }
+    .label { font-family: "Yu Gothic UI", sans-serif; font-size: 15px; fill: #1f2933; }
+    .label-small { font-family: "Yu Gothic UI", sans-serif; font-size: 12px; fill: #52606d; }
+    .plus { font-family: "Yu Gothic UI", sans-serif; font-size: 20px; font-weight: bold; fill: #1b6e2e; }
+    .minus { font-family: "Yu Gothic UI", sans-serif; font-size: 20px; font-weight: bold; fill: #a05a1c; }
+    .title { font-family: "Yu Gothic UI", sans-serif; font-size: 16px; font-weight: bold; fill: #243b53; }
+  </style>
+
+  <!-- ===== 正のループ（左） ===== -->
+  <text x="160" y="30" class="title" text-anchor="middle">正のループ（増えるともっと増える）</text>
+
+  <!-- ストック -->
+  <rect x="105" y="80" width="110" height="45" class="box-green"/>
+  <text x="160" y="107" class="label" text-anchor="middle" font-weight="bold">フォロワー</text>
+
+  <!-- ループ（時計回り） -->
+  <path d="M 160 125 C 210 160, 260 190, 235 230 S 120 250, 100 210" class="loop-green"/>
+  <polygon points="108,196 118,216 100,212" class="arrow"/>
+
+  <!-- 中間ノード -->
+  <rect x="205" y="240" width="120" height="40" class="box"/>
+  <text x="265" y="264" class="label" text-anchor="middle">見る人が増える</text>
+
+  <text x="235" y="180" class="plus">＋</text>
+  <text x="90" y="150" class="plus">＋</text>
+  <text x="95" y="270" class="label-small">見るほど　さらに増える</text>
+
+  <!-- ===== 負のループ（右） ===== -->
+  <text x="480" y="30" class="title" text-anchor="middle">負のループ（増えると抑える）</text>
+
+  <!-- ストック -->
+  <rect x="425" y="80" width="110" height="45" class="box-orange"/>
+  <text x="480" y="107" class="label" text-anchor="middle" font-weight="bold">室温</text>
+
+  <!-- ループ -->
+  <path d="M 480 125 C 530 160, 560 190, 535 230 S 440 250, 420 210" class="loop-orange"/>
+  <polygon points="428,196 438,216 420,212" class="arrow"/>
+
+  <!-- 中間ノード -->
+  <rect x="525" y="240" width="120" height="40" class="box"/>
+  <text x="585" y="264" class="label" text-anchor="middle">エアコンを下げる</text>
+
+  <text x="555" y="180" class="minus">−</text>
+  <text x="410" y="150" class="minus">−</text>
+  <text x="415" y="270" class="label-small">増えると　抑える方向</text>
+</svg>

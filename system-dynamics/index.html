@@ -1,0 +1,4459 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>システムダイナミクス×TOC 学習教材 | system-dynamics</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8f7f4;
+      --paper: #ffffff;
+      --text: #1f2933;
+      --muted: #52606d;
+      --line: #d9e2ec;
+      --accent: #243b53;
+      --accent-soft: #627d98;
+      --code-bg: #f0f4f8;
+      --details-bg: #f7fafc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+      line-height: 1.75;
+    }
+    a { color: var(--accent-soft); }
+    .page { max-width: 960px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    .hero, .toc, .chapter {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 8px 24px rgba(36, 59, 83, 0.05);
+    }
+    .hero h1 { margin: 0 0 0.5rem; font-size: 1.8rem; line-height: 1.35; }
+    .hero .tagline { font-size: 1.05rem; color: var(--text); margin: 0.35rem 0 0.75rem; }
+    .hero p { margin: 0.35rem 0; color: var(--muted); }
+    .toc h2, .chapter-body > h1:first-child { margin-top: 0; }
+    .toc ol { margin: 0; padding-left: 1.25rem; }
+    .toc li { margin: 0.35rem 0; }
+    .toc .toc-group { margin-top: 0.9rem; font-weight: 700; color: var(--accent); list-style: none; margin-left: -1.25rem; }
+    .toc-source { display: block; font-size: 0.85rem; color: var(--muted); }
+    .chapter-meta {
+      display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1rem;
+      color: var(--muted); font-size: 0.9rem;
+    }
+    .chapter-index {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 2rem; height: 2rem; border-radius: 999px;
+      background: var(--code-bg); color: var(--accent); font-weight: 700;
+    }
+    .chapter-label { font-weight: 700; color: var(--text); }
+    .chapter-body h1, .chapter-body h2, .chapter-body h3, .chapter-body h4 { line-height: 1.35; scroll-margin-top: 1rem; }
+    .chapter-body h2 { margin-top: 2rem; padding-bottom: 0.25rem; border-bottom: 1px solid var(--line); }
+    .chapter-body p, .chapter-body li, .chapter-body blockquote { max-width: 72ch; }
+    .chapter-body blockquote {
+      margin: 1rem 0; padding: 0.75rem 1rem;
+      border-left: 4px solid var(--accent-soft); background: var(--details-bg); color: var(--muted);
+    }
+    .chapter-body table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.95rem; }
+    .chapter-body th, .chapter-body td { border: 1px solid var(--line); padding: 0.55rem 0.7rem; vertical-align: top; }
+    .chapter-body th { background: var(--code-bg); text-align: left; }
+    .chapter-body pre { overflow-x: auto; background: #102a43; color: #f0f4f8; padding: 1rem; border-radius: 8px; line-height: 1.5; }
+    .chapter-body code { font-family: Consolas, "Courier New", monospace; font-size: 0.92em; }
+    .chapter-body :not(pre) > code { background: var(--code-bg); padding: 0.1rem 0.35rem; border-radius: 4px; }
+    .chapter-body img { display: block; max-width: 100%; height: auto; margin: 1rem auto; }
+    .chapter-body details {
+      margin: 1rem 0; padding: 0.75rem 1rem;
+      border: 1px solid var(--line); border-radius: 8px; background: var(--details-bg);
+    }
+    .chapter-body summary { cursor: pointer; font-weight: 700; }
+    .chapter-body hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+    .figure { margin: 1.25rem 0; text-align: center; }
+    .figure-svg svg { max-width: 100%; height: auto; }
+    .sources { font-size: 0.9rem; color: var(--muted); }
+    @media print {
+      body { background: #fff; }
+      .page { max-width: none; padding: 0; }
+      .hero, .toc, .chapter { box-shadow: none; break-inside: avoid-page; }
+    }
+  </style>
+  <link rel="stylesheet" href="vendor/katex/katex.min.css">
+  <script defer src="vendor/katex/katex.min.js"></script>
+  <script defer src="vendor/katex/auto-render.min.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var blocks = document.querySelectorAll('.chapter-body');
+      blocks.forEach(function (block) {
+        renderMathInElement(block, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '\\[', right: '\\]', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false}
+          ],
+          throwOnError: false
+        });
+      });
+    });
+  </script>
+
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <h1>システムダイナミクス×TOC 学習教材</h1>
+      <p class="tagline">見る（SD: 構造の全体像）→ 直す（TOC: 制約への集中）→ 抽象化（自分たちの言葉で）</p>
+      <p>中学2年生〜一般社会人。Markdown 正本から自動生成した統合版です。</p>
+      <p>生成日時: 2026-08-09 11:28 +0900</p>
+    </header>
+
+    <nav class="toc" aria-label="章一覧">
+      <h2>目次</h2>
+      <ol>
+        <li class="toc-group">本編（Unit 1〜12）</li>
+<li><a href="#unit-01">Unit 1</a><span class="toc-source">unit1_systems_thinking_intro.md</span></li>
+<li><a href="#unit-02">Unit 2</a><span class="toc-source">unit2_stock_and_flow.md</span></li>
+<li><a href="#unit-03">Unit 3</a><span class="toc-source">unit3_feedback_loops.md</span></li>
+<li><a href="#unit-04">Unit 4</a><span class="toc-source">unit4_time_delay.md</span></li>
+<li><a href="#unit-05">Unit 5</a><span class="toc-source">unit5_bottleneck.md</span></li>
+<li><a href="#unit-06">Unit 6</a><span class="toc-source">unit6_five_focusing_steps.md</span></li>
+<li><a href="#unit-07">Unit 7</a><span class="toc-source">unit7_crt.md</span></li>
+<li><a href="#unit-08">Unit 8</a><span class="toc-source">unit8_injection.md</span></li>
+<li><a href="#unit-09">Unit 9</a><span class="toc-source">unit9_sd_applied.md</span></li>
+<li><a href="#unit-10">Unit 10</a><span class="toc-source">unit10_toc_applied.md</span></li>
+<li><a href="#unit-11">Unit 11</a><span class="toc-source">unit11_synthesis.md</span></li>
+<li><a href="#unit-12">Unit 12</a><span class="toc-source">unit12_sd_strength.md</span></li>
+<li class="toc-group">理論ルート math-bridge（数理前提）</li>
+<li><a href="#bridge-b1">math-bridge B1</a><span class="toc-source">B1_rate_of_change.md</span></li>
+<li><a href="#bridge-b2">math-bridge B2</a><span class="toc-source">B2_functions_and_graphs.md</span></li>
+<li><a href="#bridge-b3">math-bridge B3</a><span class="toc-source">B3_instantaneous_rate.md</span></li>
+<li><a href="#bridge-b4">math-bridge B4</a><span class="toc-source">B4_meaning_of_derivative.md</span></li>
+<li><a href="#bridge-b5">math-bridge B5</a><span class="toc-source">B5_differential_equation_first_step.md</span></li>
+<li><a href="#bridge-b6">math-bridge B6</a><span class="toc-source">B6_exponential_growth_and_e.md</span></li>
+<li class="toc-group">演習カード（EX1〜EX10）</li>
+<li><a href="#exercise-ex1">演習 EX1</a><span class="toc-source">ex1_getting_up.md</span></li>
+<li><a href="#exercise-ex2">演習 EX2</a><span class="toc-source">ex2_club_conflict.md</span></li>
+<li><a href="#exercise-ex3">演習 EX3</a><span class="toc-source">ex3_class_committee.md</span></li>
+<li><a href="#exercise-ex4">演習 EX4</a><span class="toc-source">ex4_too_many_meetings.md</span></li>
+<li><a href="#exercise-ex5">演習 EX5</a><span class="toc-source">ex5_overtime.md</span></li>
+<li><a href="#exercise-ex6">演習 EX6</a><span class="toc-source">ex6_growth_limit.md</span></li>
+<li><a href="#exercise-ex7">演習 EX7</a><span class="toc-source">ex7_sns_dependency.md</span></li>
+<li><a href="#exercise-ex8">演習 EX8</a><span class="toc-source">ex8_free_topic.md</span></li>
+<li><a href="#exercise-ex9">演習 EX9</a><span class="toc-source">ex9_price_war_trap.md</span></li>
+<li><a href="#exercise-ex10">演習 EX10</a><span class="toc-source">ex10_bottleneck_pricing.md</span></li>
+      </ol>
+    </nav>
+
+    <section class="chapter" id="unit-01" data-source="unit1_systems_thinking_intro.md" data-group="main"><div class="chapter-meta"><span class="chapter-index">01</span><span class="chapter-label">Unit 1</span><span class="chapter-source">unit1_systems_thinking_intro.md</span></div><div class="chapter-body"><h1>Unit 1 — システム思考の入り口：一直線？ それとも丸い？</h1>
+<blockquote>
+<p><strong>対象:</strong> 中学2年生
+<strong>ゴール（L3 Teach-Back）:</strong> 「一直線の考え方」と「丸い（循環する）考え方」の違いを、自分の言葉で人に説明できる
+<strong>所要目安:</strong> 15〜20分</p>
+</blockquote>
+<hr>
+<h2>1. Hook — まず2つの場面をイメージしよう</h2>
+<p><strong>場面A ドミノ倒し</strong></p>
+<p>ドミノを倒し始めると、パタパタパタ…と次々に倒れていきます。
+最後の1枚が倒れたら、<strong>おしまい</strong>です。</p>
+<p><strong>場面B ブランコ</strong></p>
+<p>こぎ始めると、ブランコは前後に揺れます。
+揺れが止まりそうになったら、<strong>もう一度こぐ</strong>と、また大きく揺れます。</p>
+<p>さて、この2つはどこが違うでしょう？</p>
+<blockquote>
+<p><strong>ヒント:</strong> 「おしまいがあるかどうか」に注目してみよう。</p>
+</blockquote>
+<ul>
+<li>ドミノ倒しは <strong>原因→結果で終わる</strong></li>
+<li>ブランコは <strong>結果が原因に返ってくる</strong></li>
+</ul>
+<p>この「<strong>結果が原因に返ってくる</strong>」ことを、<strong>ぐるぐる回る＝循環（ループ）</strong> といいます。</p>
+<hr>
+<h2>2. なぜこれを学ぶのか？（Value）</h2>
+<p>私たちは普段、物事を「AならばB」という<strong>一直線</strong>で考えがちです。</p>
+<blockquote>
+<p>勉強した → 成績が上がる。（おしまい）</p>
+</blockquote>
+<p>でも、現実はそんなに単純ではありません。</p>
+<blockquote>
+<p>勉強した → 成績が上がる → 「やればできる！」と自信がつく → <strong>もっと勉強する</strong> → さらに成績が上がる → …</p>
+</blockquote>
+<p><strong>結果が原因に返ってきて、ぐるぐる回っています。</strong></p>
+<p>これを学ぶと、物事が<strong>なぜ良くなっていくのか・なぜ悪くなっていくのか</strong>が、ただの結果を見るよりもずっと深く分かるようになります。これが「システム思考」の入り口です。</p>
+<hr>
+<h2>3. この教材を最後まで学ぶと、どこまで分かるようになる？（ゴール像）</h2>
+<p>「システム思考」を全部で8つのユニットで学びます。最後まで学ぶと、こんなことができるようになります。</p>
+<table>
+<thead>
+<tr>
+<th>レベル</th>
+<th>できるようになること</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Unit 1〜4（見る力）</strong></td>
+<td>物事が「なぜそうなるのか」を、ぐるぐるの構造で説明できる</td>
+<td>「風邪が流行るのは、うつす→増える→さらにうつす、のループがあるから」</td>
+</tr>
+<tr>
+<td><strong>Unit 5〜6（直す力）</strong></td>
+<td>問題の「どこを直せばいいか」を見つけられる</td>
+<td>「部活で記録が伸びない原因は、練習メニューのこの工程がボトルネックだから」</td>
+</tr>
+<tr>
+<td><strong>Unit 7（総合力）</strong></td>
+<td>構造を見て、制約を直し、改善案を出せる</td>
+<td>学校の行事や係の仕事を、根拠つきで改善提案できる</td>
+</tr>
+<tr>
+<td><strong>Unit 8（抽象化）</strong></td>
+<td>学んだことを自分たちの言葉でまとめ、新しい場面で使える</td>
+<td>テスト勉強で学んだループの型を、部活・友達関係・将来の仕事に応用できる</td>
+</tr>
+</tbody>
+</table>
+<p><strong>つまり、ゴールは「知識を覚えること」ではありません。</strong> 身の回りの出来事を「ぐるぐるの構造」として見て、「どこを直せば良いか」を自分で判断できる、という<strong>一生ものの考え方</strong>を手に入れることです。</p>
+<hr>
+<h2>4. 2つの考え方を比べてみよう（Reveal）</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>一直線</th>
+<th>丸い（ループ）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>形</td>
+<td>原因 → 結果</td>
+<td>原因 → 結果 → また原因に返る</td>
+</tr>
+<tr>
+<td>終わり</td>
+<td>ある（結果でおしまい）</td>
+<td>ない（ぐるぐる回る）</td>
+</tr>
+<tr>
+<td>例</td>
+<td>ドミノ倒し</td>
+<td>ブランコ・PDCA・検証→改善</td>
+</tr>
+<tr>
+<td>身近な例</td>
+<td>消しゴムを使ったら減る（おしまい）</td>
+<td>テスト勉強のやり直し</td>
+</tr>
+</tbody>
+</table>
+<p><strong>見分け方のコツ（これがUnit 1の最重要ポイント）:</strong></p>
+<blockquote>
+<p><strong>「結果」が「原因」に返ってきて、もう一度その原因を動かすかどうか。</strong></p>
+</blockquote>
+<p>返ってくる → ループ。返ってこない → 一直線。</p>
+<hr>
+<h2>5. 例で定着 — テスト勉強と部活（Interact）</h2>
+<h3>例1: テスト勉強</h3>
+<ol>
+<li>テストで悪い点を取った</li>
+<li>→ 「勉強のやり方が悪かった」と気づく</li>
+<li>→ やり方を変えて勉強する</li>
+<li>→ 次のテストで点が上がる</li>
+<li>→ 「このやり方が効く」と自信がつく</li>
+<li>→ <strong>3に戻る</strong>（さらに良いやり方を試す）</li>
+</ol>
+<p>ここで「点が上がった（結果）」が「もっと勉強する（原因）」に<strong>返ってきています</strong>。これがループ。</p>
+<h3>例2: 部活の練習メニュー</h3>
+<ol>
+<li>大会で負けた</li>
+<li>→ 「基礎が足りない」と気づく</li>
+<li>→ 練習メニューを見直す</li>
+<li>→ 次の大会で記録が伸びる</li>
+<li>→ 伸びたことを確かめて、<strong>3に戻る</strong>（さらに改善）</li>
+</ol>
+<p>これもループです。これを「<strong>改善のループ</strong>」と呼びます。</p>
+<blockquote>
+<p><strong>やってみよう:</strong> 上の例2の、どこで「結果が原因に返っている」かを指さしてみよう。</p>
+</blockquote>
+<hr>
+<h2>6. Check — 判定問題（これは一直線？ それとも丸い？）</h2>
+<p>それぞれ「一直線」か「丸い」か、理由つきで答えよう。</p>
+<ol>
+<li>リンゴが木から落ちた。（→ 落ちたらおしまい）</li>
+<li>友達と仲良くすると笑顔が増える → さらに仲良くしたくなる。</li>
+<li>お菓子を食べたら無くなった。</li>
+<li>走ると速くなる → 速いと楽しい → もっと走る。</li>
+</ol>
+<blockquote>
+<p><strong>答え合わせ（下を見る前に自分で答えよう）:</strong>
+1. 一直線　2. 丸い　3. 一直線　4. 丸い</p>
+</blockquote>
+<hr>
+<h2>7. よくある誤解（Misconceptions）</h2>
+<table>
+<thead>
+<tr>
+<th>誤解</th>
+<th>正しい理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「ループ＝同じことの繰り返し」</td>
+<td>同じじゃなくて、<strong>結果が原因に返って、前より変わる</strong>。改善のループは、回るたびに少しずつ良くなる</td>
+</tr>
+<tr>
+<td>「PDCAは仕事のやり方で、自分には関係ない」</td>
+<td>テスト勉強・部活・趣味の練習、全部 PDCA と同じ構造</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>8. Teach-Back — 素人に説明しよう（ゴール）</h2>
+<p>次のテンプレで、「一直線と丸いの違い」を、システム思考を知らない人に説明してみよう。</p>
+<ol>
+<li><strong>何の話か:</strong> 「物事の見方には、一直線と丸いの2つがある」という話</li>
+<li><strong>部品は何か:</strong> 原因・結果・「結果が原因に返る」こと</li>
+<li><strong>どう繋がるか:</strong> 原因→結果→また原因に返ると、ぐるぐる回る（ループ）</li>
+<li><strong>例:</strong> テスト勉強（点が上がる→自信→さらに勉強）</li>
+<li><strong>よくある誤解:</strong> ループは同じ繰り返しじゃなく、回るたびに変わる</li>
+<li><strong>素人への一言:</strong> 「ドミノは倒したら終わり。ブランコはこげばまた返ってくる。物事をブランコみたいに見る考え方だよ」</li>
+</ol>
+<hr>
+<h2>9. まとめ（Takeaway）</h2>
+<ul>
+<li>物事の見方は <strong>一直線（原因→結果で終わる）</strong> と <strong>丸い（結果が原因に返る）</strong> の2つがある</li>
+<li><strong>結果が原因に返る</strong>ことを「循環（ループ）」という</li>
+<li>テスト勉強・部活・PDCA・検証→改善は、みんな<strong>ループ</strong></li>
+<li>次回は、この「ループ」の中身（何がたまり、何が流れるか）を詳しく見ていく</li>
+</ul>
+<blockquote>
+<p><strong>次回予告 (Unit 2):</strong> ループの中にある「たまるもの（ストック）」と「流れるもの（フロー）」を見つけよう。</p>
+</blockquote></div></section>
+<section class="chapter" id="unit-02" data-source="unit2_stock_and_flow.md" data-group="main"><div class="chapter-meta"><span class="chapter-index">02</span><span class="chapter-label">Unit 2</span><span class="chapter-source">unit2_stock_and_flow.md</span></div><div class="chapter-body"><h1>Unit 2 — ストックとフロー：お風呂の水位で考える</h1>
+<blockquote>
+<p><strong>対象:</strong> 中学2年生〜一般社会人
+<strong>ゴール（基本編 L3 Teach-Back）:</strong> 「たまるもの（ストック）」と「流れるもの（フロー）」を区別し、変化のルールを人に説明できる
+<strong>発展編 L5:</strong> ストックの変化を微分方程式 <code>d(水位)/dt = 入り − 出</code> で記述できる
+<strong>所要目安:</strong> 基本編 15〜20分 / 発展編 10〜15分</p>
+</blockquote>
+<hr>
+<h1>基本編（中2〜）</h1>
+<h2>1. Hook — お風呂の水位</h2>
+<p>お風呂にお湯をためるときのことを思い出してください。</p>
+<figure class="figure"><div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" width="640" height="300" viewBox="0 0 640 300" role="img" aria-label="お風呂の水位：蛇口（入り）と排水口（出）">
+  <style>
+    .box { fill: #eef4fb; stroke: #243b53; stroke-width: 2; }
+    .pipe { stroke: #243b53; stroke-width: 3; fill: none; }
+    .arrow { fill: #243b53; }
+    .label { font-family: "Yu Gothic UI", sans-serif; font-size: 16px; fill: #1f2933; }
+    .label-small { font-family: "Yu Gothic UI", sans-serif; font-size: 13px; fill: #52606d; }
+    .water { fill: #9cc3e5; }
+    .tank { fill: none; stroke: #243b53; stroke-width: 3; }
+  </style>
+
+  <!-- 蛇口（入り） -->
+  <text x="90" y="50" class="label" text-anchor="middle" font-weight="bold">蛇口（入り）</text>
+  <path d="M 90 60 L 90 95" class="pipe"/>
+  <polygon points="90,108 84,96 96,96" class="arrow"/>
+
+  <!-- 浴槽 -->
+  <rect x="30" y="110" width="220" height="130" rx="10" class="tank"/>
+  <rect x="45" y="130" width="190" height="95" rx="4" class="water"/>
+  <text x="140" y="185" class="label" text-anchor="middle" font-weight="bold">お風呂の水位</text>
+  <text x="140" y="210" class="label-small" text-anchor="middle">（ストック：たまるもの）</text>
+
+  <!-- 排水口（出） -->
+  <rect x="255" y="225" width="50" height="8" class="box"/>
+  <path d="M 255 229 L 220 229" class="pipe"/>
+  <polygon points="208,229 220,223 220,235" class="arrow"/>
+  <text x="330" y="245" class="label" text-anchor="middle" font-weight="bold">排水口（出）</text>
+
+  <!-- ルール -->
+  <text x="140" y="280" class="label-small" text-anchor="middle">水位の変化 ＝ 入り − 出</text>
+</svg>
+</div></figure>
+
+<p>水位は、どうして上がったり下がったりするのでしょう？ 実は、たった1つのルールで説明できます。</p>
+<h2>2. なぜこれを学ぶのか？（Value）</h2>
+<p>世の中の「たまっているもの」は、ほとんど全部このルールで動いています。</p>
+<ul>
+<li>お金（貯金がたまる）</li>
+<li>水（池・貯水タンク）</li>
+<li>人口（人がたまる）</li>
+<li>知識・体力・フォロワー数・在庫…</li>
+</ul>
+<p><strong>これが分かると、</strong> 「なぜ増えたり減ったりするのか」の理由が、絵を描くだけで分かるようになります。これがシステム思考の「見る力」の基本です。</p>
+<h2>3. ストックとフロー — 2つの仲間（Reveal）</h2>
+<p>まず、言葉の確認から。この2つは<strong>最初に区別する</strong>のが大事です。</p>
+<table>
+<thead>
+<tr>
+<th>名前</th>
+<th>意味</th>
+<th>お風呂の例</th>
+<th>他の例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ストック（Stock）</strong></td>
+<td><strong>たまっているもの</strong>（その瞬間の量）</td>
+<td>水位</td>
+<td>貯金・在庫・人口</td>
+</tr>
+<tr>
+<td><strong>フロー（Flow）</strong></td>
+<td><strong>流れているもの</strong>（増える/減る量）</td>
+<td>蛇口の水・排水口の水</td>
+<td>収入・支出・出生・死亡</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Point:</strong> ストックは「今、どれだけあるか」、フローは「どれだけ流れているか」を教えてくれる。</p>
+</blockquote>
+<h2>4. 水位のルール（Interact）— これがUnit 2の最重要ポイント</h2>
+<p>お風呂の水位は、次の1本の式で表せます。</p>
+<pre><code>水位の変化 = 入ってくる水（蛇口） − 出ていく水（排水口）
+</code></pre>
+<p>このルールで、3つの場合を考えてみましょう。</p>
+<table>
+<thead>
+<tr>
+<th>場合</th>
+<th>入りと出の関係</th>
+<th>水位</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>入り &gt; 出</td>
+<td><strong>上がる</strong></td>
+</tr>
+<tr>
+<td>B</td>
+<td>入り &lt; 出</td>
+<td><strong>下がる</strong></td>
+</tr>
+<tr>
+<td>C</td>
+<td>入り = 出</td>
+<td><strong>変わらない</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>やってみよう:</strong> 上の図（蛇口と排水口）を紙に書いて、それぞれの場合に水位がどうなるかを描いてみよう。</p>
+<p><strong>ポイント:</strong> 「水位そのもの」ではなく「水位の<strong>変化</strong>」に注目しているところが大切。水位が高いか低いかではなく、<strong>入りと出のどちらが多いか</strong>で決まるのです。</p>
+</blockquote>
+<h2>5. 例で定着 — 貯金も同じ（Interact）</h2>
+<p>お風呂と同じルールで、貯金も説明できます。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>お風呂</th>
+<th>貯金</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ストック</td>
+<td>水位</td>
+<td>貯金額</td>
+</tr>
+<tr>
+<td>入り（フローIN）</td>
+<td>蛇口の水</td>
+<td>おこづかい・バイト代</td>
+</tr>
+<tr>
+<td>出（フローOUT）</td>
+<td>排水口の水</td>
+<td>買い物・お小遣いの支出</td>
+</tr>
+<tr>
+<td>ルール</td>
+<td>入り − 出</td>
+<td>入り − 出</td>
+</tr>
+</tbody>
+</table>
+<p><strong>「貯金が増える」＝ 入るお金 &gt; 出るお金。</strong> お風呂とまったく同じ構造です。これが「ストックとフロー」の考え方のすごいところ。<strong>構造が同じなら、別の分野でも同じ見方ができる</strong>のです。</p>
+<h2>6. Check — 確かめてみよう</h2>
+<p>それぞれ、ストックとフローを答えよう。</p>
+<ol>
+<li>コップの中の水 → ストック？ フロー？</li>
+<li>蛇口から出る水 → ストック？ フロー？</li>
+<li>今日の残金 → ストック？ フロー？</li>
+<li>買い物で使うお金 → ストック？ フロー？</li>
+</ol>
+<blockquote>
+<p><strong>答え合わせ（下を見る前に自分で答えよう）:</strong>
+1. ストック　2. フロー　3. ストック　4. フロー</p>
+</blockquote>
+<p><strong>おまけ問題:</strong> 「水位が下がっている」とき、蛇口と排水口はどちらが多い？</p>
+<blockquote>
+<p><strong>答え:</strong> 排水口（出）のほうが多い。</p>
+</blockquote>
+<h2>7. よくある誤解（Misconceptions）</h2>
+<table>
+<thead>
+<tr>
+<th>誤解</th>
+<th>正しい理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「ストック＝増えるもの、フロー＝減るもの」</td>
+<td>そんなことはない。ストックは「たまるもの」（増えも減りもする）。フローは「流れるもの」（入りと出の両方がある）</td>
+</tr>
+<tr>
+<td>「水位が高い＝水位が上がっている」</td>
+<td>水位の<strong>高さ</strong>と水位の<strong>変化</strong>は別もの。高くても、出のほうが多いと<strong>下がる</strong></td>
+</tr>
+<tr>
+<td>「フローが大きい＝量が多い」</td>
+<td>フローは「時間あたり」の流れ。1分にどれだけ流れるか</td>
+</tr>
+</tbody>
+</table>
+<h2>8. Teach-Back — 素人に説明しよう（基本編ゴール）</h2>
+<p>テンプレで「ストックとフロー」を、知らない人に説明してみよう。</p>
+<ol>
+<li><strong>何の話か:</strong> 物事には「たまるもの」と「流れるもの」がある、という話</li>
+<li><strong>部品は何か:</strong> ストック（たまるもの）・フローIN（入り）・フローOUT（出）</li>
+<li><strong>どう繋がるか:</strong> 変化 = 入り − 出</li>
+<li><strong>図はどこを見ればいいか:</strong> 蛇口と排水口の両方がある絵</li>
+<li><strong>よくある誤解:</strong> 水位の高さではなく、入りと出のどちらが多いかで変化が決まる</li>
+<li><strong>素人への一言:</strong> 「お風呂だよ。蛇口が排水口より多ければ水位は上がる。それだけ」</li>
+</ol>
+<hr>
+<h1>発展編（大学レベル・L4–L5）</h1>
+<blockquote>
+<p><strong>必要な前提:</strong> math-bridge の <strong>B1〜B5</strong>（変化率と割合 → 関数とグラフ → 瞬間の変化率 → 微分の意味 → 微分方程式の第一歩）
+中学2年生は発展編の前に B1〜B5 を先に読もう。数学が得意な人はスキップ可。各補助Unitは10〜15分。
+math-bridge/README.md 参照。</p>
+</blockquote>
+<h2>9. Deepen — 「変化」を数式で書く</h2>
+<p>基本編のルールを、もう一度式で見てみましょう。</p>
+<pre><code>水位の変化 = 入り − 出
+</code></pre>
+<p>これは、数学の言葉ではこう書きます。</p>
+$$ \frac{d(\text{水位})}{dt} = \text{入り} - \text{出} $$
+
+<ul>
+<li>$d(\text{水位})$ … 水位の<strong>ほんの少しの変化</strong></li>
+<li>$dt$ … <strong>ほんの少しの時間</strong>の変化</li>
+<li>$\frac{d(\text{水位})}{dt}$ … <strong>単位時間あたりの水位の変化</strong>（＝水位の増える速さ）</li>
+</ul>
+<p>つまり「変化の速さ = 入り − 出」。基本編で言葉で言ったことと、完全に同じです。<strong>数式は、言葉のルールを短く正確にしたもの</strong>という感覚を持てれば十分です。</p>
+<blockquote>
+<p><strong>式の読み方:</strong> 左辺 $\frac{d(\text{水位})}{dt}$ は「水位が増える速さ」。右辺 $\text{入り} - \text{出}$ は「蛇口から入る量から、排水口から出る量を引いたもの」。速さ＝入りマイナス出、という言葉のルールを省略記号で書いただけ。</p>
+<p>記号の詳しい読み解きは math-bridge の <strong>B5</strong>（微分方程式の第一歩）で。</p>
+</blockquote>
+<h2>10. Deepen — ストックフロー図（記号で描く）</h2>
+<p>システムダイナミクスでは、この構造を「ストックフロー図」という正式な記号で描きます。</p>
+<pre><code>   [蛇口]  ──▶（入り）──▶ [□ 水位] ◀──（出）──◀ [排水口]
+            フローIN         ストック    フローOUT
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>記号</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>□</code>（四角）</td>
+<td>ストック（たまるもの）</td>
+</tr>
+<tr>
+<td><code>→</code> の矢印</td>
+<td>フロー（流れるもの）</td>
+</tr>
+<tr>
+<td>雲の形</td>
+<td>ストックの外（入り・出の供給元・行き先）</td>
+</tr>
+</tbody>
+</table>
+<p>この記号を使うと、貯金・人口・在庫が<strong>全部同じ図</strong>で描けるのが分かります。</p>
+<h2>11. Extend — 同じ構造を見つける（転移・L4）</h2>
+<p>ストックとフローは、社会のどこにでもあります。探してみよう。</p>
+<ul>
+<li><strong>スマホの充電</strong>: バッテリー残量（ストック）＝ 充電（入り）− 消費（出）</li>
+<li><strong>フォロワー数</strong>: フォロワー（ストック）＝ 増える（入り）− 減る（出）</li>
+<li><strong>部活の練習</strong>: 技術（ストック）＝ 練習で身につく（入り）− さぼる・忘れる（出）</li>
+</ul>
+<blockquote>
+<p><strong>課題:</strong> 自分の身の回りから1つ見つけて、ストックとフローに分けてみよう。</p>
+</blockquote>
+<h2>12. Check-L5 — 発展編の確認</h2>
+<ol>
+<li>$\frac{d(\text{水位})}{dt} = \text{入り} - \text{出}$ の式で、「入り &lt; 出」のとき $\frac{d(\text{水位})}{dt}$ は正？ 負？ ゼロ？</li>
+<li>ストックフロー図の <code>□</code> は何を表す？</li>
+<li>フォロワー数が「横ばい」のとき、入りと出の関係は？</li>
+</ol>
+<blockquote>
+<p><strong>答え:</strong> 1. 負（水位は下がる）　2. ストック（たまるもの）　3. 入り = 出</p>
+</blockquote>
+<hr>
+<h2>まとめ（Takeaway）</h2>
+<ul>
+<li><strong>ストック</strong> = たまっているもの（水位・貯金・人口）</li>
+<li><strong>フロー</strong> = 流れているもの（入り・出）</li>
+<li><strong>変化 = 入り − 出</strong> が基本のルール。お風呂も貯金も人口も同じ構造</li>
+<li>数式では $\frac{d(\text{水位})}{dt} = \text{入り} - \text{出}$。言葉のルールを正確にしただけ（詳しくは math-bridge B5）</li>
+<li>次回は「変化の結果が、また変化を生む」フィードバックループを見ていく</li>
+</ul>
+<blockquote>
+<p><strong>次回予告 (Unit 3):</strong> 「増えると→もっと増える」の正のループと、「増えると→止める」の負のループ。</p>
+</blockquote></div></section>
+<section class="chapter" id="unit-03" data-source="unit3_feedback_loops.md" data-group="main"><div class="chapter-meta"><span class="chapter-index">03</span><span class="chapter-label">Unit 3</span><span class="chapter-source">unit3_feedback_loops.md</span></div><div class="chapter-body"><h1>Unit 3 — フィードバックループ：増えると、どうなる？</h1>
+<blockquote>
+<p><strong>対象:</strong> 中学2年生〜一般社会人
+<strong>ゴール（基本編 L3 Teach-Back）:</strong> 「正のループ（強化）」と「負のループ（調整）」を見分け、結果が原因に返ることを自分の言葉で説明できる
+<strong>発展編 L5:</strong> 正のループが指数成長になることを数理（e・倍々）で説明できる
+<strong>所要目安:</strong> 基本編 15〜20分 / 発展編 10〜15分</p>
+</blockquote>
+<hr>
+<h1>基本編（中2〜）</h1>
+<h2>1. Hook — YouTubeのフォロワー数</h2>
+<p>動画を投稿する人のフォロワー数を想像してください。</p>
+<ol>
+<li>動画を投稿する → フォロワーが少し増える</li>
+<li>→ フォロワーが多いと「人気だ」と見る人が増える</li>
+<li>→ 再生回数が伸びる → おすすめに出やすくなる</li>
+<li>→ さらにフォロワーが増える → <strong>1に戻る</strong></li>
+</ol>
+<p>「増えた（結果）」が「さらに増やす（原因）」に<strong>返ってきています</strong>。これがフィードバックループです。</p>
+<h2>2. なぜこれを学ぶのか？（Value）</h2>
+<p>Unit 2 で「ストックとフロー」を学びました。しかし、そこでは「フローは外から一定に来る」として考えました。</p>
+<p>実際には、<strong>ストックの量がフロー自体を変える</strong>ことがよくあります。これを扱うのが「フィードバックループ」です。これを学ぶと、世の中の「雪だるま式の増え方」「ちょうどいいところで落ち着く」が、絵を描くだけで説明できるようになります。</p>
+<h2>3. 2種類のループ（Reveal）</h2>
+<p>ループは2種類あります。<strong>最初に区別</strong>しておきましょう。</p>
+<h3>① 正のループ（強化ループ）—「増えると、もっと増える」</h3>
+<pre><code>フォロワー（ストック）
+   │
+   ▼
+見る人が増える ──▶ さらにフォロワーが増える ──▶ さらに見る人が増える…
+</code></pre>
+<ul>
+<li>増えるとますます増える（減るとますます減る）</li>
+<li>雪だるま式・倍々ゲーム</li>
+<li>例: YouTubeフォロワー・うわさ・風邪の流行・貯金の利子</li>
+</ul>
+<h3>② 負のループ（調整ループ）—「増えると、止める方向に働く」</h3>
+<pre><code>室温（ストック）
+   │
+   ▼
+「暑い」と感じる ──▶ エアコンを下げる ──▶ 室温が下がる ──▶ 「ちょうどいい」
+</code></pre>
+<ul>
+<li>増えると減らす方向に、減ると増やす方向に働く</li>
+<li>バランスを取って「ちょうどいい」に落ち着く</li>
+<li>例: 室温調整・満腹・混雑回避</li>
+</ul>
+<figure class="figure"><div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360" role="img" aria-label="正のループ（増えるともっと増える）と負のループ（増えると抑える）">
+  <style>
+    .box { fill: #eef4fb; stroke: #243b53; stroke-width: 2; rx: 8; }
+    .box-green { fill: #e3f6e5; stroke: #1b6e2e; stroke-width: 2; rx: 8; }
+    .box-orange { fill: #fdeee2; stroke: #a05a1c; stroke-width: 2; rx: 8; }
+    .loop { stroke: #243b53; stroke-width: 2.5; fill: none; }
+    .loop-green { stroke: #1b6e2e; stroke-width: 2.5; fill: none; }
+    .loop-orange { stroke: #a05a1c; stroke-width: 2.5; fill: none; }
+    .arrow { fill: #243b53; }
+    .label { font-family: "Yu Gothic UI", sans-serif; font-size: 15px; fill: #1f2933; }
+    .label-small { font-family: "Yu Gothic UI", sans-serif; font-size: 12px; fill: #52606d; }
+    .plus { font-family: "Yu Gothic UI", sans-serif; font-size: 20px; font-weight: bold; fill: #1b6e2e; }
+    .minus { font-family: "Yu Gothic UI", sans-serif; font-size: 20px; font-weight: bold; fill: #a05a1c; }
+    .title { font-family: "Yu Gothic UI", sans-serif; font-size: 16px; font-weight: bold; fill: #243b53; }
+  </style>
+
+  <!-- ===== 正のループ（左） ===== -->
+  <text x="160" y="30" class="title" text-anchor="middle">正のループ（増えるともっと増える）</text>
+
+  <!-- ストック -->
+  <rect x="105" y="80" width="110" height="45" class="box-green"/>
+  <text x="160" y="107" class="label" text-anchor="middle" font-weight="bold">フォロワー</text>
+
+  <!-- ループ（時計回り） -->
+  <path d="M 160 125 C 210 160, 260 190, 235 230 S 120 250, 100 210" class="loop-green"/>
+  <polygon points="108,196 118,216 100,212" class="arrow"/>
+
+  <!-- 中間ノード -->
+  <rect x="205" y="240" width="120" height="40" class="box"/>
+  <text x="265" y="264" class="label" text-anchor="middle">見る人が増える</text>
+
+  <text x="235" y="180" class="plus">＋</text>
+  <text x="90" y="150" class="plus">＋</text>
+  <text x="95" y="270" class="label-small">見るほど　さらに増える</text>
+
+  <!-- ===== 負のループ（右） ===== -->
+  <text x="480" y="30" class="title" text-anchor="middle">負のループ（増えると抑える）</text>
+
+  <!-- ストック -->
+  <rect x="425" y="80" width="110" height="45" class="box-orange"/>
+  <text x="480" y="107" class="label" text-anchor="middle" font-weight="bold">室温</text>
+
+  <!-- ループ -->
+  <path d="M 480 125 C 530 160, 560 190, 535 230 S 440 250, 420 210" class="loop-orange"/>
+  <polygon points="428,196 438,216 420,212" class="arrow"/>
+
+  <!-- 中間ノード -->
+  <rect x="525" y="240" width="120" height="40" class="box"/>
+  <text x="585" y="264" class="label" text-anchor="middle">エアコンを下げる</text>
+
+  <text x="555" y="180" class="minus">−</text>
+  <text x="410" y="150" class="minus">−</text>
+  <text x="415" y="270" class="label-small">増えると　抑える方向</text>
+</svg>
+</div></figure>
+
+<h2>4. ループの図の書き方（Interact）</h2>
+<p>ループを図にするときの基本形：</p>
+<pre><code>       ┌───────────┐
+       ▼           │
+  [ストック]        │
+       │           │
+       ▼           │
+  [フローを変える] ─┘
+</code></pre>
+<ul>
+<li><strong>＋（プラス）</strong>: 増えると増える方向</li>
+<li><strong>−（マイナス）</strong>: 増えると減らす方向</li>
+<li>輪（ループ）になっていることが大事</li>
+</ul>
+<blockquote>
+<p><strong>やってみよう:</strong> 上の「YouTubeフォロワー」と「室温」を、この形の図に書いてみよう。どちらが＋の輪で、どちらが−の輪か、印をつけよう。</p>
+</blockquote>
+<h2>5. 例で定着 — 正と負を見分ける（Interact）</h2>
+<table>
+<thead>
+<tr>
+<th>場面</th>
+<th>どんなループ？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>風邪が流行る（うつす→増える→さらにうつす）</td>
+<td>正（雪だるま）</td>
+</tr>
+<tr>
+<td>満腹になる（食べる→お腹いっぱい→食べるのをやめる）</td>
+<td>負（バランス）</td>
+</tr>
+<tr>
+<td>貯金の利子（貯まる→利子がつく→さらに貯まる）</td>
+<td>正</td>
+</tr>
+<tr>
+<td>行列が混むと避ける（混む→避ける→空く）</td>
+<td>負</td>
+</tr>
+</tbody>
+</table>
+<p><strong>見分け方のコツ:</strong></p>
+<blockquote>
+<p>「増えた結果、<strong>さらに増やす</strong>方向なら正。<strong>減らす（抑える）</strong>方向なら負。」</p>
+</blockquote>
+<h2>6. Check — 確かめてみよう</h2>
+<p>それぞれ正のループ？ 負のループ？</p>
+<ol>
+<li>ゲームで勝つ→自信がつく→さらに練習する→もっと勝つ</li>
+<li>お腹が空く→食べる→満腹→食べるのをやめる</li>
+<li>夜更かしする→朝起きられない→夜更かしする（悪循環）</li>
+<li>混んでいる電車→空いてる方へ移動→混雑が分散する</li>
+</ol>
+<blockquote>
+<p><strong>答え（下を見る前に自分で）:</strong>
+1. 正　2. 負　3. 正（悪い雪だるま）　4. 負</p>
+</blockquote>
+<h2>7. よくある誤解（Misconceptions）</h2>
+<table>
+<thead>
+<tr>
+<th>誤解</th>
+<th>正しい理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「正のループ＝良いもの、負のループ＝悪いもの」</td>
+<td>正・負は「増える/抑える」の方向であって、善悪ではない。悪い雪だるま（夜更かしの悪循環）も正のループ</td>
+</tr>
+<tr>
+<td>「負のループ＝減るだけ」</td>
+<td>違う。負のループは「減らし過ぎたら増やす」こともする。要は<strong>バランスを取って一定に落ち着かせる</strong></td>
+</tr>
+</tbody>
+</table>
+<h2>8. Teach-Back — 素人に説明しよう（基本編ゴール）</h2>
+<p>テンプレで「2種類のループ」を説明しよう。</p>
+<ol>
+<li><strong>何の話か:</strong> 「増えるとどうなるか」には2種類ある、という話</li>
+<li><strong>部品は何か:</strong> 正のループ（強化）・負のループ（調整）・ストック</li>
+<li><strong>どう繋がるか:</strong> 増えた結果が原因に返る。さらに増やすか、抑えるか</li>
+<li><strong>図はどこを見ればいいか:</strong> 輪になっていること。＋の印か−の印か</li>
+<li><strong>よくある誤解:</strong> 正のループが良いとは限らない</li>
+<li><strong>素人への一言:</strong> 「YouTubeのフォロワーだよ。増えるともっと増える（正）と、暑いから冷やす（負）がある」</li>
+</ol>
+<hr>
+<h1>発展編（大学レベル・L4–L5）</h1>
+<blockquote>
+<p><strong>必要な前提:</strong> math-bridge の <strong>B6</strong>（指数成長・減衰と e・ln）。中2は発展編の前に B6 を読もう。
+math-bridge/README.md 参照。</p>
+</blockquote>
+<h2>9. Deepen — 正のループは「倍々」になる</h2>
+<p>正のループ（増えるともっと増える）を数式で見てみましょう。</p>
+<p>ストックの増える速さが「今ある量に比例する」とき：</p>
+$$ \frac{d(\text{ストック})}{dt} = r \times \text{ストック} $$
+
+<ul>
+<li>$r$ … 増えやすさ（正の数）</li>
+<li>右辺に「ストック」自身が入っているのがポイント</li>
+</ul>
+<p>これは「今の量に比例して増える」= <strong>倍々ゲーム</strong>です。これを解くと：</p>
+$$ \text{ストック}(t) = \text{ストック}(0) \times e^{r t} $$
+
+<ul>
+<li>$e$ … 約2.718…の特別な数（自然対数の底）</li>
+<li>$e^{r t}$ … 時間とともに爆発的に大きくなる</li>
+<li>これが<strong>指数成長</strong></li>
+</ul>
+<p><strong>意味:</strong> 正のループをそのまま放っておくと、量は直線ではなく<strong>どんどん加速して増える</strong>（雪だるまが大きくなるほど転がるのが速くなる）。</p>
+<h2>10. Deepen — 負のループは「収束」する</h2>
+<p>負のループ（増えると抑える）では、量が目標値に近づくほど、増える速さが弱まります。</p>
+$$ \frac{d(\text{ストック})}{dt} = k \times (\text{目標} - \text{ストック}) $$
+
+<ul>
+<li>ストックが目標より小さい → 右辺が正（増える）</li>
+<li>ストックが目標に近づく → 右辺が小さくなる（増え方が鈍る）</li>
+<li>ストック = 目標 → 右辺 = 0（変化なし）</li>
+</ul>
+<p><strong>意味:</strong> 負のループは、量を目標に<strong>なめらかに近づけて、そこに落ち着かせる</strong>。これが「ちょうどいい」に落ち着く理由の数理です。</p>
+<h2>11. Extend — 正と負の組み合わせ（転移・L4）</h2>
+<p>現実のシステムは、正と負が<strong>混ざって</strong>います。</p>
+<ul>
+<li><strong>風邪の流行</strong>: 流行の初期は正のループ（拡大）→ 免疫ができる・対策する負のループ（抑制）が強まって、頭打ちになる</li>
+<li><strong>人気商品</strong>: 売れて人気が出る正のループ → 在庫切れ・飽きられる負のループで落ち着く</li>
+</ul>
+<blockquote>
+<p><strong>課題:</strong> 「成長するけど、どこかで頭打ちになる」ものを1つ見つけて、正と負のループを1つずつ指摘してみよう。</p>
+</blockquote>
+<h2>12. Check-L5 — 発展編の確認</h2>
+<ol>
+<li>正のループ（倍々）のグラフの形は？</li>
+<li>負のループは最終的にどこに落ち着く？</li>
+<li>$r > 0$ のとき、$e^{r t}$ は時間とともにどうなる？</li>
+</ol>
+<blockquote>
+<p><strong>答え:</strong> 1. 加速する曲線（指数成長）　2. 目標値　3. 爆発的に大きくなる</p>
+</blockquote>
+<hr>
+<h2>まとめ（Takeaway）</h2>
+<ul>
+<li><strong>正のループ</strong>（＋）: 増えるともっと増える。雪だるま式。放っておくと指数成長</li>
+<li><strong>負のループ</strong>（−）: 増えると抑える。バランスを取って目標に落ち着く</li>
+<li>見分け方: 「増えた結果、さらに増やすか、抑えるか」</li>
+<li>数理: 正＝指数成長（$e^{rt}$）、負＝目標への収束</li>
+<li>次回は「変化がすぐに効かない」ときの話</li>
+</ul>
+<blockquote>
+<p><strong>次回予告 (Unit 4):</strong> 「効き目が後から出る」時間の遅れ。</p>
+</blockquote></div></section>
+<section class="chapter" id="unit-04" data-source="unit4_time_delay.md" data-group="main"><div class="chapter-meta"><span class="chapter-index">04</span><span class="chapter-label">Unit 4</span><span class="chapter-source">unit4_time_delay.md</span></div><div class="chapter-body"><h1>Unit 4 — 時間の遅れ：効き目は後から出る</h1>
+<blockquote>
+<p><strong>対象:</strong> 中学2年生〜一般社会人
+<strong>ゴール（基本編 L3 Teach-Back）:</strong> 「時間の遅れ」が何か、なぜ「やりすぎ」を起こすかを自分の言葉で説明できる
+<strong>発展編 L5:</strong> 遅れをモデルに組み込むと、システムが行き過ぎや揺れを起こすことを数理で説明できる
+<strong>所要目安:</strong> 基本編 15〜20分 / 発展編 10〜15分</p>
+</blockquote>
+<hr>
+<h1>基本編（中2〜）</h1>
+<h2>1. Hook — 料理の味付け</h2>
+<p>カレーやスープの味付けをしている場面を想像してください。</p>
+<ol>
+<li>味見をしたら「ちょっと薄い」</li>
+<li>→ 塩を足す</li>
+<li>→ 味見する → <strong>まだ薄い</strong>（味がしみこむまで時間がかかる）</li>
+<li>→ また塩を足す</li>
+<li>→ あとから味が全体に回って、<strong>一気にしょっぱくなる</strong> ← やりすぎ</li>
+</ol>
+<p>「効き目が後から出る」ために、ついやりすぎてしまう。これが<strong>時間の遅れ</strong>です。</p>
+<h2>2. なぜこれを学ぶのか？（Value）</h2>
+<p>Unit 3 で「結果が原因に返る（フィードバック）」を学びました。でも、<strong>すぐに返ってくるとは限りません</strong>。原因を変えても、効果が現れるまで時間がかかる。これが「時間の遅れ」です。</p>
+<p>遅れを知らないと、「効果がない」と勘違いしてやりすぎる・あきらめる、という失敗をします。<strong>遅れを知っていると、待つことができる</strong>。これは実生活で役立つ大事な考え方です。</p>
+<h2>3. 時間の遅れとは（Reveal）</h2>
+<blockquote>
+<p><strong>時間の遅れ = 原因から結果が現れるまでの「空白の時間」</strong></p>
+</blockquote>
+<pre><code>原因（塩を足す） ──(時間がかかる)──▶ 結果（味が濃くなる）
+                  ←この間が「遅れ」→
+</code></pre>
+<p>遅れの種類：</p>
+<table>
+<thead>
+<tr>
+<th>種類</th>
+<th>意味</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>知覚の遅れ</strong></td>
+<td>変化に気づくまで時間がかかる</td>
+<td>味に気づくのが遅れる・水温に気づくのが遅れる</td>
+</tr>
+<tr>
+<td><strong>反応の遅れ</strong></td>
+<td>行動しても効くまで時間がかかる</td>
+<td>塩がしみこむ・薬が効く・肥料が効く</td>
+</tr>
+<tr>
+<td><strong>伝達の遅れ</strong></td>
+<td>情報が届くまで時間がかかる</td>
+<td>注文して届くまで・返事が来るまで</td>
+</tr>
+</tbody>
+</table>
+<h2>4. 遅れがあると「やりすぎ」になる（Interact）— 最重要ポイント</h2>
+<p>遅れがあると、こんな悪循環が起きます。</p>
+<pre><code>1. 薄い → 塩を足す
+2. まだ薄い（効く前） → また足す
+3. 遅れて全部効く → しょっぱすぎる ← やりすぎ
+4. しょっぱい → 水を足す（薄める）
+5. まだしょっぱい（効く前） → また水を足す
+6. 遅れて全部効く → 味が薄くなる ← またやりすぎ
+</code></pre>
+<p>これを図にすると、<strong>行ったり来たりの揺れ（ジグザグ）</strong>になります。</p>
+<pre><code>味の濃さ
+  濃   ─╲        ╱╲
+        ╲      ╱   ╲
+  普通    ╲    ╱      ╲___  ← しょっぱい／薄いを行ったり来たり
+        ╲  ╱
+  薄   ───╲╱──────────────→ 時間
+</code></pre>
+<blockquote>
+<p><strong>やってみよう:</strong> このジグザグを描いて、「やりすぎ→直す→やりすぎ」が繰り返されることを確かめよう。</p>
+</blockquote>
+<h2>5. 例で定着 — 他にもある遅れ（Interact）</h2>
+<table>
+<thead>
+<tr>
+<th>場面</th>
+<th>遅れの内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>部屋の温度</td>
+<td>エアコンを上げても、すぐには暖まらない</td>
+</tr>
+<tr>
+<td>宿題の効果</td>
+<td>勉強しても、成績に現れるまで時間がかかる</td>
+</tr>
+<tr>
+<td>肥料</td>
+<td>まいても、すぐには育たない</td>
+</tr>
+<tr>
+<td>薬</td>
+<td>飲んでも、効くまで時間がかかる</td>
+</tr>
+</tbody>
+</table>
+<p><strong>「効き目は後から出る」</strong> ことを知っているだけで、急いでやりすぎるのを防げます。</p>
+<h2>6. Check — 確かめてみよう</h2>
+<ol>
+<li>時間の遅れとは何？（一言）</li>
+<li>塩を足して「まだ薄い」とき、正しい行動は？</li>
+<li>遅れがあると、なぜやりすぎが起きる？</li>
+</ol>
+<blockquote>
+<p><strong>答え（下を見る前に自分で）:</strong>
+1. 原因から結果までの空白の時間　2. 待ってから味見する　3. 効く前に「効果がない」と判断して足してしまうから</p>
+</blockquote>
+<h2>7. よくある誤解（Misconceptions）</h2>
+<table>
+<thead>
+<tr>
+<th>誤解</th>
+<th>正しい理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「効果がない＝やり方が間違い」</td>
+<td>効果が出るまで時間がかかっているだけかもしれない。遅れを考慮して「待つ」ことが大事</td>
+</tr>
+<tr>
+<td>「時間の遅れはただの待ち時間」</td>
+<td>待ち時間以上の意味がある。やりすぎ・揺れ・判断ミスを生む原因になる</td>
+</tr>
+</tbody>
+</table>
+<h2>8. Teach-Back — 素人に説明しよう（基本編ゴール）</h2>
+<p>テンプレで「時間の遅れ」を説明しよう。</p>
+<ol>
+<li><strong>何の話か:</strong> 「効き目が後から出る」ことが失敗を生む、という話</li>
+<li><strong>部品は何か:</strong> 原因・遅れ・結果・やりすぎ</li>
+<li><strong>どう繋がるか:</strong> 原因→（遅れ）→結果。結果が出る前に判断するとやりすぎる</li>
+<li><strong>図はどこを見ればいいか:</strong> 原因と結果の間にある「空白」</li>
+<li><strong>よくある誤解:</strong> 効果がない＝間違い、ではない</li>
+<li><strong>素人への一言:</strong> 「カレーだよ。塩を足してすぐ味見しても、まだ薄い。しばらく待たないと、実はしょっぱくなってる」</li>
+</ol>
+<hr>
+<h1>発展編（大学レベル・L4–L5）</h1>
+<blockquote>
+<p><strong>必要な前提:</strong> math-bridge の <strong>B1〜B6</strong>（特に B5 微分方程式・B6 指数成長）。中2は先に読もう。</p>
+</blockquote>
+<h2>9. Deepen — 遅れを数式で表す</h2>
+<p>時間の遅れをモデルに組み込むと、システムの動きが変わります。</p>
+<p>遅れのない負のループ（室温調整）では、すぐに目標に近づきます。</p>
+$$ \frac{d(\text{温度})}{dt} = k \times (\text{設定温度} - \text{温度}) $$
+
+<p>ここに「<strong>実際に効く温度変化は、操作から遅れてやってくる</strong>」という遅れを入れると、式は複雑になり、動きは「行き過ぎ→戻す→行き過ぎ」の<strong>振動</strong>になります。</p>
+<p><strong>直感的な説明:</strong> エアコンを上げても、室温が上がるまで時間がかかる。その間に「まだ寒い」とさらに上げてしまう。遅れて一気に暖かくなって、今度は暑すぎる。これが繰り返されて、温度は設定値の周りを揺れます。</p>
+<h2>10. Deepen — 行き過ぎ（オーバーシュート）の原因</h2>
+<p>遅れが大きいほど、行き過ぎも大きくなります。</p>
+<table>
+<thead>
+<tr>
+<th>遅れ</th>
+<th>システムの動き</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>遅れなし</td>
+<td>なめらかに目標へ（Unit 3 で学んだ収束）</td>
+</tr>
+<tr>
+<td>遅れあり（小）</td>
+<td>少し揺れながら目標へ</td>
+</tr>
+<tr>
+<td>遅れあり（大）</td>
+<td>大きく行き過ぎて、激しく揺れる（場合によっては発散）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>遅れ = 揺れの源。</strong> これを知っていると、なぜ「急に反応しすぎると悪化する」のかが分かります。</p>
+<h2>11. Extend — 遅れを「待つ」ことの価値（転移・L4）</h2>
+<ul>
+<li>経営判断・政策・教育・ダイエット・筋肉トレーニング… すべて「効き目に遅れがある」</li>
+<li>「すぐ結果を求める」と、遅れがあるシステムではやりすぎを起こす</li>
+<li><strong>遅れを知っている = 待てる = 正しく判断できる</strong></li>
+</ul>
+<blockquote>
+<p><strong>課題:</strong> 自分が「効果が遅い」と思っているもの（勉強・運動・趣味の練習）で、今日から「待つ」を意識してみよう。</p>
+</blockquote>
+<h2>12. Check-L5 — 発展編の確認</h2>
+<ol>
+<li>遅れがあると、負のループの動きはどう変わる？</li>
+<li>遅れが大きいほど、行き過ぎはどうなる？</li>
+<li>「やりすぎ」の対策として、遅れの観点から言えることは？</li>
+</ol>
+<blockquote>
+<p><strong>答え:</strong> 1. 揺れ（振動）が起きる　2. 大きくなる　3. 効果が出るまで待つ（判断を急がない）</p>
+</blockquote>
+<hr>
+<h2>まとめ（Takeaway）</h2>
+<ul>
+<li><strong>時間の遅れ</strong> = 原因から結果までの空白の時間</li>
+<li>遅れがあると「効果がない」と誤解して<strong>やりすぎ</strong>が起きる</li>
+<li>遅れはシステムに<strong>揺れ・行き過ぎ</strong>をもたらす</li>
+<li>対策の基本は「<strong>待つ</strong>」</li>
+<li>これで SD の基本3要素（ストック・フロー・フィードバック・遅れ）がそろった</li>
+</ul>
+<blockquote>
+<p><strong>次回予告 (Unit 5):</strong> ここから TOC。システムの全体を決める「一番遅いところ（ボトルネック）」を見つける。</p>
+</blockquote>
+<hr>
+<h2>補足: SD の基本要素まとめ（Unit 1〜4）</h2>
+<table>
+<thead>
+<tr>
+<th>要素</th>
+<th>内容</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ループ（循環）</td>
+<td>結果が原因に返る</td>
+<td>1</td>
+</tr>
+<tr>
+<td>ストック・フロー</td>
+<td>たまるもの・流れるもの</td>
+<td>2</td>
+</tr>
+<tr>
+<td>フィードバック</td>
+<td>正（強化）・負（調整）</td>
+<td>3</td>
+</tr>
+<tr>
+<td>時間の遅れ</td>
+<td>効き目が後から出る</td>
+<td>4</td>
+</tr>
+</tbody>
+</table></div></section>
+<section class="chapter" id="unit-05" data-source="unit5_bottleneck.md" data-group="main"><div class="chapter-meta"><span class="chapter-index">05</span><span class="chapter-label">Unit 5</span><span class="chapter-source">unit5_bottleneck.md</span></div><div class="chapter-body"><h1>Unit 5 — ボトルネック：一番遅いところが全体を決める</h1>
+<blockquote>
+<p><strong>対象:</strong> 中学2年生〜一般社会人
+<strong>ゴール（基本編 L3 Teach-Back）:</strong> 「一番遅いところ（ボトルネック）が全体の速さを決める」ことを説明でき、例で示せる
+<strong>発展編 L5:</strong> 待ち行列（キュー）の基礎で、ボトルネックに「たまる」ことを数理で説明できる
+<strong>所要目安:</strong> 基本編 15〜20分 / 発展編 10〜15分</p>
+</blockquote>
+<hr>
+<h1>基本編（中2〜）</h1>
+<h2>1. Hook — 運動会のリレー</h2>
+<p>運動会のリレーを思い出してください。チームの速さを決めているのは、だれでしょう？</p>
+<ul>
+<li>一番速い人？ → いいえ</li>
+<li>平均的な走者？ → いいえ</li>
+</ul>
+<p><strong>答え: 一番遅い人。</strong> バトンが一番遅い人に届くと、そこでチーム全体が待たされるからです。</p>
+<p>一番遅い走者を速くすれば、チーム全体が速くなります。でも、一番速い走者をさらに速くしても、全体はあまり変わりません（次の遅い人が待たされるだけ）。</p>
+<blockquote>
+<p>これがこのUnitのすべて。「<strong>一番遅いところが、全体を決める</strong>」</p>
+</blockquote>
+<h2>2. なぜこれを学ぶのか？（Value）</h2>
+<p>Unit 1〜4 で「構造を見る力（SD）」を学びました。では、見えた構造の中で<strong>どこに手を打つべきか</strong>？ これがTOC（制約理論）の出番です。</p>
+<p>TOC の答えは一言です。</p>
+<blockquote>
+<p><strong>「一番遅いところ（ボトルネック＝制約）を直せば、全体が速くなる。」</strong>
+逆に、それ以外をいくら頑張っても、全体は速くならない。</p>
+</blockquote>
+<p>これを知っていると、「どこを直すか」が迷わず決まります。<strong>全体を平均的に頑張るより、一番遅い1箇所に集中</strong>するほうが圧倒的に効率的です。</p>
+<h2>3. ボトルネックとは（Reveal）</h2>
+<blockquote>
+<p><strong>ボトルネック = システム全体の速さを決めている、一番遅い（能力が小さい）部分</strong></p>
+</blockquote>
+<p>名前の由来は「瓶の首」。瓶から液体を注ぐとき、速さを決めるのは瓶の口の太さです。胴体がどんなに太くても、首が細ければそこに詰まる。</p>
+<pre><code>【瓶】
+ ┌─────────────┐
+ │  どんなに太くても      │
+ │  ここの太さは関係ない    │
+ └──────┬──────┘
+         ▼
+        ─────   ← 瓶の首（ボトルネック）
+                 ここが細いと、全体の速さがここで決まる
+</code></pre>
+<h2>4. 工場の例（Interact）— 一番分かりやすい図解</h2>
+<p>複数の工程が流れて、最後に1つの製品になる工場を想像してください。</p>
+<pre><code>[材料A] ──▶ 切る(工程1) ──┐
+                          ├──▶ 組み立て(工程4) ──▶ 完成品
+[材料B] ──▶ 磨く(工程2) ──┤
+                          │
+[材料C] ──▶ 塗る(工程3) ──┘
+</code></pre>
+<p>工程1・2・3 がいくら速くても、<strong>工程4（組み立て）が遅いと、製品はそこに並んで待つ</strong>だけです。</p>
+<ul>
+<li>工程4 が「1時間に10個」しか作れない</li>
+<li>工程1・2・3 が「1時間に20個」作っても、<strong>完成品は1時間に10個</strong></li>
+<li>余った10個分は、組み立ての前に<strong>たまっていく（在庫になる）</strong></li>
+</ul>
+<p><strong>つまり:</strong> 全体の生産速度は、<strong>工程4（ボトルネック）の速度そのもの</strong>。工程1〜3を頑張っても、完成品は増えません。</p>
+<blockquote>
+<p><strong>やってみよう:</strong> 上の図で、ボトルネック（全体の速さを決めているところ）を指さしてみよう。また、どこを直せば全体が速くなるか、丸をつけよう。</p>
+</blockquote>
+<h2>5. 例で定着 — 身近なボトルネック（Interact）</h2>
+<table>
+<thead>
+<tr>
+<th>場面</th>
+<th>ボトルネック（一番遅いところ）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>運動会のリレー</td>
+<td>一番遅い走者</td>
+</tr>
+<tr>
+<td>お店のレジ</td>
+<td>列をさばくレジ（待たせているところ）</td>
+</tr>
+<tr>
+<td>給食の配膳</td>
+<td>一番時間のかかる作業（ご飯を盛る？ おかずを分ける？）</td>
+</tr>
+<tr>
+<td>宿題</td>
+<td>一番苦手な科目（ここに時間がかかる）</td>
+</tr>
+<tr>
+<td>工場</td>
+<td>一番生産が遅い工程（上記の例）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>共通点:</strong> 「一番遅いところ」にモノや人が<strong>たまる</strong>。だから、どこがボトルネックかは「<strong>どこに行列ができているか</strong>」を見れば分かります。</p>
+<h2>6. Check — 確かめてみよう</h2>
+<ol>
+<li>チームの速さを決めるのは、リレーのどの走者？</li>
+<li>工場で、完成品の数が「1時間に10個」で頭打ちなのは、どこが原因？</li>
+<li>ボトルネックを見つける手がかりは？（ヒント: どこに何がたまる？）</li>
+</ol>
+<blockquote>
+<p><strong>答え（下を見る前に自分で）:</strong>
+1. 一番遅い走者　2. 一番生産が遅い工程（組み立て）　3. モノや人がたまっている（行列ができている）ところ</p>
+</blockquote>
+<h2>7. よくある誤解（Misconceptions）</h2>
+<table>
+<thead>
+<tr>
+<th>誤解</th>
+<th>正しい理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「みんなで頑張れば全体が速くなる」</td>
+<td>ボトルネック以外を頑張っても、全体は速くならない。頑張りはボトルネックに集中すべき</td>
+</tr>
+<tr>
+<td>「一番大切な工程を直せばいい」</td>
+<td>「大切」ではなく「<strong>一番遅い</strong>」が基準。速くても重要でも、ボトルネックでなければ全体は変わらない</td>
+</tr>
+<tr>
+<td>「ボトルネック＝ボトルネック以外の人が暇でいい」</td>
+<td>待ちが生まれるのは仕組みの問題。直すべきはボトルネックの能力で、他の工程が暇になるのは別の問題</td>
+</tr>
+</tbody>
+</table>
+<h2>8. Teach-Back — 素人に説明しよう（基本編ゴール）</h2>
+<p>テンプレで「ボトルネック」を説明しよう。</p>
+<ol>
+<li><strong>何の話か:</strong> 「一番遅いところが全体を決める」という話</li>
+<li><strong>部品は何か:</strong> ボトルネック（一番遅いところ）・それ以外の工程・完成品</li>
+<li><strong>どう繋がるか:</strong> 一番遅いところにモノがたまり、全体の速さがそこに決まる</li>
+<li><strong>図はどこを見ればいいか:</strong> 瓶の首・工場でモノが並んで待っているところ</li>
+<li><strong>よくある誤解:</strong> みんなで頑張れば速くなる、ではない</li>
+<li><strong>素人への一言:</strong> 「リレーだよ。チームの速さは一番遅い人で決まる。だからそこを鍛えるのが一番効く」</li>
+</ol>
+<hr>
+<h1>発展編（大学レベル・L4–L5）</h1>
+<blockquote>
+<p><strong>必要な前提:</strong> math-bridge の <strong>B1〜B5</strong>（ストックフローの数理）。中2は先に読もう。</p>
+</blockquote>
+<h2>9. Deepen — ボトルネックに「たまる」を数理で見る</h2>
+<p>工場の例を、Unit 2 で学んだストックフローで考えると、ボトルネックの前には「<strong>在庫（ストック）</strong>」ができます。</p>
+<pre><code>入ってくる個数(フローIN) ──▶ [ボトルネック前の在庫] ◀── 出ていく個数(フローOUT)
+                                ↑ここにたまる
+</code></pre>
+<p>ボトルネックの処理能力（出）より入ってくる量（入り）が多ければ、在庫が増えます。</p>
+$$ \frac{d(\text{在庫})}{dt} = \text{入ってくる個数} - \text{処理できる個数} $$
+
+<ul>
+<li>入り &gt; 処理 → 在庫が増える（行列が伸びる）</li>
+<li>入り = 処理 → 在庫は一定（行列は変わらない）</li>
+<li>入り &lt; 処理 → 在庫が減る（行列が短くなる）</li>
+</ul>
+<p><strong>全体の生産量 = ボトルネックの処理能力。</strong> 入ってくる量がどれだけ多くても、出ていく量（完成品）はボトルネックの能力で頭打ちになります。これが「<strong>制約が全体を決める</strong>」の数理です。</p>
+<h2>10. Deepen — 待ち行列（キュー）の基礎</h2>
+<p>ボトルネックに「たまる」ことを学ぶのが<strong>待ち行列理論</strong>です。</p>
+<table>
+<thead>
+<tr>
+<th>要素</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>到着率 $\lambda$</td>
+<td>1時間に何個（何人）来るか</td>
+</tr>
+<tr>
+<td>サービス率 $\mu$</td>
+<td>1時間に何個（何人）処理できるか</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>$\lambda < \mu$ … 処理が追いつく。待ちは伸びない</li>
+<li>$\lambda > \mu$ … 処理が追いつかない。待ち行列が<strong>伸び続ける</strong></li>
+<li>$\lambda = \mu$ … ぎりぎり。ほんの少し乱れると行列が伸び始める</li>
+</ul>
+<blockquote>
+<p><strong>直感:</strong> レジの処理速度（$\mu$）よりお客さんが来る速さ（$\lambda$）が速いと、行列は際限なく伸びる。処理を速くするか、客の到着を減らすしかない。</p>
+</blockquote>
+<h2>11. Extend — 改善の指針（転移・L4）</h2>
+<p>ボトルネック思考の実践:</p>
+<ol>
+<li><strong>見つける</strong>: どこにモノ・人がたまっているか（＝ボトルネック）</li>
+<li><strong>活用する</strong>: ボトルネックの能力を最大限使う（アイドル時間を減らす）</li>
+<li><strong>従属させる</strong>: それ以外の工程は、ボトルネックに合わせて動く（作りすぎない）</li>
+<li><strong>強化する</strong>: ボトルネックの能力そのものを上げる</li>
+<li><strong>繰り返す</strong>: 直すと次のボトルネックが現れる（→ Unit 6）</li>
+</ol>
+<blockquote>
+<p><strong>課題:</strong> 自分の生活（勉強・部活・家事）で「ボトルネック」を1つ見つけ、どう直すか考えてみよう。</p>
+</blockquote>
+<h2>12. Check-L5 — 発展編の確認</h2>
+<ol>
+<li>到着率 $\lambda$ がサービス率 $\mu$ より大きいとき、待ち行列はどうなる？</li>
+<li>全体の生産量は、何で決まる？</li>
+<li>ボトルネックの前で「たまるもの」は何？</li>
+</ol>
+<blockquote>
+<p><strong>答え:</strong> 1. 伸び続ける　2. ボトルネックの処理能力　3. 在庫（待ち行列）</p>
+</blockquote>
+<hr>
+<h2>まとめ（Takeaway）</h2>
+<ul>
+<li><strong>ボトルネック</strong> = 一番遅いところ。全体の速さを決める</li>
+<li>見つけ方: 「<strong>どこにたまっているか</strong>」（在庫・行列）</li>
+<li>ボトルネック以外を頑張っても全体は速くならない。<strong>集中</strong>が効率の鍵</li>
+<li>数理: 待ち行列（$\lambda$ vs $\mu$）。全体の生産量 = 制約の処理能力</li>
+<li>次回は、ボトルネックをどう直していくかの手順（5つの集中ステップ）</li>
+</ul>
+<blockquote>
+<p><strong>次回予告 (Unit 6):</strong> ボトルネックを直す5つのステップ。</p>
+</blockquote></div></section>
+<section class="chapter" id="unit-06" data-source="unit6_five_focusing_steps.md" data-group="main"><div class="chapter-meta"><span class="chapter-index">06</span><span class="chapter-label">Unit 6</span><span class="chapter-source">unit6_five_focusing_steps.md</span></div><div class="chapter-body"><h1>Unit 6 — 5つの集中ステップ：制約をどう直すか</h1>
+<blockquote>
+<p><strong>対象:</strong> 中学2年生〜一般社会人
+<strong>ゴール（基本編 L3 Teach-Back）:</strong> 改善の5ステップを、Unit 5 の例（リレー・工場）に当てはめて説明できる
+<strong>発展編 L5:</strong> TOC の思考プロセス（CRT・蒸発する雲）への橋渡しを理解できる
+<strong>所要目安:</strong> 基本編 15〜20分 / 発展編 10〜15分</p>
+</blockquote>
+<hr>
+<h1>基本編（中2〜）</h1>
+<h2>1. Hook — 前回の続きから</h2>
+<p>Unit 5 で「ボトルネック（一番遅いところ）が全体を決める」と学びました。</p>
+<ul>
+<li>リレーでは一番遅い走者</li>
+<li>工場では一番生産が遅い工程</li>
+</ul>
+<p>では、<strong>そのボトルネックをどう直すか</strong>。ここからが今回の話です。同じ事例（リレー・工場）を最後まで使って、「直す手順」を学びます。</p>
+<h2>2. なぜこれを学ぶのか？（Value）</h2>
+<p>「どこを直すか」が分かっても、<strong>どう直すか</strong>が分からなければ改善は進みません。TOC は、改善の<strong>正しい順序</strong>を5つのステップにしました。</p>
+<p>これを知ると、以下のような失敗を防げます。</p>
+<blockquote>
+<p>「全部の工程をまんべんなく頑張ったのに、全体は変わらなかった」</p>
+</blockquote>
+<p>「順番」が大事です。<strong>制約を直す→次を探す</strong>の繰り返しで、改善はどんどん進みます。</p>
+<h2>3. 5つの集中ステップ（Reveal）</h2>
+<p>TOC の生みの親・ゴールドラットが提唱した改善の基本手順です。</p>
+<table>
+<thead>
+<tr>
+<th>ステップ</th>
+<th>名前</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>見つける</strong></td>
+<td>制約（ボトルネック）はどこか</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>活用する</strong></td>
+<td>制約を最大限に使う（無駄な待ちを減らす）</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>従属させる</strong></td>
+<td>他の工程を制約に合わせて動かす</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>強化する</strong></td>
+<td>制約の能力そのものを上げる</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>繰り返す</strong></td>
+<td>制約が動いたら、次の制約を探す</td>
+</tr>
+</tbody>
+</table>
+<h2>4. 工場の例で追う（Interact）— 5ステップを最後まで</h2>
+<p>Unit 5 の工場を思い出してください。</p>
+<pre><code>[工程1: 切る] → [工程2: 磨く] → [工程3: 塗る] → [工程4: 組み立て] → 完成品
+</code></pre>
+<p>工程4（組み立て）が「1時間に10個」しか作れず、全体がここで頭打ちになっているとします。</p>
+<h3>ステップ1: 見つける</h3>
+<p>制約はどこか？ → <strong>工程4（組み立て）</strong>。ここに在庫がたまっている（Unit 5 で確認済み）。</p>
+<h3>ステップ2: 活用する</h3>
+<p>「今ある工程4の能力を、無駄なく使う」ことを考えます。</p>
+<ul>
+<li>工程4の機械が、休憩中や段取り替えで止まっていないか</li>
+<li>工程4の人が、別の作業をさせられていないか</li>
+</ul>
+<p>→ <strong>能力を上げなくても、使っていない時間を無くすだけで生産が増える</strong>ことがあります。ここが最初。</p>
+<h3>ステップ3: 従属させる</h3>
+<p>「他の工程は、工程4に合わせて動かす」ことを考えます。</p>
+<ul>
+<li>工程1〜3が作りすぎると、工程4の前に在庫がたまるだけ</li>
+<li>工程1〜3は、工程4が処理できる量だけ作る</li>
+</ul>
+<p>→ <strong>作りすぎをやめる</strong>。工程1〜3の頑張りを「制約に合わせて」調整します。</p>
+<h3>ステップ4: 強化する</h3>
+<p>ここで初めて「工程4の能力そのものを上げる」ことを考えます。</p>
+<ul>
+<li>機械を新しいものにする</li>
+<li>人員を増やす</li>
+<li>作業を工夫して速くする</li>
+</ul>
+<p>→ 1・2・3の順で考えるからこそ、<strong>無駄な投資</strong>（必要ない強化）を避けられます。ステップ2で空き時間を無くせば、機械を買わずに済むかもしれません。</p>
+<h3>ステップ5: 繰り返す</h3>
+<p>工程4が速くなると、<strong>次に遅い工程がボトルネックになります</strong>（例: 工程2の磨き）。</p>
+<p>→ 1に戻って、新しい制約を直す。これを繰り返すと、全体がどんどん速くなります。</p>
+<blockquote>
+<p><strong>やってみよう:</strong> 工場の例で、5ステップを順番に追ってみよう。なぜ「強化（ステップ4）」が最後なのか、考えてみよう。</p>
+</blockquote>
+<h2>5. リレーの例で確かめる（Interact）</h2>
+<p>Unit 5 のリレーでも、同じ5ステップが使えます。</p>
+<table>
+<thead>
+<tr>
+<th>ステップ</th>
+<th>リレーでの意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 見つける</td>
+<td>一番遅い走者を特定する</td>
+</tr>
+<tr>
+<td>2 活用する</td>
+<td>その走者の走り方・スタートの仕方を工夫する（能力は変えずに）</td>
+</tr>
+<tr>
+<td>3 従属させる</td>
+<td>他の走者は、一番遅い走者に合わせて待つ（無理に飛ばさない）</td>
+</tr>
+<tr>
+<td>4 強化する</td>
+<td>その走者を鍛える・走順を入れ替える</td>
+</tr>
+<tr>
+<td>5 繰り返す</td>
+<td>速くなったら、次の遅い走者を直す</td>
+</tr>
+</tbody>
+</table>
+<p><strong>順序が大事な理由:</strong> ステップ2（工夫）で十分なら、ステップ4（強化＝時間とお金）は不要。<strong>安い・早い順にやる</strong>のが5ステップの考え方です。</p>
+<h2>6. Check — 確かめてみよう</h2>
+<ol>
+<li>5ステップの順番を言える？</li>
+<li>なぜ「強化する（ステップ4）」は最後なのか？</li>
+<li>ステップ5（繰り返す）で何が起きる？</li>
+</ol>
+<blockquote>
+<p><strong>答え（下を見る前に自分で）:</strong>
+1. 見つける→活用→従属→強化→繰り返す　2. 工夫や調整で足りるなら、お金のかかる強化は不要だから　3. 次のボトルネックが現れるので、1に戻る</p>
+</blockquote>
+<h2>7. よくある誤解（Misconceptions）</h2>
+<table>
+<thead>
+<tr>
+<th>誤解</th>
+<th>正しい理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「改善＝いきなり新しい設備・投資」</td>
+<td>まず活用（2）と従属（3）を試す。強化（4）は最後</td>
+</tr>
+<tr>
+<td>「一度直せば終わり」</td>
+<td>制約は移動する。繰り返し（5）が改善の本質</td>
+</tr>
+<tr>
+<td>「5ステップは工場だけの話」</td>
+<td>リレー・勉強・部活など、どこでも使える手順</td>
+</tr>
+</tbody>
+</table>
+<h2>8. Teach-Back — 素人に説明しよう（基本編ゴール）</h2>
+<p>Unit 5 の例（リレーか工場）を使って、5ステップを説明しよう。</p>
+<ol>
+<li><strong>何の話か:</strong> 「一番遅いところを直す手順」の話</li>
+<li><strong>部品は何か:</strong> 5つのステップ（見つける・活用・従属・強化・繰り返す）</li>
+<li><strong>どう繋がるか:</strong> 制約を直す → 次の制約を探す → 繰り返す</li>
+<li><strong>図はどこを見ればいいか:</strong> 工場の工程、ボトルネックの場所</li>
+<li><strong>よくある誤解:</strong> いきなり投資するのは間違い。工夫から</li>
+<li><strong>素人への一言:</strong> 「リレーで一番遅い人がいるでしょ。まずその人の走り方を直して、足りなければ鍛える。速くなったら次の人だよ」</li>
+</ol>
+<hr>
+<h1>発展編（大学レベル・L4–L5）</h1>
+<blockquote>
+<p><strong>必要な前提:</strong> math-bridge の <strong>B1〜B5</strong>。Unit 5 発展編（待ち行列）を先に読もう。</p>
+</blockquote>
+<h2>9. Deepen — 5ステップは「どこに手を打つか」の思考法</h2>
+<p>5ステップは、数式そのものより<strong>思考の手順</strong>です。しかし、待ち行列（Unit 5 発展編）の数理と組み合わせると、判断が明確になります。</p>
+<ul>
+<li>ステップ2（活用）: 到着率 $\lambda$ とサービス率 $\mu$ の差を、無駄なく詰める</li>
+<li>ステップ4（強化）: $\mu$ そのものを上げる（$\mu > \lambda$ にする）</li>
+</ul>
+$$\mu < \lambda \text{ の間は、待ち行列は伸び続ける（発散）}$$
+
+<p>つまり「$\mu$（処理能力）が $\lambda$（到着）より小さければ、何をしても全体は詰まる」— これが制約の数理的な正体です。</p>
+<h2>10. Deepen — TOC の思考プロセスへ（橋渡し）</h2>
+<p>TOC には、5ステップより深い思考プロセス（Thinking Processes）があります。</p>
+<table>
+<thead>
+<tr>
+<th>道具</th>
+<th>役割</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CRT（現状問題ツリー）</td>
+<td>現状の問題（UDE）から根本原因を1つ特定する</td>
+</tr>
+<tr>
+<td>蒸発する雲（Evaporating Cloud）</td>
+<td>対立の前提を暴いて、対立を消す</td>
+</tr>
+<tr>
+<td>FRT（未来問題ツリー）</td>
+<td>解決策が新たな問題を生まないか確認する</td>
+</tr>
+</tbody>
+</table>
+<p>これらは「制約」を「構造・対立」のレベルまで掘り下げる道具です。</p>
+<blockquote>
+<p><strong>予告:</strong> Unit 7 で、SD（構造を見る）と TOC（制約を直す）を合わせた総合演習を行います。CRT などの詳細は、そこで「構造図」として自然に登場します。</p>
+</blockquote>
+<h2>11. Extend — 5ステップを自分の生活に（転移・L4）</h2>
+<blockquote>
+<p><strong>課題:</strong> 自分の身の回り（勉強・部活・家の手伝い）で、改善したいことを1つ選び、5ステップを順に当てはめてみよう。</p>
+<p>例: 「宿題がいつも遅い」
+1. 見つける: 一番時間がかかる科目は数学
+2. 活用する: 数学の前に簡単な科目をやり、集中しやすい時間帯に数学をやる
+3. 従属させる: 他の科目は数学の量に合わせて計画
+4. 強化する: 数学の基礎を復習する
+5. 繰り返す: 次に遅い科目（国語）を直す</p>
+</blockquote>
+<h2>12. Check-L5 — 発展編の確認</h2>
+<ol>
+<li>待ち行列が伸び続ける条件は？</li>
+<li>CRT は何を特定する道具？</li>
+<li>5ステップの「強化（4）」が最後なのは、数理的にどう言い換えられる？</li>
+</ol>
+<blockquote>
+<p><strong>答え:</strong> 1. $\mu < \lambda$　2. 根本原因（Core Constraint）　3. まず $\mu$ の無駄をなくし（活用・従属）、それでも $\mu < \lambda$ なら $\mu$ を上げる（強化）、という効率の順序</p>
+</blockquote>
+<hr>
+<h2>まとめ（Takeaway）</h2>
+<ul>
+<li>5つの集中ステップ: <strong>見つける→活用→従属→強化→繰り返す</strong></li>
+<li>順序が大事: 工夫（2・3）→ 投資（4）。安い順にやる</li>
+<li>制約は移動する。繰り返し（5）が改善の本質</li>
+<li>数理: $\mu$（処理能力）が $\lambda$（到着）より小さい限り、待ちは伸び続ける</li>
+<li>次回は SD と TOC を合わせて、総合演習</li>
+</ul>
+<blockquote>
+<p><strong>次回予告 (Unit 7):</strong> 構造を見て（SD）、制約を直す（TOC）。総合演習。</p>
+</blockquote></div></section>
+<section class="chapter" id="unit-07" data-source="unit7_crt.md" data-group="main"><div class="chapter-meta"><span class="chapter-index">07</span><span class="chapter-label">Unit 7</span><span class="chapter-source">unit7_crt.md</span></div><div class="chapter-body"><h1>Unit 7 — 演習A（基本編）: CRTを作る — 現状問題ツリーで「本当の原因」を見つける</h1>
+<blockquote>
+<p><strong>対象:</strong> 中学2年生〜一般社会人
+<strong>ゴール（L3 Teach-Back）:</strong> 「個別対策では解決しない理由」と「根本原因（Root）に集中すると効率的に解決できる」ことを、自分の言葉で説明できる。CRTで根本原因を1つ特定できる
+<strong>所要目安:</strong> 20〜30分（例題つき）
+<strong>準備:</strong> 演習カード <code>exercises/ex1_getting_up.md</code>（例題）を手元に</p>
+</blockquote>
+<hr>
+<h2>1. Hook — まず「朝起きられない」を直してみよう（体験）</h2>
+<p>Aさんは朝起きられずに困っています。原因は「よく分からない」まま、いろいろ試してみました。</p>
+<table>
+<thead>
+<tr>
+<th>試した対策</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「朝ごはんを食べるようにした」</td>
+<td>変わらない（そもそも食べる時間がない）</td>
+</tr>
+<tr>
+<td>「授業を楽しくしようと頑張った」</td>
+<td>眠くなるのは変わらない</td>
+</tr>
+<tr>
+<td>「スマホをやめようとした」</td>
+<td>1日は我慢できるけど、また戻る</td>
+</tr>
+<tr>
+<td>「疲れを取ろうと早く寝ようとした」</td>
+<td>なぜか夜更かししてしまう</td>
+</tr>
+</tbody>
+</table>
+<p><strong>全部、それっぽいのに、ぜんぜん解決しません。</strong></p>
+<blockquote>
+<p><strong>ここが大事な体験です。</strong> 原因が分からないまま対策を打つと、症状を1個ずつ追いかける「モグラ叩き」になり、どれも根本からは直りません。</p>
+</blockquote>
+<h2>2. なぜ個別対策では解決しないのか（Value）</h2>
+<h3>症状は「枝」で、原因は「根」にある</h3>
+<p>木を想像してください。枯れているのは<strong>葉っぱ（症状）</strong>ですが、問題の本当の場所は<strong>根（根本原因）</strong>にあります。</p>
+<pre><code>    葉っぱ（症状）: 朝起きられない・眠い・朝ごはんを食べられない・疲れてる…
+       │
+       │ （葉っぱを1枚ずつ直しても、根がダメならまた枯れる）
+       ▼
+     根（根本原因）: 夜更かし  ← ここを直すと、葉っぱがまとめて元気になる
+</code></pre>
+<ul>
+<li><strong>個別対策</strong> = 葉っぱを1枚ずつ治そうとする（モグラ叩き・非効率）</li>
+<li><strong>根本対策</strong> = 根を1本直す（葉っぱがまとめて良くなる・効率的）</li>
+</ul>
+<p><strong>この「根を見つけて、そこに集中する」ことが、合理的で効率的な解決の第一歩です。</strong></p>
+<h3>CRTの意義（このUnitの核心）</h3>
+<blockquote>
+<p><strong>「原因が分かりにくい状態」から、因果関係でつなぎ合わせることで「根（Root）」を1つに絞り込む。それがCRT（現状問題ツリー）を作る意義です。</strong></p>
+</blockquote>
+<ul>
+<li>CRTを作る前: 原因がいくつもあるように見えて、何を直せばいいか分からない</li>
+<li>CRTを作った後: <strong>Root（根本原因）が1つに見える</strong>。直す場所が決まる</li>
+</ul>
+<h2>3. CRTとは（Purpose→Meaning）</h2>
+<h3>Purpose（目的）</h3>
+<p>問題（UDE）を因果関係でつないだ「木のような図」を作り、<strong>Root（根本原因）を1つに絞り込む</strong>。</p>
+<h3>Meaning（意味）</h3>
+<table>
+<thead>
+<tr>
+<th>用語</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>UDE</strong>（Undesirable Effect）</td>
+<td>現状の不都合な事象（症状・観測できる問題）</td>
+</tr>
+<tr>
+<td><strong>Cause（原因ノード）</strong></td>
+<td>UDEの背後にある原因。観測できる症状ではないが、「なぜUDEが起きるか」を説明するノード</td>
+</tr>
+<tr>
+<td><strong>CRT</strong>（Current Reality Tree）</td>
+<td>現状問題ツリー。UDEとCauseを「なぜなら」でつないだ図</td>
+</tr>
+<tr>
+<td><strong>Core Constraint / Root</strong></td>
+<td>根本原因。矢印が一番多く「原因」として出ているノード</td>
+</tr>
+</tbody>
+</table>
+<h3>CRTには2種類のノードがある</h3>
+<p>CRTは、<strong>UDE（症状）と Cause（原因）の2種類のノード</strong>でできています。</p>
+<pre><code>[UDE] 観測できる症状（朝起きられない・眠い・疲れてる）
+  ↑ 「なぜなら」
+[Cause] その原因（睡眠不足・夜更かし・スマホ）← 症状ではないが、原因としてある
+  ↑ 「なぜなら」
+[Root] 根本原因（夜更かし）← 矢印が一番出ている
+</code></pre>
+<ul>
+<li><strong>Step1</strong>では「観測できる症状」から始める（<strong>起点はUDE</strong>）</li>
+<li><strong>Step2</strong>で原因を掘り下げると、<strong>UDEではない Cause</strong> が次々と現れる（スマホ・睡眠不足・習慣など）</li>
+<li>掘り下げの果てに <strong>Root（根本原因）</strong> へ到達する</li>
+</ul>
+<blockquote>
+<p><strong>大切なこと:</strong> CRTは「症状（UDE）だけの図」ではありません。<strong>症状から出発して、原因（Cause）を掘り下げ、Rootに至るまでの全体図</strong>です。Step1で「原因は書かない」と言うのは、<strong>最初の出発点を症状に揃えるため</strong>であって、原因ノードを書いてはいけない、という意味ではありません。</p>
+</blockquote>
+<h2>4. CRTの作り方（5ステップ）</h2>
+<pre><code>Step1 問題（UDE）を列挙する
+   ↓ 出発点。「観測できる症状」を1項目1文で書き出す
+Step2 因果でつなぐ・原因を掘り下げる
+   ↓ 「Aが起きる、なぜならBだから」の矢印で結ぶ
+   ↓ 症状の背後にある Cause（原因ノード）も追加していく
+Step3 因果を検証する（思い込みをチェック）
+   ↓ 引いた矢印は本当に因果か？ 相関・逆・別原因・飛躍をチェック（下のチェック項目）
+Step4 輪（ループ）を探す
+   ↓ 悪循環（負のループ）があれば、それが「現状が続く理由」
+Step5 Root（根本原因）を特定する
+   ↓ 「原因」として矢印が一番多く出ているノードが Core Constraint
+</code></pre>
+<blockquote>
+<p><strong>補足:</strong> ノードのラベル（UDE / Cause / Root）は、CRTの中で<strong>相対的</strong>です。あるノードは、上から見れば「原因（Cause）」、下のノードから見れば「結果」です。ラベル分けは、<strong>どこが観測できる症状（UDE）で、どこが内部の原因（Cause）か</strong>を区別するための目印として使います。</p>
+</blockquote>
+<h2>4.5. 因果の検証チェック — その矢印、本当に因果？</h2>
+<blockquote>
+<p><strong>これは一般の人も間違えやすい最重要ポイント。</strong> 私たちは「前後で起きたこと」を見ると「原因だ」と思い込みがちです。</p>
+</blockquote>
+<p>「Aの後にBが起きた」だけでは、因果とは言えません。矢印を引く前に、次のチェックで検証しましょう。これはTOCの <strong>CLS 8原則</strong>（因果の正しさを確かめる8つのメガネ）を平易にしたものです。</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>チェック項目</th>
+<th>問い</th>
+<th>例（おかしな矢印）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>意味が明確か</strong></td>
+<td>言葉の意味は誰にでも通じるか？ 抽象語ではないか</td>
+<td>「ストレス」→「体調不良」（ストレスとは何？）</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>存在するか</strong></td>
+<td>AもBも、現実に確かめられる事実か？</td>
+<td>「おまじないをした」→「テストで良い点を取った」</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>本当にAが原因か</strong></td>
+<td>Aを取り除いたら、Bは起きなくなるか？（だからテスト）</td>
+<td>「朝ごはんを食べない」→「眠くなる」…実は睡眠不足が原因では？</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Aだけで十分か</strong></td>
+<td>他に必要な原因Cはないか？</td>
+<td>「スマホを見た」→「夜更かし」（寝る時間という条件も必要）</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>別の原因Dではないか</strong></td>
+<td>本当は別の要因のせいではないか？</td>
+<td>「アイスの売上が上がった」→「水難事故が増えた」（どちらも「夏」が原因）</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>逆ではないか</strong></td>
+<td>実はBが原因でAが結果では？</td>
+<td>「成績が良い→スマホを触らない」（逆に「スマホを見ない→成績が良い」？）</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>別の結果も予言できるか</strong></td>
+<td>A→Bが本当なら、別のEも同時に見えるはずではないか？</td>
+<td>「夜更かし→朝起きられない」なら、「休日も遅くまで寝る」はず</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>飛躍していないか</strong></td>
+<td>AとBの間に、抜けた中間Xはないか？</td>
+<td>「イライラする」→「友達と衝突」（間に「感情をうまく伝えられない」がある）</td>
+</tr>
+</tbody>
+</table>
+<h3>特に一般の人がよくやる間違い（トップ3）</h3>
+<ol>
+<li><strong>「後で起きた＝原因」思い込み（前後関係と因果の混同）</strong>
+   - 例: 「アイスを食べた翌日に風邪を引いた → アイスのせい？」（本当は別）</li>
+<li><strong>逆因果の見落とし</strong>
+   - 例: 「よく笑う人は健康だ → 笑うから健康？」（健康だから笑える、の可能性も）</li>
+<li><strong>第3の原因の見落とし（見かけの相関）</strong>
+   - 例: 「都会ほど犯罪が多い → 都会が犯罪を生む？」（実は「人が多い」だけ）</li>
+</ol>
+<h3>例題で確かめる</h3>
+<p>EX1 で引いた矢印を、チェック項目で検証してみましょう。</p>
+<table>
+<thead>
+<tr>
+<th>矢印</th>
+<th>チェック</th>
+<th>判定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「睡眠不足」→「朝起きられない」</td>
+<td>眠れなければ起きられない。3・4・7OK</td>
+<td>合格</td>
+</tr>
+<tr>
+<td>「授業中に眠くなる」→「成績が下がる」</td>
+<td>眠くて授業を聞けなければ成績は落ちる。7「集中力が続かない」を中間に入れて丁寧に</td>
+<td>合格（中間ノード追加）</td>
+</tr>
+<tr>
+<td>「朝ごはんを食べない」→「眠くなる」</td>
+<td><strong>5番の危険！</strong> 実は「睡眠不足」が原因の可能性。そのまま矢印にしない</td>
+<td>修正（原因を掘り下げる）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>POINT:</strong> 検証に引っかかった矢印は「消す」のではなく、<strong>中間の原因を足す・原因を掘り下げる</strong>ことで正しいツリーに直します。検証は「捨てるため」でなく「より正確にするため」です。</p>
+</blockquote>
+<h2>5. 例題（EX1: 朝起きられない）— Rootが見える体験をしよう</h2>
+<p>「原因が分からない」状態から、CRTを作って Root を1つに絞る体験を追います。</p>
+<h3>Step1: 出発点は、観測できる症状（UDE）から</h3>
+<p>CRTは「観測できる症状」から始める。原因はまだ探さない。まずはっきり見えている症状だけを書く。</p>
+<blockquote>
+<p>ここがポイント。Aさんの問題は「朝起きられない」だけではありません。<strong>一見バラバラに見える複数の症状</strong>があります。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>UDE（観測できる症状）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UDE1</td>
+<td>朝、起きられない</td>
+</tr>
+<tr>
+<td>UDE2</td>
+<td>朝ごはんを食べない</td>
+</tr>
+<tr>
+<td>UDE3</td>
+<td>授業中に眠くなる</td>
+</tr>
+<tr>
+<td>UDE4</td>
+<td>成績が下がった</td>
+</tr>
+<tr>
+<td>UDE5</td>
+<td>イライラして友達と衝突する</td>
+</tr>
+</tbody>
+</table>
+<p>「朝起きられない」「成績が下がる」「友達と衝突する」…全部別々の問題に見えます。これを1本のツリーにしていきます。</p>
+<h3>Step2: 「なぜなら」でつなぎ、原因（Cause）を掘り下げる</h3>
+<p>「Aが起きるのは、なぜならBだから」の矢印で、それぞれの症状の原因を掘り下げていく。</p>
+<pre><code>[UDE: 朝、起きられない]
+   │ なぜなら（寝るのが遅い）
+   ▼
+[UDE: 朝ごはんを食べない]
+   │ なぜなら（起きるのが遅くて時間がない）
+   ▼
+[Cause: 午前中のエネルギー不足]
+</code></pre>
+<pre><code>[UDE: 授業中に眠くなる]
+   │ なぜなら
+   ▼
+[Cause: 集中力が続かない]
+   │ なぜなら
+   ▼
+[UDE: 成績が下がる]
+</code></pre>
+<pre><code>[UDE: イライラする]
+   │ なぜなら
+   ▼
+[UDE: 友達と衝突する]
+</code></pre>
+<p>ここまでで、<strong>「朝の症状」「授業・成績の症状」「気分・人間関係の症状」の3つの枝</strong>ができました。一見、全く別々の問題です。</p>
+<h3>Step3: 3つの枝が「共通の原因」に合流する</h3>
+<p>ここからがCRTの見せどころ。それぞれの枝をさらに上に辿ると…</p>
+<blockquote>
+<p>「午前中のエネルギー不足」はなぜ？ → <strong>睡眠不足（Cause）</strong>
+「集中力が続かない」はなぜ？ → <strong>睡眠不足（Cause）</strong>
+「イライラする」はなぜ？ → <strong>睡眠不足（Cause）</strong></p>
+</blockquote>
+<p><strong>3つの別々に見えた症状が、全部「睡眠不足」という1つの共通原因に合流します。</strong></p>
+<pre><code>[Cause: 午前中のエネルギー不足] ─┐
+[Cause: 集中力が続かない] ────────┼──► [Cause: 睡眠不足]
+[UDE: イライラする] ──────────────┘
+</code></pre>
+<p>そして「睡眠不足」はなぜ？ → <strong>夜更かし（Cause）</strong>。夜更かしはなぜ？ → <strong>寝る前にスマホを見てしまう（Cause）</strong>。</p>
+<h3>Step4: Root（根本原因）を特定する</h3>
+<p>全体のツリーはこうなります。</p>
+<pre><code>[UDE: 朝、起きられない]
+   ▼
+[UDE: 朝ごはんを食べない]
+   ▼
+[Cause: 午前中のエネルギー不足] ─┐
+                                ├─► [Cause: 睡眠不足] ◀── [Cause: 夜更かし] ◀── [Cause: 寝る前にスマホ] ← Root
+[UDE: 授業中に眠くなる] ─────────┘
+   ▼
+[Cause: 集中力が続かない]
+   ▼
+[UDE: 成績が下がる]
+
+[UDE: イライラする] ──► [UDE: 友達と衝突する] ──►（ここも睡眠不足に合流）
+</code></pre>
+<ul>
+<li>「朝起きられない」「成績が下がる」「友達と衝突する」… <strong>見た目はバラバラの5つの症状</strong></li>
+<li>でも因果を辿ると、<strong>全部が「睡眠不足」→「夜更かし」→「スマホ」という1本の Root に集まる</strong></li>
+</ul>
+<figure class="figure"><div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" width="760" height="420" viewBox="0 0 760 420" role="img" aria-label="CRT現状問題ツリー：散らばった5つの症状が1つの根本原因に収束する">
+  <style>
+    .ude { fill: #fdeee2; stroke: #a05a1c; stroke-width: 2; rx: 8; }
+    .cause { fill: #eef4fb; stroke: #243b53; stroke-width: 2; rx: 8; }
+    .root { fill: #fde2e2; stroke: #b02a2a; stroke-width: 3; rx: 8; }
+    .edge { stroke: #627d98; stroke-width: 2; fill: none; }
+    .arrow { fill: #627d98; }
+    .label { font-family: "Yu Gothic UI", sans-serif; font-size: 14px; fill: #1f2933; }
+    .label-small { font-family: "Yu Gothic UI", sans-serif; font-size: 12px; fill: #52606d; }
+    .tag { font-family: "Yu Gothic UI", sans-serif; font-size: 11px; fill: #52606d; }
+  </style>
+
+  <!-- UDE 行（上部・散らばった症状） -->
+  <rect x="20" y="20" width="130" height="42" class="ude"/>
+  <text x="85" y="37" class="label" text-anchor="middle">朝、起きられない</text>
+  <text x="85" y="54" class="tag" text-anchor="middle">UDE1</text>
+
+  <rect x="180" y="20" width="130" height="42" class="ude"/>
+  <text x="245" y="37" class="label" text-anchor="middle">朝ごはんを食べない</text>
+  <text x="245" y="54" class="tag" text-anchor="middle">UDE2</text>
+
+  <rect x="340" y="20" width="130" height="42" class="ude"/>
+  <text x="405" y="37" class="label" text-anchor="middle">授業中に眠くなる</text>
+  <text x="405" y="54" class="tag" text-anchor="middle">UDE3</text>
+
+  <rect x="500" y="20" width="120" height="42" class="ude"/>
+  <text x="560" y="37" class="label" text-anchor="middle">成績が下がる</text>
+  <text x="560" y="54" class="tag" text-anchor="middle">UDE4</text>
+
+  <rect x="640" y="20" width="110" height="42" class="ude"/>
+  <text x="695" y="37" class="label" text-anchor="middle">友達と衝突する</text>
+  <text x="695" y="54" class="tag" text-anchor="middle">UDE5</text>
+
+  <!-- Cause 中間行 -->
+  <rect x="95" y="130" width="150" height="40" class="cause"/>
+  <text x="170" y="155" class="label" text-anchor="middle">エネルギー不足</text>
+
+  <rect x="365" y="130" width="140" height="40" class="cause"/>
+  <text x="435" y="155" class="label" text-anchor="middle">集中力が続かない</text>
+
+  <!-- エッジ：UDE → Cause -->
+  <path d="M 85 62 L 150 128" class="edge"/>
+  <polygon points="152,132 138,122 156,124" class="arrow"/>
+  <path d="M 245 62 L 195 128" class="edge"/>
+  <polygon points="193,132 203,118 205,128" class="arrow"/>
+  <path d="M 405 62 L 420 128" class="edge"/>
+  <polygon points="422,132 412,122 428,124" class="arrow"/>
+  <path d="M 560 62 L 465 128" class="edge"/>
+  <polygon points="463,132 471,118 473,128" class="arrow"/>
+
+  <!-- 合流点：睡眠不足 -->
+  <rect x="260" y="230" width="170" height="50" class="cause"/>
+  <text x="345" y="253" class="label" text-anchor="middle" font-weight="bold">睡眠不足</text>
+  <text x="345" y="271" class="tag" text-anchor="middle">共通の原因（合流）</text>
+
+  <!-- エッジ：Cause → 睡眠不足 -->
+  <path d="M 170 170 L 310 228" class="edge"/>
+  <polygon points="313,230 300,222 307,236" class="arrow"/>
+  <path d="M 435 170 L 375 228" class="edge"/>
+  <polygon points="373,230 382,218 383,228" class="arrow"/>
+
+  <!-- Root -->
+  <rect x="280" y="320" width="210" height="60" class="root"/>
+  <text x="385" y="346" class="label" text-anchor="middle" font-weight="bold">夜更かし（スマホ）</text>
+  <text x="385" y="367" class="tag" text-anchor="middle">Root（根本原因）</text>
+
+  <!-- エッジ：睡眠不足 → Root -->
+  <path d="M 345 280 L 375 318" class="edge"/>
+  <polygon points="377,320 366,312 373,326" class="arrow"/>
+
+  <!-- 注記 -->
+  <text x="385" y="405" class="label-small" text-anchor="middle">見た目はバラバラの5症状 → 因果を辿ると1つの Root に収束</text>
+</svg>
+</div></figure>
+
+<blockquote>
+<p><strong>Root（根本原因）= 夜更かし（寝る前にスマホを見てしまう）</strong></p>
+</blockquote>
+<h3>ここで何が変わったか（体験のまとめ）</h3>
+<ul>
+<li>CRTを作る前: 「朝起きる努力をしよう」「勉強を頑張ろう」「友達と仲直りしよう」と、<strong>5つの対策</strong>がバラバラに浮かぶ（モグラ叩き）</li>
+<li>CRTを作った後: <strong>「夜更かし」を直せば、5つの症状がまとめて改善し始める</strong>と分かる</li>
+</ul>
+<p><strong>これがCRTの良さです。</strong> 「散らばった問題（UDE）」を因果でつないでいくと、「実は1つの根本原因（Root）で説明できる」という収束が見えてきます。Rootを直すことで、複数の症状をまとめて改善できます。これは、個別にモグラ叩きするよりはるかに効率的です。</p>
+<blockquote>
+<p><strong>ここまでがCRTの意義。</strong> 次は Root（夜更かし）をどう解消するか（Unit 8 で）。</p>
+</blockquote>
+<h2>6. 演習フレーム（Unit 7〜9 共通）</h2>
+<p>各演習カードは次の共通フレームで進める。このUnitでは <strong>Step1〜5（CRT＋因果検証まで）</strong>。</p>
+<pre><code>Step1 題材を選ぶ（選択式）
+Step2 問題（UDE）を列挙する
+Step3 因果でつなぐ（CRT / ループ図）
+Step4 因果を検証する（§4.5 のチェック項目）
+Step5 Root（根本原因）を特定する
+Step6 対立を解体する（蒸発する雲）※Unit 8
+Step7 解消策（Injection）を設計する ※Unit 8
+Step8 新たな問題が起きないか確認する（FRT）※Unit 8
+Step9 Teach-Back（自分の選んだ題材で説明）
+</code></pre>
+<h2>7. Check — 確かめてみよう</h2>
+<ol>
+<li>「個別対策（モグラ叩き）」がうまくいかない理由は？（ヒント: 葉っぱと根）</li>
+<li>CRTを作ると、何が「見える」ようになる？</li>
+<li>Root（根本原因）は、図のどこを見れば分かる？</li>
+<li>例題の「朝起きられない・成績が下がる・友達と衝突する」は、見た目は別々の問題。でもCRTで辿ると何が分かる？</li>
+<li>「朝起きられない」は UDE（症状）と Cause（原因）のどちら？ では「夜更かし」は？</li>
+<li>「アイスを食べた翌日に風邪を引いた → アイスのせい」という考えは、因果の検証チェックの何番でひっかかる？（ヒント: 「後で起きた＝原因」）</li>
+</ol>
+<blockquote>
+<p><strong>答え（下を見る前に自分で）:</strong>
+1. 症状（葉っぱ）を1個ずつ直しても、根本原因（根）がダメならまた戻るから
+2. 根本原因（Root）が1つに絞られて、直す場所が決まる
+3. 「原因」として矢印が一番多く出ているノード（＝最も下流にあり、複数の枝が合流するところ）
+4. 全部が「睡眠不足」→「夜更かし」という1つの Root に収束すること
+5. 「朝起きられない」は UDE（観測できる症状）。「夜更かし」は Cause（原因ノード。さらに Root）
+6. 「後で起きた＝原因」の思い込み。チェック項目3（本当にAが原因か）または5（別の原因D）で引っかかる</p>
+</blockquote>
+<h2>8. よくある誤解（Misconceptions）</h2>
+<table>
+<thead>
+<tr>
+<th>誤解</th>
+<th>正しい理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「原因が分からなくても、とにかく何か対策すればいい」</td>
+<td>原因が分からない対策はモグラ叩き。まず構造を見る（CRT）のが先</td>
+</tr>
+<tr>
+<td>「原因を全部直すのが良い」</td>
+<td>根本原因1つを直すと複数の症状がまとめて良くなる。全部直すのは非効率</td>
+</tr>
+<tr>
+<td>「解決策から考えてOK」</td>
+<td>先に「原因（構造）」を特定する。解決策（Injection）は Unit 8</td>
+</tr>
+<tr>
+<td>「原因と症状が混ざってOK」</td>
+<td>混ざってよいが<strong>区別</strong>はする。Step1の出発点は「観測できる症状（UDE）」。原因ノード（Cause）はStep2で掘り下げて追加する。区別を意識しないと、Rootが見えなくなる</td>
+</tr>
+</tbody>
+</table>
+<h2>9. やってみよう — 選択式演習</h2>
+<p>CRTの意義と作り方が分かったら、自分の選んだ演習カードで練習する。</p>
+<ul>
+<li><strong>EX2</strong>（部活の先輩後輩の対立）</li>
+<li><strong>EX3</strong>（クラスの係活動が回らない）</li>
+<li><strong>EX7</strong>（SNS依存・情報過多）</li>
+<li>社会人の人は <strong>EX4〜6・EX9</strong> を選んでよい（Unit 9 で深く扱う）</li>
+</ul>
+<p><strong>ここでやること:</strong> Step1〜5（UDE列挙→因果→検証→Root特定）まで。</p>
+<blockquote>
+<p><strong>やってみよう:</strong> 選んだ題材でCRTを描き、§4.5のチェック項目で矢印を検証してから、Rootを1つに絞ってみよう。つい「原因っぽい言葉」をUDEに混ぜたくなったら、それは葉っぱ（症状）だけに分ける訓練だと思って。</p>
+</blockquote>
+<h2>10. Teach-Back — 素人に説明しよう</h2>
+<ol>
+<li><strong>何の話か:</strong> 「バラバラに見える問題は、実は1つの根本原因（根）から出ている」という話</li>
+<li><strong>部品は何か:</strong> UDE（症状）・Cause（原因）・矢印（因果）・Root（根本原因）</li>
+<li><strong>どう繋がるか:</strong> 症状を「なぜなら」で辿ると、複数の枝が1つの Root に合流する</li>
+<li><strong>図はどこを見ればいいか:</strong> 複数の枝が合流して、矢印が一番「原因」として出ているノード</li>
+<li><strong>よくある誤解:</strong> 個別対策（モグラ叩き）は解決しない。Rootに集中する</li>
+<li><strong>素人への一言:</strong> 「朝起きられない・成績が下がる・友達と衝突する…全部別の問題に見えるけど、辿ると全部『夜更かし』に集まるんだよ。根っこを1本直せば、枝の症状がまとめて良くなる」</li>
+</ol>
+<hr>
+<h2>まとめ（Takeaway）</h2>
+<ul>
+<li>原因が分からないままの対策は<strong>モグラ叩き</strong>。症状（葉っぱ）を直しても、根（Root）がダメなら戻る</li>
+<li><strong>CRT</strong> = 症状（UDE）を出発点に、原因（Cause）を掘り下げ、「なぜなら」でつないで <strong>Root（根本原因）を1つに絞り込む</strong>道具</li>
+<li>CRTには <strong>UDE（症状）と Cause（原因）の2種類のノード</strong>がある。出発点は UDE、掘り下げで Cause を追加</li>
+<li>CRTの醍醐味は<strong>収束</strong>: バラバラに見える複数の UDE が、因果を辿ると1つの Root に合流するのが見えること</li>
+<li><strong>因果は検証する</strong>: 後で起きた＝原因、ではない。相関・逆因果・第3の原因をチェック（§4.5）</li>
+<li><strong>Rootに集中する</strong>と、複数の症状がまとめて改善する。これが合理的で効率的な解決</li>
+<li>次回は Root（根本原因）をどう解消するか（蒸発する雲・Injection）</li>
+</ul>
+<blockquote>
+<p><strong>次回予告 (Unit 8):</strong> 見つけた Root を、対立の解体で「根本から解消」する。</p>
+</blockquote></div></section>
+<section class="chapter" id="unit-08" data-source="unit8_injection.md" data-group="main"><div class="chapter-meta"><span class="chapter-index">08</span><span class="chapter-label">Unit 8</span><span class="chapter-source">unit8_injection.md</span></div><div class="chapter-body"><h1>Unit 8 — 演習B（基本編）: 解消 — 蒸発する雲で対立を解体し、根本原因を直す</h1>
+<blockquote>
+<p><strong>対象:</strong> 中学2年生〜一般社会人
+<strong>ゴール（L3 Teach-Back）:</strong> 蒸発する雲で対立を解体し、対立の前提を外す解消策（Injection）を設計できる。新たな問題（FRT）も確認できる
+<strong>所要目安:</strong> 20〜30分（Unit 7 の続き）
+<strong>準備:</strong> Unit 7 で作ったCRT・演習カード</p>
+</blockquote>
+<hr>
+<h2>1. Hook — 「どっちを取るか」の対立</h2>
+<p>「朝起きられない」を直すために、夜更かしをやめたい。でも…</p>
+<ul>
+<li>「スマホを寝る前に見たい」←→「早く寝なきゃいけない」</li>
+</ul>
+<p>この2つは対立していますか？ 実は、<strong>対立しているように見えて、実は対立していない</strong>ことがよくあります。これを解く道具が「蒸発する雲」です。</p>
+<h2>2. 蒸発する雲（Evaporating Cloud）とは</h2>
+<h3>Value（価値）</h3>
+<p>対立を「どちらかが折れる（妥協）」で解くと、片方が不満を残します。<strong>蒸発する雲は、対立の前提を外して「両方かなえられる」道を作る</strong>ので、雲（対立）が「蒸発」します。</p>
+<h3>Purpose（目的）</h3>
+<p>対立している2つの行動の、奥にある「共通の目的」を見つける。</p>
+<h3>Meaning（意味）</h3>
+<pre><code>        [目的C] 共通の上位目的
+        ／            ＼
+  [要求A]              [要求B]
+     │                   │
+  [行動A]  ←→対立←→  [行動B]
+</code></pre>
+<ul>
+<li><strong>目的C</strong>: 両者が本当に望んでいる共通の上位目的</li>
+<li><strong>要求A/B</strong>: その目的を達成するための条件</li>
+<li><strong>行動A/B</strong>: 実際にやっていること（これが対立している）</li>
+</ul>
+<p><strong>ポイント:</strong> 行動AとBが対立していても、<strong>目的Cは共通</strong>であることがほとんど。</p>
+<h2>3. 蒸発する雲の書き方（4ステップ）</h2>
+<pre><code>Step1 対立している2つの行動を書く（A vs B）
+Step2 それぞれの行動の「要求」（なぜそれをやるのか）を書く
+Step3 その下の「共通の目的」を書く
+Step4 対立を「蒸発」させる前提を探す（Injection）
+</code></pre>
+<h2>4. 例題（EX1の続き: 朝起きられない）— 解答つき</h2>
+<h3>蒸発する雲を描く</h3>
+<pre><code>        [目的C] 健康で元気に毎日を過ごしたい（学校生活を楽しみたい）
+        ／                                  ＼
+  [要求A] 楽しい時間を持ちたい             [要求B] 十分に眠りたい
+     │                                         │
+  [行動A] 夜遅くまでスマホを見る      ←→   [行動B] 早く寝る
+</code></pre>
+<figure class="figure"><div class="figure-svg"><svg xmlns="http://www.w3.org/2000/svg" width="720" height="360" viewBox="0 0 720 360" role="img" aria-label="蒸発する雲：対立する2つの行動が、共通の目的Cに合流する">
+  <style>
+    .goal { fill: #e3f6e5; stroke: #1b6e2e; stroke-width: 2.5; rx: 10; }
+    .req { fill: #eef4fb; stroke: #243b53; stroke-width: 2; rx: 8; }
+    .act-a { fill: #fdeee2; stroke: #a05a1c; stroke-width: 2; rx: 8; }
+    .act-b { fill: #fdeee2; stroke: #a05a1c; stroke-width: 2; rx: 8; }
+    .edge { stroke: #627d98; stroke-width: 2; fill: none; }
+    .conflict { stroke: #b02a2a; stroke-width: 3; fill: none; stroke-dasharray: 6,4; }
+    .arrow { fill: #627d98; }
+    .label { font-family: "Yu Gothic UI", sans-serif; font-size: 15px; fill: #1f2933; }
+    .label-small { font-family: "Yu Gothic UI", sans-serif; font-size: 12px; fill: #52606d; }
+    .conflict-text { font-family: "Yu Gothic UI", sans-serif; font-size: 14px; font-weight: bold; fill: #b02a2a; }
+  </style>
+
+  <!-- 目的C -->
+  <rect x="210" y="20" width="300" height="60" class="goal"/>
+  <text x="360" y="46" class="label" text-anchor="middle" font-weight="bold">目的C（共通の上位目的）</text>
+  <text x="360" y="66" class="label-small" text-anchor="middle">例: チームを強くしたい</text>
+
+  <!-- 要求A / 要求B -->
+  <rect x="60" y="140" width="200" height="55" class="req"/>
+  <text x="160" y="164" class="label" text-anchor="middle" font-weight="bold">要求A</text>
+  <text x="160" y="184" class="label-small" text-anchor="middle">規律を守ってほしい</text>
+
+  <rect x="460" y="140" width="200" height="55" class="req"/>
+  <text x="560" y="164" class="label" text-anchor="middle" font-weight="bold">要求B</text>
+  <text x="560" y="184" class="label-small" text-anchor="middle">自分の考えで工夫したい</text>
+
+  <!-- 目的C → 要求 -->
+  <path d="M 290 80 L 180 138" class="edge"/>
+  <polygon points="178,140 188,128 190,140" class="arrow"/>
+  <path d="M 430 80 L 540 138" class="edge"/>
+  <polygon points="542,140 532,128 530,140" class="arrow"/>
+
+  <!-- 行動A / 行動B -->
+  <rect x="60" y="270" width="200" height="55" class="act-a"/>
+  <text x="160" y="294" class="label" text-anchor="middle" font-weight="bold">行動A</text>
+  <text x="160" y="314" class="label-small" text-anchor="middle">先輩の指示に従わせる</text>
+
+  <rect x="460" y="270" width="200" height="55" class="act-b"/>
+  <text x="560" y="294" class="label" text-anchor="middle" font-weight="bold">行動B</text>
+  <text x="560" y="314" class="label-small" text-anchor="middle">自分の練習を試す</text>
+
+  <!-- 要求 → 行動 -->
+  <path d="M 160 195 L 160 268" class="edge"/>
+  <polygon points="160,270 154,260 166,260" class="arrow"/>
+  <path d="M 560 195 L 560 268" class="edge"/>
+  <polygon points="560,270 554,260 566,260" class="arrow"/>
+
+  <!-- 対立（ジグザグ線） -->
+  <path d="M 260 297 L 320 282 L 380 312 L 440 297 L 460 297" class="conflict"/>
+  <text x="360" y="258" class="conflict-text" text-anchor="middle">対立！</text>
+
+  <!-- 注記 -->
+  <text x="360" y="345" class="label-small" text-anchor="middle">実は目的Cは共通。対立の「前提」を外すと、両方かなえられる</text>
+</svg>
+</div></figure>
+
+<p><strong>対立しているのは「行動A vs 行動B」。でも目的C（元気に過ごしたい）は共通。</strong></p>
+<h3>対立の「前提」を探す（ここが肝心）</h3>
+<p>なぜ行動Aと行動Bが対立するのでしょう？ そこには<strong>隠れた前提（思い込み）</strong>があります。</p>
+<blockquote>
+<p><strong>前提: 「楽しい時間は夜しかない」「スマホを見る＝夜遅く」</strong></p>
+</blockquote>
+<p>この前提が実は間違っていたら？</p>
+<h3>Injection（解消策）— 前提を外す</h3>
+<table>
+<thead>
+<tr>
+<th>前提（思い込み）</th>
+<th>それを外す Injection</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「楽しい時間は夜しかない」</td>
+<td>昼間にスマホを見る時間を決める・楽しい活動を別の時間に作る</td>
+</tr>
+<tr>
+<td>「スマホを見る＝夜遅くまで」</td>
+<td>スマホの利用時間を制限する（タイマー・自分ルール）</td>
+</tr>
+<tr>
+<td>「眠る時間が減っても大丈夫」</td>
+<td>睡眠の大切さを知る（遅れの効果: 翌日の集中力）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Injectionは「妥協」ではない。</strong> 「楽しさ」と「睡眠」の両方をかなえる新しい仕組み（例: スマホは21時まで、夜は読書に変える）を作ります。こうすると、<strong>対立（雲）が消えて、根本原因（夜更かし）が直接解消</strong>されます。</p>
+<h2>5. InjectionとFRT（新たな問題の確認）</h2>
+<h3>Injection（注入・解消策）</h3>
+<p>根本原因を解消する新しい仕組み・ルール・仕掛け。</p>
+<ul>
+<li>根本原因を「直す」のではなく「<strong>対立の前提を外す</strong>」形にするのがTOC流</li>
+<li>例: 「夜はスマホを別の部屋に置く」という仕組み</li>
+</ul>
+<h3>FRT（Future Reality Tree / 未来問題ツリー）</h3>
+<p>Injectionを入れたら、<strong>新たな問題が生まれないか</strong>を確認する。</p>
+<pre><code>Injection（例: 夜はスマホを別の部屋に置く）
+   │
+   ▼
+良い結果: 夜更かしが減る → 朝起きられる
+   │
+   ▼
+新たな問題?: 「連絡を見逃す」「夜が退屈」
+   │
+   ▼
+対策: 連絡は朝確認する / 退屈な夜の楽しみ（読書など）を用意
+</code></pre>
+<p><strong>完璧な対策はない。</strong> FRTで「新たな問題」を予想し、その対策まで考えるのがTOCの丁寧さです。</p>
+<h2>6. Check — 確かめてみよう</h2>
+<ol>
+<li>蒸発する雲の「目的C」とは何？</li>
+<li>Injectionは「妥協」と何が違う？</li>
+<li>FRTは何を確認する道具？</li>
+</ol>
+<blockquote>
+<p><strong>答え（下を見る前に自分で）:</strong>
+1. 両者が共通に望む上位目的　2. 妥協は片方が諦める。Injectionは対立の前提を外して両方かなえる　3. 解消策が新たな問題を生まないか</p>
+</blockquote>
+<h2>7. よくある誤解（Misconceptions）</h2>
+<table>
+<thead>
+<tr>
+<th>誤解</th>
+<th>正しい理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「対立はどちらかが折れればいい」</td>
+<td>妥協は不満を残す。前提を外せば両方かなえられる</td>
+</tr>
+<tr>
+<td>「Injection = 努力・我慢」</td>
+<td>努力・我慢ではなく、<strong>仕組み（環境）を変える</strong></td>
+</tr>
+<tr>
+<td>「解決策を思いつけば終わり」</td>
+<td>FRTで新たな問題まで確認するのがTOC流</td>
+</tr>
+</tbody>
+</table>
+<h2>8. やってみよう — 選択式演習（Unit 7 の続き）</h2>
+<p>Unit 7 で選んだ題材の続きで、Step5〜7をやる。</p>
+<ol>
+<li><strong>対立の構造</strong>を見つける（何と何が対立している？）</li>
+<li><strong>蒸発する雲を描く</strong>（共通の目的Cを見つける）</li>
+<li><strong>対立の前提</strong>を探す（なぜ対立しているように見えるのか）</li>
+<li><strong>Injection</strong> を設計する（前提を外す仕組み）</li>
+<li><strong>FRT</strong> で新たな問題と対策を確認する</li>
+<li><strong>Teach-Back</strong></li>
+</ol>
+<ul>
+<li>ヒントは各演習カードに記載。</li>
+</ul>
+<h2>9. Teach-Back — 素人に説明しよう</h2>
+<ol>
+<li><strong>何の話か:</strong> 「対立は前提を外せば消える」という話</li>
+<li><strong>部品は何か:</strong> 行動A・行動B・共通の目的C・前提・Injection</li>
+<li><strong>どう繋がるか:</strong> 対立の下に共通の目的がある。前提を外す仕組み（Injection）で両方かなえる</li>
+<li><strong>図はどこを見ればいいか:</strong> 目的C（共通点）と、隠れた前提</li>
+<li><strong>よくある誤解:</strong> 妥協ではなく前提を外す</li>
+<li><strong>素人への一言:</strong> 「夜スマホを見たい（A）と早く寝たい（B）は、どっちも元気でいたい（C）のためだよ。スマホを21時までにする、がInjection。我慢じゃなく仕組み」</li>
+</ol>
+<hr>
+<h2>まとめ（Takeaway）</h2>
+<ul>
+<li><strong>蒸発する雲</strong> = 対立を「共通の目的」から見直す道具</li>
+<li><strong>対立の前提</strong>を見つけると、対立が「蒸発」する</li>
+<li><strong>Injection</strong> = 前提を外す仕組み（妥協ではなく環境の変更）</li>
+<li><strong>FRT</strong> = 解消策が新たな問題を生まないか確認</li>
+<li>根本原因（Unit 7）を、前提を外して解消（このUnit）すると、システム全体が改善する</li>
+<li>次回は社会人向けの実務演習（任意）</li>
+</ul>
+<blockquote>
+<p><strong>次回予告 (Unit 9):</strong> 社会人向け演習。価格戦略・会議・残業などを CRT + Injection で解く。</p>
+</blockquote></div></section>
+<section class="chapter" id="unit-09" data-source="unit9_sd_applied.md" data-group="main"><div class="chapter-meta"><span class="chapter-index">09</span><span class="chapter-label">Unit 9</span><span class="chapter-source">unit9_sd_applied.md</span></div><div class="chapter-body"><h1>Unit 9 — 演習C（社会人向け・任意）: SD の切り口で解く — 実務の問題を「動き」から見る</h1>
+<blockquote>
+<p><strong>対象:</strong> 一般社会人（中2はスキップして Unit 11 へ進んでよい）
+<strong>ゴール（L3 Teach-Back）:</strong> 実務問題を SD の視点（参照モード・ループ・介入点・政策抵抗）で構造化し、介入策を設計できる
+<strong>所要目安:</strong> 30〜40分（選択した演習1つ）
+<strong>準備:</strong> 演習カード <code>exercises/ex4〜ex6, ex9</code>
+<strong>関連:</strong> 同じ問題を Unit 10（TOC の切り口）でも解き、見比べる</p>
+</blockquote>
+<hr>
+<h2>1. Hook — 「人手不足」をまず疑ってみる</h2>
+<p>職場では、こんな問題がよくあります。</p>
+<ul>
+<li>会議ばかりで仕事が進まない</li>
+<li>残業が減らない</li>
+<li>売上が伸びない</li>
+<li>値下げしたのに利益が減った</li>
+</ul>
+<p>どれも「人が足りない」「努力が足りない」と片付けられがちです。でも本当にそうでしょうか？</p>
+<p><strong>このUnitでは「人のせい」「努力のせい」にする前に、問題を「時間とともにどう動くか」という視点で見ます。</strong> これがシステムダイナミクス（SD）の切り口です。</p>
+<h2>2. SD の切り口とは（このUnitの主軸）</h2>
+<p>Unit 1〜4 で学んだ道具を、<strong>問題解決の道具として</strong>使い切ります。</p>
+<table>
+<thead>
+<tr>
+<th>SD の道具</th>
+<th>問題解決での使い方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ストックとフロー（Unit 2）</td>
+<td>「何がたまっているか・何が流れているか」で問題の正体を見る</td>
+</tr>
+<tr>
+<td>フィードバックループ（Unit 3）</td>
+<td>「増えるともっと増える（正）」「増えると抑える（負）」の構造を見る</td>
+</tr>
+<tr>
+<td>時間の遅れ（Unit 4）</td>
+<td>「対策の効き目が後から出る」ことを織り込む</td>
+</tr>
+</tbody>
+</table>
+<p>SD の問題解決は、次の4つのステップが核になります。</p>
+<h3>① 参照モード（Reference Mode）—「このままだとどうなる」を描く</h3>
+<p>問題を「今」だけではなく <strong>過去→現在→未来</strong> のグラフで見る。放置するとどう悪化するかを、まず描く。</p>
+<h3>② 構造を見る — ループ・ストック・遅れを描く</h3>
+<p>問題を生んでいる「ぐるぐるの構造」を図で描く。正のループ・負のループ・遅れを見つける。</p>
+<h3>③ 介入点（レバレッジポイント）— ループのどこに手を入れるか</h3>
+<ul>
+<li>正の悪循環ループを<strong>切る</strong></li>
+<li>負の調整ループを<strong>強める</strong>（活用する）</li>
+<li>ストックの入りフロー / 出フローを<strong>変える</strong></li>
+</ul>
+<h3>④ 政策抵抗（Policy Resistance）— 対策が打ち消されないか</h3>
+<p>「対策を打っても、既存のループに吸収されて効かない」ことがある。これを<strong>事前に予見する</strong>。</p>
+<h2>3. SD の切り口 vs TOC の切り口（見え方の違い）</h2>
+<p>Unit 10 で同じ問題を TOC の切り口で解きます。先に違いを知っておくと、見比べが効率的です。</p>
+<table>
+<thead>
+<tr>
+<th>視点</th>
+<th>SD（このUnit）</th>
+<th>TOC（Unit 10）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>見る対象</td>
+<td>時間とともにどう動くか（振る舞い）</td>
+<td>今の構造（制約・根本原因）</td>
+</tr>
+<tr>
+<td>切り口</td>
+<td>ループを切る・フローを変える</td>
+<td>制約を特定して直す</td>
+</tr>
+<tr>
+<td>未来</td>
+<td>「このままだとどうなる」をまず描く</td>
+<td>（あまり見ない）</td>
+</tr>
+<tr>
+<td>対策の副反応</td>
+<td>政策抵抗（既存ループに打ち消される）を予見</td>
+<td>FRT で確認</td>
+</tr>
+<tr>
+<td>時間の遅れ</td>
+<td>効果が遅れる・行き過ぎることを設計に組み込む</td>
+<td>考慮はする</td>
+</tr>
+</tbody>
+</table>
+<h2>4. 選択式演習 — 4題から1つ選ぶ</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>題材</th>
+<th>使う SD の道具</th>
+<th>カード</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EX4</td>
+<td>会議が多すぎて仕事が進まない</td>
+<td>ストック（仕事の山）・遅れ</td>
+<td><code>exercises/ex4_too_many_meetings.md</code></td>
+</tr>
+<tr>
+<td>EX5</td>
+<td>残業が減らない（成功の負担）</td>
+<td>正のループ（悪循環）</td>
+<td><code>exercises/ex5_overtime.md</code></td>
+</tr>
+<tr>
+<td>EX6</td>
+<td>売上が伸びない（成長の限界）</td>
+<td>正のループ×負のループ</td>
+<td><code>exercises/ex6_growth_limit.md</code></td>
+</tr>
+<tr>
+<td><strong>EX9</strong></td>
+<td><strong>値下げの罠（価格戦略）</strong></td>
+<td>正×負のループ・ストック（利益）</td>
+<td><code>exercises/ex9_price_war_trap.md</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>選び方:</strong> 自分の仕事・身近さ・「これを解きたい」で1つ選ぶ。選んだ問題は Unit 10 でもう一度（TOC の切り口で）解く。</p>
+<h2>5. SD の問題解決フレーム（このUnitの共通ステップ）</h2>
+<pre><code>Step1 参照モードを描く: このままだとどうなる？ 過去→現在→未来のグラフ
+Step2 構造を見る: ストック・フロー・正負ループ・遅れを図で描く
+Step3 介入点を探す: どのループを切る？ どのフローを変える？
+Step4 政策抵抗を予見: 対策は既存ループに打ち消されないか？
+Step5 介入策を設計する（SD流の解決策）
+Step6 Teach-Back（自分の選んだ題材で説明）
+</code></pre>
+<blockquote>
+<p>このUnitでは「制約を特定する」「CRT」「Injection」などの TOC 道具は<strong>意図的に使いません</strong>。SD だけの目で見て、どこまで解けるかを体験します。Unit 10 で TOC の目をかけると、見え方がどう変わるかが分かります。</p>
+</blockquote>
+<h2>6. 例題（EX9: 値下げの罠）— 解答つき</h2>
+<p>値下げで「売上は増えたのに利益が減った」問題を、<strong>SD の4つのステップだけ</strong>で解いてみる。</p>
+<h3>Step1: 参照モード（このままだとどうなる）</h3>
+<p>まず、過去→現在→未来のグラフを描く。</p>
+<pre><code>利益
+  │         ／（売上は伸びている）
+  │      ／
+  │   ／   ／（でも利益は…）
+  │ ／  ／
+  │／／
+  │      ＼
+  │       ＼  ← 放置すると利益がさらに落ちる予測
+  └────────────→ 時間
+   過去    現在    未来
+</code></pre>
+<p>「今」は売上（フローIN）が伸びて見えるが、<strong>利益（ストック）は減少傾向</strong>。このままだと、さらに値下げ競争に巻き込まれ、利益が落ち続けると予測できる。</p>
+<h3>Step2: 構造を見る（ストック・ループ・遅れ）</h3>
+<p><strong>ストックとフロー（Unit 2）:</strong></p>
+<pre><code>売上（フローIN）──▶ [利益（ストック）] ◀── 費用（フローOUT）
+</code></pre>
+<p><strong>2つのループ（Unit 3）:</strong></p>
+<pre><code>【正のループ】 値下げ → 販売数増 → 売上増 → さらに値下げ
+【負のループ】 値下げ → 利益率減 → 利益減 → 投資できない → 品質低下 → 販売減
+</code></pre>
+<p><strong>時間の遅れ（Unit 4）:</strong> 正のループ（売上増）は<strong>すぐに見える</strong>が、負のループ（利益率減）は<strong>後から効いてくる</strong>。だから「今は売れてるから大丈夫」と錯覚する。</p>
+<h3>Step3: 介入点を探す</h3>
+<p>ループのどこに手を入れるか、SD の目で見る。</p>
+<ul>
+<li><strong>正のループを切る?</strong> 値下げのループを止める（値下げ競争から降りる）</li>
+<li><strong>負のループを強める?</strong> 利益率を守る仕組みを作る（安売りしない・付加価値で売る）</li>
+<li><strong>フローを変える?</strong> 費用（発送・返品）のフローOUTを減らす</li>
+</ul>
+<p>→ SD の答え: 「売上を増やす」より「<strong>利益（ストック）を増やすフローを変える</strong>」＝利益率のループを強める。</p>
+<h3>Step4: 政策抵抗を予見</h3>
+<p>「値上げすればいい」という対策を打っても、<strong>既存のループに打ち消されないか</strong>を予見する。</p>
+<pre><code>値上げ → 販売数が減る（正のループの反動） → 売上が減る → 焦って再び値下げ
+</code></pre>
+<p>→ 単純な「値上げ」は政策抵抗に遭う。<strong>価格に見合う価値（品質・サービス）を同時に上げる</strong>ことで、販売数の減少を防ぎながら利益率を上げる、という介入が SD 的。</p>
+<h3>Step5: 介入策の設計（SD流）</h3>
+<ul>
+<li>ストック（利益）を増やすには、入りフロー（売上）を増やす OR 出フロー（費用）を減らす</li>
+<li>利益率の負のループを強める（値下げ競争から降りる・付加価値で差別化）</li>
+<li>遅れを織り込んで、効果が出るまで「待つ」設計（短期の売上減少を許容）</li>
+</ul>
+<h3>Step6: Teach-Back</h3>
+<p>「値下げの罠は、売上（フロー）の正のループが先に見えて、利益（ストック）の負のループが遅れて効くこと。だから、利益率を守るループを強めて、効果が遅れることを織り込んで待つ、が SD の答え」</p>
+<h2>7. やってみよう — 自分の題材で（SD の目だけで）</h2>
+<p>EX4・EX5・EX6・EX9 から1つ選び、SD フレーム（Step1〜6）を1本通しでやる。</p>
+<blockquote>
+<p><strong>やってみよう:</strong> 選んだ題材で、参照モードのグラフ→構造図→介入点→政策抵抗、と進めてみよう。<strong>TOC の道具（CRT・Injection）は使わずに</strong>、SD の目だけでどこまで解けるか試してみよう。</p>
+</blockquote>
+<h2>8. Check — 確かめてみよう</h2>
+<ol>
+<li>参照モードとは何を描くもの？</li>
+<li>「政策抵抗」とは、何が起きること？</li>
+<li>SD の介入点にはどんな種類がある？（3つ）</li>
+<li>値下げの罠で、SD が見る「2つのループ」は？</li>
+</ol>
+<blockquote>
+<p><strong>答え（下を見る前に自分で）:</strong>
+1. 「このままだとどうなるか」の過去→現在→未来のグラフ
+2. 対策が既存のループに打ち消されて、効かないこと
+3. 正の悪循環ループを切る・負の調整ループを強める・フローを変える
+4. 正のループ（値下げ→売上増）と負のループ（値下げ→利益率減）</p>
+</blockquote>
+<h2>9. Teach-Back — 素人に説明しよう</h2>
+<p>自分の選んだ題材で、SD の切り口を素人に説明しよう。テンプレ:</p>
+<ol>
+<li><strong>何の話か:</strong> 「問題を時間とともにどう動くかで見る」話</li>
+<li><strong>部品は何か:</strong> 参照モード・ストック・フロー・ループ・遅れ・介入点・政策抵抗</li>
+<li><strong>どう繋がるか:</strong> まず放置の未来を描く → 構造を見る → 介入点に手を入れる → 政策抵抗を予見</li>
+<li><strong>図はどこを見ればいいか:</strong> 参照モードのグラフと、ループの図</li>
+<li><strong>よくある誤解:</strong> 対策はすぐ効く、とは限らない（遅れと政策抵抗）</li>
+<li><strong>素人への一言:</strong> 「値下げの罠だよ。売上（入る）はすぐ増えるけど、利益（たまる）は遅れて減る。たまる方を見て、後から効くことを待つ」</li>
+</ol>
+<hr>
+<h2>まとめ（Takeaway）</h2>
+<ul>
+<li>SD の切り口 = <strong>問題を「時間とともにどう動くか」で見る</strong></li>
+<li>4つのステップ: <strong>参照モード → 構造 → 介入点 → 政策抵抗</strong></li>
+<li>介入点: 正のループを切る・負のループを強める・フローを変える</li>
+<li>「対策が効かない」のは、<strong>政策抵抗</strong>（既存ループに打ち消される）かもしれない</li>
+<li><strong>対策の効果は遅れる。</strong> 待つ設計を入れるのが SD 流</li>
+<li>次回は<strong>同じ問題</strong>を TOC の切り口で解き、見え方を比べる</li>
+</ul>
+<blockquote>
+<p><strong>次回予告 (Unit 10):</strong> 同じ問題を TOC の切り口（制約・CRT・Injection）で解く。SD と見比べよう。</p>
+</blockquote></div></section>
+<section class="chapter" id="unit-10" data-source="unit10_toc_applied.md" data-group="main"><div class="chapter-meta"><span class="chapter-index">10</span><span class="chapter-label">Unit 10</span><span class="chapter-source">unit10_toc_applied.md</span></div><div class="chapter-body"><h1>Unit 10 — 演習D（社会人向け・任意）: TOC の切り口で解く — 同じ問題を「構造」から直す</h1>
+<blockquote>
+<p><strong>対象:</strong> 一般社会人（中2はスキップして Unit 11 へ進んでよい）
+<strong>ゴール（L3 Teach-Back）:</strong> <strong>Unit 9 と同じ問題</strong>を TOC の視点（制約・CRT・Injection）で解き、SD の答えと見比べられる
+<strong>所要目安:</strong> 30〜40分（Unit 9 で選んだ問題をそのまま使う）
+<strong>準備:</strong> 演習カード <code>exercises/ex4〜ex6, ex9, ex10</code>。Unit 9 の自分の解答
+<strong>重要:</strong> このUnitは Unit 9 の<strong>続き</strong>。同じ問題に TOC の目をかける</p>
+</blockquote>
+<hr>
+<h2>1. Hook — SD で見えた問題を、今度は TOC の目で</h2>
+<p>Unit 9 では、同じ問題を <strong>SD（時間とともにどう動くか）</strong> で解きました。見えましたか？ たとえば「値下げの罠」では、売上と利益の時間差・ループ・政策抵抗が見えました。</p>
+<p>では、今度は <strong>TOC（今の構造・制約・根本原因）</strong> の目で、同じ問題をもう一度見てみます。<strong>同じ問題でも、見るレンズが違うと見えるものが違う</strong>、という体験がこのUnitの目的です。</p>
+<h2>2. TOC の切り口とは（このUnitの主軸）</h2>
+<p>TOC の問題解決は、次の道具を使い切ります。</p>
+<table>
+<thead>
+<tr>
+<th>TOC の道具</th>
+<th>問題解決での使い方</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ボトルネック</td>
+<td>「何が全体を遅く・止めているか」を特定</td>
+<td>5</td>
+</tr>
+<tr>
+<td>5つの集中ステップ</td>
+<td>制約を直す手順</td>
+<td>6</td>
+</tr>
+<tr>
+<td>CRT（現状問題ツリー）</td>
+<td>根本原因（Root）を1つに絞る</td>
+<td>7</td>
+</tr>
+<tr>
+<td>蒸発する雲</td>
+<td>対立の前提を外して両立</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Injection・FRT</td>
+<td>解消策を設計し、新たな問題を確認</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<p>TOC の問題解決は、次の4つのステップが核になります。</p>
+<h3>① 制約（ボトルネック）を特定する</h3>
+<p>システム全体を決めている「一番遅い・一番小さい・一番詰まっている」場所を1つ見つける。</p>
+<h3>② 根本原因（CRT）を特定する</h3>
+<p>問題（UDE）を因果でつなぎ、1つの根本原因（Root）に絞る。因果の検証（Unit 7 §4.5）を忘れない。</p>
+<h3>③ 対立を解体する（蒸発する雲）</h3>
+<p>「Aを立てればBが立たない」という対立を、共通の目的から見直す。前提を外す。</p>
+<h3>④ Injection で解消し、FRT で確認する</h3>
+<p>前提を外す仕組み（Injection）を設計し、新たな問題（FRT）まで確認する。</p>
+<h2>3. SD の切り口 vs TOC の切り口（見え方の違い・再掲）</h2>
+<p>Unit 9 で見た表を、もう一度。</p>
+<table>
+<thead>
+<tr>
+<th>視点</th>
+<th>SD（Unit 9）</th>
+<th>TOC（このUnit）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>見る対象</td>
+<td>時間とともにどう動くか（振る舞い）</td>
+<td>今の構造（制約・根本原因）</td>
+</tr>
+<tr>
+<td>切り口</td>
+<td>ループを切る・フローを変える</td>
+<td>制約を特定して直す</td>
+</tr>
+<tr>
+<td>未来</td>
+<td>「このままだとどうなる」をまず描く</td>
+<td>（あまり見ない）</td>
+</tr>
+<tr>
+<td>対策の副反応</td>
+<td>政策抵抗を予見</td>
+<td>FRT で確認</td>
+</tr>
+<tr>
+<td>時間の遅れ</td>
+<td>設計に組み込む</td>
+<td>考慮はする</td>
+</tr>
+</tbody>
+</table>
+<p><strong>ポイント:</strong> 同じ問題でも「どこに目をつけるか」が違います。Unit 9 の答えと Unit 10 の答えを並べると、両方の切り口の強みが見えます。</p>
+<h2>4. 選択式演習 — Unit 9 と同じ問題を使う</h2>
+<p>Unit 9 で選んだ<strong>同じ問題</strong>を使います。</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>題材</th>
+<th>TOC の使う道具</th>
+<th>カード</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EX4</td>
+<td>会議が多すぎて仕事が進まない</td>
+<td>ボトルネック・5ステップ・CRT</td>
+<td><code>exercises/ex4_too_many_meetings.md</code></td>
+</tr>
+<tr>
+<td>EX5</td>
+<td>残業が減らない（成功の負担）</td>
+<td>CRT・蒸発する雲・Injection</td>
+<td><code>exercises/ex5_overtime.md</code></td>
+</tr>
+<tr>
+<td>EX6</td>
+<td>売上が伸びない（成長の限界）</td>
+<td>ボトルネック・5ステップ</td>
+<td><code>exercises/ex6_growth_limit.md</code></td>
+</tr>
+<tr>
+<td><strong>EX9</strong></td>
+<td><strong>値下げの罠（価格戦略）</strong></td>
+<td>ボトルネック・CRT・蒸発する雲</td>
+<td><code>exercises/ex9_price_war_trap.md</code></td>
+</tr>
+<tr>
+<td>EX10</td>
+<td>ボトルネックと価格</td>
+<td>スループット会計・制約</td>
+<td><code>exercises/ex10_bottleneck_pricing.md</code></td>
+</tr>
+</tbody>
+</table>
+<h2>5. TOC の問題解決フレーム（このUnitの共通ステップ）</h2>
+<pre><code>Step1 制約（ボトルネック）を特定する
+Step2 CRT で根本原因（Root）を特定する（因果の検証つき）
+Step3 蒸発する雲で対立を解体する（共通の目的を見つける）
+Step4 Injection（前提を外す解消策）を設計する
+Step5 FRT（新たな問題）を確認する
+Step6 Teach-Back（Unit 9 の SD の答えと並べて説明）
+</code></pre>
+<blockquote>
+<p>このUnitでは「参照モード」「介入点」「政策抵抗」などの SD 道具は<strong>意図的に使いません</strong>。TOC だけの目で見て、SD とどう違う答えになるかを体験します。</p>
+</blockquote>
+<h2>6. 例題（EX9: 値下げの罠）— 解答つき</h2>
+<p>Unit 9 と同じ「値下げの罠」を、今度は TOC の4ステップで解く。</p>
+<h3>Step1: 制約（ボトルネック）の特定</h3>
+<p>利益（ストック）を増やすのに、制約は「販売数」か？ それとも「利益率」か？</p>
+<p>→ <strong>利益率（1個あたりの儲け）</strong> が制約。販売数は増えているのに利益が増えないのだから、遅い・詰まっているのは「利益率」側。</p>
+<h3>Step2: CRT（根本原因）</h3>
+<pre><code>[利益が減った]
+   ▼
+[売上（フロー）は増えたが、費用（フローOUT）も増えた]
+   ▼
+[1個あたりの利益率が下がった]
+   ▼
+[値下げした]
+   ▼
+[「売上を増やす＝値下げ」という思い込み] ← 根本原因
+</code></pre>
+<p><strong>因果の検証（Unit 7 §4.5）:</strong> 「値下げ→利益率低下」は確か。でも「売上を増やす＝値下げしかない」は思い込み（第3の原因の見落とし・別の方法がある）。</p>
+<p><strong>根本原因 = 「売上（フローIN）＝良し」という見方</strong>。利益（ストック）ではなく売上で判断している。</p>
+<h3>Step3: 蒸発する雲（対立の解体）</h3>
+<pre><code>[目的C] 長期的に儲け続ける（事業を続ける）
+   ／                              ＼
+[要求A] 売上を増やしたい          [要求B] 利益率を守りたい
+   │                                  │
+[行動A] 値下げする            ←→  [行動B] 値段を維持する
+</code></pre>
+<p><strong>共通の目的C:</strong> 「長期的に儲け続ける」。実は一致している。</p>
+<p><strong>前提（思い込み）:</strong> 「売上を増やす = 値下げしかない」</p>
+<h3>Step4: Injection（前提を外す）</h3>
+<p>値下げ以外で売上を増やす方法:
+- 付加価値を上げる（品質・サービス・デザインで差別化）
+- セット販売・定期購入で客単価を上げる
+- ボトルネック（EX10）の視点で、儲かる商品に集中する</p>
+<p>→ 「売上」と「利益率」の対立が、前提を外すことで<strong>蒸発</strong>する。</p>
+<h3>Step5: FRT（新たな問題）</h3>
+<ul>
+<li>付加価値アップ → 価格に見合わないと思われる？
+  → 対策: 実績・レビューを可視化</li>
+<li>セット販売 → 在庫が増える？
+  → 対策: 需要予測・限定数でリスク抑制</li>
+</ul>
+<h3>Step6: Teach-Back（SD の答えと並べて）</h3>
+<ul>
+<li><strong>SD の答え（Unit 9）:</strong> 「利益率の負のループが遅れて効く。利益（ストック）を見て、利益率のループを強め、効果を待つ」</li>
+<li><strong>TOC の答え（このUnit）:</strong> 「制約は利益率。根本は『売上＝良し』の思い込み。値下げ以外で売上を増やす仕組み（Injection）を作る」</li>
+</ul>
+<p>→ <strong>同じ問題でも、SD は「なぜ・いつ」を、TOC は「どこを・どう」を答える。</strong></p>
+<h2>7. 例題（EX10: ボトルネックと価格）— 解答つき</h2>
+<p>スループット会計（TOC の核心）。カード <code>exercises/ex10_bottleneck_pricing.md</code> を参照。</p>
+<h3>計算</h3>
+<table>
+<thead>
+<tr>
+<th>製品</th>
+<th>粗利</th>
+<th>ボトルネック時間</th>
+<th>1分あたり</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>1,000−500 = 500円</td>
+<td>10分</td>
+<td><strong>50円/分</strong></td>
+</tr>
+<tr>
+<td>B</td>
+<td>800−400 = 400円</td>
+<td>5分</td>
+<td><strong>80円/分</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Aだけ（480÷10=48個）: 48×500 = <strong>24,000円</strong></li>
+<li>Bだけ（480÷5=96個）: 96×400 = <strong>38,400円</strong></li>
+</ul>
+<p>→ <strong>価格の高いAより、ボトルネック1分あたりの儲けが大きいBを優先</strong>すると、全体の利益が大きい。</p>
+<h3>なぜこれが大事か</h3>
+<p>「1個の儲け」ではなく「<strong>制約（ボトルネック）の時間あたりの儲け（スループット）</strong>」で判断する。限られた資源（機械時間）を最も効率よくお金に変える。これが TOC ならではの価格・優先の考え方。</p>
+<h3>発展</h3>
+<p>ボトルネックを強化（Unit 6 ステップ4）すれば、AもBも作れ、さらに利益を増やせる。</p>
+<h2>8. やってみよう — 自分の題材で（TOC の目だけで）</h2>
+<p>Unit 9 で選んだ同じ問題で、TOC フレーム（Step1〜6）を1本通しでやる。</p>
+<blockquote>
+<p><strong>やってみよう:</strong> 選んだ題材を、TOC の目だけで（制約→CRT→蒸発する雲→Injection→FRT）解いてみよう。<strong>SD の道具は使わずに。</strong> その後、Unit 9 の答えと並べて「どこが違うか」を比べよう。</p>
+</blockquote>
+<h2>9. Check — 確かめてみよう</h2>
+<ol>
+<li>TOC は問題をどんな視点で見る？</li>
+<li>「値下げの罠」の根本原因は何？（TOC の答え）</li>
+<li>スループット会計では、何で製品の優先を判断する？</li>
+<li>SD（Unit 9）と TOC（このUnit）の答えは、何が違う？</li>
+</ol>
+<blockquote>
+<p><strong>答え（下を見る前に自分で）:</strong>
+1. 今の構造（制約・根本原因）　2. 「売上＝良し」という思い込み（売上で判断し、利益を見ていない）　3. ボトルネック1分あたりの利益（スループット）　4. SDは「なぜ・いつ」（時間的構造）、TOCは「どこを・どう」（制約と根本原因）。見るレンズが違うと見えるものが違う</p>
+</blockquote>
+<h2>10. Teach-Back — 素人に説明しよう</h2>
+<p>自分の選んだ題材で、TOC の答えを Unit 9 の SD の答えと<strong>並べて</strong>説明しよう。テンプレ:</p>
+<ol>
+<li><strong>何の話か</strong></li>
+<li><strong>部品は何か</strong>（制約・CRT・蒸発する雲・Injection・FRT から使ったもの）</li>
+<li><strong>どう繋がるか</strong>（制約 → 根本原因 → 対立の解体 → 解消の流れ）</li>
+<li><strong>図や計算はどこを見ればいいか</strong></li>
+<li><strong>SD（Unit 9）とどこが違うか</strong> ← このUnitの要</li>
+<li><strong>素人への一言</strong>（比喩1つ）</li>
+</ol>
+<hr>
+<h2>まとめ（Takeaway）</h2>
+<ul>
+<li>TOC の切り口 = 問題を<strong>今の構造（制約・根本原因）</strong> で見る</li>
+<li>4つのステップ: <strong>制約 → CRT → 蒸発する雲 → Injection・FRT</strong></li>
+<li>スループット会計: 制約の時間を、1分あたりの儲けが大きい方に使う</li>
+<li><strong>同じ問題でも、SD と TOC では見える答えが違う</strong></li>
+<li>次回は、2つの切り口を統合して「システム思考」としてまとめる</li>
+</ul>
+<blockquote>
+<p><strong>次回予告 (Unit 11):</strong> SD と TOC の答えを見比べ、両方を統合した「システム思考」を自分の言葉で。</p>
+</blockquote></div></section>
+<section class="chapter" id="unit-11" data-source="unit11_synthesis.md" data-group="main"><div class="chapter-meta"><span class="chapter-index">11</span><span class="chapter-label">Unit 11</span><span class="chapter-source">unit11_synthesis.md</span></div><div class="chapter-body"><h1>Unit 11 — 対比と抽象化：「システム思考」を自分の言葉にする</h1>
+<blockquote>
+<p><strong>対象:</strong> 全員（中2〜一般社会人）
+<strong>ゴール（L3 Teach-Back）:</strong> SD と TOC の切り口の違いを説明でき、両方を統合した「システム思考」を自分の言葉でまとめ、新しい問題へ応用できる
+<strong>所要目安:</strong> 30〜40分
+<strong>準備:</strong> Unit 9・10 で作った「同じ問題」の2つの解答</p>
+</blockquote>
+<hr>
+<h2>1. Hook — 同じ問題を2つのレンズで見た結果</h2>
+<p>Unit 9（SD）と Unit 10（TOC）で、<strong>同じ問題</strong>を2つの切り口で解きました。例えば「値下げの罠」なら：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>SD の答え（Unit 9）</th>
+<th>TOC の答え（Unit 10）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>見たもの</td>
+<td>売上と利益の時間差・2つのループ・政策抵抗</td>
+<td>制約（利益率）・根本原因・対立</td>
+</tr>
+<tr>
+<td>答えたこと</td>
+<td>「なぜ・いつ」利益が減るか</td>
+<td>「どこを・どう」直すか</td>
+</tr>
+<tr>
+<td>解決の形</td>
+<td>利益率のループを強め、効果を待つ</td>
+<td>値下げ以外で売上を増やす仕組み</td>
+</tr>
+</tbody>
+</table>
+<p><strong>同じ問題なのに、見え方が違いました。</strong> これがこのUnitの出発点です。2つのレンズは「どちらが正しいか」ではなく、<strong>どちらも正しい。見ている面が違う</strong>のです。</p>
+<h2>2. なぜこれを学ぶのか？（Value）</h2>
+<p>Unit 1〜10 で、たくさんの道具を学びました。</p>
+<ul>
+<li>ストックとフロー・フィードバック・時間の遅れ（SD）</li>
+<li>ボトルネック・5ステップ・CRT・蒸発する雲（TOC）</li>
+</ul>
+<p>道具が増えると、<strong>「どの道具を、いつ使うか」</strong> が分からなくなります。このUnitの目的は、道具を「システム思考」という1つの考え方として統合し、<strong>「この問題にはこの切り口」</strong> と選べるようにすることです。</p>
+<h2>3. SD と TOC の関係（Reveal）</h2>
+<h3>3.1 2つの切り口の違い</h3>
+<table>
+<thead>
+<tr>
+<th>軸</th>
+<th>SD（システムダイナミクス）</th>
+<th>TOC（制約理論）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>問い</td>
+<td>構造は<strong>時間とともにどう動くか</strong></td>
+<td>どこを<strong>今</strong>直せば全体が良くなるか</td>
+</tr>
+<tr>
+<td>見るもの</td>
+<td>ループ・ストック・フロー・遅れ</td>
+<td>制約・根本原因・対立</td>
+</tr>
+<tr>
+<td>得意</td>
+<td>「なぜそうなるのか」を説明</td>
+<td>「どこを直すか」を特定</td>
+</tr>
+<tr>
+<td>未来</td>
+<td>放置の結果を予測（参照モード）</td>
+<td>あまり見ない</td>
+</tr>
+<tr>
+<td>解決</td>
+<td>ループを切る・フローを変える</td>
+<td>制約を直す・前提を外す</td>
+</tr>
+<tr>
+<td>主な道具</td>
+<td>ストックフロー図・ループ図</td>
+<td>5ステップ・CRT・蒸発する雲</td>
+</tr>
+</tbody>
+</table>
+<h3>3.2 相補関係（補い合う）</h3>
+<pre><code>SD: 「なぜ・いつ」問題が起きるか ──→ 構造の全体像が見える
+        │
+        ▼
+TOC: 「どこを・どう」直すか ────→ 改善の焦点が決まる
+</code></pre>
+<ul>
+<li><strong>SD だけ</strong>だと「構造は分かったが、どこから手をつければ？」となる</li>
+<li><strong>TOC だけ</strong>だと「直す場所は分かったが、周りの動きへの影響（時間差・副反応）が見えない」</li>
+</ul>
+<p><strong>両方持つと最強。</strong> SD で構造を見て、TOC で制約を直す。</p>
+<h3>3.3 同じ構造の別の顔</h3>
+<p>実は、SD と TOC は<strong>同じことを別の言葉で</strong>言っている部分があります。</p>
+<table>
+<thead>
+<tr>
+<th>SD の言葉</th>
+<th>TOC の言葉</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>正のループ（成長）</td>
+<td>成長の限界の「伸びる側」</td>
+</tr>
+<tr>
+<td>負のループ（調整・制約）</td>
+<td>制約（ボトルネック）</td>
+</tr>
+<tr>
+<td>ループを切る</td>
+<td>制約を直す</td>
+</tr>
+<tr>
+<td>政策抵抗（対策が打ち消される）</td>
+<td>対立の前提（対策が対立を生む）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>違う道具でも、見えている「現実の構造」は共通。</strong> これがシステム思考の力です。</p>
+<h2>4. 統合フレーム：「システム思考」のワンストップ（Reveal）</h2>
+<p>問題にぶつかったときの、統合した流れを作ります。</p>
+<pre><code>Step0 問題を1文で定義する
+   ↓
+Step1 参照モード（SD）: このままだとどうなる？ 放置の未来を描く
+   ↓
+Step2 構造を見る（SD）: ストック・フロー・ループ・遅れを図で描く
+   ↓
+Step3 制約を特定する（TOC）: どこが全体を決めているか
+   ↓
+Step4 根本原因を特定する（TOC）: CRT + 因果の検証
+   ↓
+Step5 対立を解体する（TOC）: 蒸発する雲 → 前提を外す
+   ↓
+Step6 介入策を設計する（SD+TOC）: ループを切る・フローを変える・前提を外す
+   ↓
+Step7 確認する（SD+TOC）: 政策抵抗（SD）と FRT（TOC）
+   ↓
+Step8 Teach-Back（素人に説明）
+</code></pre>
+<blockquote>
+<p>これを「システム思考のフルコース」と呼びましょう。Unit 7〜10 でバラバラに練習したステップが、ここで1つの流れになります。</p>
+</blockquote>
+<h2>5. 対比演習 — 自分の問題で統合フレームを回す（Interact）</h2>
+<p>Unit 9・10 で解いた「同じ問題」を、今度は<strong>統合フレーム（Step0〜8）</strong> で最初からやり直します。</p>
+<blockquote>
+<p><strong>やってみよう:</strong> Unit 9・10 の解答を横に置き、統合フレームで「SD の答え」と「TOC の答え」を1枚の図にまとめてみよう。</p>
+<p>例（値下げの罠）:
+- Step1（SD）: 放置すると利益が落ちる
+- Step2（SD）: 正のループ（売上）と負のループ（利益率）の綱引き
+- Step3（TOC）: 制約は利益率
+- Step4（TOC）: 根本原因は「売上＝良し」の思い込み
+- Step5（TOC）: 売上 vs 利益率の対立。前提は「値下げしかない」
+- Step6（統合）: 値下げ以外で売上を増やす（付加価値・客単価）＋利益率ループを強める
+- Step7（統合）: 政策抵抗（単純な値上げは反動）＋ FRT（付加価値の訴求・在庫）
+- Step8: 素人に説明</p>
+</blockquote>
+<h2>6. 抽象化 — 型を自分の言葉にする（Deepen）</h2>
+<h3>6.1 この教材で学んだ「型」をリストアップする</h3>
+<table>
+<thead>
+<tr>
+<th>型</th>
+<th>一言</th>
+<th>使う場面</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ループ（正/負）</td>
+<td>結果が原因に返る</td>
+<td>増える・減る・安定する理由</td>
+</tr>
+<tr>
+<td>ストックとフロー</td>
+<td>たまる・流れる</td>
+<td>量の変化を見る</td>
+</tr>
+<tr>
+<td>時間の遅れ</td>
+<td>後から効く</td>
+<td>やりすぎ・行き過ぎを防ぐ</td>
+</tr>
+<tr>
+<td>ボトルネック</td>
+<td>一番遅いところ</td>
+<td>全体を速くする</td>
+</tr>
+<tr>
+<td>5ステップ</td>
+<td>見つける→活用→従属→強化→繰り返す</td>
+<td>改善の手順</td>
+</tr>
+<tr>
+<td>根本原因（CRT）</td>
+<td>1つに絞る</td>
+<td>対策を効率化</td>
+</tr>
+<tr>
+<td>蒸発する雲</td>
+<td>前提を外す</td>
+<td>対立を両立させる</td>
+</tr>
+<tr>
+<td>政策抵抗</td>
+<td>対策が打ち消される</td>
+<td>対策の失敗を防ぐ</td>
+</tr>
+</tbody>
+</table>
+<h3>6.2 「システム思考」を自分の言葉で定義する</h3>
+<p>次のテンプレで、「システム思考とは何か」を自分なりの言葉で書いてみよう。</p>
+<pre><code>私にとって「システム思考」とは、
+【物事を（　　　　　　）として見ることで、
+　（　　　　　　）を（　　　　　　）できる考え方】
+
+理由: Unit（　　）で学んだ（　　　　　　）が、いちばん実感できたから
+例: （　　　　　　）という問題で、こんな風に使えた
+</code></pre>
+<blockquote>
+<p><strong>書き方のヒント:</strong>
+- 「ぐるぐる回る関係」「流れ」「制約」「根本原因」などの言葉を使う
+- 例を必ず1つ入れる（抽象だけでは身につかない）
+- 比喩を1つ（「物事をブランコのように見る」等）</p>
+</blockquote>
+<h2>7. Check — 確かめてみよう</h2>
+<ol>
+<li>SD と TOC は、それぞれ問題をどんな視点で見る？</li>
+<li>「どちらが正しい」でなく、何が大事？</li>
+<li>SD と TOC で「同じ構造を別の言葉で言っている」例を1つ。</li>
+<li>統合フレームで、SD の道具と TOC の道具が「交代」で出てくる順番は？</li>
+</ol>
+<blockquote>
+<p><strong>答え（下を見る前に自分で）:</strong>
+1. SD: 時間とともにどう動くか（振る舞い）、TOC: 今の構造（制約・根本原因）
+2. 見ている面が違う。両方持つと「なぜ・いつ」と「どこを・どう」が揃う
+3. 例: SDの「負のループ（制約）」＝TOCの「ボトルネック」／SDの「ループを切る」＝TOCの「制約を直す」
+4. 参照モード→構造（SD）→制約→根本原因→対立（TOC）→介入策→確認（SD+TOC）</p>
+</blockquote>
+<h2>8. よくある誤解（Misconceptions）</h2>
+<table>
+<thead>
+<tr>
+<th>誤解</th>
+<th>正しい理解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「SD と TOC はどちらか選ぶもの」</td>
+<td>別の道具ではなく、同じ現実の違う面。両方使うと最強</td>
+</tr>
+<tr>
+<td>「システム思考＝難しい図を描くこと」</td>
+<td>図は手段。目的は「問題の構造を見て、効率よく直す」こと</td>
+</tr>
+<tr>
+<td>「型を覚えれば問題が解ける」</td>
+<td>型はヒント。<strong>当てはめではなく、構造を見る目</strong>が本質</td>
+</tr>
+<tr>
+<td>「抽象化＝難しい言葉を使うこと」</td>
+<td>抽象化は「共通の型を見つける」こと。簡単な言葉で言えるのが理想</td>
+</tr>
+</tbody>
+</table>
+<h2>9. 仕上げ演習（EX8: 自由テーマ）— 1本通し</h2>
+<p>最後に、自由テーマ（EX8）で<strong>統合フレームを最初から最後まで1本通し</strong>で回します。</p>
+<blockquote>
+<p><strong>やってみよう:</strong> <code>exercises/ex8_free_topic.md</code> と <code>solutions/ex8_free_topic_solution.md</code> を使って、自分でテーマを選び、Step0〜8 を全部回そう。最後は Teach-Back で締める。</p>
+</blockquote>
+<h2>10. Teach-Back — 素人に説明しよう（最終ゴール）</h2>
+<p>「システム思考とは何か」を、システム思考を知らない人に説明しよう。</p>
+<ol>
+<li><strong>何の話か:</strong> 「物事を構造で見ると、問題がよく見える」という話</li>
+<li><strong>部品は何か:</strong> ループ・ストック・ボトルネック・根本原因（から必要なもの）</li>
+<li><strong>どう繋がるか:</strong> 見る（SD）→ 直す（TOC）→ 解く（根本原因・対立）</li>
+<li><strong>例:</strong> 自分が Unit 9・10・11 で解いた問題</li>
+<li><strong>よくある誤解:</strong> SDとTOCは選ぶものではない</li>
+<li><strong>素人への一言:</strong> 「物事をブランコみたいに見るんだよ。押すと返ってくる。どこを押すか（制約）を見つけて、返ってくる（時間差・副反応）ことも考える」</li>
+</ol>
+<hr>
+<h2>まとめ（Takeaway）</h2>
+<ul>
+<li><strong>SD = 見る</strong>（時間とともにどう動くか）、<strong>TOC = 直す</strong>（今の構造・制約・根本原因）</li>
+<li>同じ現実を別の面から見ている。<strong>両方持つと最強</strong></li>
+<li>統合フレーム（Step0〜8）で、SD と TOC の道具を1つの流れに</li>
+<li>抽象化 = 共通の型を見つけること。簡単な言葉で言えるのが理想</li>
+<li><strong>「システム思考」＝物事を構造で見て、効率よく直す一生ものの考え方</strong></li>
+</ul>
+<blockquote>
+<p><strong>おめでとう！</strong> これで Unit 1〜11 の全コースが完了です。最後に自分の言葉で「システム思考」を説明できたら、この教材のゴール達成です。</p>
+</blockquote>
+<hr>
+<h2>補足: 全11ユニットの俯瞰図</h2>
+<pre><code>Unit 1-4  SD基礎（見る力）: ループ・ストック・フィードバック・遅れ
+Unit 5-6  TOC基礎（直す力）: ボトルネック・5ステップ
+Unit 7-8  演習（基本編）: CRT → 蒸発する雲・Injection
+Unit 9    演習（SDの切り口）: 参照モード・介入点・政策抵抗
+Unit 10   演習（TOCの切り口）: 制約・CRT・Injection（同じ問題）
+Unit 11   対比と抽象化: 「システム思考」として統合
+</code></pre></div></section>
+<section class="chapter" id="unit-12" data-source="unit12_sd_strength.md" data-group="main"><div class="chapter-meta"><span class="chapter-index">12</span><span class="chapter-label">Unit 12</span><span class="chapter-source">unit12_sd_strength.md</span></div><div class="chapter-body"><h1>Unit 12 — SD の強みが発揮される大規模問題：巨大で複雑な問題を「構造」で読む</h1>
+<blockquote>
+<p><strong>対象:</strong> 一般社会人〜大学学部生レベル（中2は興味があれば読んでよい）
+<strong>ゴール（L3 Teach-Back）:</strong> 身近な問題では見えなかった SD の真価（複雑系の構造理解）を、4つの実例で体験し、「なぜこれが SD にしかできないか」を説明できる
+<strong>所要目安:</strong> 各 SDX を 15〜20分 × 4
+<strong>位置づけ:</strong> 任意の番外編。Unit 11（対比と抽象化）の後に読むのがおすすめ</p>
+</blockquote>
+<hr>
+<h2>1. Hook — 「身近な問題」では測れなかった SD の実力</h2>
+<p>これまでの演習（Unit 1〜11）は、どれも「身近な問題」でした。</p>
+<ul>
+<li>お風呂の水位・テスト勉強・部活・会議・残業・値下げ…</li>
+</ul>
+<p>これらの問題では、<strong>「どこを直すか」が比較的はっきり</strong>していて、TOC や OR（最適化）の切り口が強く見えました。SD は「構造の理解」に回ることが多かったと思います。</p>
+<p>でも、世の中にはこんな問題があります。</p>
+<blockquote>
+<p><strong>気候変動。感染症のパンデミック。都市の成長と衰退。企業の興亡。</strong></p>
+</blockquote>
+<p>これらは<strong>複雑で、時間がかかり、要素が絡み合い、単純な最適解が存在しません。</strong> こういう問題こそ、SD の出番です。このUnitでは、SD が「どんな問題を得意とするか」「何をどう見せてくれるか」を実例で体験します。</p>
+<h2>2. SD が得意とする問題の特徴（Value）</h2>
+<p>SD が真価を発揮する問題には、共通の特徴があります。</p>
+<table>
+<thead>
+<tr>
+<th>特徴</th>
+<th>意味</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>複雑</strong></td>
+<td>要素がたくさん絡み合っている</td>
+<td>気候・経済・社会</td>
+</tr>
+<tr>
+<td><strong>時間が長い</strong></td>
+<td>効果が何年・何十年後に出る</td>
+<td>気温上昇・少子化</td>
+</tr>
+<tr>
+<td><strong>循環</strong></td>
+<td>原因と結果が相互に作用する</td>
+<td>環境と経済</td>
+</tr>
+<tr>
+<td><strong>非線形</strong></td>
+<td>2倍にすれば2倍、とは限らない</td>
+<td>感染症の爆発的流行</td>
+</tr>
+<tr>
+<td><strong>最適解がない</strong></td>
+<td>正しい答えが1つに定まらない</td>
+<td>政策・戦略</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>SD は「解を出す」道具ではなく「構造を理解する」道具。</strong> だからこそ、最適解のない複雑な問題で本領を発揮します。</p>
+</blockquote>
+<h2>3. OR（解く）と SD（理解する）の使い分け（Reveal）</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>OR（オペレーションリサーチ）</th>
+<th>SD（システムダイナミクス）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>問い</td>
+<td>最適な解は何か</td>
+<td>なぜそうなるのか</td>
+</tr>
+<tr>
+<td>得意</td>
+<td>境界が明確・解が存在する問題</td>
+<td>複雑・循環・時間が長い問題</td>
+</tr>
+<tr>
+<td>例</td>
+<td>生産計画・輸送・在庫・スケジュール</td>
+<td>気候・感染症・都市・経営戦略</td>
+</tr>
+<tr>
+<td>答え</td>
+<td>数値（この計画が最適）</td>
+<td>構造（このループが原因）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>使い分けのコツ:</strong></p>
+<pre><code>問題の境界が明確で、最適解が求められる → OR
+問題が複雑で、原因と結果が循環している → SD
+</code></pre>
+<p><strong>ただし、これは「どちらか」ではありません。</strong> 複雑な問題でも、その中の一部分（例: 在庫管理）は OR で解ける。<strong>全体を SD で理解し、部分を OR で解く</strong>のが本格的な使い方です。</p>
+<hr>
+<h1>SDX1 — 気候変動：温室効果ガスと気温の「増幅ループ」</h1>
+<h2>1. 事例の概要</h2>
+<p>地球の平均気温が上がり続けています。その原因とされるのが「温室効果ガス（CO₂など）」の増加です。</p>
+<pre><code>工場・車がCO₂を出す → 大気中のCO₂が増える
+   ▼
+温室効果が強まる → 気温が上がる
+   ▼
+氷が溶ける・海が膨張する → さらに影響が広がる
+</code></pre>
+<h2>2. SD の構造（読み取り方）</h2>
+<h3>ストックとフロー</h3>
+<pre><code>CO₂の排出（フローIN）──▶ [大気中のCO₂（ストック）] ◀── 吸収（フローOUT）
+                             ↑ ここが「たまっている」
+</code></pre>
+<ul>
+<li><strong>ストック</strong>: 大気中の CO₂（たまっている量）</li>
+<li><strong>フローIN</strong>: 工場・車・森林破壊による排出</li>
+<li><strong>フローOUT</strong>: 森林・海洋による吸収</li>
+</ul>
+<p><strong>読み取り方のポイント:</strong> 問題は「排出量」だけでなく「<strong>たまっている CO₂の量（ストック）</strong>」です。排出を少し減らしても、ストック（たまっている量）は減りません。<strong>減るには時間がかかる</strong>。</p>
+<h3>フィードバックループ</h3>
+<p><strong>正のループ（増幅）:</strong></p>
+<pre><code>気温が上がる
+   ▼
+氷が溶ける（白い氷が減る → 太陽光を反射しなくなる）
+   ▼
+地球がより熱を吸収する
+   ▼
+さらに気温が上がる ←（正のループ・自己増幅）
+</code></pre>
+<p>これは「<strong>暴走の可能性</strong>」を示す構造。気温上昇が気温上昇を呼ぶ、雪だるま式の危険なループです。</p>
+<h2>3. 時間の遅れ（意味）</h2>
+<p>SD が見せる重要なことのひとつが「時間の遅れ」です。</p>
+<pre><code>CO₂を排出（今） →（数十年の遅れ）→ 気温上昇が顕在化
+</code></pre>
+<p><strong>今日排出した CO₂ の影響は、数十年後に出ます。</strong> だから「今、まだ大丈夫」と錯覚する。SD はこの<strong>遅れ</strong>を見える化します。</p>
+<h2>4. 意義（なぜ SD で見る価値があるか）</h2>
+<ul>
+<li><strong>OR（最適化）では扱えない</strong>: 気候の「最適なCO₂排出量」を数値で出しても、現実の政策はそれだけで決まりません（政治的・経済的・倫理的要素が絡む）</li>
+<li><strong>SD は「構造」を示す</strong>: 「なぜ気温上昇が止まらないのか」「どのループを切れば止まるのか」を、誰にでも見える図で説明できる</li>
+<li><strong>政策の副反応を予見</strong>: 「経済成長を優先」すれば CO₂ が増え、その影響が後から返ってくる（政策抵抗・Unit 9）</li>
+</ul>
+<p><strong>SD の答え:</strong> 「CO₂の排出（フロー）を減らす」だけでなく、<strong>たまっている CO₂（ストック）を減らす</strong>（吸収を増やす）ことと、<strong>増幅ループを切る</strong>（氷の融解・森林破壊を止める）ことが必要。</p>
+<hr>
+<h1>SDX2 — 感染症の流行（SIR モデル）：なぜ爆発的に広がるのか</h1>
+<h2>1. 事例の概要</h2>
+<p>新型の感染症が、あっという間に世界中に広がりました。最初は「数人」だったのが、数週間で「数万人」に。</p>
+<pre><code>感染者が増える → うつす人が増える → さらに感染者が増える
+</code></pre>
+<h2>2. SD の構造（読み取り方）</h2>
+<h3>ストックとフロー（SIR モデルの骨格）</h3>
+<p>感染者を「たまるもの」で考えると、次の3つの「たまり」があります。</p>
+<pre><code>[S: 感受性者（かかっていない人）] ──感染──▶ [I: 感染者] ──回復──▶ [R: 回復者（免疫あり）]
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>ストック</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S（感受性者）</td>
+<td>まだかかっていない・うつる可能性がある人</td>
+</tr>
+<tr>
+<td>I（感染者）</td>
+<td>現在感染している人</td>
+</tr>
+<tr>
+<td>R（回復者）</td>
+<td>治って免疫を持った人（もううつさない）</td>
+</tr>
+</tbody>
+</table>
+<h3>正のループ（爆発的拡大）</h3>
+<pre><code>感染者（I）が多い
+   ▼
+1人がうつす相手の数が多い
+   ▼
+新たな感染者が増える
+   ▼
+感染者（I）がさらに増える ←（正のループ）
+</code></pre>
+<p><strong>これが「爆発的」に広がる理由。</strong> 感染者が増えるほど、新たな感染者を生むスピードも上がる。<strong>非線形</strong>（2倍→4倍→16倍…）の増え方になります。</p>
+<h3>負のループ（抑える力）</h3>
+<pre><code>感染者が増える
+   ▼
+対策（マスク・距離・ワクチン）が強まる
+   ▼
+感染が減る ←（負のループ・バランス）
+</code></pre>
+<p>さらに、<strong>R（回復者）が増える</strong>と、うつる相手（S）が減るので、感染は自然に収束していきます（集団免疫）。</p>
+<h2>3. 読み取り方のポイント</h2>
+<ul>
+<li><strong>なぜ最初「大丈夫」に見えたか</strong>: 感染者が少ないうちは、正のループもゆっくり。指数関数的な増加（Unit 3 発展編の $e^{rt}$）は「遅れて」爆発する</li>
+<li><strong>対策の意味</strong>: マスク・距離・ワクチンは、正のループ（拡大）を抑える「介入点（Unit 9）」</li>
+<li><strong>時間の遅れ</strong>: 感染から発症・報告まで遅れがある → 対策が遅れる → さらに拡大</li>
+</ul>
+<h2>4. 意義（なぜ SD で見る価値があるか）</h2>
+<ul>
+<li><strong>OR だけでは不十分</strong>: ワクチンを「何本配るのが最適か」は OR で解けるが、「いつ・どの対策が効くか」は、感染のダイナミクス（時間的振る舞い）を見ないと分からない</li>
+<li><strong>SD は「なぜ爆発するか」を説明</strong>: 正のループの構造が見えると、早期対策の重要性が自明になる</li>
+<li><strong>政策の副反応を予見</strong>: 早く開けすぎると再拡大（対策と感染のタイミングの遅れ）</li>
+</ul>
+<p><strong>SD の答え:</strong> 「感染者数（I のストック）」を追うだけでなく、<strong>正のループ（拡大）をどう抑えるか</strong>（介入点）と、<strong>遅れ</strong>を理解して、<strong>早めに・十分に</strong>対策することが鍵。</p>
+<hr>
+<h1>SDX3 — 都市の成長と限界：なぜ発展が止まるのか</h1>
+<h2>1. 事例の概要</h2>
+<p>ある都市が急速に発展しました。企業が集まり、人口が増え、活気があふれました。しかし、ある頃から成長が止まり、問題が増え始めました。</p>
+<pre><code>発展 → 人が集まる → さらに発展（正のループ）
+        ↓ でも…
+        インフラが限界 → 渋滞・家賃高騰・環境悪化
+</code></pre>
+<h2>2. SD の構造（読み取り方）</h2>
+<h3>正のループ（成長）</h3>
+<pre><code>都市が魅力的 → 企業・人が集まる → 経済が発展 → さらに魅力的に
+</code></pre>
+<p>これは <strong>Unit 3 で学んだ成長の正のループ</strong>。最初は順調に伸びます。</p>
+<h3>負のループ（限界 = 抑制）</h3>
+<pre><code>人口が増える
+   ▼
+交通が渋滞する・家賃が高騰する・環境が悪化する
+   ▼
+都市の「住みやすさ」が下がる
+   ▼
+人が離れる・企業が移転する → 成長が止まる
+</code></pre>
+<p>これは <strong>Unit 3 発展編で学んだ『成長の限界』</strong>。正のループ（伸びる）と、負のループ（抑える）の<strong>ぶつかり合い</strong>です。</p>
+<h3>時間の遅れ（厄介な点）</h3>
+<pre><code>人口が増える（今） →（数年〜十数年の遅れ）→ インフラ不足が顕在化
+</code></pre>
+<p><strong>インフラ整備は後からしか追いつきません。</strong> 「今は大丈夫」と感じていても、実は限界に近づいている。SD はこの遅れを見える化します。</p>
+<h2>3. 読み取り方のポイント</h2>
+<ul>
+<li>成長が止まるのは「努力が足りない」のではなく「<strong>構造（制約）</strong>」が原因（Unit 5 のボトルネックと同じ考え方）</li>
+<li><strong>ボトルネック</strong>: 都市の成長を止めているのは「インフラ・住居・環境」のどれ？</li>
+<li><strong>介入点</strong>: 負のループ（住みにくさ）を緩和する（交通整備・住居供給・環境対策）</li>
+</ul>
+<h2>4. 意義（なぜ SD で見る価値があるか）</h2>
+<ul>
+<li><strong>OR の限界</strong>: 「道路を何本作れば最適か」は OR で解ける。しかし「都市がなぜ衰退するか」という構造全体は、ループで見る必要がある</li>
+<li><strong>SD は「都市の未来」を予測する</strong>: 人口・インフラ・環境のループを組むと、<strong>「このままだとどうなる」</strong>（Unit 9 の参照モード）を描ける</li>
+<li><strong>成長の限界の一般性</strong>: 同じ構造が「都市」「企業」「生物の増殖」などに共通して現れる（抽象化・Unit 11）</li>
+</ul>
+<p><strong>SD の答え:</strong> 都市の発展は「正のループ（成長）× 負のループ（限界）」の構造。成長を持続するには、<strong>限界（インフラ・環境）を先回りして直す</strong>こと。放置すると、成長は頭打ちどころか衰退に転じる。</p>
+<hr>
+<h1>SDX4 — 経営戦略：規模の経済と衰退の罠</h1>
+<h2>1. 事例の概要</h2>
+<p>ある会社が事業を拡大しています。規模が大きくなれば、コストが下がり、さらに市場を取れる。しかし、ある時点から「大きくなるほど動きが鈍る」現象が起き始めました。</p>
+<pre><code>規模拡大 → コスト低下 → 競争力向上 → さらに拡大（正のループ）
+        ↓ でも…
+        組織が複雑化 → 意思決定が遅い → 衰退の兆し
+</code></pre>
+<h2>2. SD の構造（読み取り方）</h2>
+<h3>正のループ（規模の経済）</h3>
+<pre><code>生産量が増える
+   ▼
+1個あたりのコストが下がる（規模の経済）
+   ▼
+価格競争力が上がる → シェアが増える
+   ▼
+さらに生産量が増える ←（正のループ）
+</code></pre>
+<p>これは<strong>「勝ち続ける」構造</strong>。大きな会社がさらに強くなる理由です。</p>
+<h3>負のループ（規模の不経済・組織の鈍化）</h3>
+<pre><code>組織が大きくなる
+   ▼
+部門が増え、意思決定の経路が長くなる
+   ▼
+決断が遅くなる・現場の声が届かない
+   ▼
+市場の変化に乗り遅れる → 競争力が落ちる
+   ▼
+（成長が止まる・衰退する）
+</code></pre>
+<p>これは <strong>『成功の逆効果』</strong>（Unit 3・EX5 と同じ構造）。「成功（規模拡大）」が「次の成功を妨げる（組織の鈍化）」を生みます。</p>
+<h3>政策抵抗（厄介な点）</h3>
+<p>「リストラして効率化しよう」「上場して資本を集めよう」という対策は、<strong>短期的には効くが、組織の鈍化（負のループ）を根本からは直さない</strong>。対策が既存ループに吸収される（Unit 9 の政策抵抗）。</p>
+<h2>3. 読み取り方のポイント</h2>
+<ul>
+<li>企業の成長は「正のループ（規模の経済）× 負のループ（組織の鈍化）」の綱引き</li>
+<li><strong>ボトルネック</strong>: 今、成長を止めているのは「コスト」か「組織の意思決定」か「市場の変化」か</li>
+<li><strong>介入点</strong>: 組織の鈍化ループを切る（意思決定を現場に委ねる・部門間の壁をなくす）</li>
+</ul>
+<h2>4. 意義（なぜ SD で見る価値があるか）</h2>
+<ul>
+<li><strong>経営は「最適解」がない</strong>: 「何%成長するのが最適」と数値で出しても、実際の経営は競争・組織・文化が絡み合う</li>
+<li><strong>SD は経営の「構造」を診断する</strong>: 「なぜ大きくなると鈍るのか」「どのループが今効いているか」を見える化する（フォレスターが SD を生んだのは、もともと経営分析のため）</li>
+<li><strong>企業の興亡は繰り返す</strong>: この構造は、多くの企業で何度も繰り返される（抽象化・型の発見）</li>
+</ul>
+<p><strong>SD の答え:</strong> 経営は「規模の経済（正）と組織の鈍化（負）の綱引き」。成長を持続するには、<strong>正のループだけを追わず、負のループ（組織の鈍化）を先回りして直す</strong>ことが必要。大きくなるほど、それを防ぐ仕組みが要る。</p>
+<hr>
+<h1>まとめ：SD の強みが4つの実例で見えたもの</h1>
+<table>
+<thead>
+<tr>
+<th>SDX</th>
+<th>テーマ</th>
+<th>中心の構造</th>
+<th>SD が示したこと</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>気候変動</td>
+<td>正のループ（増幅）・時間の遅れ</td>
+<td>排出量より「たまっている量」。増幅ループを切る</td>
+</tr>
+<tr>
+<td>2</td>
+<td>感染症</td>
+<td>正のループ（爆発）・ストック（SIR）</td>
+<td>なぜ爆発するか。介入点と遅れ</td>
+</tr>
+<tr>
+<td>3</td>
+<td>都市</td>
+<td>成長の限界（正×負）</td>
+<td>成長が止まるのは構造（制約）。先回り</td>
+</tr>
+<tr>
+<td>4</td>
+<td>経営</td>
+<td>規模の経済 × 組織の鈍化</td>
+<td>大きくなるほど鈍る。負のループを直す</td>
+</tr>
+</tbody>
+</table>
+<h2>共通して見えた「SD ならでは」の強み</h2>
+<ol>
+<li><strong>時間の遅れを見える化する</strong> — 今の問題の原因が、何年・何十年前にあるか</li>
+<li><strong>循環する構造を見える化する</strong> — 「AだからB、BだからA」の相互依存</li>
+<li><strong>非線形（爆発・暴走）を説明できる</strong> — 2倍→4倍→16倍の世界</li>
+<li><strong>政策の副反応（政策抵抗）を予見する</strong> — 対策が構造に吸収される</li>
+<li><strong>最適解のない問題でも「構造」を示せる</strong> — OR が得意としない領域</li>
+</ol>
+<blockquote>
+<p><strong>OR は「この解が最適」と答え、SD は「この構造が原因」と答える。</strong>
+複雑で大きな問題には、この2つを合わせて使うのが本格的。SD を知ることは、その土台を手に入れることです。</p>
+</blockquote>
+<hr>
+<h2>補足：SDX の使い方（教材として）</h2>
+<ul>
+<li>各 SDX は独立して読める（通勤・移動中でも可）</li>
+<li>「SD の構造（読み取り方）」の図を、まず自分で描いてみてから解答を見るのがおすすめ</li>
+<li>興味があれば、SDX2（感染症）は Unit 3（フィードバックループ）と、SDX3・4 は Unit 5（ボトルネック）と対応づけて復習すると理解が深まる</li>
+</ul>
+<p><em>2026-08-09 — Unit 12 作成（SDX1〜4 の解説）。キャプテンとの対話（SD と OR の補完関係）から構想。</em></p></div></section>
+<section class="chapter" id="bridge-b1" data-source="B1_rate_of_change.md" data-group="bridge"><div class="chapter-meta"><span class="chapter-index">13</span><span class="chapter-label">math-bridge B1</span><span class="chapter-source">B1_rate_of_change.md</span></div><div class="chapter-body"><h1>B1 — 変化率と割合：どれだけの速さで変わる？</h1>
+<blockquote>
+<p><strong>対象:</strong> 発展編に進む中学2年生〜
+<strong>ゴール:</strong> 「変化の割合」＝（変化した量）÷（かかった時間）を説明でき、例で計算できる
+<strong>所要目安:</strong> 10分
+<strong>前提:</strong> 中学1・2年生の割合・比例の復習</p>
+</blockquote>
+<hr>
+<h2>1. なぜこれを学ぶのか</h2>
+<p>システムダイナミクスでは「どれだけ速く変わるか」がすべての中心です。まずは、その基本の道具「変化の割合」を確認します。</p>
+<h2>2. 変化の割合とは</h2>
+<p>「物事がどれだけの速さで変わるか」を表す数です。</p>
+$$ \text{変化の割合} = \frac{\text{変化した量}}{\text{かかった時間}} $$
+
+<blockquote>
+<p>例: 5分で気温が3℃上がった → 変化の割合 = 3 ÷ 5 = 0.6℃/分</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>言葉</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>変化した量</td>
+<td>始めと終わりの差</td>
+</tr>
+<tr>
+<td>かかった時間</td>
+<td>その変化にかかった時間</td>
+</tr>
+<tr>
+<td>単位</td>
+<td>「1分あたり・1時間あたり」の量</td>
+</tr>
+</tbody>
+</table>
+<h2>3. 例で確かめる</h2>
+<p><strong>例1: 貯金</strong> — 4か月で8,000円増えた → 8,000 ÷ 4 = 2,000円/月</p>
+<p><strong>例2: 走る距離</strong> — 3秒で12m進んだ → 12 ÷ 3 = 4m/秒（これが「速さ」）</p>
+<p>実は「速さ」も「変化の割合」の1つです。距離の変化 ÷ 時間。</p>
+<h2>4. Check — 確かめてみよう</h2>
+<ol>
+<li>6秒で18m走った。変化の割合（速さ）は？</li>
+<li>2時間で10ページ読んだ。1時間あたり何ページ？</li>
+<li>気温が「1時間で−2℃」変化した。変化の割合は正？ 負？</li>
+</ol>
+<blockquote>
+<p><strong>答え:</strong> 1. 3m/秒　2. 5ページ/時間　3. 負（下がった）</p>
+</blockquote>
+<h2>5. まとめ</h2>
+<ul>
+<li>変化の割合 = 変化した量 ÷ かかった時間</li>
+<li>「速さ」も「増える量」も全部これ</li>
+<li>次はこれを使って「関数とグラフ」を見る</li>
+</ul>
+<p><em>次: B2（関数とグラフ）</em></p></div></section>
+<section class="chapter" id="bridge-b2" data-source="B2_functions_and_graphs.md" data-group="bridge"><div class="chapter-meta"><span class="chapter-index">14</span><span class="chapter-label">math-bridge B2</span><span class="chapter-source">B2_functions_and_graphs.md</span></div><div class="chapter-body"><h1>B2 — 関数とグラフ：変化の割合を見える化する</h1>
+<blockquote>
+<p><strong>対象:</strong> 発展編に進む中学2年生〜
+<strong>ゴール:</strong> 関数のグラフを読み、傾き＝変化の割合であることを説明できる
+<strong>所要目安:</strong> 10分
+<strong>前提:</strong> B1（変化率と割合）</p>
+</blockquote>
+<hr>
+<h2>1. なぜこれを学ぶのか</h2>
+<p>変化の様子は、式より<strong>グラフ</strong>で見ると一目で分かります。「時間の経過とともに、量がどう変わるか」をグラフにすると、システムの動きが直感的に見えます。</p>
+<h2>2. 関数とは</h2>
+<p>一方（時間など）を決めると、もう一方（量）が1つに決まる関係。</p>
+$$ y = \text{変化の割合} \times t $$
+
+<ul>
+<li>$t$ … 時間（横軸）</li>
+<li>$y$ … 量（縦軸）</li>
+<li>変化の割合が大きいほど、グラフの傾きが急</li>
+</ul>
+<h2>3. グラフで見る「変化の割合」</h2>
+<pre><code>y（量）
+│            ／ 変化の割合 大（傾き急）
+│         ／
+│      ／
+│   ／  ／ 変化の割合 小（傾きゆるい）
+│／
+└──────────── t（時間）
+</code></pre>
+<p><strong>傾き＝変化の割合。</strong> グラフが急なほど、速く変わっている。</p>
+<ul>
+<li>右上がり（傾き 正）→ 増えている</li>
+<li>右下がり（傾き 負）→ 減っている</li>
+<li>水平（傾き 0）→ 変わっていない</li>
+</ul>
+<h2>4. お風呂の水位をグラフで見る</h2>
+<p>Unit 2 の発展編では、水位が「入り − 出」で決まると学びます。グラフで言うと：</p>
+<table>
+<thead>
+<tr>
+<th>入りと出の関係</th>
+<th>傾き</th>
+<th>グラフ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>入り &gt; 出</td>
+<td>正</td>
+<td>右上がり</td>
+</tr>
+<tr>
+<td>入り &lt; 出</td>
+<td>負</td>
+<td>右下がり</td>
+</tr>
+<tr>
+<td>入り = 出</td>
+<td>0</td>
+<td>水平</td>
+</tr>
+</tbody>
+</table>
+<p>グラフの「傾き」が、そのまま変化の割合なのです。</p>
+<h2>5. Check — 確かめてみよう</h2>
+<ol>
+<li>グラフが右上がりのとき、量は増えている？ 減っている？</li>
+<li>傾きが急＝変化の割合は大きい？ 小さい？</li>
+<li>水平なグラフの傾きは？</li>
+</ol>
+<blockquote>
+<p><strong>答え:</strong> 1. 増えている　2. 大きい　3. 0（変化なし）</p>
+</blockquote>
+<h2>6. まとめ</h2>
+<ul>
+<li>関数 = 時間と量の対応関係</li>
+<li>グラフの<strong>傾き = 変化の割合</strong></li>
+<li>傾きの正・負・0 = 増加・減少・横ばい</li>
+<li>次は「傾き」を瞬間ごとに測ることを考える</li>
+</ul>
+<p><em>次: B3（瞬間の変化率）</em></p></div></section>
+<section class="chapter" id="bridge-b3" data-source="B3_instantaneous_rate.md" data-group="bridge"><div class="chapter-meta"><span class="chapter-index">15</span><span class="chapter-label">math-bridge B3</span><span class="chapter-source">B3_instantaneous_rate.md</span></div><div class="chapter-body"><h1>B3 — 瞬間の変化率：「平均」から「瞬間」へ</h1>
+<blockquote>
+<p><strong>対象:</strong> 発展編に進む中学2年生〜
+<strong>ゴール:</strong> 「平均の変化率」と「瞬間の変化率」の違いを説明できる
+<strong>所要目安:</strong> 10分
+<strong>前提:</strong> B1（変化率と割合）・B2（関数とグラフ）</p>
+</blockquote>
+<hr>
+<h2>1. なぜこれを学ぶのか</h2>
+<p>B1 で「変化の割合」を学びました。しかし、あれは「平均」でした。実際の物事は途中で速くなったり遅くなったりします。<strong>「今この瞬間の速さ」</strong> を測れると、物事の動きをもっと正確に分かります。</p>
+<h2>2. 平均と瞬間の違い</h2>
+<p><strong>平均の速さ</strong>: 全体の距離 ÷ 全体の時間</p>
+<p><strong>例</strong>: 50kmを1時間で走った → 平均50km/h。でも途中は渋滞で止まったり、高速で走ったりしていた。</p>
+<p><strong>瞬間の速さ</strong>: 「この瞬間、どれだけの速さで動いているか」（車のスピードメーターが示す値）</p>
+<h2>3. 瞬間をどう測るか：コマ送りの考え方</h2>
+<p>動画のコマ送りを想像してください。</p>
+<ul>
+<li>1コマずつ時間を細かく区切る</li>
+<li>区切りを細かくすればするほど、その瞬間の速さに近づく</li>
+<li>時間の区切りを「ほんの少し（瞬間）」まで細かくしたときの速さ = <strong>瞬間の変化率</strong></li>
+</ul>
+$$ \text{瞬間の変化率} \approx \frac{\text{ほんの少しの変化量}}{\text{ほんの少しの時間}} $$
+
+<h2>4. 記号で表す</h2>
+<p>この「ほんの少しの時間」を $dt$、「ほんの少しの量の変化」を $d(\text{量})$ と書きます。</p>
+$$ \frac{d(\text{量})}{dt} = \text{瞬間の変化率}（＝\text{増える速さ}） $$
+
+<p>これは B5 で出てくる <code>d(水位)/dt</code> の形です。<strong>もう、すでに微分方程式の左辺が読める</strong>わけです。</p>
+<h2>5. Check — 確かめてみよう</h2>
+<ol>
+<li>「平均の速さ」と「瞬間の速さ」の違いを一言で言うと？</li>
+<li>$dt$ は「ほんの少しの何」を表す？</li>
+<li>スピードメーターが示すのは平均？ 瞬間？</li>
+</ol>
+<blockquote>
+<p><strong>答え:</strong> 1. 平均は全体、瞬間は今この時点　2. 時間　3. 瞬間</p>
+</blockquote>
+<h2>6. まとめ</h2>
+<ul>
+<li>平均の変化率は「全体の割り算」</li>
+<li>瞬間の変化率は「時間を限りなく細かくして測った速さ」</li>
+<li>$d(\text{量})/dt$ は瞬間の変化率。B5 の式の左辺がこれ</li>
+</ul>
+<p><em>次: B4（微分の意味）</em></p></div></section>
+<section class="chapter" id="bridge-b4" data-source="B4_meaning_of_derivative.md" data-group="bridge"><div class="chapter-meta"><span class="chapter-index">16</span><span class="chapter-label">math-bridge B4</span><span class="chapter-source">B4_meaning_of_derivative.md</span></div><div class="chapter-body"><h1>B4 — 微分の意味：「変化する速さ」を測る道具</h1>
+<blockquote>
+<p><strong>対象:</strong> 発展編に進む中学2年生〜
+<strong>ゴール:</strong> 微分が「瞬間の変化率を求める道具」であることを説明できる。計算は最小限
+<strong>所要目安:</strong> 10分
+<strong>前提:</strong> B1〜B3</p>
+</blockquote>
+<hr>
+<h2>1. なぜこれを学ぶのか</h2>
+<p>「瞬間の変化率」を系統的に扱う数学の道具が<strong>微分</strong>です。システムダイナミクスでは、微分で「物事が今どれだけの速さで変化しているか」をいつでも記述できます。難しい計算をする必要はありません。<strong>「微分は何をする道具か」のイメージ</strong>が分かれば十分です。</p>
+<h2>2. 微分とは</h2>
+<blockquote>
+<p><strong>微分 = 「瞬間の変化率」を求める道具</strong></p>
+</blockquote>
+<p>ある量 $y$ の変化を時間 $t$ で測るとき、瞬間ごとの変化の速さ（=傾き）を求めるのが微分です。</p>
+$$ \text{微分} = \frac{d(\text{量})}{dt} = \text{瞬間の変化率} = \text{グラフの傾き} $$
+
+<table>
+<thead>
+<tr>
+<th>言葉</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>微分する</td>
+<td>瞬間の変化率を求めること</td>
+</tr>
+<tr>
+<td>導関数</td>
+<td>微分して得られる「変化の速さ」の式</td>
+</tr>
+<tr>
+<td>$d/dt$</td>
+<td>「時間で微分する」という記号</td>
+</tr>
+</tbody>
+</table>
+<h2>3. 具体例：水位グラフの傾き</h2>
+<p>お風呂の水位グラフがあったとします。</p>
+<ul>
+<li>傾きが急な場所 → 水位が速く増えている（微分が大きい）</li>
+<li>傾きが水平な場所 → 水位が変わらない（微分が0）</li>
+<li>傾きが右下がり → 水位が減っている（微分が負）</li>
+</ul>
+<p><strong>「微分」＝「グラフの傾きを各瞬間ごとに教えてくれる関数」</strong> と覚えておけば十分です。</p>
+<h2>4. 微分方程式への橋渡し</h2>
+<p>B3 で学んだ形に、微分を使うと：</p>
+$$ \frac{d(\text{ストック})}{dt} = \text{入り} - \text{出} $$
+
+<p>これが「ストックの瞬間の変化率 = 入り − 出」という意味です。B5 で詳しく読みます。</p>
+<h2>5. Check — 確かめてみよう</h2>
+<ol>
+<li>微分は何を求める道具？</li>
+<li>グラフの傾きが0のとき、微分は？</li>
+<li>$\frac{d(\text{貯金})}{dt}$ は何を表す？</li>
+</ol>
+<blockquote>
+<p><strong>答え:</strong> 1. 瞬間の変化率　2. 0（変化なし）　3. 貯金が増える速さ</p>
+</blockquote>
+<h2>6. まとめ</h2>
+<ul>
+<li>微分 = 瞬間の変化率を求める道具</li>
+<li>微分した結果（導関数）= グラフの各点の傾き</li>
+<li>これで B5 の微分方程式を読む準備が整った</li>
+</ul>
+<p><em>次: B5（微分方程式の第一歩）</em></p></div></section>
+<section class="chapter" id="bridge-b5" data-source="B5_differential_equation_first_step.md" data-group="bridge"><div class="chapter-meta"><span class="chapter-index">17</span><span class="chapter-label">math-bridge B5</span><span class="chapter-source">B5_differential_equation_first_step.md</span></div><div class="chapter-body"><h1>B5 — 微分方程式の第一歩：d(水位)/dt = 入り − 出</h1>
+<blockquote>
+<p><strong>対象:</strong> 発展編（大学レベル）に進む中学2年生〜
+<strong>ゴール:</strong> <code>d(ストック)/dt = 入り − 出</code> の式を「言葉のルールを正確にしたもの」として読み解ける
+<strong>所要目安:</strong> 10〜15分
+<strong>前提:</strong> B1（変化率と割合）・B2（関数とグラフ）・B3（瞬間の変化率）・B4（微分の意味）</p>
+</blockquote>
+<hr>
+<h2>1. なぜこの式が出てくるのか</h2>
+<p>Unit 2 発展編で、お風呂の水位の変化は次の式で書けると説明しました。</p>
+$$ \frac{d(\text{水位})}{dt} = \text{入り} - \text{出} $$
+
+<p>いきなり記号が出てくると怖いかもしれませんが、<strong>中身は Unit 2 基本編でやった「水位の変化 = 入り − 出」と同じ</strong>です。このUnitの目的は、この式を「読める」ようになること。計算はしません。</p>
+<h2>2. 記号を1つずつ読む</h2>
+<h3><code>d</code> とは何か</h3>
+<p><code>d</code> は「<strong>ほんの少しだけ変化する</strong>」という印です。<code>d(水位)</code> は「水位のほんの少しの変化」。</p>
+<h3><code>dt</code> とは何か</h3>
+<p><code>t</code> は「時間」。<code>dt</code> は「ほんの少しの時間の変化」= 瞬間。</p>
+<h3><code>d(水位)/dt</code> とは何か</h3>
+<p>「ほんの少しの時間」の間に「水位がどれだけ変化したか」= <strong>水位が増える速さ</strong>。</p>
+<blockquote>
+<p><code>d(水位)/dt</code> = 水位が増える速さ（＝単位時間あたりの水位の変化）</p>
+</blockquote>
+<h2>3. 式全体を言葉に直す</h2>
+$$ \frac{d(\text{水位})}{dt} = \text{入り} - \text{出} $$
+
+<p>左辺（速さ）と右辺（入り引く出）を言葉にすると：</p>
+<blockquote>
+<p><strong>水位が増える速さ = 入ってくる水 − 出ていく水</strong></p>
+</blockquote>
+<p>これは Unit 2 基本編のルールと<strong>一字一句同じ</strong>です。数式は、長い説明を省略した「略記号」にすぎません。</p>
+<h2>4. 3つの場合を式で確かめる</h2>
+<table>
+<thead>
+<tr>
+<th>場合</th>
+<th>式の右辺</th>
+<th>左辺 <code>d(水位)/dt</code></th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>入り &gt; 出</td>
+<td>正の数</td>
+<td>正</td>
+<td>水位は増える速さがプラス（上がる）</td>
+</tr>
+<tr>
+<td>入り &lt; 出</td>
+<td>負の数</td>
+<td>負</td>
+<td>水位は増える速さがマイナス（下がる）</td>
+</tr>
+<tr>
+<td>入り = 出</td>
+<td>0</td>
+<td>0</td>
+<td>水位は変化しない（横ばい）</td>
+</tr>
+</tbody>
+</table>
+<p>右辺の「正・負・0」が、そのまま左辺の「上がる・下がる・変わらない」を決めています。</p>
+<h2>5. なぜ「微分方程式」と呼ばれるのか</h2>
+<p>「変化の速さ」を含む式のことを<strong>微分方程式</strong>と呼びます。<code>d(水位)/dt</code> が入っているからです。</p>
+<ul>
+<li><strong>微分</strong> … 「変化の速さ」を扱う数学の道具（B4で学んだ）</li>
+<li><strong>方程式</strong> … 未知のものを求める式</li>
+<li><strong>微分方程式</strong> … 「変化の速さ」についての式</li>
+</ul>
+<p>システムダイナミクスでは、<strong>ほぼすべてのモデルがこの形</strong>で書かれます。この1本の式を読めるようになると、あとのユニットの数理が全部つながってきます。</p>
+<h2>6. Check — 確かめてみよう</h2>
+<ol>
+<li><code>d(貯金)/dt = 収入 − 支出</code> という式があったとき、<code>d(貯金)/dt</code> は何を表す？</li>
+<li>この式で「貯金が減っている」とき、右辺は正？ 負？</li>
+<li>「フォロワーが横ばい」のとき、<code>d(フォロワー)/dt</code> はいくつ？</li>
+</ol>
+<blockquote>
+<p><strong>答え（下を見る前に自分で）:</strong>
+1. 貯金が増える速さ（単位時間あたりの貯金の変化）　2. 負　3. 0</p>
+</blockquote>
+<h2>7. Teach-Back — 説明しよう</h2>
+<p>素人に次のように説明してみよう。</p>
+<blockquote>
+<p>「お風呂の水位が増える速さは、蛇口から入る量から排水口に出る量を引いたものだよ。それを短く書くと、<code>d(水位)/dt = 入り − 出</code> になるだけ。難しくないよ」</p>
+</blockquote>
+<ol>
+<li><strong>何の話か:</strong> 「変化の速さ」を式で書く話</li>
+<li><strong>部品は何か:</strong> <code>d(水位)/dt</code>（増える速さ）・入り・出</li>
+<li><strong>どう繋がるか:</strong> 速さ = 入り − 出</li>
+<li><strong>よくある誤解:</strong> 微分方程式は「難しい数学」ではなく「言葉のルールの略記」</li>
+<li><strong>素人への一言:</strong> 「お風呂の水位だよ。速さは入りから出を引いたもの」</li>
+</ol>
+<hr>
+<p><em>次: B6（指数成長・減衰と e・ln）→ Unit 3 発展編の前提</em></p></div></section>
+<section class="chapter" id="bridge-b6" data-source="B6_exponential_growth_and_e.md" data-group="bridge"><div class="chapter-meta"><span class="chapter-index">18</span><span class="chapter-label">math-bridge B6</span><span class="chapter-source">B6_exponential_growth_and_e.md</span></div><div class="chapter-body"><h1>B6 — 指数成長・減衰と e・ln：倍々の数理</h1>
+<blockquote>
+<p><strong>対象:</strong> 発展編に進む中学2年生〜
+<strong>ゴール:</strong> 「倍々ゲーム＝指数成長」のグラフの形を説明でき、$e$・$\ln$ の意味を直感的に言える
+<strong>所要目安:</strong> 10〜15分
+<strong>前提:</strong> B1〜B5（特に B4 の微分・B5 の微分方程式）</p>
+</blockquote>
+<hr>
+<h2>1. なぜこれを学ぶのか</h2>
+<p>Unit 3 発展編で、正のループは「今の量に比例して増える」と学びます。その結果が<strong>指数成長</strong>です。ここでは、その数理の顔ぶれ（$e$・$\ln$）を直感的に紹介します。計算は最小限です。</p>
+<h2>2. 倍々ゲーム＝指数成長</h2>
+<p>「毎年2倍になる」貯金を想像してください。</p>
+<table>
+<thead>
+<tr>
+<th>年数</th>
+<th>量（1万円スタート）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0年</td>
+<td>1万円</td>
+</tr>
+<tr>
+<td>1年</td>
+<td>2万円</td>
+</tr>
+<tr>
+<td>2年</td>
+<td>4万円</td>
+</tr>
+<tr>
+<td>3年</td>
+<td>8万円</td>
+</tr>
+<tr>
+<td>10年</td>
+<td>1,024万円</td>
+</tr>
+</tbody>
+</table>
+<p>増え方がどんどん加速します。この「<strong>加速しながら増える</strong>」形が指数成長です。</p>
+<pre><code>量
+│          ／
+│        ／   ← 加速度的に右上がり
+│      ／
+│    ／
+│  ／
+│／
+└────────── 時間
+</code></pre>
+<h2>3. 比例して増える＝今の量が大きいほど速く増える</h2>
+<p>「増える速さ」が「今の量」に比例するとき、これを数式で書くと：</p>
+$$ \frac{d(\text{量})}{dt} = r \times \text{量} $$
+
+<ul>
+<li>$r$ … 増えやすさ（例: 年利・感染率）</li>
+<li>量が大きいほど、右辺が大きい = 速く増える</li>
+</ul>
+<h2>4. $e$ とは何か</h2>
+<p>この式を解くと、量は次の形になります：</p>
+$$ \text{量}(t) = \text{量}(0) \times e^{r t} $$
+
+$e$
+<p>は約 <strong>2.718…</strong> の特別な数です。円周率 （3.14…）と同様に、数学で何度も登場する「自然な数」なので、<strong>自然対数の底</strong>（しぜんたいすうのてい）と呼ばれます。</p>
+<p>覚えるのは次の1点で十分です：</p>
+<blockquote>
+<p><strong>$e^{r t}$ は「指数成長」の形。$r$ が正なら爆発的に増え、$r$ が負なら減っていく。</strong></p>
+</blockquote>
+<h2>5. $\ln$ とは何か</h2>
+$\ln$
+<p>（ログ・エルエヌ）は「<strong>何年で何倍になるか</strong>」を答える逆の道具です。</p>
+<ul>
+<li>指数: $e^{r t}$ が「時間から量」を出す</li>
+<li>$\ln$: 「量から時間」を出す（逆方向）</li>
+</ul>
+<blockquote>
+<p>例: 「$e^{r t}$ が $x$ になるのは、$t = \dfrac{\ln x}{r}$」というように使う。</p>
+</blockquote>
+<p>直感的には「<strong>倍になるまでの時間</strong>」を計算するための道具、と覚えておけば十分です。</p>
+<h2>6. 減衰（$r < 0$）</h2>
+$r$
+<p>が負のとき、量は減っていきます（指数減衰）。</p>
+$$ \text{量}(t) = \text{量}(0) \times e^{r t} \quad (r < 0) $$
+
+<p>例: 薬の体内濃度・熱いお湯の温度・風船の空気。減り方は「最初は速く、だんだん緩やかになる」曲線です。</p>
+<h2>7. Check — 確かめてみよう</h2>
+<ol>
+<li>指数成長のグラフの形は？</li>
+<li>$e$ は約いくつの数？</li>
+<li>$r$ が負のとき、$e^{r t}$ はどうなる？</li>
+</ol>
+<blockquote>
+<p><strong>答え:</strong> 1. 加速度的に右上がり　2. 2.718…　3. 減っていく（指数減衰）</p>
+</blockquote>
+<h2>8. まとめ</h2>
+<ul>
+<li>倍々ゲーム = 指数成長（$e^{r t}$）</li>
+<li>今の量に比例して増える → 加速する曲線</li>
+<li>$r$ が正なら爆発、負なら減衰</li>
+<li>$\ln$ は逆方向（倍になる時間）を出す道具</li>
+<li>次はこれを使って Unit 3 発展編（正のループ＝指数成長）を読む</li>
+</ul>
+<p><em>次: Unit 3 発展編へ</em></p>
+$\pi$</div></section>
+<section class="chapter" id="exercise-ex1" data-source="ex1_getting_up.md" data-group="exercise"><div class="chapter-meta"><span class="chapter-index">19</span><span class="chapter-label">演習 EX1</span><span class="chapter-source">ex1_getting_up.md</span></div><div class="chapter-body"><h1>EX1 — 朝起きられない悪循環（例題・解答つき）</h1>
+<blockquote>
+<p>対象: 中2　使う要素: 負のループ・時間の遅れ
+配置: Unit 7 の例題（解答つき）。Unit 8 で続き（対立の解体）を行う</p>
+</blockquote>
+<hr>
+<h2>シチュエーション</h2>
+<p>Aさんは最近、生活がうまくいっていません。次のような状態が続いています。</p>
+<ul>
+<li>朝、起きられない</li>
+<li>起きるのが遅くて、朝ごはんを食べられない</li>
+<li>授業中に眠くなる</li>
+<li>最近、テストの成績が下がった</li>
+<li>イライラして、友達と衝突することが増えた</li>
+</ul>
+<p>一見すると「朝起きられない」「成績が下がる」「友達と衝突する」は、ぜんぜん別の問題のように見えます。本当にそうでしょうか？</p>
+<h2>問題（UDE）の列挙</h2>
+<p>観測できる「不都合な事象」を1項目1文で書き出す。原因や解決策は混ぜない。</p>
+<ul>
+<li>UDE1: 朝、起きられない</li>
+<li>UDE2: 朝ごはんを食べない</li>
+<li>UDE3: 授業中に眠くなる</li>
+<li>UDE4: 成績が下がった</li>
+<li>UDE5: イライラして友達と衝突する</li>
+</ul>
+<h2>演習ステップ</h2>
+<ol>
+<li><strong>UDEを列挙する</strong>（上記）</li>
+<li><strong>因果でつなぐ</strong> —「Aが起きる、なぜならBだから」の矢印で、それぞれの症状の原因を掘り下げる</li>
+<li><strong>因果を検証する</strong> — 矢印が本当に因果か、Unit 7 §4.5 のチェック項目で確かめる</li>
+<li><strong>共通の原因を探す</strong> — 複数の枝がどこで合流するか</li>
+<li><strong>Rootを特定する</strong> — 合流の先にある、ただ1つの根本原因はどこか</li>
+</ol>
+<h2>解答例</h2>
+<h3>Step2: それぞれの枝を掘り下げる</h3>
+<pre><code>[UDE: 朝、起きられない]
+   ▼ なぜなら（寝るのが遅い）
+[UDE: 朝ごはんを食べない]
+   ▼ なぜなら（起きるのが遅くて時間がない）
+[Cause: 午前中のエネルギー不足]
+</code></pre>
+<pre><code>[UDE: 授業中に眠くなる]
+   ▼ なぜなら
+[Cause: 集中力が続かない]
+   ▼ なぜなら
+[UDE: 成績が下がる]
+</code></pre>
+<pre><code>[UDE: イライラする]
+   ▼ なぜなら
+[UDE: 友達と衝突する]
+</code></pre>
+<h3>Step3: 因果の検証（Unit 7 §4.5）</h3>
+<p>引いた矢印をチェック項目で検証する。</p>
+<table>
+<thead>
+<tr>
+<th>矢印</th>
+<th>検証</th>
+<th>判定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「睡眠不足」→「朝起きられない」</td>
+<td>眠れなければ起きられない（3・4・7 OK）</td>
+<td>合格</td>
+</tr>
+<tr>
+<td>「授業中に眠くなる」→「成績が下がる」</td>
+<td>中間に「集中力が続かない」を入れて丁寧に（8の飛躍チェック）</td>
+<td>合格（中間ノード追加）</td>
+</tr>
+<tr>
+<td>「朝ごはんを食べない」→「眠くなる」</td>
+<td><strong>5番の危険</strong>（実は睡眠不足が原因かも）</td>
+<td>修正（原因を掘り下げる）</td>
+</tr>
+</tbody>
+</table>
+<h3>Step4: 共通の原因（合流）</h3>
+<p>3つの枝をさらに辿ると、全部が同じ原因に行き着く。</p>
+<blockquote>
+<p>「午前中のエネルギー不足」はなぜ？ → <strong>睡眠不足</strong>
+「集中力が続かない」はなぜ？ → <strong>睡眠不足</strong>
+「イライラする」はなぜ？ → <strong>睡眠不足</strong></p>
+</blockquote>
+<p>→ 3つの枝が <strong>「睡眠不足」という1つの Cause に合流</strong>する。</p>
+<p>さらに「睡眠不足」はなぜ？ → <strong>夜更かし</strong> → なぜ？ → <strong>寝る前にスマホを見てしまう</strong></p>
+<h3>Step5: Root（根本原因）の特定</h3>
+<pre><code>[UDE: 朝、起きられない] → [UDE: 朝ごはんを食べない] → [Cause: エネルギー不足] ─┐
+                                                                             ├─► [睡眠不足] ◀─ [夜更かし] ◀─ [スマホ] ← Root
+[UDE: 授業中に眠くなる] → [Cause: 集中力低下] → [UDE: 成績が下がる] ───────────┘
+[UDE: イライラする] → [UDE: 友達と衝突する] ────────────────────────────────────┘
+</code></pre>
+<blockquote>
+<p><strong>Root（根本原因）= 夜更かし（寝る前にスマホを見てしまう）</strong></p>
+</blockquote>
+<h3>ここがCRTの良さ</h3>
+<p>「朝起きられない」「成績が下がる」「友達と衝突する」は、<strong>見た目はバラバラの問題</strong>。
+でも因果を辿ると、<strong>全部が1つの Root に収束</strong>する。</p>
+<p>だから、個別に「朝の努力」「勉強の頑張り」「友達との仲直り」と対策を5つ考えるのではなく、
+<strong>Root（夜更かし）を直せば、5つの症状がまとめて改善し始める</strong>、と分かる。</p>
+<h3>悪循環の確認（補足）</h3>
+<p>「夜更かし → 朝起きられない → 疲れ → また夜更かし」という輪（悪循環）もある。
+時間の遅れ（Unit 4）も絡んでいる（寝る時間の影響が「朝の起きやすさ」に現れるまで時間がかかる）。</p>
+<h3>ここで考えること</h3>
+<p>Rootが1つに絞れたので、Unit 8 で「どう解消するか」を考える。
+（続きは Unit 8 の EX1 解答例へ。全体のまとめは <code>solutions/ex1_getting_up_solution.md</code>）</p></div></section>
+<section class="chapter" id="exercise-ex2" data-source="ex2_club_conflict.md" data-group="exercise"><div class="chapter-meta"><span class="chapter-index">20</span><span class="chapter-label">演習 EX2</span><span class="chapter-source">ex2_club_conflict.md</span></div><div class="chapter-body"><h1>EX2 — 部活の先輩後輩の対立</h1>
+<blockquote>
+<p>対象: 中2　使う要素: 蒸発する雲・対立
+配置: Unit 7-8（選択式・解答なし）</p>
+</blockquote>
+<hr>
+<h2>シチュエーション</h2>
+<p>バスケ部のBさんは、後輩Cさんとの関係に悩んでいます。</p>
+<ul>
+<li>Bさん（先輩）は「後輩はきちんと挨拶して、先輩の指示を聞くべき」と思っている</li>
+<li>Cさん（後輩）は「自分の考えで練習メニューを工夫したい」と思っている</li>
+<li>BさんはCさんに「言うことを聞け」と注意する</li>
+<li>Cさんは「先輩は古い」「指示が理不尽」と反発する</li>
+<li>二人の間がギクシャクして、チームの雰囲気が悪くなっている</li>
+</ul>
+<h2>問題（UDE）の列挙</h2>
+<p>自分の言葉でUDEを書き出してみよう。例:</p>
+<ul>
+<li>UDE1: 先輩と後輩の会話がなくなった</li>
+<li>UDE2: 練習の雰囲気が悪い</li>
+<li>UDE3: チームの実力が伸びない</li>
+</ul>
+<h2>演習ステップ（共通フレーム）</h2>
+<ol>
+<li>UDEを列挙する</li>
+<li>因果でつなぐ（CRT）</li>
+<li>根本原因を特定する</li>
+<li><strong>対立の構造を見つける</strong>（Unit 8）: 二人はそれぞれ何を守ろうとしているのか</li>
+<li><strong>蒸発する雲を描く</strong>（Unit 8）: 共通の上位目的は何か</li>
+<li>解消策（Injection）を設計する</li>
+<li>FRTで新たな問題を確認する</li>
+<li>Teach-Back</li>
+</ol>
+<h2>ヒント</h2>
+<ul>
+<li>対立は「挨拶を守る」vs「自分で工夫する」の表面だけでは終わらない</li>
+<li>両者が本当に望んでいるもの（上位目的）を探そう。例えば「チームが強くなる」ことは共通かもしれない</li>
+<li>蒸発する雲は「どちらかが折れる」のではなく、<strong>対立の前提を外す</strong>のが目的（Unit 8）</li>
+</ul>
+<blockquote>
+<p><strong>解答・解説:</strong> <code>solutions/ex2_club_conflict_solution.md</code>（自分で解いてから見よう）</p>
+</blockquote></div></section>
+<section class="chapter" id="exercise-ex3" data-source="ex3_class_committee.md" data-group="exercise"><div class="chapter-meta"><span class="chapter-index">21</span><span class="chapter-label">演習 EX3</span><span class="chapter-source">ex3_class_committee.md</span></div><div class="chapter-body"><h1>EX3 — クラスの係活動が回らない</h1>
+<blockquote>
+<p>対象: 中2　使う要素: ボトルネック・負のループ
+配置: Unit 7-8（選択式・解答なし）</p>
+</blockquote>
+<hr>
+<h2>シチュエーション</h2>
+<p>Dさんはクラスの「体育祭実行係」です。係活動がうまく回っていません。</p>
+<ul>
+<li>係の仕事をやる人が決まらず、Dさんに仕事が集中する</li>
+<li>Dさんは仕事が多いので、他の係と連絡が取れない</li>
+<li>連絡が遅れると、みんなが「知らなかった」と言って協力しない</li>
+<li>協力しないから、Dさんがさらに一人で仕事を抱える</li>
+<li>体育祭の準備が間に合わない</li>
+</ul>
+<h2>問題（UDE）の列挙</h2>
+<p>例:</p>
+<ul>
+<li>UDE1: 仕事がDさんに集中する</li>
+<li>UDE2: 連絡が遅れる</li>
+<li>UDE3: みんなが協力しない</li>
+<li>UDE4: 準備が間に合わない</li>
+</ul>
+<h2>演習ステップ</h2>
+<ol>
+<li>UDEを列挙する</li>
+<li>因果でつなぐ（CRT）— 悪循環（負のループ）を見つける</li>
+<li>根本原因（Core Constraint）を特定する</li>
+<li>ボトルネックの視点（Unit 5）: 「一番仕事が滞るところ」はどこか</li>
+<li>5つの集中ステップ（Unit 6）: どう直すか</li>
+<li>Unit 8: 対立・Injection（あれば）</li>
+<li>Teach-Back</li>
+</ol>
+<h2>ヒント</h2>
+<ul>
+<li>「Dさんに集中」は結果かもしれない。その原因（根本原因）を1つ探そう</li>
+<li>悪循環の輪を見つけたら、<strong>どこで輪を切るか</strong>を考える（Unit 8 の Injection につながる）</li>
+<li>ボトルネック（Unit 5）の視点: 仕事が「たまっている」場所はどこ？</li>
+</ul>
+<blockquote>
+<p><strong>解答・解説:</strong> <code>solutions/ex3_class_committee_solution.md</code>（自分で解いてから見よう）</p>
+</blockquote></div></section>
+<section class="chapter" id="exercise-ex4" data-source="ex4_too_many_meetings.md" data-group="exercise"><div class="chapter-meta"><span class="chapter-index">22</span><span class="chapter-label">演習 EX4</span><span class="chapter-source">ex4_too_many_meetings.md</span></div><div class="chapter-body"><h1>EX4 — 会議が多すぎて仕事が進まない</h1>
+<blockquote>
+<p>対象: 社会人　使う要素: ボトルネック・時間の遅れ
+配置: Unit 9（選択式・解答なし）</p>
+</blockquote>
+<hr>
+<h2>シチュエーション</h2>
+<p>Eさんはある会社のプロジェクトリーダーです。</p>
+<ul>
+<li>1日に会議が5〜6件入っていて、まとまった仕事をする時間がない</li>
+<li>会議で決めることが決まらず、また会議が設定される</li>
+<li>会議の準備に時間を取られ、本来の成果物が遅れる</li>
+<li>成果物が遅れると、確認のための会議が増える</li>
+<li>チーム全体が「会議だらけで進まない」と感じている</li>
+</ul>
+<h2>問題（UDE）の列挙</h2>
+<p>例:</p>
+<ul>
+<li>UDE1: 1日の会議が5〜6件</li>
+<li>UDE2: まとまった仕事の時間がない</li>
+<li>UDE3: 会議で決まらない→さらに会議</li>
+<li>UDE4: 成果物が遅れる</li>
+</ul>
+<h2>演習ステップ</h2>
+<ol>
+<li>UDEを列挙する</li>
+<li>因果でつなぐ（CRT）— 悪循環を探す</li>
+<li>根本原因（Core Constraint）を特定する</li>
+<li><strong>ボトルネック（Unit 5）</strong>: 「時間がたまって滞るところ」は何か（会議？ 準備？）</li>
+<li><strong>5つの集中ステップ（Unit 6）</strong> で直す</li>
+<li>時間の遅れ（Unit 4）: 会議削減の効果が出るまでの遅れをどう扱うか</li>
+<li>Teach-Back</li>
+</ol>
+<h2>ヒント</h2>
+<ul>
+<li>会議が増える「原因」をたどると、根本原因が見えてくる</li>
+<li>ボトルネックの視点: どの工程（会議・準備・実装・確認）が全体の速さを決めている？</li>
+<li>5ステップの「活用する（2）」: 会議自体を変えずに、時間の使い方を改善できないか</li>
+</ul>
+<blockquote>
+<p><strong>解答・解説:</strong> <code>solutions/ex4_too_many_meetings_solution.md</code>（自分で解いてから見よう）</p>
+</blockquote></div></section>
+<section class="chapter" id="exercise-ex5" data-source="ex5_overtime.md" data-group="exercise"><div class="chapter-meta"><span class="chapter-index">23</span><span class="chapter-label">演習 EX5</span><span class="chapter-source">ex5_overtime.md</span></div><div class="chapter-body"><h1>EX5 — 残業が減らない（成功の負担）</h1>
+<blockquote>
+<p>対象: 社会人　使う要素: 負のループ・成功の逆効果
+配置: Unit 9（選択式・解答なし）</p>
+</blockquote>
+<hr>
+<h2>シチュエーション</h2>
+<p>Fさんは成果を上げているチームのマネージャーです。しかし残業が減りません。</p>
+<ul>
+<li>成果を上げると、さらに難しい仕事が任される</li>
+<li>仕事が増えると、残業してなんとかこなす</li>
+<li>残業で成果を上げると、「できる人」と評価される</li>
+<li>評価されると、さらに仕事が割り当てられる</li>
+<li>疲れがたまり、品質や健康に不安が出始めている</li>
+</ul>
+<h2>問題（UDE）の列挙</h2>
+<p>例:</p>
+<ul>
+<li>UDE1: 残業時間が減らない</li>
+<li>UDE2: 任される仕事が増え続ける</li>
+<li>UDE3: 疲れがたまる</li>
+<li>UDE4: 品質・健康に不安がある</li>
+</ul>
+<h2>演習ステップ</h2>
+<ol>
+<li>UDEを列挙する</li>
+<li>因果でつなぐ（CRT）</li>
+<li>根本原因を特定する</li>
+<li>「成功の逆効果」= 成果がさらなる負担を生むループを意識する（Unit 3）</li>
+<li>5つの集中ステップ（Unit 6）: 制約はどこか</li>
+<li>Unit 8: 対立（成果 vs 健康・ワークライフバランス）の解体</li>
+<li>Teach-Back</li>
+</ol>
+<h2>ヒント</h2>
+<ul>
+<li>これは「正のループが悪い方向に働いた」例。成果→評価→仕事増→残業→成果、の輪</li>
+<li>対立の構造（Unit 8）: 「成果を上げたい」と「健康を守りたい」は、実は対立しなくてもいいかもしれない</li>
+<li>蒸発する雲: 共通の上位目的（長期的に成果を上げ続ける）を見つけよう</li>
+</ul>
+<blockquote>
+<p><strong>解答・解説:</strong> <code>solutions/ex5_overtime_solution.md</code>（自分で解いてから見よう）</p>
+</blockquote></div></section>
+<section class="chapter" id="exercise-ex6" data-source="ex6_growth_limit.md" data-group="exercise"><div class="chapter-meta"><span class="chapter-index">24</span><span class="chapter-label">演習 EX6</span><span class="chapter-source">ex6_growth_limit.md</span></div><div class="chapter-body"><h1>EX6 — 売上が伸びない（成長の限界）</h1>
+<blockquote>
+<p>対象: 社会人　使う要素: 正のループ×制約（Unit 3・5）
+配置: Unit 9（選択式・解答なし）</p>
+</blockquote>
+<hr>
+<h2>シチュエーション</h2>
+<p>Gさんは小さなカフェのオーナーです。オープン当初は売上が伸びたのに、最近頭打ちになっています。</p>
+<ul>
+<li>最初は口コミで客が増えた（正のループ: 客→口コミ→さらに客）</li>
+<li>でも、店内の席数には限りがある（制約）</li>
+<li>満席のときは客が帰ってしまう</li>
+<li>スタッフも少なく、サービスが行き届かなくなり、口コミが悪くなり始めた</li>
+<li>売上は伸び悩んでいる</li>
+</ul>
+<h2>問題（UDE）の列挙</h2>
+<p>例:</p>
+<ul>
+<li>UDE1: 売上が頭打ち</li>
+<li>UDE2: 満席で客が帰る</li>
+<li>UDE3: スタッフ不足でサービス低下</li>
+<li>UDE4: 口コミが悪化し始めた</li>
+</ul>
+<h2>演習ステップ</h2>
+<ol>
+<li>UDEを列挙する</li>
+<li><strong>正のループ</strong>（客→口コミ→客）を描く（Unit 3）</li>
+<li><strong>制約（ボトルネック）</strong> を見つける（Unit 5）: 何が成長を止めている？</li>
+<li><strong>成長の限界</strong>（Unit 3 発展編）: 正のループ×抑制ループの組み合わせを描く</li>
+<li>5つの集中ステップ（Unit 6）で直す</li>
+<li>Unit 8: 対立（席数を増やす vs お金がない）の解体</li>
+<li>Teach-Back</li>
+</ol>
+<h2>ヒント</h2>
+<ul>
+<li>「成長の限界」は「努力が足りない」のではなく、<strong>構造（制約）が成長を止めている</strong></li>
+<li>正のループ（客が増える）と、それを抑える負のループ（満席・スタッフ不足）の2つを描いてみよう</li>
+<li>ボトルネックを1つ特定し、5ステップでどう直すか考える</li>
+</ul>
+<blockquote>
+<p><strong>解答・解説:</strong> <code>solutions/ex6_growth_limit_solution.md</code>（自分で解いてから見よう）</p>
+</blockquote></div></section>
+<section class="chapter" id="exercise-ex7" data-source="ex7_sns_dependency.md" data-group="exercise"><div class="chapter-meta"><span class="chapter-index">25</span><span class="chapter-label">演習 EX7</span><span class="chapter-source">ex7_sns_dependency.md</span></div><div class="chapter-body"><h1>EX7 — SNS依存・情報過多</h1>
+<blockquote>
+<p>対象: 共通　使う要素: 正のループ・時間の遅れ
+配置: Unit 7-8（選択式・解答なし）</p>
+</blockquote>
+<hr>
+<h2>シチュエーション</h2>
+<p>Hさんはスマホの通知が気になって、勉強や仕事に集中できません。</p>
+<ul>
+<li>通知が来ると、スマホを確認する</li>
+<li>確認すると、関連動画や投稿を見てしまう（次のコンテンツが次々出てくる）</li>
+<li>見れば見るほど「もっと見たい」という気持ちが強くなる（正のループ）</li>
+<li>気づくと1〜2時間たっている</li>
+<li>勉強・仕事が遅れて、夜更かしになり、翌日の集中力が落ちる（遅れ）</li>
+</ul>
+<h2>問題（UDE）の列挙</h2>
+<p>例:</p>
+<ul>
+<li>UDE1: スマホを確認する回数が増える</li>
+<li>UDE2: 集中が途切れる</li>
+<li>UDE3: 勉強・仕事が遅れる</li>
+<li>UDE4: 夜更かしで翌日の集中力が落ちる</li>
+</ul>
+<h2>演習ステップ</h2>
+<ol>
+<li>UDEを列挙する</li>
+<li>因果でつなぐ（CRT）</li>
+<li><strong>正のループ</strong>（見る→もっと見る）と<strong>遅れ</strong>（影響が翌日に出る）を意識する</li>
+<li>根本原因を特定する</li>
+<li>悪循環をどこで「切る」か考える（Unit 8 の Injection につながる）</li>
+<li>Teach-Back</li>
+</ol>
+<h2>ヒント</h2>
+<ul>
+<li>正のループは「見れば見るほど強くなる」。止めるには、ループのどこかに「ブレーキ」を入れる（Unit 8）</li>
+<li>時間の遅れ（Unit 4）: 影響が「今」でなく「翌日・後で」出るから、なかなか気づかない</li>
+<li>「根本原因」は「スマホが悪い」ではなく、もっと構造的なものかもしれない</li>
+</ul>
+<blockquote>
+<p><strong>解答・解説:</strong> <code>solutions/ex7_sns_dependency_solution.md</code>（自分で解いてから見よう）</p>
+</blockquote></div></section>
+<section class="chapter" id="exercise-ex8" data-source="ex8_free_topic.md" data-group="exercise"><div class="chapter-meta"><span class="chapter-index">26</span><span class="chapter-label">演習 EX8</span><span class="chapter-source">ex8_free_topic.md</span></div><div class="chapter-body"><h1>EX8 — 自由テーマ（自分で選んで1本通し）</h1>
+<blockquote>
+<p>対象: 共通　使う要素: 全部（SD + TOC の総仕上げ）
+配置: Unit 10 の直前にやる推奨の総合演習</p>
+</blockquote>
+<hr>
+<h2>概要</h2>
+<p>自分が気になっている問題を1つ選び、Unit 1〜9 で学んだことを<strong>全部使って</strong>1本通しで解く。</p>
+<h2>テーマの選び方</h2>
+<p>「うまくいっていない」「ずっと悩んでいる」「改善したい」と思うものを1つ。</p>
+<table>
+<thead>
+<tr>
+<th>観点</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自分自身</td>
+<td>勉強・運動・生活習慣・人間関係</td>
+</tr>
+<tr>
+<td>学校/職場</td>
+<td>係・部活・仕事の進め方・会議</td>
+</tr>
+<tr>
+<td>社会</td>
+<td>環境・健康・SNS・地域の活動</td>
+</tr>
+</tbody>
+</table>
+<h2>演習ステップ（フルコース）</h2>
+<ol>
+<li><strong>テーマを1文で決める</strong></li>
+<li><strong>構造を見る（SD）</strong>: ストックとフロー・正負のループ・時間の遅れを図で描く（Unit 1〜4）</li>
+<li><strong>制約を直す（TOC）</strong>: ボトルネックを特定し、5つの集中ステップを適用する（Unit 5〜6）</li>
+<li><strong>根本原因を特定する（CRT）</strong>: 現状問題ツリーでCore Constraintを1つに絞る（Unit 7）</li>
+<li><strong>解消する（Injection）</strong>: 対立の解体・解消策を設計する（Unit 8）</li>
+<li><strong>新たな問題を確認する（FRT）</strong>: 解消策が新たな問題を生まないか（Unit 8）</li>
+<li><strong>Teach-Back</strong>: 選んだテーマを、システム思考を知らない人に説明する</li>
+<li><strong>自分の言葉でまとめる</strong>: このテーマで「システム思考の何が効いたか」を振り返る</li>
+</ol>
+<h2>評価の目安</h2>
+<ul>
+<li>図が描けている（ストック・フロー・ループが区別できる）</li>
+<li>根本原因が「1つ」に絞れている</li>
+<li>解消策が「対立の前提」を外している（妥協ではない）</li>
+<li>人に説明できる（Teach-Back）</li>
+</ul>
+<blockquote>
+<p><strong>解答例（見本）:</strong> <code>solutions/ex8_free_topic_solution.md</code>（架空テーマの解き方の流れを示す）</p>
+</blockquote></div></section>
+<section class="chapter" id="exercise-ex9" data-source="ex9_price_war_trap.md" data-group="exercise"><div class="chapter-meta"><span class="chapter-index">27</span><span class="chapter-label">演習 EX9</span><span class="chapter-source">ex9_price_war_trap.md</span></div><div class="chapter-body"><h1>EX9 — 値下げの罠：売上は伸びたのに利益が減った（価格戦略・SD視点）</h1>
+<blockquote>
+<p>対象: 社会人　使う要素: 正×負のループ・ストック（利益）
+配置: Unit 9（選択式・解答なし）</p>
+</blockquote>
+<hr>
+<h2>シチュエーション</h2>
+<p>Iさんはネットショップを運営しています。売上を伸ばそうと値下げをしたところ、売上（総額）は伸びたのに、利益が減ってしまいました。</p>
+<ul>
+<li>値下げをする → 販売数（個数）が増える（正のループ: 安い→買う人が増える→売れる→さらに安くする）</li>
+<li>でも、1個あたりの利益（利益率）が下がる</li>
+<li>販売数が増えても、利益率の低下をカバーできなかった</li>
+<li>さらに、発送・返品対応などの固定コストも増えた</li>
+<li>結局、利益（ストック）は減った</li>
+</ul>
+<h2>問題（UDE）の列挙</h2>
+<p>例:</p>
+<ul>
+<li>UDE1: 利益が減った</li>
+<li>UDE2: 1個あたりの利益率が下がった</li>
+<li>UDE3: 販売数は増えたのに儲かっていない</li>
+<li>UDE4: コスト（発送・返品）が増えた</li>
+</ul>
+<h2>演習ステップ</h2>
+<ol>
+<li>UDEを列挙する</li>
+<li><strong>ストックとフロー（Unit 2）で描く</strong>: 利益（ストック）= 売上（フローIN）− 費用（フローOUT）</li>
+<li><strong>正のループ</strong>（値下げ→販売数増）と<strong>負のループ</strong>（値下げ→利益率減→利益減）の2つを描く</li>
+<li>どちらのループが「今は」勝っているか考える</li>
+<li><strong>利益を「個数」でなく「利益率×個数」で見る</strong>視点を確認する</li>
+<li>根本原因を特定し、5つの集中ステップ（Unit 6）で直す</li>
+<li>対立（価格を下げて売る vs 価格を上げて利益率を守る）の解体（Unit 8）</li>
+<li>Teach-Back</li>
+</ol>
+<h2>ヒント</h2>
+<ul>
+<li>売上（総額）と利益は別のもの。<strong>ストック（利益）</strong> に注目する</li>
+<li>値下げの「正のループ」（売れる→もっと売れる）と「負のループ」（利益率が減る）は、どちらが強いかで結果が変わる</li>
+<li>5ステップの「制約」: 今のボトルネックは「販売数」か？ それとも「利益率」か？</li>
+<li>Unit 8 の蒸発する雲: 「安く売りたい（売上）」と「高く売りたい（利益）」の対立を、上位目的（長期的に儲ける）から解く</li>
+</ul>
+<blockquote>
+<p><strong>解答・解説:</strong> <code>solutions/ex9_price_war_trap_solution.md</code>（SDとTOCの両方の答えを用意。Unit 9→10で使う）</p>
+</blockquote></div></section>
+<section class="chapter" id="exercise-ex10" data-source="ex10_bottleneck_pricing.md" data-group="exercise"><div class="chapter-meta"><span class="chapter-index">28</span><span class="chapter-label">演習 EX10</span><span class="chapter-source">ex10_bottleneck_pricing.md</span></div><div class="chapter-body"><h1>EX10 — ボトルネックと価格：どの製品を優先する？（スループット会計・TOC視点）</h1>
+<blockquote>
+<p>対象: 社会人　使う要素: スループット会計・制約（TOC）
+配置: Unit 9（選択式・解答なし）</p>
+</blockquote>
+<hr>
+<h2>シチュエーション</h2>
+<p>Jさんの工場では、製品Aと製品Bを同じ機械（ボトルネック）で作っています。この機械は1日8時間しか動けません。</p>
+<table>
+<thead>
+<tr>
+<th>製品</th>
+<th>1個の価格</th>
+<th>1個の変動費</th>
+<th>ボトルネック使用時間</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>1,000円</td>
+<td>500円</td>
+<td>10分</td>
+</tr>
+<tr>
+<td>B</td>
+<td>800円</td>
+<td>400円</td>
+<td>5分</td>
+</tr>
+</tbody>
+</table>
+<p>需要はどちらもたくさんありますが、機械の時間が足りません。「Aのほうが価格が高いから、Aを優先しよう」という意見と、「Bのほうが1個あたりの儲け（粗利）が大きいからBだ」という意見があります。</p>
+<h2>問題（UDE）の列挙</h2>
+<p>例:</p>
+<ul>
+<li>UDE1: 機械の時間が足りない（ボトルネック）</li>
+<li>UDE2: どちらを優先するかで意見が割れる</li>
+<li>UDE3: 優先を間違えると、全体の利益が減る</li>
+</ul>
+<h2>演習ステップ</h2>
+<ol>
+<li><strong>粗利（1個の儲け）</strong> を計算する: A = 1,000−500 = 500円, B = 800−400 = 400円
+   → 1個あたりではAのほうが儲かる</li>
+<li><strong>ボトルネック1分あたりの儲け（スループット）</strong> を計算する:
+   - A: 500円 ÷ 10分 = <strong>50円/分</strong>
+   - B: 400円 ÷ 5分 = <strong>80円/分</strong>
+   → ボトルネックの時間で見ると <strong>Bのほうが儲かる</strong></li>
+<li>8時間 = 480分で、Aだけ or Bだけを作るときの全体利益を計算して比べる</li>
+<li>結論: ボトルネック（制約）の時間という「限られた資源」を、1分あたりの儲けが大きいBに使う</li>
+<li>5つの集中ステップ（Unit 6）: 制約（機械）をどう活用・強化するか</li>
+<li>Teach-Back</li>
+</ol>
+<h2>計算シート（解答なし・自分で埋める）</h2>
+<pre><code>製品A: 粗利 = 1,000 − 500 = 500円
+       ボトルネック1分あたり = 500 ÷ 10 = ____円/分
+製品B: 粗利 = 800 − 400 = 400円
+       ボトルネック1分あたり = 400 ÷ 5 = ____円/分
+
+Aだけ作る場合（480分 ÷ 10分 = 48個）: 48 × 500 = ____円
+Bだけ作る場合（480分 ÷ 5分 = 96個）: 96 × 400 = ____円
+→ どちらが全体利益が大きい？
+</code></pre>
+<h2>ヒント</h2>
+<ul>
+<li>価格や1個の粗利で判断すると「A」だが、<strong>制約（ボトルネック）の時間で見ると「B」</strong></li>
+<li>TOCのスループット会計: 「制約の時間という貴重な資源を、何に使うべきか」で判断する</li>
+<li>これは Unit 5（ボトルネック）・Unit 6（5ステップ）の応用</li>
+<li>発展: ボトルネックを強化（Unit 6 ステップ4）できれば、両方作れるようになるかもしれない</li>
+</ul>
+<blockquote>
+<p><strong>解答・解説:</strong> <code>solutions/ex10_bottleneck_pricing_solution.md</code>（計算手順つき。自分で計算してから見よう）</p>
+</blockquote></div></section>
+
+    <footer class="hero sources">
+      <h2>再生成方法</h2>
+      <p>Markdown を更新したら、次のコマンドで HTML を上書き生成できます。</p>
+      <pre><code>python tools/build_sd_html.py</code></pre>
+    </footer>
+  </div>
+</body>
+</html>
