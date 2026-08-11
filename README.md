@@ -4,17 +4,19 @@
 
 | フォルダ | 内容 |
 |----------|------|
-| [fourier-transform](./fourier-transform/) | 画像圧縮の直感から学ぶフーリエ（実数主経路・対話型 HTML） |
+| [fourier-theory-v2](./fourier-theory-v2/) | フーリエ theory-v2 **学習用一冊**（GitHub Pages） |
+| [fourier-transform](./fourier-transform/) | フーリエ（原稿・正本 [`theory-v2`](./fourier-transform/theory-v2/)／旧 interactive は archive） |
 | [math-integers-guide](./math-integers-guide/) | 整数が面白いほどわかるシリーズ |
 | [math-combinatorics-guide](./math-combinatorics-guide/) | 組合せの直感ガイド |
 | [math-combinatorics-tool](./math-combinatorics-tool/) | 組合せツール（HTML） |
 | [path-to-structure](./path-to-structure/) | 組合せ探索　道から構造へ（最短路→ZDD、Dual-View HTML） |
+| [system-dynamics](./system-dynamics/) | SD×TOC 教材（統合 HTML・Pages） |
 
 ## フーリエ教材（すぐ見る）
 
-1. [`fourier-transform/index.html`](./fourier-transform/index.html) をブラウザで開く（`file://` 可）
-2. 説明文の編集正本: `fourier-transform/data/explanations/P-*.json`
-3. 反映: 教材フォルダで `python tools/expl_pipeline.py all`
+1. **学習用一冊（ブラウザ）:** [fourier-theory-v2（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/fourier-theory-v2/)
+2. **原稿・章立て:** [`fourier-transform/theory-v2/`](./fourier-transform/theory-v2/)（正本は `chapters/`）
+3. **旧 interactive（归档）:** [`fourier-transform/archive/interactive-v1/index.html`](./fourier-transform/archive/interactive-v1/index.html)（`file://` 可・本編正本ではない）
 
 ## path-to-structure（すぐ見る）
 
