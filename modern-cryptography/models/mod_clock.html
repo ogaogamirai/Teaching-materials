@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>modの時計 | 現代暗号の基礎</title>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <style>
+    :root { color-scheme: light; --ink:#243b53; --muted:#52606d; --line:#d9e2ec; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:#f5f7fa; color:var(--ink);
+      font-family:"Yu Gothic UI","Noto Sans JP",sans-serif; line-height:1.7; }
+    main { max-width:860px; margin:auto; padding:1.25rem; }
+    section { background:#fff; border:1px solid var(--line); border-radius:12px;
+      padding:1rem 1.2rem; margin-bottom:1rem; }
+    h1 { margin:.2rem 0; line-height:1.3; }
+    .lead { color:var(--muted); margin:.25rem 0 0; }
+    .controls { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:1rem; align-items:end; }
+    label { display:grid; gap:.3rem; font-weight:700; }
+    input { width:100%; accent-color:#2f855a; }
+    output { color:#2f855a; font-family:Consolas,monospace; }
+    #stage { width:100%; min-height:420px; border-radius:10px; overflow:hidden;
+      background:linear-gradient(#f8fbff,#eef5f9); }
+    canvas { display:block; width:100%; height:auto; }
+    .readout { font-size:1.1rem; font-weight:700; }
+    .note { color:var(--muted); font-size:.92rem; }
+    code { background:#eef2f6; padding:.1rem .3rem; border-radius:4px; }
+  </style>
+</head>
+<body>
+<main>
+  <section>
+    <h1>modの時計</h1>
+    <p class="lead">整数を円周上に並べ、一定数で一周する仕組みを操作します。</p>
+  </section>
+  <section class="controls" aria-label="操作">
+    <label>一周の数（mod）
+      <input id="modulus" type="range" min="3" max="12" value="7">
+      <output id="modulusValue">7</output>
+    </label>
+    <label>進める整数
+      <input id="number" type="range" min="0" max="100" value="10">
+      <output id="numberValue">10</output>
+    </label>
+  </section>
+  <section>
+    <div id="stage" aria-label="modの時計の図"></div>
+    <p id="readout" class="readout"></p>
+    <p class="note">時計の目盛りを一周すると0へ戻ります。大きな整数を、小さな余りへ置き換えて見ています。</p>
+  </section>
+  <section>
+    <h2>観察すること</h2>
+    <ul>
+      <li><code>10 mod 7</code> は3です。</li>
+      <li>一周の数を変えると、同じ整数の行き先が変わります。</li>
+      <li>整数そのものではなく、同じ余りになる数を同じ場所にまとめています。</li>
+    </ul>
+  </section>
+</main>
+<script>
+(() => {
+  const stage = document.getElementById("stage");
+  const modulusInput = document.getElementById("modulus");
+  const numberInput = document.getElementById("number");
+  const modulusValue = document.getElementById("modulusValue");
+  const numberValue = document.getElementById("numberValue");
+  const readout = document.getElementById("readout");
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+  camera.position.z = 5;
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  stage.appendChild(renderer.domElement);
+
+  const group = new THREE.Group();
+  scene.add(group);
+  const circle = new THREE.Line(
+    new THREE.BufferGeometry(),
+    new THREE.LineBasicMaterial({ color: 0x243b53 })
+  );
+  group.add(circle);
+  const hands = new THREE.Group();
+  group.add(hands);
+
+  function labelSprite(text, color) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 96; canvas.height = 64;
+    const ctx = canvas.getContext("2d");
+    ctx.font = "bold 32px sans-serif";
+    ctx.fillStyle = color;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText(text, 48, 32);
+    const texture = new THREE.CanvasTexture(canvas);
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true }));
+    sprite.scale.set(.22, .15, 1);
+    return sprite;
+  }
+
+  function clear(groupToClear) {
+    while (groupToClear.children.length) {
+      const child = groupToClear.children.pop();
+      child.geometry?.dispose();
+      child.material?.dispose();
+    }
+  }
+
+  function update() {
+    const mod = Number(modulusInput.value);
+    const value = Number(numberInput.value);
+    const remainder = value % mod;
+    const quotient = Math.floor(value / mod);
+    modulusValue.value = mod;
+    numberValue.value = value;
+    readout.textContent = `${value} ÷ ${mod} = ${quotient} あまり ${remainder}　→　${value} mod ${mod} = ${remainder}`;
+
+    clear(hands);
+    const points = [];
+    for (let i = 0; i <= 96; i++) {
+      const a = (i / 96) * Math.PI * 2;
+      points.push(new THREE.Vector3(Math.cos(a) * .62, Math.sin(a) * .62, 0));
+    }
+    circle.geometry.dispose();
+    circle.geometry = new THREE.BufferGeometry().setFromPoints(points);
+
+    for (let i = 0; i < mod; i++) {
+      const a = Math.PI / 2 - (i / mod) * Math.PI * 2;
+      const inner = new THREE.Vector3(Math.cos(a) * .55, Math.sin(a) * .55, .01);
+      const outer = new THREE.Vector3(Math.cos(a) * .68, Math.sin(a) * .68, .01);
+      const spoke = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints([inner, outer]),
+        new THREE.LineBasicMaterial({ color: i === remainder ? 0x2f855a : 0x9aa5b1 })
+      );
+      hands.add(spoke);
+      const label = labelSprite(String(i), i === remainder ? "#276749" : "#243b53");
+      label.position.set(Math.cos(a) * .82, Math.sin(a) * .82, .02);
+      hands.add(label);
+    }
+    const marker = new THREE.Mesh(
+      new THREE.CircleGeometry(.08, 24),
+      new THREE.MeshBasicMaterial({ color: 0xd64545 })
+    );
+    const markerAngle = Math.PI / 2 - (remainder / mod) * Math.PI * 2;
+    marker.position.set(Math.cos(markerAngle) * .62, Math.sin(markerAngle) * .62, .05);
+    hands.add(marker);
+  }
+
+  function resize() {
+    const width = Math.max(stage.clientWidth, 320);
+    const height = Math.max(Math.min(width * .58, 460), 320);
+    renderer.setSize(width, height, false);
+    const aspect = width / height;
+    camera.left = -aspect; camera.right = aspect;
+    camera.top = 1; camera.bottom = -1;
+    camera.updateProjectionMatrix();
+  }
+
+  modulusInput.addEventListener("input", update);
+  numberInput.addEventListener("input", update);
+  window.addEventListener("resize", resize);
+  resize(); update();
+  renderer.setAnimationLoop(() => renderer.render(scene, camera));
+})();
+</script>
+</body>
+</html>

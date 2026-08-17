@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>有限体上の楕円曲線 | 現代暗号の基礎</title>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <style>
+    :root { --ink:#243b53; --muted:#52606d; --line:#d9e2ec; --soft:#eef5f9; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#f5f7fa; color:var(--ink);
+      font-family:"Yu Gothic UI","Noto Sans JP",sans-serif; line-height:1.7; }
+    main { max-width:920px; margin:auto; padding:1.25rem; }
+    section { background:#fff; border:1px solid var(--line); border-radius:12px;
+      padding:1rem 1.2rem; margin-bottom:1rem; }
+    h1,h2 { line-height:1.35; }
+    h1 { margin:.2rem 0; }
+    .lead,.note { color:var(--muted); }
+    .controls { display:flex; flex-wrap:wrap; gap:1rem; align-items:end; }
+    label { display:grid; gap:.3rem; font-weight:700; min-width:240px; }
+    input { width:100%; accent-color:#2f855a; }
+    output { color:#2f855a; font-family:Consolas,monospace; }
+    #stage { width:100%; min-height:440px; border-radius:10px; overflow:hidden;
+      background:linear-gradient(#f8fbff,#eef5f9); }
+    canvas { display:block; width:100%; height:auto; }
+    .formula { text-align:center; font-size:1.1rem; padding:.5rem; }
+    code { background:var(--soft); padding:.1rem .3rem; border-radius:4px; }
+  </style>
+</head>
+<body>
+<main>
+  <section>
+    <h1>有限体上の楕円曲線</h1>
+    <p class="lead">実数平面の連続した曲線を、整数の余りの世界へ移します。</p>
+    <p class="formula"><code>y² ≡ x³ + x + 1 (mod p)</code></p>
+    <p>曲線を線として描くのではなく、式を満たす整数の組だけを点として表示します。</p>
+  </section>
+  <section class="controls">
+    <label>素数 p（mod pの世界）
+      <input id="prime" type="range" min="0" max="2" step="1" value="0">
+      <output id="primeValue">5</output>
+    </label>
+  </section>
+  <section>
+    <div id="stage" aria-label="有限体上の点集合"></div>
+    <p id="readout"></p>
+  </section>
+  <section>
+    <h2>観察すること</h2>
+    <ul>
+      <li>実数平面のような連続した線ではなく、点の集まりになります。</li>
+      <li>pを変えると、式を満たす点の数と配置が変わります。</li>
+      <li>表示されている点は、すべて整数の余りで表されています。</li>
+    </ul>
+    <p class="note">このモデルでは点の存在を見ます。次の段階で、点と点を足す計算を追加します。</p>
+  </section>
+</main>
+<script>
+(() => {
+  const primes = [5, 7, 11];
+  const stage = document.getElementById("stage");
+  const slider = document.getElementById("prime");
+  const primeValue = document.getElementById("primeValue");
+  const readout = document.getElementById("readout");
+  const scene = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(-1,1,1,-1,.1,10);
+  camera.position.z=5;
+  const renderer = new THREE.WebGLRenderer({antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  stage.appendChild(renderer.domElement);
+  const group = new THREE.Group();
+  scene.add(group);
+  const makeLine = (points,color=0x9aa5b1) => {
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points),
+      new THREE.LineBasicMaterial({color})));
+  };
+  const clear = () => {
+    while(group.children.length) {
+      const item=group.children.pop();
+      item.geometry?.dispose(); item.material?.dispose();
+    }
+  };
+  const point = (x,y,size,color) => {
+    const mesh=new THREE.Mesh(new THREE.CircleGeometry(size,20),
+      new THREE.MeshBasicMaterial({color}));
+    mesh.position.set(x,y,.1); group.add(mesh);
+  };
+  const label = (text,x,y) => {
+    const canvas=document.createElement("canvas");
+    canvas.width=180; canvas.height=56;
+    const ctx=canvas.getContext("2d");
+    ctx.font="bold 22px sans-serif"; ctx.fillStyle="#243b53";
+    ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(text,90,28);
+    const sprite=new THREE.Sprite(new THREE.SpriteMaterial({
+      map:new THREE.CanvasTexture(canvas),transparent:true
+    }));
+    sprite.scale.set(.48,.16,1); sprite.position.set(x,y,.2); group.add(sprite);
+  };
+  function draw() {
+    clear();
+    const p=primes[Number(slider.value)];
+    primeValue.value=p;
+    const margin=.13;
+    const scale=1.65/(p-1);
+    const origin=-.825;
+    for(let i=0;i<p;i++) {
+      const x=origin+i*scale;
+      makeLine([new THREE.Vector3(x,origin,0),new THREE.Vector3(x,origin+(p-1)*scale,0)]);
+      makeLine([new THREE.Vector3(origin,x-origin,0),new THREE.Vector3(origin+(p-1)*scale,x-origin,0)]);
+    }
+    const points=[];
+    for(let x=0;x<p;x++) for(let y=0;y<p;y++) {
+      const rhs=(x*x*x+x+1)%p;
+      if((y*y)%p===rhs) points.push([x,y]);
+    }
+    for(const [x,y] of points) {
+      const px=origin+x*scale;
+      const py=origin+y*scale;
+      point(px,py,.045,0x2f855a);
+    }
+    const first=points[0];
+    if(first) label(`(${first[0]},${first[1]})`,origin+first[0]*scale+.18,origin+first[1]*scale+.12);
+    readout.textContent=`mod ${p}：${points.length}個の点　（x,yは0〜${p-1}の整数）`;
+  }
+  function resize(){
+    const width=Math.max(stage.clientWidth,320);
+    const height=Math.max(Math.min(width*.58,500),320);
+    renderer.setSize(width,height,false);
+    const aspect=width/height;
+    const h=1.05; const w=Math.max(1.05,h*aspect);
+    camera.left=-w; camera.right=w; camera.top=h; camera.bottom=-h;
+    camera.updateProjectionMatrix();
+  }
+  slider.addEventListener("input",draw);
+  draw(); resize(); window.addEventListener("resize",resize);
+  renderer.setAnimationLoop(()=>renderer.render(scene,camera));
+})();
+</script>
+</body>
+</html>

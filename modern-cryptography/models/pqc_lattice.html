@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PQCと格子・誤差のモデル</title>
+  <style>
+    :root { --ink:#243b53; --muted:#52606d; --line:#d9e2ec; --soft:#eef5f9; --accent:#276749; }
+    * { box-sizing:border-box; } body { margin:0; background:#f5f7fa; color:var(--ink);
+      font-family:"Yu Gothic UI","Noto Sans JP",sans-serif; line-height:1.7; }
+    main { max-width:900px; margin:auto; padding:1.2rem; } section { background:white;
+      border:1px solid var(--line); border-radius:12px; padding:1rem 1.2rem; margin-bottom:1rem; }
+    h1,h2 { line-height:1.35; } .lead,.note { color:var(--muted); } a { color:#486581; font-weight:700; }
+    .controls { display:flex; gap:1rem; flex-wrap:wrap; align-items:center; }
+    label { display:flex; gap:.45rem; align-items:center; } input { accent-color:var(--accent); }
+    svg { display:block; width:100%; height:auto; border:1px solid var(--line); border-radius:8px; background:#fbfdff; }
+    .legend { display:flex; gap:1rem; flex-wrap:wrap; font-size:.92rem; color:var(--muted); }
+    .dot { display:inline-block; width:.8rem; height:.8rem; border-radius:50%; vertical-align:-.05rem; margin-right:.2rem; }
+    .green { background:#276749; } .red { background:#c53030; }
+    .box { padding:.7rem; background:var(--soft); border-radius:8px; }
+  </style>
+</head>
+<body>
+<main>
+  <section>
+    <h1>PQC：少しずれた手がかりから秘密を守る</h1>
+    <p class="lead">未来の計算機にも負けにくい暗号を考えるための、やさしい模型です。</p>
+    <p><a href="../index.html">← 本体教材（目次）へ戻る</a></p>
+  </section>
+  <section>
+    <h2>秘密の規則に、わざと「ずれ」を混ぜる</h2>
+    <div class="box">
+      <strong>このモデルでしていること</strong>
+      <ol>
+        <li>アリスが、秘密の規則を一つ決めます。</li>
+        <li>その規則から手がかりを作り、少しだけずらして送ります。</li>
+        <li>攻撃者が、ずれた手がかりだけから秘密の規則を当てられるか考えます。</li>
+      </ol>
+      <p>緑は「本当の規則に沿う目印」、赤は「攻撃者に見せる、少しずれた手がかり」です。</p>
+    </div>
+    <div class="controls">
+      <label>手がかりのずれ <input id="noise" type="range" min="0" max="7" value="2"><output id="noiseValue">2</output></label>
+      <button id="reset">別の手がかりにする</button>
+      <button id="answer">秘密の規則を見る</button>
+    </div>
+    <svg id="plot" viewBox="0 0 760 390" role="img" aria-label="格子点と誤差を含む観測点"></svg>
+    <div class="legend"><span><i class="dot green"></i>格子点（候補）</span><span><i class="dot red"></i>観測された点</span></div>
+  </section>
+  <section>
+    <h2>この図の読み方</h2>
+    <div class="box" id="message"></div>
+    <p>緑の点は、町の中にある<strong>規則正しい目印</strong>です。赤い点は、そこから少しずれた<strong>手がかり</strong>です。</p>
+    <p>秘密を知る人は、ずれ方を含む正しい規則を使って計算できます。一方、秘密を知らない人は、赤い点がどの緑の点から来たのかを一つずつ考えなければなりません。</p>
+    <p id="answerText" class="note">秘密の規則は、まず隠しておきます。赤い手がかりだけを見て、どんな規則か想像してみましょう。</p>
+    <p class="note">実際のLWE（Learning With Errors：誤差付き学習問題）は、もっと高次元の数と数式を使います。この図の目的は、「正しい規則を使う計算」と「ずれた手がかりから規則を当てる計算」を区別することです。</p>
+  </section>
+</main>
+<script>
+(() => {
+  const svg=document.getElementById("plot"), noise=document.getElementById("noise");
+  const value=document.getElementById("noiseValue"), message=document.getElementById("message");
+  let seed=17;
+  const ns="http://www.w3.org/2000/svg";
+  const add=(tag,attrs,parent=svg)=>{const e=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);parent.appendChild(e);return e;};
+  function render(){
+    const n=Number(noise.value); value.textContent=n; svg.replaceChildren();
+    for(let x=40;x<=720;x+=34) add("line",{x1:x,y1:20,x2:x,y2:360,stroke:"#d9e2ec","stroke-width":1});
+    for(let y=20;y<=360;y+=34) add("line",{x1:25,y1:y,x2:735,y2:y,stroke:"#d9e2ec","stroke-width":1});
+    const points=[];
+    for(let i=0;i<=20;i++){
+      const x=40+i*34, y=330-i*14;
+      points.push({x,y});
+      add("circle",{cx:x,cy:y,r:4,fill:"#276749"});
+    }
+    add("line",{x1:40,y1:330,x2:720,y2:50,stroke:"#91b5a3","stroke-dasharray":"6 6"});
+    const target=points[(seed%15)+3], oy=target.y-(n*6);
+    add("circle",{cx:target.x+17,cy:oy,r:8,fill:"#c53030"});
+    add("line",{x1:target.x+17,y1:target.y,x2:target.x+17,y2:oy,stroke:"#c53030","stroke-width":2});
+    message.textContent=n===0 ? "ずれがないので、赤い手がかりは緑の目印に重なります。秘密の規則を見つける手がかりがそのまま見えています。" :
+      `ずれを ${n} 段階混ぜました。秘密を知らない人には、赤い手がかりと緑の目印の対応が分かりにくくなります。`;
+  }
+  noise.addEventListener("input",render);
+  document.getElementById("reset").addEventListener("click",()=>{seed=(seed*13+5)%97;render();});
+  document.getElementById("answer").addEventListener("click",()=>{
+    document.getElementById("answerText").textContent="この模型の秘密の規則は、緑の点を結ぶ斜めの規則です。実際のPQCでは、このような単純な直線ではなく、もっと大きく複雑な数の組を使います。";
+  });
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>有限体上の点の足し算 | 現代暗号の基礎</title>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <style>
+    :root { --ink:#243b53; --muted:#52606d; --line:#d9e2ec; --soft:#eef5f9; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#f5f7fa; color:var(--ink);
+      font-family:"Yu Gothic UI","Noto Sans JP",sans-serif; line-height:1.7; }
+    main { max-width:940px; margin:auto; padding:1.25rem; }
+    section { background:#fff; border:1px solid var(--line); border-radius:12px;
+      padding:1rem 1.2rem; margin-bottom:1rem; }
+    h1,h2 { line-height:1.35; }
+    h1 { margin:.2rem 0; }
+    .lead,.note { color:var(--muted); }
+    .controls { display:flex; flex-wrap:wrap; gap:1rem; align-items:end; }
+    label { display:grid; gap:.3rem; font-weight:700; min-width:180px; }
+    select { font:inherit; padding:.45rem; border:1px solid #bcccdc; border-radius:6px; }
+    #stage { width:100%; min-height:430px; border-radius:10px; overflow:hidden;
+      background:linear-gradient(#f8fbff,#eef5f9); }
+    canvas { display:block; width:100%; height:auto; }
+    output { display:block; background:var(--soft); border-radius:6px; padding:.7rem;
+      font-family:Consolas,monospace; white-space:pre-wrap; overflow-wrap:anywhere; }
+    code { background:var(--soft); padding:.1rem .3rem; border-radius:4px; }
+    a { color:#486581; font-weight:700; }
+  </style>
+</head>
+<body>
+<main>
+  <section>
+    <h1>有限体上の点の足し算</h1>
+    <p class="lead">座標を普通に足すのではなく、曲線上の点から別の点を計算します。</p>
+    <p><a href="../index.html">← 本体教材（目次）へ戻る</a></p>
+    <p>曲線：<code>y² ≡ x³+x+1 (mod 5)</code></p>
+  </section>
+  <section class="controls">
+    <label>点P
+      <select id="pointP"></select>
+    </label>
+    <label>点Q
+      <select id="pointQ"></select>
+    </label>
+  </section>
+  <section>
+    <div id="stage" aria-label="有限体上の点の足し算"></div>
+    <output id="calculation"></output>
+  </section>
+  <section>
+    <h2>計算の意味</h2>
+    <p>普通の数では <code>2+3=5</code> のように、同じ数の世界で別の数を作ります。このモデルでは、数の代わりに点を使い、<code>P+Q</code> という新しい点を作ります。</p>
+    <p>実数平面では直線と第三の交点を使いました。有限体では、直線を描く代わりに、傾きと座標の式を <code>mod 5</code> で計算します。</p>
+    <p>点の足し算と呼ぶのは、結果も曲線上に残り、何もしない点 <code>O</code> や反対の点 <code>−P</code> があり、普通の足し算と同じ役割を持つからです。</p>
+    <p class="note">小さな例では計算をすべて追えます。次のECDLPでは、この足し算を何度も繰り返すスカラー倍へ進みます。</p>
+  </section>
+</main>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const p = 5;
+  const points = [];
+  for (let x=0;x<p;x++) for (let y=0;y<p;y++)
+    if ((y*y)%p === (x*x*x+x+1)%p) points.push({x,y});
+  const pointName = (pt) => `(${pt.x},${pt.y})`;
+  const inv = (value) => {
+    const v=((value%p)+p)%p;
+    for(let i=1;i<p;i++) if((v*i)%p===1) return i;
+    return null;
+  };
+  function fillSelect(select, selected) {
+    select.innerHTML="";
+    points.forEach((pt,index) => {
+      const option=document.createElement("option");
+      option.value=index; option.textContent=pointName(pt);
+      if(index===selected) option.selected=true;
+      select.appendChild(option);
+    });
+  }
+  fillSelect($("pointP"),0);
+  fillSelect($("pointQ"),2);
+  const scene=new THREE.Scene();
+  const camera=new THREE.OrthographicCamera(-1,1,1,-1,.1,10);
+  camera.position.z=5;
+  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  $("stage").appendChild(renderer.domElement);
+  const group=new THREE.Group(); scene.add(group);
+  function clear(){while(group.children.length){const item=group.children.pop();
+    item.geometry?.dispose();item.material?.dispose();}}
+  function line(a,b,color=0x9aa5b1){
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(a.x,a.y,0),new THREE.Vector3(b.x,b.y,0)
+    ]),new THREE.LineBasicMaterial({color})));
+  }
+  function dot(pt,color){
+    const mesh=new THREE.Mesh(new THREE.CircleGeometry(.075,20),
+      new THREE.MeshBasicMaterial({color}));
+    mesh.position.set(pt.x,pt.y,.1); group.add(mesh);
+  }
+  function label(text,x,y,color){
+    const canvas=document.createElement("canvas");canvas.width=160;canvas.height=56;
+    const ctx=canvas.getContext("2d");ctx.font="bold 22px sans-serif";
+    ctx.fillStyle=color;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(text,80,28);
+    const sprite=new THREE.Sprite(new THREE.SpriteMaterial({
+      map:new THREE.CanvasTexture(canvas),transparent:true
+    }));
+    sprite.scale.set(.5,.18,1);sprite.position.set(x,y,.2);group.add(sprite);
+  }
+  function draw(){
+    clear();
+    const scale=1.65/(p-1), origin=-.825;
+    const xy=(pt)=>({x:origin+pt.x*scale,y:origin+pt.y*scale});
+    for(let i=0;i<p;i++){
+      const pos=origin+i*scale;
+      line({x:pos,y:origin},{x:pos,y:origin+(p-1)*scale});
+      line({x:origin,y:pos},{x:origin+(p-1)*scale,y:pos});
+    }
+    points.forEach(pt=>dot(xy(pt),0x9aa5b1));
+    const P=points[Number($("pointP").value)];
+    const Q=points[Number($("pointQ").value)];
+    dot(xy(P),0xd64545);dot(xy(Q),0xd64545);
+    label("P",xy(P).x+.13,xy(P).y+.13,"#c53030");
+    label("Q",xy(Q).x+.13,xy(Q).y+.13,"#c53030");
+    if(P.x===Q.x && P.y===Q.y){
+      $("calculation").textContent="同じ点の2倍は、次の段階で扱います。別の点を選んでください。";
+      return;
+    }
+    const denominator=(Q.x-P.x+p)%p;
+    const inverse=inv(denominator);
+    if(inverse===null){
+      $("calculation").textContent="この組では分母の逆数が存在しません。特殊な場合として後で扱います。";
+      return;
+    }
+    const slope=((Q.y-P.y)*inverse)%p;
+    const x3=((slope*slope-P.x-Q.x)%p+p)%p;
+    const y3=((slope*(P.x-x3)-P.y)%p+p)%p;
+    const R={x:x3,y:y3};
+    dot(xy(R),0x2f855a);label("P+Q",xy(R).x+.18,xy(R).y-.16,"#276749");
+    $("calculation").textContent=
+      `P=${pointName(P)}, Q=${pointName(Q)}\n`+
+      `傾き m=(yQ−yP)/(xQ−xP) = ${slope} (mod 5)\n`+
+      `x3=m²−xP−xQ = ${x3} (mod 5)\n`+
+      `y3=m(xP−x3)−yP = ${y3} (mod 5)\n`+
+      `P+Q=(${x3},${y3})`;
+  }
+  function resize(){
+    const width=Math.max($("stage").clientWidth,320);
+    const height=Math.max(Math.min(width*.58,500),320);
+    renderer.setSize(width,height,false);
+    const aspect=width/height;const h=1.05;const w=Math.max(1.05,h*aspect);
+    camera.left=-w;camera.right=w;camera.top=h;camera.bottom=-h;
+    camera.updateProjectionMatrix();
+  }
+  $("pointP").addEventListener("change",draw);$("pointQ").addEventListener("change",draw);
+  draw();resize();window.addEventListener("resize",resize);
+  renderer.setAnimationLoop(()=>renderer.render(scene,camera));
+})();
+</script>
+</body>
+</html>

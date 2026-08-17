@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>量子計算の一体化モデル | 現代暗号の基礎</title>
+  <style>
+    :root{--bg:#07131f;--panel:#0d2233;--line:#28506b;--text:#e8f1f7;--muted:#a9c2d2;--cyan:#45d4ff;--green:#53e0aa;--yellow:#ffe66d;--red:#ff7180}
+    *{box-sizing:border-box}body{margin:0;background:#06101a;color:var(--text);font-family:"Yu Gothic UI","Noto Sans JP",sans-serif;line-height:1.65}
+    main{max-width:1180px;margin:auto;padding:1.2rem}section{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1rem}
+    h1,h2,h3{line-height:1.3}h1{color:#fff}.lead,.note{color:var(--muted)}a{color:var(--cyan);font-weight:700}
+    .goal{border-left:4px solid var(--yellow);background:#182b31;padding:.7rem}.steps{display:flex;gap:.45rem;flex-wrap:wrap;margin:.8rem 0}.steps button,.controls button{font:inherit;border:1px solid var(--line);border-radius:6px;padding:.5rem .75rem;background:#123148;color:var(--text);cursor:pointer}.steps button.active,.controls button.primary{background:var(--green);color:#062017;border-color:var(--green)}button:disabled{opacity:.45;cursor:default}
+    .stage{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:.7rem}.card{background:#0a1b2a;border:1px solid var(--line);border-radius:8px;padding:.7rem}.card h3{margin:.1rem 0 .5rem;color:var(--cyan)}
+    svg{display:block;width:100%;height:auto;background:#06101a;border:1px solid var(--line);border-radius:6px}.formula{font-family:Consolas,monospace;white-space:pre-wrap;color:#d8f3ff}
+    .controls{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}.stageLabel{color:var(--yellow);font-weight:700}.explain{font-size:1.05rem}.small{font-size:.9rem;color:var(--muted)}
+    table{border-collapse:collapse;width:100%;margin-top:.7rem}th,td{border:1px solid var(--line);padding:.35rem .5rem;text-align:center}th{background:#123148;color:#d8f3ff}
+    .result{font-size:1.2rem;color:var(--green);font-weight:700;min-height:2rem}.warning{color:var(--yellow)}
+    @media(max-width:850px){.stage{grid-template-columns:1fr}.stage .card:nth-child(2){order:-1}}
+  </style>
+</head>
+<body>
+<main>
+  <section>
+    <h1>量子計算の一体化モデル</h1>
+    <p class="lead">一つの量子状態を、量子回路・状態ベクトル・振幅・確率・測定の5つの見方で同時に追います。</p>
+    <p><a href="../index.html">← 本体教材（目次）へ戻る</a></p>
+    <div class="goal"><strong>問題：</strong>4候補 <code>0, 1, 2, 3</code> のうち、正解は <strong>3</strong>。重ね合わせ → オラクル → 干渉 → 測定の順に、同じ状態がどう変わるか観察します。</div>
+  </section>
+  <section>
+    <div class="steps">
+      <button data-stage="0" class="active">① 準備</button>
+      <button data-stage="1">② 印付け</button>
+      <button data-stage="2">③ 干渉</button>
+      <button data-stage="3">④ 測定</button>
+    </div>
+    <div class="controls">
+      <button id="prev">← 前</button><button id="next" class="primary">次 →</button><button id="play">▶ 自動再生</button><button id="reset">最初から</button>
+      <span id="stageLabel" class="stageLabel"></span>
+    </div>
+    <p id="explain" class="explain"></p>
+    <div class="stage">
+      <div class="card"><h3>量子回路</h3><svg id="circuit" viewBox="0 0 420 250" aria-label="量子回路"></svg><p id="circuitText" class="small"></p></div>
+      <div class="card"><h3>状態ベクトルの動き</h3><svg id="vector" viewBox="0 0 520 400" aria-label="状態ベクトルの幾何表示"></svg><p class="small">横軸：均等な状態 |b⟩　縦軸：正解方向へ近づく成分</p></div>
+      <div class="card"><h3>振幅 → 測定確率</h3><svg id="bars" viewBox="0 0 420 300" aria-label="振幅と確率"></svg><p id="barText" class="small"></p></div>
+    </div>
+    <div class="card" style="margin-top:.7rem"><h3 id="operation"></h3><div id="formula" class="formula"></div></div>
+    <table><thead><tr><th>候補</th><th>振幅</th><th>振幅²（測定確率）</th></tr></thead><tbody id="rows"></tbody></table>
+    <p id="result" class="result"></p>
+  </section>
+  <section>
+    <h2>このモデルの読み方</h2>
+    <ol>
+      <li><strong>回路：</strong>どの操作を実行しているかを見る。</li>
+      <li><strong>中央：</strong>状態全体が、均等な方向から正解方向へ回転する様子を見る。</li>
+      <li><strong>右：</strong>振幅の符号と高さを見る。確率は振幅を2乗して求める。</li>
+      <li><strong>表：</strong>同じ状態を数値で確かめる。</li>
+    </ol>
+    <p class="note">これは4候補のグローバー探索を正確に計算する学習用モデルです。実際の量子装置を再現するものではありませんが、回路・ベクトル・振幅・確率・測定は同じ状態データから同期して描画しています。</p>
+  </section>
+  <section>
+    <h2>暗号への接続</h2>
+    <div class="card"><p><strong>グローバー：</strong>正しい鍵かを判定できる候補探索を、およそ <code>√N</code> 回の規模にする可能性があります。</p><p><strong>ショア：</strong>周期を見つけることで、RSAの素因数分解やECCの離散対数に関係する逆算を速くする可能性があります。</p><p class="note">量子コンピューターは暗号文を直接読むのではなく、暗号の安全性が頼る数学の問題を量子アルゴリズムで解く可能性があります。</p></div>
+  </section>
+</main>
+<script>
+(() => {
+  const $=id=>document.getElementById(id), NS="http://www.w3.org/2000/svg";
+  const make=(tag,attrs,parent)=>{const e=document.createElementNS(NS,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));parent.append(e);return e;};
+  const states=[
+    {label:"① 準備 / 均等な重ね合わせ",explain:"4候補を同じ振幅で準備します。まだ正解は目立ちません。",operation:"均等な状態を作る",formula:"|ψ⟩ = 0.5|0⟩ + 0.5|1⟩ + 0.5|2⟩ + 0.5|3⟩\n各確率：0.5² = 25%",a:[.5,.5,.5,.5],circuit:"準備"},
+    {label:"② 印付け / オラクル",explain:"オラクルは正解3だけの波の向きを反転します。確率はまだ変わりません。",operation:"正解の振幅だけを反転する",formula:"0.5, 0.5, 0.5, -0.5\n(-0.5)² = 25% なので、まだ区別できない",a:[.5,.5,.5,-.5],circuit:"オラクル"},
+    {label:"③ 干渉 / 平均を鏡にする",explain:"平均0.25を鏡にして全体を反転します。外れの波は消え、正解の波が1.0になります。",operation:"拡散操作：平均を基準に反転する",formula:"平均=(0.5+0.5+0.5-0.5)÷4=0.25\n外れ：2×0.25−0.5=0\n正解：2×0.25−(-0.5)=1.0",a:[0,0,0,1],circuit:"拡散"},
+    {label:"④ 測定 / 一つの結果を読む",explain:"確率を整えてから測定します。正解3だけが100%なので、3を読み取ります。",operation:"量子状態を測定する",formula:"候補0,1,2：0²=0%\n候補3：1.0²=100%",a:[0,0,0,1],circuit:"測定"}
+  ];
+  let stage=0,timer=null;
+  function text(x,y,value,attrs,parent){const t=make("text",{x,y,...attrs},parent);t.textContent=value;return t;}
+  function renderCircuit(s){
+    const svg=$("circuit");
+    svg.replaceChildren();
+    const ys=[65,125,185];
+    ys.forEach(y=>make("line",{x1:45,y1:y,x2:380,y2:y,stroke:"#a9c2d2","stroke-width":2},svg));
+    text(12,70,"q0",{fill:"#a9c2d2","font-size":15},svg);
+    text(12,130,"q1",{fill:"#a9c2d2","font-size":15},svg);
+    text(12,190,"q2",{fill:"#a9c2d2","font-size":15},svg);
+    const gates=[["H",75,0],["H",75,1],["H",75,2],["Oracle",185,0],["Diffusion",285,0],["M",360,0]];
+    gates.forEach(gate=>{
+      const label=gate[0], x=gate[1], row=gate[2];
+      const active=(s.circuit==="準備"&&x===75)||(s.circuit==="オラクル"&&x===185)||(s.circuit==="拡散"&&x===285)||(s.circuit==="測定"&&x===360);
+      const width=label.length>2?72:36;
+      if(label==="H"){
+        make("rect",{x:x-width/2,y:ys[row]-18,width,height:36,fill:active?"#53e0aa":"#123148",stroke:active?"#53e0aa":"#45d4ff"},svg);
+        text(x-7,ys[row]+6,label,{fill:active?"#062017":"#e8f1f7","font-size":16},svg);
+      }else{
+        text(x-width/2,35,label,{fill:active?"#53e0aa":"#a9c2d2","font-size":14},svg);
+        make("rect",{x:x-width/2,y:ys[0]-14,width,height:ys[2]-ys[0]+28,fill:"none",stroke:active?"#53e0aa":"#28506b","stroke-width":active?3:1,"stroke-dasharray":active?"":"4 3"},svg);
+      }
+    });
+    $("circuitText").textContent=s.circuit==="準備"?"Hゲートで均等な重ね合わせを準備します。":s.circuit==="オラクル"?"Oracle：正解3の位相（振幅の向き）だけを反転します。":s.circuit==="拡散"?"Diffusion：平均を基準に全体を反転します。":"最後に測定し、3を読み取ります。";
+  }
+  function renderVector(a){
+    const svg=$("vector");svg.replaceChildren();const ox=260,oy=215,scale=135;
+    make("line",{x1:60,y1:oy,x2:470,y2:oy,stroke:"#28506b","stroke-width":2},svg);make("line",{x1:ox,y1:55,x2:ox,y2:370,stroke:"#28506b","stroke-width":2},svg);
+    text(450,oy-8,"|b⟩",{fill:"#45d4ff","font-size":17},svg);text(ox+8,70,"正解方向成分",{fill:"#ffe66d","font-size":14},svg);
+    const b=[.5,.5,.5,.5], k=[0,0,0,1], dot=(u,v)=>u.reduce((s,x,i)=>s+x*v[i],0),bd=dot(k,b),u=k.map((x,i)=>(x-bd*b[i])/Math.sqrt(1-bd*bd));
+    const px=dot(a,b),py=dot(a,u),tx=dot(k,b),ty=dot(k,u),x=ox+px*scale,y=oy-py*scale;
+    make("line",{x1:ox,y1:oy,x2:ox+tx*scale,y2:oy-ty*scale,stroke:"#ffe66d","stroke-width":4,"stroke-dasharray":"7 5"},svg);make("line",{x1:ox,y1:oy,x2:x,y2:y,stroke:"#53e0aa","stroke-width":6},svg);make("circle",{cx:x,cy:y,r:9,fill:"#53e0aa"},svg);
+    text(ox+tx*scale-25,oy-ty*scale-12,"|k⟩（正解）",{fill:"#ffe66d","font-size":14},svg);text(x-25,y-15,"現在",{fill:"#53e0aa","font-size":14},svg);
+    text(75,350,`現在の座標：(${px.toFixed(2)}, ${py.toFixed(2)})`,{fill:"#a9c2d2","font-size":15},svg);
+  }
+  function renderBars(a){
+    const svg=$("bars");svg.replaceChildren();const base=150,h=75;
+    make("line",{x1:30,y1:base,x2:390,y2:base,stroke:"#a9c2d2","stroke-width":2},svg);
+    a.forEach((v,i)=>{const x=55+i*85,hh=Math.abs(v)*h;make("rect",{x:x-18,y:v>=0?base-hh:base,width:36,height:hh,fill:v<0?"#ff7180":"#45d4ff"},svg);text(x-8,185,`${i}`,{fill:"#e8f1f7","font-size":16},svg);text(x-16,v<0?base+hh+20:base-hh-8,`${v}`,{fill:v<0?"#ff7180":"#45d4ff","font-size":14},svg);});text(35,25,"振幅（上下）",{fill:"#a9c2d2","font-size":14},svg);$("barText").textContent="右の棒は振幅。測定確率は、この値を2乗して表の中で確認します。";
+  }
+  function render(){
+    const s=states[stage];$("stageLabel").textContent=s.label;$("explain").textContent=s.explain;$("operation").textContent=s.operation;$("formula").textContent=s.formula;$("prev").disabled=stage===0;$("next").disabled=stage===3;
+    document.querySelectorAll(".steps button").forEach((b,i)=>b.classList.toggle("active",i===stage));renderCircuit(s);renderVector(s.a);renderBars(s.a);const rows=$("rows");rows.replaceChildren();s.a.forEach((v,i)=>{const tr=document.createElement("tr");tr.innerHTML=`<td>${i}${i===3?"（正解）":""}</td><td>${v}</td><td>${(v*v*100).toFixed(0)}%</td>`;rows.append(tr);});$("result").textContent=stage===3?"測定結果：候補3（正解）が出ます。":stage===2?"干渉後：正解方向にベクトルが一致し、正解の確率が100%になりました。":"";
+  }
+  document.querySelectorAll(".steps button").forEach(b=>b.onclick=()=>{stage=Number(b.dataset.stage);render();});$("prev").onclick=()=>{if(stage>0){stage--;render();}};$("next").onclick=()=>{if(stage<3){stage++;render();}};$("reset").onclick=()=>{stage=0;render();};$("play").onclick=()=>{if(timer){clearInterval(timer);timer=null;$("play").textContent="▶ 自動再生";return;}stage=0;render();$("play").textContent="⏸ 停止";timer=setInterval(()=>{if(stage===3){clearInterval(timer);timer=null;$("play").textContent="▶ 自動再生";return;}stage++;render();},1800);};render();
+})();
+</script>
+</body>
+</html>

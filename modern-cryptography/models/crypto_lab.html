@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>暗号化ラボ | 現代暗号の基礎</title>
+  <style>
+    :root { --ink:#243b53; --muted:#52606d; --line:#d9e2ec; --soft:#eef5f9; --green:#276749; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#f5f7fa; color:var(--ink);
+      font-family:"Yu Gothic UI","Noto Sans JP",sans-serif; line-height:1.7; }
+    main { max-width:980px; margin:auto; padding:1.25rem; }
+    section { background:#fff; border:1px solid var(--line); border-radius:12px;
+      padding:1rem 1.2rem; margin-bottom:1rem; }
+    h1,h2 { line-height:1.35; }
+    h1 { margin:.2rem 0; }
+    .lead,.note { color:var(--muted); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; }
+    label { display:grid; gap:.3rem; font-weight:700; }
+    input,textarea,button { font:inherit; }
+    input,textarea { width:100%; border:1px solid #bcccdc; border-radius:6px; padding:.5rem; }
+    textarea { min-height:4.5rem; resize:vertical; }
+    button { border:0; border-radius:6px; padding:.5rem .8rem; background:var(--ink);
+      color:white; cursor:pointer; margin:.35rem .2rem .35rem 0; }
+    button.secondary { background:#627d98; }
+    output,.result { display:block; margin-top:.6rem; padding:.65rem; background:var(--soft);
+      border-radius:6px; overflow-wrap:anywhere; font-family:Consolas,monospace; white-space:pre-wrap; }
+    .meaning { color:var(--muted); margin-top:.2rem; }
+    code { background:var(--soft); padding:.1rem .3rem; border-radius:4px; }
+    .warning { border-left:4px solid #d64545; padding-left:.8rem; }
+  </style>
+</head>
+<body>
+<main>
+  <section>
+    <h1>暗号化ラボ</h1>
+    <p class="lead">同じ入力でも、方式によって出力の形と秘密の役割が変わります。</p>
+    <p class="warning">ここは学習用です。シフト暗号・XOR・小さなRSAは安全な通信に使えません。AESはブラウザの標準APIを使いますが、実運用の鍵管理は別の課題です。</p>
+  </section>
+
+  <div class="grid">
+    <section>
+      <h2>1. シフト暗号</h2>
+      <p class="meaning">文字を一定数ずらす。秘密はずらす数です。</p>
+      <label>平文 <input id="shiftText" value="CAT"></label>
+      <label>ずらす数 <input id="shiftKey" type="number" min="0" max="25" value="3"></label>
+      <button id="shiftRun">暗号化して復号</button>
+      <output id="shiftOut"></output>
+    </section>
+
+    <section>
+      <h2>2. XOR</h2>
+      <p class="meaning">数字と鍵をXORし、同じ鍵でもう一度XORすると戻ります。</p>
+      <label>平文 <input id="xorText" value="HELLO"></label>
+      <label>1バイトの鍵（0〜255） <input id="xorKey" type="number" min="0" max="255" value="42"></label>
+      <button id="xorRun">暗号化して復号</button>
+      <output id="xorOut"></output>
+    </section>
+
+    <section>
+      <h2>3. 小さなRSA</h2>
+      <p class="meaning">公開鍵で数字を変換し、秘密指数で元に戻します。</p>
+      <label>数字の平文（0〜54） <input id="rsaText" type="number" min="0" max="54" value="7"></label>
+      <button id="rsaRun">暗号化して復号</button>
+      <output id="rsaOut"></output>
+    </section>
+
+    <section>
+      <h2>4. SHA-256ハッシュ</h2>
+      <p class="meaning">復号はせず、入力から固定長の指紋を作ります。</p>
+      <label>入力 <textarea id="hashText">hello</textarea></label>
+      <button id="hashRun">ハッシュを作る</button>
+      <output id="hashOut"></output>
+    </section>
+
+    <section>
+      <h2>5. AES-GCM</h2>
+      <p class="meaning">ブラウザ標準の暗号APIで、データをバイト列へ変換して復号します。</p>
+      <label>平文 <textarea id="aesText">Hello, modern cryptography!</textarea></label>
+      <button id="aesRun">AESで暗号化して復号</button>
+      <output id="aesOut"></output>
+      <p class="note">HTTPSまたはlocalhostで開くと動作します。ブラウザによってはfile://では暗号APIが制限されます。</p>
+    </section>
+  </div>
+
+  <section>
+    <h2>観察のまとめ</h2>
+    <ul>
+      <li>シフト暗号とXORは、入力と同じ種類の小さなデータを変換する模型です。</li>
+      <li>RSAの小例では、暗号文も数字です。</li>
+      <li>ハッシュは暗号文ではなく、固定長の指紋です。</li>
+      <li>AESは長いデータを読めないバイト列へ変え、同じ鍵で復号します。</li>
+    </ul>
+  </section>
+</main>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const enc = new TextEncoder();
+  const dec = new TextDecoder();
+  const hex = (bytes) => [...bytes].map((b) => b.toString(16).padStart(2, "0")).join("");
+  const modPow = (base, exponent, modulus) => {
+    let result = 1;
+    base %= modulus;
+    while (exponent > 0) {
+      if (exponent & 1) result = (result * base) % modulus;
+      base = (base * base) % modulus;
+      exponent = Math.floor(exponent / 2);
+    }
+    return result;
+  };
+
+  function shiftText(text, key) {
+    return [...text.toUpperCase()].map((ch) => {
+      const code = ch.charCodeAt(0);
+      return code >= 65 && code <= 90
+        ? String.fromCharCode(65 + (code - 65 + key + 26) % 26) : ch;
+    }).join("");
+  }
+  $("shiftRun").onclick = () => {
+    const text = $("shiftText").value;
+    const key = Number($("shiftKey").value);
+    const cipher = shiftText(text, key);
+    $("shiftOut").textContent = `暗号文: ${cipher}\n復号: ${shiftText(cipher, -key)}`;
+  };
+
+  $("xorRun").onclick = () => {
+    const bytes = enc.encode($("xorText").value);
+    const key = Number($("xorKey").value) & 255;
+    const cipher = bytes.map((b) => b ^ key);
+    const plain = new Uint8Array(cipher.map((b) => b ^ key));
+    $("xorOut").textContent = `暗号文（16進数）: ${hex(cipher)}\n復号: ${dec.decode(plain)}`;
+  };
+
+  $("rsaRun").onclick = () => {
+    const m = Math.max(0, Math.min(54, Number($("rsaText").value)));
+    const cipher = modPow(m, 3, 55);
+    const plain = modPow(cipher, 27, 55);
+    $("rsaOut").textContent = `公開鍵: (n,e)=(55,3)\n秘密鍵: d=27\n暗号文: ${cipher}\n復号: ${plain}`;
+  };
+
+  $("hashRun").onclick = async () => {
+    const digest = await crypto.subtle.digest("SHA-256", enc.encode($("hashText").value));
+    $("hashOut").textContent = `SHA-256: ${hex(new Uint8Array(digest))}`;
+  };
+
+  $("aesRun").onclick = async () => {
+    if (!crypto.subtle) {
+      $("aesOut").textContent = "Web Crypto APIが利用できません。HTTPSまたはlocalhostで開いてください。";
+      return;
+    }
+    const key = await crypto.subtle.generateKey({ name:"AES-GCM", length:256 }, true, ["encrypt","decrypt"]);
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const cipher = await crypto.subtle.encrypt({ name:"AES-GCM", iv }, key, enc.encode($("aesText").value));
+    const plain = await crypto.subtle.decrypt({ name:"AES-GCM", iv }, key, cipher);
+    $("aesOut").textContent = `暗号文（16進数）: ${hex(new Uint8Array(cipher))}\n復号: ${dec.decode(plain)}\n※鍵は毎回ランダムに生成し、このページ内だけで使っています。`;
+  };
+})();
+</script>
+</body>
+</html>

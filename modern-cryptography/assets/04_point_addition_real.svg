@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 430" role="img" aria-labelledby="title desc">
+  <title id="title">U†тЪ
+n№nіW—</title>
+  <desc id="desc">тЪ
+nPhQ’‹фЪL,	n¤№RgтЪh¤ЏЉR’
+НвW_№LP plus Qkj‹у</desc>
+  <rect width="760" height="430" fill="#fff"/>
+  <line x1="70" y1="215" x2="710" y2="215" stroke="#9aa5b1" stroke-width="1"/>
+  <line x1="360" y1="35" x2="360" y2="390" stroke="#9aa5b1" stroke-width="1"/>
+  <path d="M 95,350 C 155,300 205,245 265,215 C 315,190 340,185 360,190 C 380,195 405,205 450,215 C 515,230 570,205 650,90"
+        fill="none" stroke="#243b53" stroke-width="4"/>
+  <line x1="120" y1="335" x2="650" y2="95" stroke="#d64545" stroke-width="3"/>
+  <circle cx="265" cy="215" r="7" fill="#d64545"/>
+  <circle cx="450" cy="215" r="7" fill="#d64545"/>
+  <circle cx="555" cy="140" r="7" fill="#f0a202"/>
+  <circle cx="555" cy="290" r="7" fill="#2f855a"/>
+  <line x1="555" y1="140" x2="555" y2="290" stroke="#718096" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="247" y="198" font-family="sans-serif" font-size="22" fill="#1f2933">P</text>
+  <text x="457" y="198" font-family="sans-serif" font-size="22" fill="#1f2933">Q</text>
+  <text x="565" y="135" font-family="sans-serif" font-size="22" fill="#975a16">R</text>
+  <text x="565" y="315" font-family="sans-serif" font-size="22" fill="#276749">P + Q</text>
+  <text x="95" y="55" font-family="sans-serif" font-size="24" font-weight="700" fill="#243b53">џpsbg‹‹№nіW—</text>
+  <text x="95" y="82" font-family="sans-serif" font-size="17" fill="#52606d">PhQ’‹фЪ ’ ,	n¤№R ’ 
+Нв</text>
+</svg>

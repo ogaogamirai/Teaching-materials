@@ -1,0 +1,1555 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>現代暗号の基礎</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css"><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"></script>
+  <style>
+    :root { --ink:#1f2933; --muted:#52606d; --line:#d9e2ec; --paper:#fff;
+      --bg:#f5f7fa; --accent:#243b53; --soft:#eaf2f8; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink);
+      font-family:"Yu Gothic UI","Noto Sans JP",sans-serif; line-height:1.8; }
+    .page { max-width:960px; margin:auto; padding:2rem 1rem 4rem; }
+    .hero,.toc,.chapter { background:var(--paper); border:1px solid var(--line);
+      border-radius:12px; padding:1.4rem 1.6rem; margin-bottom:1.25rem;
+      box-shadow:0 6px 20px rgba(36,59,83,.05); }
+    h1 { line-height:1.35; }
+    h2,h3 { line-height:1.4; margin-top:2rem; }
+    .tagline { color:var(--muted); }
+    .toc ol { margin:0; }
+    .toc a { color:var(--accent); }
+    .chapter-meta { color:var(--muted); font-size:.9rem; border-bottom:1px solid var(--line);
+      padding-bottom:.5rem; margin-bottom:1rem; }
+    .chapter-body { max-width:74ch; }
+    blockquote { margin:1rem 0; padding:.7rem 1rem; background:var(--soft);
+      border-left:4px solid var(--accent); }
+    pre { overflow-x:auto; background:#102a43; color:#f0f4f8; padding:1rem;
+      border-radius:8px; }
+    code { font-family:Consolas,"Courier New",monospace; }
+    table { border-collapse:collapse; width:100%; }
+    th,td { border:1px solid var(--line); padding:.45rem .6rem; vertical-align:top; }
+    th { background:var(--soft); text-align:left; }
+    a { color:#486581; }
+    @media print { body { background:#fff; } .hero,.toc,.chapter { box-shadow:none; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <h1>現代暗号の基礎</h1>
+      <p class="tagline">秘密の通信 → 有限体 → RSA → 楕円曲線 → ECDLP → 通信 → PQC</p>
+      <p>中学2年生が、問いと操作を通して現代暗号の理論へ進むMarkdown正本からの統合版。</p>
+      <p>生成日時: 2026-08-17 20:21 +0900</p>
+    </header>
+    <nav class="toc" id="toc" aria-label="章一覧">
+      <h2>目次</h2>
+      <ol><li><a href="#chapter-01">math toolbox</a></li><li><a href="#chapter-02">problem</a></li><li><a href="#chapter-03">rsa</a></li><li><a href="#chapter-04">elliptic curve</a></li><li><a href="#chapter-05">ecdlp</a></li><li><a href="#chapter-06">communication</a></li><li><a href="#chapter-07">quantum computers</a></li><li><a href="#chapter-08">pqc</a></li><li><a href="#chapter-09">compact glossary</a></li><li><a href="#chapter-10">crypto forms and lab</a></li><li><a href="#chapter-11">finite field</a></li></ol>
+    </nav>
+    <section class="chapter" id="chapter-01"><div class="chapter-meta">Chapter 01 · 00_math_toolbox.md</div><div class="chapter-body"><h1>00　暗号を読むための数学の道具箱</h1>
+<h2>この章の役割</h2>
+<p>この章は、暗号の計算に必要な数学を先に準備する章です。</p>
+<p>暗号では難しい公式を突然使うのではなく、</p>
+<pre><code class="language-text">数を分ける → 余りを見る → 逆向きの計算を考える
+→ 座標で点を見る → 点の計算を作る
+</code></pre>
+<p>という順番で道具を組み立てます。</p>
+<h2>到達点と学び方</h2>
+<p>この道具箱は、次の3段階を一つにつなぎます。</p>
+<ol>
+<li><strong>中学の段階</strong>：具体的な数を計算し、図や時計で意味をつかむ。</li>
+<li><strong>高校の段階</strong>：文字を使って規則を一般化し、逆算や証明を行う。</li>
+<li><strong>大学教養の段階</strong>：数の集合と計算規則をひとまとまりの構造として見る。</li>
+</ol>
+<p>難しい記号を先に暗記するのではなく、毎回「何を入力し、どんな規則で計算し、何が分かるのか」を確認します。</p>
+<h2>数学の記号を読んでみる</h2>
+<p>記号を声に出して読めると、式をただの絵ではなく、意味のある文として覚えやすくなります。英字の <code>A</code> や <code>B</code> は特別な読み方を付けず、数学で特に迷いやすい記号だけを確認します。</p>
+<ul>
+<li><code>mod</code>：モッド。余りを使う計算</li>
+<li><code>≡</code>：合同（ごうどう）。modの世界で等しい</li>
+<li><code>φ</code>：ファイ。RSAで使う数を表すギリシャ文字</li>
+<li><code>√</code>：ルート、または平方根（へいほうこん）</li>
+<li><code>×</code>：かける、<code>÷</code>：わる</li>
+<li><code>²</code>：2乗（にじょう）、<code>³</code>：3乗（さんじょう）</li>
+<li><code>∞</code>：無限大（むげんだい）</li>
+</ul>
+<p>主な数学用語も、最初に読み方を確認します。</p>
+<ul>
+<li>素数（そすう）</li>
+<li>合成数（ごうせいすう）</li>
+<li>約数（やくすう）・倍数（ばいすう）</li>
+<li>最大公約数（さいだいこうやくすう）</li>
+<li>逆数（ぎゃくすう）</li>
+<li>剰余（じょうよ）：割り算の余り</li>
+<li>座標（ざひょう）・傾き（かたむき）</li>
+<li>有限体（ゆうげんたい）</li>
+<li>離散対数（りさんたいすう）</li>
+</ul>
+<p>例えば、</p>
+<p>$$
+2^3 \equiv 8 \pmod 5
+$$</p>
+<p>は、「2の3乗は、5を法として8と合同」と読みます。実際には、どちらも <code>mod 5</code> で3です。</p>
+<h2>1. 整数・素数・合成数</h2>
+<h3>これは何か</h3>
+<ul>
+<li><strong>整数</strong>：<code>..., -2, -1, 0, 1, 2, ...</code> のような小数でない数</li>
+<li><strong>素数</strong>：1と自分自身でしか割り切れない、1より大きい整数</li>
+<li><strong>合成数</strong>：素数を掛けて作れる数</li>
+</ul>
+<p>例えば、</p>
+<pre><code class="language-text">2, 3, 5, 7, 11 は素数
+15 = 3 × 5 は合成数
+</code></pre>
+<h3>何に役立つか</h3>
+<p>RSAでは、大きな数を2つの素数から作ります。掛け算で作るのは簡単でも、結果だけから素数を探すのは難しくなる、という差を利用します。</p>
+<h3>小さな練習</h3>
+<p>次の数を素数と合成数に分けてください。</p>
+<pre><code class="language-text">2, 9, 13, 21, 29, 35
+</code></pre>
+<h3>もう一段進む</h3>
+<p>すべての1より大きい整数は、素数の掛け算に分解できます。例えば、</p>
+<p>$$
+60=2\times2\times3\times5=2^2\times3\times5
+$$</p>
+<p>この分解を<strong>素因数分解</strong>といいます。RSAでは、この分解を「作る」方向と「戻す」方向の難しさの差を利用します。</p>
+<h2>2. 約数・倍数・最大公約数</h2>
+<h3>これは何か</h3>
+<p><code>a</code> を割って余りが0になる数を、<code>a</code> の<strong>約数</strong>といいます。<code>a</code> を整数倍してできる数を、<code>a</code> の<strong>倍数</strong>といいます。</p>
+<p>2つの数に共通する約数のうち、最大のものを<strong>最大公約数</strong>といいます。英語では <em>Greatest Common Divisor</em>、略して <strong>GCD</strong> です。</p>
+<pre><code class="language-text">12の約数：1, 2, 3, 4, 6, 12
+18の約数：1, 2, 3, 6, 9, 18
+GCD(12,18) = 6
+</code></pre>
+<h3>何に役立つか</h3>
+<p>RSAでは、公開指数を選ぶときに他の数と共通の約数を持たないことを確認します。GCDは「2つの数がどの程度共通の構造を持つか」を調べる道具です。</p>
+<h3>ユークリッドの互除法</h3>
+<p>大きな数のGCDは、約数を全部書き出さずに求められます。</p>
+<pre><code class="language-text">18 = 12 × 1 + 6
+12 =  6 × 2 + 0
+</code></pre>
+<p>最後の0でない余りが <code>6</code> なので、<code>GCD(18,12)=6</code> です。前の割り算の余りを、次の割り算へ渡す方法が<strong>ユークリッドの互除法</strong>です。</p>
+<p>大学では、これは「同じGCDを保ったまま問題を小さくするアルゴリズム」と見ます。</p>
+<h2>3. 逆算と逆数</h2>
+<h3>これは何か</h3>
+<p>掛け算を逆向きに戻す数が<strong>逆数</strong>です。</p>
+<pre><code class="language-text">2 × 5 = 10
+10 ÷ 5 = 2
+</code></pre>
+<p><code>mod 5</code> の世界では、小数の <code>1/2</code> を使わず、<code>2</code> に掛けて1になる数を探します。</p>
+<pre><code class="language-text">2 × 3 = 6 ≡ 1 (mod 5)
+</code></pre>
+<p>このとき、<code>3</code> は <code>mod 5</code> における <code>2</code> の逆数です。</p>
+<h3>何に役立つか</h3>
+<p>楕円曲線の点加算では、傾きの割り算を <code>mod p</code> の逆数に置き換えます。つまり、逆数は「有限体の中で割り算をする」ための道具です。</p>
+<h3>逆数が存在しない場合</h3>
+<p><code>mod 5</code> では、0以外の数に逆数があります。しかし、<code>mod 6</code> では、</p>
+<pre><code class="language-text">2 × 3 = 6 ≡ 0 (mod 6)
+</code></pre>
+<p>となり、0でない数同士を掛けて0ができます。このため、<code>2</code> に掛けて1になる数はありません。暗号で素数を使う理由の一つは、割り算をできるだけ安定して行うためです。</p>
+<h2>4. べき乗</h2>
+<h3>これは何か</h3>
+<p>同じ数を何度も掛ける計算です。</p>
+<pre><code class="language-text">2³ = 2 × 2 × 2 = 8
+</code></pre>
+<h3>何に役立つか</h3>
+<p>RSAでは、メッセージを公開指数でべき乗して暗号化し、秘密指数でべき乗して復号します。楕円曲線では、点を何度も足す<strong>スカラー倍</strong>が、べき乗に似た役割を持ちます。</p>
+<h3>速く計算する</h3>
+<p><code>2⁸</code> を計算するとき、1回ずつ8回掛ける代わりに、</p>
+<pre><code class="language-text">2 → 2² → 2⁴ → 2⁸
+</code></pre>
+<p>と倍々にすれば少ない手順で計算できます。この考え方を、暗号では高速べき乗や倍々法に使います。</p>
+<h3>指数と逆算</h3>
+<p><code>2^3=8</code> は計算しやすい一方、<code>2^k=32</code> の <code>k</code> を探す問題は、数が大きくなると別の難しさを持ちます。この「順方向の計算」と「逆方向の計算」の差が、後で離散対数問題を理解する準備になります。</p>
+<h2>5. 座標・関数・直線</h2>
+<h3>これは何か</h3>
+<p>座標は、平面上の場所を <code>(x, y)</code> の組で表す方法です。関数は、入力から出力を決める規則です。</p>
+<pre><code class="language-text">y = x + 1
+</code></pre>
+<p>なら、<code>x=2</code> のとき <code>y=3</code> です。</p>
+<p>直線の傾きは、</p>
+<p>$$
+\text{傾き}=\frac{y_2-y_1}{x_2-x_1}
+$$</p>
+<p>で計算します。</p>
+<h3>何に役立つか</h3>
+<p>楕円曲線では、座標 <code>(x,y)</code> が曲線上の点を表します。2点を通る直線の傾きから、点の足し算を導きます。</p>
+<h3>関数を読む</h3>
+<p><code>y=f(x)</code> と書いたとき、<code>f</code> は「入力 <code>x</code> を出力 <code>y</code> に変える規則」の名前です。楕円曲線では、すべての <code>x</code> に対して1つの <code>y</code> を返す普通の関数を作るのではなく、方程式を満たす点の集合を調べます。</p>
+<p>この違いは重要です。</p>
+<pre><code class="language-text">y = x + 1       入力から出力を作る関数
+y² = x³ + ax+b  条件を満たす点を集める方程式
+</code></pre>
+<h3>傾きの意味</h3>
+<p>傾きは、右へ1進んだとき、上下にどれだけ動くかを表します。楕円曲線の点加算では、この傾きを使って次の点を導きます。後で <code>mod p</code> に移ると、普通の小数の傾きではなく、有限体の逆数で計算します。</p>
+<h2>6. <code>mod</code> の入口</h2>
+<h3>これは何か</h3>
+<p><strong><code>mod</code> は、割り算の余りだけを使って計算する方法です。</strong></p>
+<pre><code class="language-text">10 ÷ 7 = 1 あまり 3
+10 mod 7 = 3
+</code></pre>
+<p><code>mod 7</code> では、7を超えると0へ戻ります。</p>
+<pre><code class="language-text">0 → 1 → 2 → 3 → 4 → 5 → 6 → 0
+</code></pre>
+<p>実際に一周の数と整数を動かして確認できます。</p>
+<p><a href="models/mod_clock.html">個別モデル：modの時計（Three.js 2D）</a></p>
+<h3>何に役立つか</h3>
+<p>数の世界を有限個に閉じ込められます。暗号では、計算結果を決められた範囲へ戻しながら、逆算の難しさを作ります。</p>
+<p>詳しい有限体の作り方と、楕円曲線での使い方はchapter 02以降で扱います。</p>
+<h3>合同式を読む</h3>
+<p><code>a ≡ b (mod n)</code> は、「<code>a</code> と <code>b</code> を <code>n</code> で割った余りが同じ」という意味です。</p>
+<pre><code class="language-text">17 ≡ 5 (mod 12)
+</code></pre>
+<p>どちらも12で割ると余りが5です。合同式は、無限にある整数を「同じ余りの仲間」に分ける道具です。</p>
+<h2><code>mod</code> の性質と有用性</h2>
+<h3>1. 周期ができる</h3>
+<p><code>a</code> に <code>n</code> の倍数を足しても、<code>mod n</code> の余りは変わりません。</p>
+<p>$$
+a \equiv a+n \equiv a+2n \pmod n
+$$</p>
+<p>例えば、曜日は7日ごとに繰り返すので、今日から100日後の曜日は <code>100 mod 7</code> だけ調べれば分かります。大きな数を小さな周期へ変換できるのが、modの最初の便利さです。</p>
+<h3>2. 計算の途中で余りに戻せる</h3>
+<p><code>a ≡ b (mod n)</code> なら、足し算と掛け算をしてから余りを取っても、先に余りを取ってから計算しても結果は同じです。</p>
+<p>$$
+(a+c)\bmod n=((a\bmod n)+(c\bmod n))\bmod n
+$$</p>
+<p>$$
+(ac)\bmod n=((a\bmod n)(c\bmod n))\bmod n
+$$</p>
+<p>例えば、</p>
+<pre><code class="language-text">1234 × 56 (mod 7)
+</code></pre>
+<p>を計算するとき、<code>1234 mod 7 = 2</code>、<code>56 mod 7 = 0</code> なので、</p>
+<pre><code class="language-text">2 × 0 = 0 (mod 7)
+</code></pre>
+<p>です。巨大な数をそのまま計算せず、途中で小さくしてよいことが、暗号の計算を可能にします。</p>
+<h3>3. 世界を有限個に閉じ込められる</h3>
+<p><code>mod n</code> では、どんな整数も <code>0, 1, ..., n-1</code> のどれかに置き換えられます。無限個の整数を、n個の「余りの仲間」に分けるのです。</p>
+<pre><code class="language-text">..., -1, n-1, 2n-1, ... → n-1
+...,  0,  n,  2n, ...   → 0
+...,  1, n+1, 2n+1, ... → 1
+</code></pre>
+<p>この性質により、表を作ったり、点の集合を調べたりできます。有限体では、この有限性に加えて、0以外の数の逆数も扱えるようにします。</p>
+<h3>4. 情報を小さくする代わりに、元には戻しにくくなる</h3>
+<p><code>mod 7</code> では、<code>3</code>、<code>10</code>、<code>17</code>、<code>24</code> はすべて同じ余り3です。つまり、modは情報を「同じ余りの仲間」にまとめます。</p>
+<p>これは時計や曜日には便利ですが、元の数を完全に知ることはできません。暗号では、計算を有限の舞台に置きながら、公開された結果から秘密の回数や素因数を逆算しにくくする構造へつなげます。</p>
+<h3>生活・情報技術での例</h3>
+<ul>
+<li>曜日や時刻の繰り返しを計算する</li>
+<li>偶数・奇数を判定する（<code>mod 2</code>）</li>
+<li>バーコードや通信データの検査値を計算する</li>
+<li>AESなどの暗号内部で、有限体の計算を行う</li>
+<li>RSAや楕円曲線暗号で、巨大な計算を小さな余りへ戻す</li>
+</ul>
+<p>ただし、modは丸めや暗号化そのものではありません。<strong>周期を作り、計算を有限の舞台へ移す道具</strong>です。その舞台の上に、有限体やRSA、楕円曲線の規則を組み立てます。</p>
+<h2>7. 道具のつながり</h2>
+<pre><code class="language-text">素数
+  ↓
+mod p の数の世界
+  ↓
+逆数を含む有限体
+  ↓
+座標と曲線
+  ↓
+有限体上の楕円曲線
+  ↓
+点の足し算とECDLP
+</code></pre>
+<h2>大学教養への橋渡し</h2>
+<p>大学の数学では、数だけでなく「集合」と「その上の計算規則」を研究します。</p>
+<ul>
+<li><code>mod p</code> の数の集合と、足し算・掛け算</li>
+<li>座標平面上の点の集合と、点の足し算</li>
+<li>それぞれの計算で、閉じているか、逆元があるか</li>
+</ul>
+<p>この見方を抽象化したものが、群や体です。今は定義を完全に証明しなくても、<strong>同じ規則を保ったまま別の対象へ移せる</strong>ことを意識してください。これが有限体上の楕円曲線を理解するための入口です。</p>
+<h2>教え返し</h2>
+<p>次の3つを、図や小さな数を使って誰かに説明してください。</p>
+<ol>
+<li>素数と合成数の違いは何か。</li>
+<li><code>mod 7</code> で <code>6+3</code> が2になるのはなぜか。</li>
+<li>楕円曲線で割り算をするとき、なぜ普通の小数ではなくmodの逆数を使うのか。</li>
+</ol>
+<p>この3つを説明できれば、次の有限体の章へ進む準備ができています。</p>
+<h3><code>mod</code> の性質を教え返す課題</h3>
+<p><strong>課題</strong>：なぜ <code>1234×56 (mod 7)</code> を、先に小さい余りへ変えて計算してよいのでしょうか。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>余りが同じ数は、modの世界では同じ仲間だからです。1234はmod 7で2、56は0なので、1234×56の代わりに2×0を計算できます。足し算や掛け算では、途中で余りに戻しても最後の余りが変わりません。</p>
+</blockquote>
+<p><strong>課題</strong>：modの存在意義を一言で説明してください。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>modは、無限にある整数を有限個の余りの仲間へまとめ、周期を持つ計算の舞台を作る道具です。暗号では、巨大な計算をその舞台で扱い、公開された結果から秘密を逆算する難しさにつなげます。</p>
+</blockquote>
+<h2>練習問題の解答と理由</h2>
+<h3>問1：素数と合成数</h3>
+<pre><code class="language-text">2, 9, 13, 21, 29, 35
+</code></pre>
+<p><strong>解答</strong></p>
+<pre><code class="language-text">素数：2, 13, 29
+合成数：9, 21, 35
+</code></pre>
+<p><strong>理由</strong></p>
+<ul>
+<li><code>9 = 3 × 3</code></li>
+<li><code>21 = 3 × 7</code></li>
+<li><code>35 = 5 × 7</code></li>
+</ul>
+<p>なので、9・21・35は1と自分自身以外でも割り切れます。2・13・29は、平方根までの素数で割り切れないため素数です。</p>
+<h3>問2：<code>mod 7</code></h3>
+<pre><code class="language-text">6 + 3 ≡ 2 (mod 7)
+</code></pre>
+<p><strong>証明</strong></p>
+<pre><code class="language-text">6 + 3 = 9
+9 = 7 × 1 + 2
+</code></pre>
+<p>したがって、9を7で割った余りは2です。</p>
+<h3>問3：<code>mod 5</code>の逆数</h3>
+<pre><code class="language-text">2 × 3 = 6 ≡ 1 (mod 5)
+</code></pre>
+<p><strong>証明</strong></p>
+<p>6を5で割った余りは1なので、<code>3</code>は<code>mod 5</code>での2の逆数です。普通の数の <code>1/2</code> を小数で計算するのではなく、同じ有限体の中で1になる相手を探しています。</p>
+<h2>Teach-back課題と模範回答</h2>
+<h3>課題1：素因数分解</h3>
+<p><strong>課題</strong>：「素数を掛けて数を作ること」と「その数を素因数分解すること」の違いを説明してください。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>3と5を掛けて15を作るのはすぐできます。しかし15だけを見て、元の素数3と5を探すのが素因数分解です。小さい数なら簡単ですが、大きな数では探す候補が増えるため、作る方向と戻す方向の難しさが違います。RSAはこの差を利用します。</p>
+</blockquote>
+<h3>課題2：mod</h3>
+<p><strong>課題</strong>：「modは小数を扱う方法です」と言う人に、どのように訂正しますか。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>modは小数を扱う方法ではなく、整数を割ったときの余りを使う方法です。<code>10 mod 7</code>は、10を7で割った余りなので3です。暗号では、このように数の世界を有限個に閉じ込めます。</p>
+</blockquote>
+<h3>課題3：有限体</h3>
+<p><strong>課題</strong>：有限体を「時計」と「逆数」の両方を使って説明してください。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>有限体は、使う数を有限個に決め、その中で足し算・引き算・掛け算・割り算ができる世界です。時計のように一定の数で一周し、例えばmod 5では2×3が6ではなく1になります。0以外の数にこのような逆数があることが、点の計算や暗号を安定させます。</p>
+</blockquote>
+<h3>課題4：大学教養への接続</h3>
+<p><strong>課題</strong>：「有限体」と「楕円曲線上の点」は、どちらも何を研究している対象ですか。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>どちらも、対象の集まりと、その上で定めた計算規則を研究しています。有限体では数の足し算や掛け算を考え、楕円曲線では条件を満たす点と点の足し算を考えます。対象は違っても、規則が閉じているか、逆元があるかを調べるという見方が共通しています。</p>
+</blockquote></div></section><section class="chapter" id="chapter-02"><div class="chapter-meta">Chapter 02 · 01_problem.md</div><div class="chapter-body"><h1>01　秘密の通信には何が必要か</h1>
+<h2>この章の問い</h2>
+<p>あなたが友だちに秘密のメッセージを送りたいとします。途中の人に読まれず、書き換えられず、相手が本物だと確認するには何が必要でしょうか。</p>
+<blockquote>
+<p>図の予定: 送信者・受信者・攻撃者を配置した2D通信図。3D教材カタログは
+<a href="https://ogaogamirai.github.io/public/3d-commons/">3D Commons</a> から開けます。</p>
+</blockquote>
+<h2>まず言葉をそろえる</h2>
+<ul>
+<li><strong>平文</strong>：送る前のメッセージ</li>
+<li><strong>暗号文</strong>：暗号化されたメッセージ</li>
+<li><strong>鍵</strong>：暗号化・復号のための秘密の数や情報</li>
+<li><strong>暗号化</strong>：平文を暗号文へ変えること</li>
+<li><strong>復号</strong>：暗号文を平文へ戻すこと</li>
+</ul>
+<p>暗号は「文字を見えなくする」だけではありません。通信では、秘密保持、改ざん検出、本人確認という別々の問題を扱います。</p>
+<p>この教材では、次の章で「割り算の余りだけを使う <code>mod</code>」を学びます。これは、後で楕円曲線を暗号に使うための数学の準備です。</p>
+<h2>これを学ぶ意味</h2>
+<ul>
+<li><strong>意味</strong>：暗号は、通信を安全にするための部品の集まりです。</li>
+<li><strong>必要な理由</strong>：インターネットでは、メッセージが途中の人に見られたり、書き換えられたりします。</li>
+<li><strong>役立つ場面</strong>：Webサイトへのログイン、買い物、メッセージ、オンライン授業などです。</li>
+<li><strong>ないと困ること</strong>：暗号化だけでは、相手が本物か、内容が途中で変わっていないかを確認できません。</li>
+</ul>
+<h3>ハッシュを一言でいうと</h3>
+<p>ハッシュは、文章やファイルから短い「指紋」を作る仕組みです。少しでも内容が変わると指紋も変わるので、途中で書き換えられていないかを調べられます。</p>
+<blockquote>
+<p>ハッシュは暗号化ではありません。内容を隠すのではなく、内容の変化を見つけます。</p>
+</blockquote>
+<h2>攻撃者を置いてみる</h2>
+<p>通信路にいる攻撃者は、次のことを試みます。</p>
+<ol>
+<li>メッセージを読む</li>
+<li>メッセージを書き換える</li>
+<li>偽の相手になりすます</li>
+</ol>
+<p>この3つを分けると、暗号化、ハッシュ、電子署名、証明書がそれぞれ何を担当するか見えてきます。</p>
+<h2>次の問い</h2>
+<p>同じ鍵で閉じて開ける方式は速そうです。しかし、その鍵を最初にどうやって相手へ渡せばよいでしょうか。</p></div></section><section class="chapter" id="chapter-03"><div class="chapter-meta">Chapter 03 · 03_rsa.md</div><div class="chapter-body"><h1>03　RSA（Rivest–Shamir–Adleman）――掛け算は簡単、逆算は難しい</h1>
+<h2>この章の問い</h2>
+<p>誰でも見られる公開情報を使いながら、秘密の鍵を持つ人だけが復号できる仕組みを作れるでしょうか。</p>
+<p>RSAは、発明者の姓 <strong>Rivest（リベスト）・Shamir（シャミア）・Adleman（アドルマン）</strong> の頭文字を取った名前です。</p>
+<p>この章で使う記号も先に確認します。</p>
+<ul>
+<li><code>p, q</code>：秘密に選ぶ2つの素数</li>
+<li><code>n</code>：<code>p × q</code> で作る公開可能な数</li>
+<li><code>φ(n)</code>：<code>φ</code>（ファイ）。<code>n</code> と互いに素な数の個数を表す値。RSAでは秘密鍵を作る材料になる</li>
+<li><code>e</code>：公開鍵に含める指数</li>
+<li><code>d</code>：<code>e</code> の逆向きの計算をする秘密の指数</li>
+<li><strong>GCD</strong>：<em>Greatest Common Divisor</em>（最大公約数）。2つの数をともに割り切る最大の整数</li>
+</ul>
+<h2>素因数分解とは何か</h2>
+<p><strong>素因数分解とは、数を素数の掛け算に戻すことです。</strong></p>
+<p>たとえば、</p>
+<p>$$
+15=3\times5
+$$</p>
+<p>です。素数とは、1と自分自身以外では割り切れない数です。</p>
+<h2>鍵の材料をどう作るか</h2>
+<p>2つの素数 <code>p</code> と <code>q</code> を掛けて、</p>
+<p>$$
+n=pq
+$$</p>
+<p>を作るのは簡単です。RSAでは、<code>p</code> と <code>q</code> を秘密にし、<code>n</code> を公開します。</p>
+<pre><code class="language-text">秘密に選ぶ：p, q
+掛けて作る：n = p × q
+公開する  ：n と公開鍵
+隠しておく：p, q と秘密鍵
+</code></pre>
+<p>このように「秘密の材料から公開してよい材料を導出する」ことが、RSAの鍵作りの出発点です。</p>
+<h2>難しさを体感する</h2>
+<p>まずは時間を測らず、次の数を素因数分解してください。</p>
+<pre><code class="language-text">15       = ?
+221      = ?
+391      = ?
+10403    = ?
+</code></pre>
+<p>答えはそれぞれ <code>3×5</code>、<code>13×17</code>、<code>17×23</code>、<code>101×103</code> です。</p>
+<p>小さい数なら、2、3、5、7…と割っていけば見つかります。しかし、何桁もある <code>n</code> では、試す候補が急激に増えます。最も単純な方法では、少なくとも <code>√n</code>（ルートn、nの平方根）までの割り算を試す必要があります。</p>
+<p>ここで体験してほしいのは、「掛け算を一回する」と「掛け算の結果から元の二つを探す」は同じ難しさではない、という差です。</p>
+<p>この「順方向は計算しやすいが、逆方向は難しい」という差が、公開鍵暗号の重要な考え方です。</p>
+<p><a href="models/rsa_explorer.html">個別モデル：RSAの順方向と逆方向</a></p>
+<h3>逆方向の探索を言葉にすると</h3>
+<p>公開された <code>n</code> から <code>p</code> と <code>q</code> を戻すとき、最初にできる方法は、候補を順に割ってみることです。</p>
+<pre><code class="language-text">candidate = 2
+candidate で n を割る
+余りが0なら約数
+余りが0でなければ次の候補へ
+</code></pre>
+<p><code>n=p×q</code> なら、pとqの少なくとも一方は <code>√n</code> 以下です。もし両方が <code>√n</code> より大きければ、掛け算の結果は <code>n</code> より大きくなってしまうからです。したがって、単純な探索では <code>2</code> から <code>√n</code> までを調べます。</p>
+<p>モデルでは、各候補の余りを表示します。これは「素因数分解が魔法のように難しい」という説明ではなく、<strong>候補を一つずつ消去しなければならず、nが大きくなるほど候補が増える</strong>という難しさを目で確認するためのものです。</p>
+<h2>RSAを学ぶ意味</h2>
+<ul>
+<li><strong>意味</strong>：RSAは、秘密鍵を先に相手へ渡さなくても、公開鍵で安全に通信する考え方を示します。</li>
+<li><strong>必要な理由</strong>：初めて通信する相手と、秘密の共通鍵を安全に共有したいからです。</li>
+<li><strong>役立つ場面</strong>：公開鍵暗号の考え方、電子署名、証明書を理解する土台になります。</li>
+<li><strong>ないと困ること</strong>：公開鍵と秘密鍵を分ける理由や、「公開しても安全」という設計が分かりません。</li>
+</ul>
+<h2>RSAの鍵を小さな数で導出する</h2>
+<p>RSAでは、<code>p</code> と <code>q</code> から、復号に必要な秘密鍵をさらに計算します。小さな例では、</p>
+<pre><code class="language-text">p = 5, q = 11
+n = p × q = 55
+φ(n) = (p - 1)(q - 1) = 40
+e = 3
+d = 27  （3 × 27 ≡ 1 mod 40）
+</code></pre>
+<p>とします。公開鍵は <code>(n, e) = (55, 3)</code>、秘密鍵は <code>d = 27</code> です。</p>
+<p>メッセージ <code>m = 7</code> を暗号化すると、</p>
+<p>$$
+c \equiv m^e \equiv 7^3 \equiv 13 \pmod {55}
+$$</p>
+<p>となります。受信者は秘密の <code>d</code> を使って <code>13^27 mod 55</code> を計算し、<code>7</code> に戻します。</p>
+<p>実際のRSAでは非常に大きな数と安全なパディング方式を使います。ここでは、鍵がどのように導出され、暗号化と復号が対応するかを理解するために小さな数を使っています。</p>
+<pre><code class="language-text">公開鍵  ：誰でも使える
+秘密鍵  ：本人だけが持つ
+暗号文  ：公開鍵で暗号化した結果
+復号    ：秘密鍵で元に戻す
+</code></pre>
+<p>小さな例は学習のためにすぐ解けます。これはRSAが弱いという意味ではなく、実用暗号では桁数を極端に大きくするからです。</p>
+<h2>RSAの限界</h2>
+<p>攻撃側のアルゴリズムが改良されると、防御側は鍵を長くします。すると、保存容量・通信量・計算時間が増えます。</p>
+<p>この問題が、より小さい鍵で同じ水準の安全性を目指す楕円曲線暗号への動機になります。</p>
+<h2>練習問題の解答とTeach-back</h2>
+<h3>問1：素因数分解の確認</h3>
+<pre><code class="language-text">221, 391, 10403
+</code></pre>
+<p>の素因数分解は、</p>
+<pre><code class="language-text">221 = 13 × 17
+391 = 17 × 23
+10403 = 101 × 103
+</code></pre>
+<p>です。掛け戻して元の数になることを確認してください。</p>
+<h3>問2：小さなRSA</h3>
+<pre><code class="language-text">p=5, q=11, n=55, φ(n)=40, e=3, d=27
+</code></pre>
+<p>で、<code>m=7</code> を暗号化します。</p>
+<p><strong>暗号化</strong></p>
+<p>$$
+c\equiv 7^3\equiv 13\pmod {55}
+$$</p>
+<p><strong>復号</strong></p>
+<p>$$
+13^{27}\equiv 7\pmod {55}
+$$</p>
+<p><strong>なぜ戻るのか</strong></p>
+<p><code>e×d=3×27=81</code> であり、</p>
+<p>$$
+81\equiv1\pmod {40}
+$$</p>
+<p>です。RSAでは <code>φ(n)=40</code> を法として、暗号化の指数と復号の指数が逆向きになるように <code>d</code> を選びます。この小さな例では、実際にべき乗を計算することで元の7へ戻ることを確認できます。</p>
+<h3>Teach-back</h3>
+<p><strong>課題</strong>：「RSAは素因数分解そのものを使って暗号文を作る」と言う人を訂正してください。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>RSAの暗号化は、公開鍵を使ったべき乗とmod計算で行います。素因数分解は、公開された<code>n=pq</code>から秘密の<code>p</code>と<code>q</code>を戻そうとする攻撃が難しいことに関係します。つまり、素因数分解は暗号文を作る操作というより、秘密鍵を守る安全性の根拠です。</p>
+</blockquote>
+<p><strong>課題</strong>：「小さなRSAをすぐ破れるなら、RSAは役に立たない」と言われたらどう答えますか。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>教材の小さなRSAは、鍵の作り方と復号の仕組みを理解する模型です。実用RSAでは、素因数分解の候補が現実的な時間で試せないほど大きな数と、安全な利用方式を使います。小例が解けることと、実用サイズが安全かどうかは分けて考えます。</p>
+</blockquote>
+<h2>次の問い</h2>
+<p>掛け算と素因数分解とは別の数学の山を作るには、どんな構造を使えばよいでしょうか。</p></div></section><section class="chapter" id="chapter-04"><div class="chapter-meta">Chapter 04 · 04_elliptic_curve.md</div><div class="chapter-body"><h1>04　楕円曲線の上で足し算する</h1>
+<h2>この章の問い</h2>
+<p>普通の数の足し算ではなく、曲線の上の点を足すことはできるでしょうか。</p>
+<h2>楕円曲線は円ではない</h2>
+<p><strong>楕円曲線とは、特定の3次方程式を満たす点の集まりです。</strong></p>
+<p>暗号で使う楕円曲線は、円や楕円そのものではありません。代表的な形は次です。</p>
+<p>$$
+y^2=x^3+ax+b
+$$</p>
+<h3>なぜ「楕円」と呼ぶのか</h3>
+<p>この名前は、曲線の見た目から付いたものではありません。</p>
+<p>楕円の弧の長さを求める研究では、平方根を含む特別な積分が現れます。その後、同じ種類の積分を研究する数学の分野が「楕円積分」と呼ばれ、その研究に関係する曲線が「楕円曲線」と呼ばれるようになりました。</p>
+<p>つまり、</p>
+<pre><code class="language-text">楕円曲線 ≠ 楕円形の曲線
+</code></pre>
+<p>です。整数の余りの世界へ移した暗号用の楕円曲線では、連続した曲線ではなく点の集合になるため、見た目だけから名前を理解することはできません。</p>
+<h3>積分由来なのに、なぜ足し算なのか</h3>
+<p>これは、同じ楕円曲線に対して別の数学的な発見が重なっているためです。</p>
+<pre><code class="language-text">「楕円」の由来：楕円積分の研究
+「足し算」の由来：曲線上の点に定めた計算規則
+</code></pre>
+<p>名前の由来と、暗号で使う計算規則は別の話です。楕円曲線上では、2点から別の点を作る規則を定めることができ、その規則が普通の足し算と同じように、何もしない点・反対の点・繰り返し加算を持ちます。そのため、点の計算を「足し算」と呼びます。</p>
+<p>この式を実数平面に描くと、特徴的な曲線が現れます。</p>
+<p><a href="models/elliptic_curve_real.html">個別モデル：実数平面の楕円曲線と点の足し算</a></p>
+<h2>曲線をどう作るか</h2>
+<p><code>a</code> と <code>b</code> を選び、座標 <code>(x, y)</code> を式に代入します。式を満たした点だけを残すと、楕円曲線ができます。</p>
+<pre><code class="language-text">1. a と b を選ぶ
+2. x を選ぶ
+3. y² = x³ + ax + b を計算する
+4. 式を満たす y の点だけを描く
+</code></pre>
+<p>曲線が途中で尖ったり自己交差したりしないよう、係数は条件を満たすものを選びます。</p>
+<h2>楕円曲線を学ぶ意味</h2>
+<ul>
+<li><strong>意味</strong>：楕円曲線は、点を足すという計算規則を作れる数学的な構造です。</li>
+<li><strong>必要な理由</strong>：RSAとは異なる「逆算の難しさ」を作り、公開鍵暗号に利用するためです。</li>
+<li><strong>役立つ場面</strong>：小さな鍵で鍵交換や電子署名を行うECCの理解につながります。</li>
+<li><strong>ないと困ること</strong>：ECCが「曲線の絵を暗号化する技術」ではなく、点の計算を使う暗号だと分かりません。</li>
+</ul>
+<h2>点の足し算</h2>
+<p>曲線上の2点 <code>P</code> と <code>Q</code> を選び、2点を通る直線を引きます。直線と曲線の第三の交点を見つけ、上下反転した点を <code>P + Q</code> と定めます。</p>
+<p>これは見た目だけの遊びではありません。適切な条件のもとで、点の集まりに足し算の規則ができます。</p>
+<blockquote>
+<p><strong>本編の理解</strong>：点を足すための決まった手順がある。<br>
+<strong>挑戦コース</strong>：その規則が群の性質を満たす。</p>
+</blockquote>
+<h2>実数の曲線と暗号の点は別物</h2>
+<p>ここまでの実数平面の曲線は、形を目で理解するための模型です。<code>x</code> や <code>y</code> に小数を入れて、曲線がどんな形になるかを見ています。</p>
+<p>暗号で使うときは、小数を含む実数の曲線をそのまま使いません。<strong>整数を <code>mod p</code> の余りで表す有限体へ移します。</strong></p>
+<p>$$
+y^2 \equiv x^3+ax+b \pmod p
+$$</p>
+<p>この <code>≡</code> は「合同（ごうどう）」と読み、<code>mod p</code> の世界で同じ余りになることを表します。</p>
+<p><code>x, y, a, b</code> は、<code>0</code> から <code>p-1</code> までの整数の代表で表します。計算の途中で出た数は、毎回 <code>mod p</code> の余りに戻します。小数点を含む数をmodに入れるわけではありません。</p>
+<p>たとえば <code>p=5, a=1, b=1</code> で <code>x=0, y=1</code> とすると、</p>
+<p>$$
+y^2=1,\qquad x^3+ax+b=1
+$$</p>
+<p>なので、この点は曲線上にあります。一方、<code>x=1, y=1</code> では右辺が3になるため、曲線上の点ではありません。</p>
+<p>このように条件を満たす整数の組だけを残すと、連続した線ではなく、有限個の点の集合になります。これが暗号で扱う楕円曲線です。</p>
+<p><a href="models/elliptic_curve_finite.html">個別モデル：有限体上の楕円曲線の点集合</a></p>
+<p><a href="models/elliptic_curve_addition.html">個別モデル：有限体上の点の足し算</a></p>
+<blockquote>
+<p><strong>整理</strong><br>
+実数上の曲線：形を直感的に見るための模型<br>
+有限体上の曲線：整数の余りで計算する暗号の舞台</p>
+</blockquote>
+<h2>「点を足す」とは何か</h2>
+<p>ここでいう足し算は、座標をそのまま足すことではありません。</p>
+<pre><code class="language-text">(x₁, y₁) + (x₂, y₂) ≠ (x₁+x₂, y₁+y₂)
+</code></pre>
+<p><strong>楕円曲線上の2点から、決められた計算規則で別の曲線上の点を作ること</strong>を、「点を足す」と呼びます。</p>
+<h2>普通の足し算とどこが似ているか</h2>
+<p>まず、普通の数の足し算を思い出します。</p>
+<pre><code class="language-text">2 + 3 = 5
+</code></pre>
+<p>ここでは、数2と数3から、同じ数の世界にある5を作っています。さらに、</p>
+<pre><code class="language-text">3 × 4 = 4 + 4 + 4
+</code></pre>
+<p>のように、足し算を繰り返すこともできます。</p>
+<p>楕円曲線では、数の代わりに点を使い、点から別の点を作る規則を定めます。</p>
+<pre><code class="language-text">点P + 点Q = 別の点R
+</code></pre>
+<p>この規則が、普通の足し算と同じように次の性質を持つため、「点の足し算」と呼びます。</p>
+<ul>
+<li><strong>閉じている</strong>：点を足した結果も、同じ楕円曲線上の点になる</li>
+<li><strong>順番を変えられる</strong>：<code>P+Q = Q+P</code></li>
+<li><strong>何もしない点がある</strong>：<code>P+O = P</code> となる点 <code>O</code> がある</li>
+<li><strong>反対の点がある</strong>：<code>P+(-P)=O</code> となる点がある</li>
+<li><strong>繰り返し足せる</strong>：<code>3P=P+P+P</code> と書ける</li>
+</ul>
+<p>「足し算」という名前は、座標を普通に加えるからではありません。<strong>足し算と同じ役割を果たす計算規則を作っているから</strong>です。</p>
+<p>実数平面では、2点を通る直線を引き、曲線との第三の交点を上下反転して答えにします。有限体では連続した線を描くのではなく、その手順を次の計算式に置き換えます。</p>
+<p><img alt="実数平面で見る楕円曲線上の点の足し算" src="assets/04_point_addition_real.svg"></p>
+<p>この図は、実数平面で仕組みを直感的に見るための説明図です。<code>P</code> と <code>Q</code> を通る赤い直線が、曲線ともう一度交わる点が <code>R</code> です。その <code>R</code> を横軸に対して上下反転した緑の点を <code>P + Q</code> と定めます。</p>
+<p>異なる2点 <code>P=(x₁,y₁)</code>、<code>Q=(x₂,y₂)</code> のとき、</p>
+<p>$$
+m \equiv \frac{y₂-y₁}{x₂-x₁} \pmod p
+$$</p>
+<p>$$
+x₃ \equiv m^2-x₁-x₂ \pmod p
+$$</p>
+<p>$$
+y₃ \equiv m(x₁-x₃)-y₁ \pmod p
+$$</p>
+<p>ここで割り算は普通の小数の割り算ではなく、<code>mod p</code> の逆数を掛ける計算です。</p>
+<h3>小さな例：<code>mod 5</code></h3>
+<p>曲線</p>
+<p>$$
+y^2 \equiv x^3+x+1 \pmod 5
+$$</p>
+<p>上の2点</p>
+<pre><code class="language-text">P = (0, 1)
+Q = (2, 1)
+</code></pre>
+<p>を足します。</p>
+<pre><code class="language-text">m = (1 - 1) / (2 - 0) = 0
+x₃ = 0² - 0 - 2 ≡ 3 (mod 5)
+y₃ = 0(0 - 3) - 1 ≡ 4 (mod 5)
+</code></pre>
+<p>したがって、</p>
+<pre><code class="language-text">(0, 1) + (2, 1) = (3, 4)
+</code></pre>
+<p>です。<code>(3,4)</code> も同じ曲線の式を満たします。このように、点の足し算は「点から別の点を導く規則」です。</p>
+<h3>普通の足し算との対応を確認する</h3>
+<p>この小さな例では、</p>
+<pre><code class="language-text">P = (0,1)
+-P = (0,4)
+O = 何もしない点（無限遠点）
+P + (-P) = O
+P + O = P
+</code></pre>
+<p>となります。<code>-P</code> はx座標が同じで、y座標の上下が反対になる点です。有限体では <code>1</code> の反対が <code>-1 ≡ 4 (mod 5)</code> になります。</p>
+<p>この <code>O</code> と <code>-P</code> の存在が、普通の数でいう <code>0</code> と <code>-P</code> の役割に対応します。ここまで見て初めて、点の演算を「足し算」と呼ぶ意味が分かります。</p>
+<h2>練習問題の解答とTeach-back</h2>
+<h3>問1：点の確認</h3>
+<p>曲線</p>
+<p>$$
+y^2\equiv x^3+x+1\pmod 5
+$$</p>
+<p>で、<code>(3,4)</code> が曲線上にあることを確かめます。</p>
+<p>$$
+4^2=16\equiv1\pmod5
+$$</p>
+<p>一方、</p>
+<p>$$
+3^3+3+1=31\equiv1\pmod5
+$$</p>
+<p>左右が同じ余りなので、<code>(3,4)</code> は曲線上の点です。</p>
+<h3>問2：Teach-back</h3>
+<p><strong>課題</strong>：「楕円曲線の点を足す」とは、座標を足すことではないと説明してください。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>点の座標を普通に足すのではありません。2点を曲線上から選び、傾きをmod計算で求め、その計算から次の点を導きます。決められた規則で点から点を作るので「点の足し算」と呼びます。</p>
+</blockquote>
+<p><strong>課題</strong>：実数上の図と有限体上の計算の関係を説明してください。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>実数上の図は、直線と第三の交点、上下反転という仕組みを目で理解する模型です。暗号では小数を使わず、整数をmod pで計算します。図形の操作を、有限体の計算式に置き換えて実行します。</p>
+</blockquote>
+<h2>次の問い</h2>
+<p>有限体の点を何度も足すと、順方向と逆方向の計算に差が生まれるでしょうか。</p></div></section><section class="chapter" id="chapter-05"><div class="chapter-meta">Chapter 05 · 05_ecdlp.md</div><div class="chapter-body"><h1>05　ECDLP（Elliptic Curve Discrete Logarithm Problem）――点の足し算の逆算</h1>
+<h2>この章の問い</h2>
+<p>基準点 <code>G</code> を何度も足して、公開点 <code>kG</code> を作ります。公開された <code>G</code> と <code>kG</code> から、秘密の回数 <code>k</code> を戻せるでしょうか。</p>
+<h2>スカラー倍とは何か</h2>
+<p><strong>スカラー倍とは、同じ点を何度も足す計算です。</strong></p>
+<p>ここでの「足す」は、chapter 04で定めた点の足し算です。座標を普通に足すのではなく、曲線上の点から次の点を計算します。</p>
+<p>普通の数で、</p>
+<pre><code class="language-text">3 × 4 = 4 + 4 + 4
+</code></pre>
+<p>と書けるのと同じように、点でも、</p>
+<pre><code class="language-text">3G = G + G + G
+</code></pre>
+<p>と書きます。数字の掛け算を座標に行うのではなく、「点の足し算を何回行うか」を数字で指定しています。</p>
+<p>$$
+kG=\underbrace{G+G+\cdots+G}_{k\text{回}}
+$$</p>
+<p>順方向は、倍々法を使えば高速に計算できます。</p>
+<pre><code class="language-text">G → 2G → 4G → 8G → …
+</code></pre>
+<p>たとえば <code>13G</code> は、<code>G + 4G + 8G</code> と分けて計算できます。1回ずつ13回足すより、倍々にした結果を組み合わせる方が速くなります。</p>
+<h2>公開点をどう作るか</h2>
+<ol>
+<li>曲線と有限体を選ぶ。</li>
+<li>曲線上の基準点 <code>G</code> を選ぶ。</li>
+<li>秘密の整数 <code>k</code> を選ぶ。</li>
+<li>点の足し算を使って <code>kG</code> を計算する。</li>
+<li><code>G</code> と <code>kG</code> を公開し、<code>k</code> を秘密にする。</li>
+</ol>
+<p><a href="models/ecdlp_scalar.html">個別モデル：ECDLPとスカラー倍</a></p>
+<h2>楕円曲線離散対数問題</h2>
+<p>次の関係を考えます。</p>
+<pre><code class="language-text">公開：G と kG
+秘密：k
+</code></pre>
+<p><code>G</code> と <code>k</code> が分かれば <code>kG</code> は計算しやすい。一方、<code>G</code> と <code>kG</code> から <code>k</code> を逆算する問題が難しい。この問題を<strong>楕円曲線離散対数問題</strong>、英語で <em>Elliptic Curve Discrete Logarithm Problem</em>（ECDLP）と呼びます。</p>
+<p>曲線の式や点の足し算ルールを秘密にするのではありません。公開された数学の上で、逆算が難しいことを安全性に利用します。</p>
+<h2>ECDLPを学ぶ意味</h2>
+<ul>
+<li><strong>意味</strong>：ECDLPは、公開された点から秘密の回数を逆算する問題です。</li>
+<li><strong>必要な理由</strong>：ECCが、どの数学的な難しさを安全性に利用しているかを説明するためです。</li>
+<li><strong>役立つ場面</strong>：ECDHやECDSAの安全性を、用語暗記ではなく構造で理解できます。</li>
+<li><strong>ないと困ること</strong>：点を足す操作が、なぜ鍵交換や署名に使えるのかが分かりません。</li>
+</ul>
+<h2>小さな例と実用サイズを分ける</h2>
+<p>小さな有限体では、全部の <code>k</code> を試して秘密を見つけられます。教材ではこの探索を見せます。</p>
+<p>ただし、これは実用ECCを破れるという意味ではありません。実用サイズでは探索対象が極端に大きくなり、別の近道が知られていないことが安全性の根拠になります。</p>
+<h2>練習問題の解答とTeach-back</h2>
+<h3>問1：スカラー倍</h3>
+<p><code>13G</code> は、13を2進数に分けると、</p>
+<pre><code class="language-text">13 = 8 + 4 + 1
+</code></pre>
+<p>なので、</p>
+<pre><code class="language-text">13G = 8G + 4G + G
+</code></pre>
+<p>と計算できます。<code>G → 2G → 4G → 8G</code> を先に作り、必要なものを足しています。</p>
+<h3>問2：小さい例の逆探索</h3>
+<p>小さい有限体で、</p>
+<pre><code class="language-text">G, 2G, 3G, 4G, ...
+</code></pre>
+<p>の表を作り、公開点が <code>5G</code> だと分かったとします。この表を順に調べれば秘密の数5を見つけられます。</p>
+<p>これはECDLPの考え方を体験する問題です。実用ECCでは、表を作る対象が極端に大きくなるため、同じ方法を現実的な時間で実行できません。</p>
+<h3>Teach-back</h3>
+<p><strong>課題</strong>：「ECDLPは、楕円曲線の式を秘密にする仕組みです」と言う人を訂正してください。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>曲線の式も点の足し算の規則も公開されています。公開された基準点Gから秘密の回数kで作った点kGは公開しますが、GとkGからkを逆算するのが難しい、という問題を安全性に使います。</p>
+</blockquote>
+<p><strong>課題</strong>：なぜ小さな例を教材で使うのですか。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>小さな例なら実際に点を足し、順方向と逆方向を体験できます。ただし、小例は全部試せるため安全ではありません。学習用の模型と、実用サイズの安全性を分けて理解するために使います。</p>
+</blockquote>
+<h2>次の問い</h2>
+<p>ECCは通信文を全部暗号化するのでしょうか。それとも、通信の中の別の役割を担当するのでしょうか。</p></div></section><section class="chapter" id="chapter-06"><div class="chapter-meta">Chapter 06 · 06_communication.md</div><div class="chapter-body"><h1>06　実際の通信では役割を分担する</h1>
+<h2>この章の問い</h2>
+<p>楕円曲線暗号だけで、長い文章や動画を全部暗号化するのでしょうか。</p>
+<h2>略語を先に読む</h2>
+<ul>
+<li><strong>ECC</strong>：<em>Elliptic Curve Cryptography</em>（楕円曲線暗号）。楕円曲線上の点の計算を使う公開鍵暗号の総称です。</li>
+<li><strong>ECDH</strong>：<em>Elliptic Curve Diffie–Hellman</em>（楕円曲線ディフィー・ヘルマン）。楕円曲線を使って、通信相手と共通鍵を合意する方式です。</li>
+<li><strong>ECDSA</strong>：<em>Elliptic Curve Digital Signature Algorithm</em>（楕円曲線デジタル署名アルゴリズム）。楕円曲線を使って電子署名を作る方式です。</li>
+<li><strong>AES</strong>：<em>Advanced Encryption Standard</em>（高度暗号化標準）。共通鍵を使って大量のデータを高速に暗号化する方式です。</li>
+<li><strong>HTTPS</strong>：<em>Hypertext Transfer Protocol Secure</em>（安全なHTTP通信）。Web通信に暗号技術を組み合わせた通信方式です。</li>
+</ul>
+<h2>役割分担</h2>
+<p><strong>実際の暗号通信は、1種類の暗号だけでなく、役割の違う部品を組み合わせて作ります。</strong></p>
+<p>実際の通信では、暗号技術を組み合わせます。</p>
+<pre><code class="language-text">ECC（楕円曲線暗号）
+  └─ ECDH（楕円曲線ディフィー・ヘルマン）
+  ↓
+安全に共通鍵を合意
+  ↓
+AES（高度暗号化標準）などの共通鍵暗号
+  ↓
+大量のデータを高速に暗号化
+</code></pre>
+<h3>モデルで流れを確認する</h3>
+<p><a href="models/https_roles.html">個別モデル：HTTPSの役割分担</a></p>
+<p>モデルでは、利用者・Webサーバー・攻撃者の間で情報がどのように動くかを、5段階に分けて観察できます。攻撃者にも見える公開情報と、秘密に保たれる情報を区別してみましょう。</p>
+<p>ハッシュはデータの指紋として改ざんを検出し、電子署名は秘密鍵を持つ本人であることを示します。証明書は、公開鍵とWebサイトの名前を結びつけます。</p>
+<h2>ECCの担当</h2>
+<p>ECCは通信全体ではなく、主に次の部品を担当します。</p>
+<ul>
+<li><strong>ECDH</strong>：楕円曲線を使って共通鍵を合意する方式</li>
+<li><strong>ECDSA</strong>：楕円曲線を使って電子署名を作る方式</li>
+<li><strong>前方秘匿性</strong>：一時的な秘密を使い、過去の通信を守る</li>
+</ul>
+<p>AESは、合意した共通鍵を使って長いデータを高速に暗号化する方式です。ECCやECDHが「鍵を作る・渡す」役割なのに対し、AESは「データを暗号化する」役割です。</p>
+<h2>役割分担を学ぶ意味</h2>
+<ul>
+<li><strong>意味</strong>：実際の暗号通信は、速さ・秘密保持・改ざん検出・本人確認を別々の部品で受け持ちます。</li>
+<li><strong>必要な理由</strong>：1種類の暗号だけでは、通信のすべての問題を解決できないからです。</li>
+<li><strong>役立つ場面</strong>：HTTPS、オンラインショッピング、アプリの通信を正しく理解できます。</li>
+<li><strong>ないと困ること</strong>：ECCだけで文章全体を暗号化している、という誤解が残ります。</li>
+</ul>
+<h2>Teach-back</h2>
+<p><strong>課題</strong>：ECC、ECDH、AESの役割を一つの流れで説明してください。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>ECCは楕円曲線を使う公開鍵暗号の総称です。ECDHはその仲間で、通信相手と共通鍵を作るために使います。AESは、できあがった共通鍵を使って長い文章や動画を高速に暗号化します。つまり、ECDHが鍵を合意し、AESがデータを守ります。</p>
+</blockquote>
+<p><strong>確認問題</strong>：なぜECCだけで動画を暗号化しないのでしょうか。</p>
+<p><strong>回答</strong>：</p>
+<blockquote>
+<p>公開鍵暗号は安全な鍵交換や署名には向いていますが、大量データの処理は共通鍵暗号の方が高速です。そのため、役割を分担します。</p>
+</blockquote>
+<h2>次の問い</h2>
+<p>RSAとECCの数学的な山が、将来の量子計算機で越えられるとしたら、次の暗号は何を土台にするのでしょうか。</p></div></section><section class="chapter" id="chapter-07"><div class="chapter-meta">Chapter 07 · 07_quantum_computers.md</div><div class="chapter-body"><h1>07　量子コンピューターと暗号の解読</h1>
+<h2>この章のゴール</h2>
+<p>この章は、量子コンピューターを「不思議な機械」として眺める章ではありません。
+小さな計算を自分で追いながら、次の因果関係を説明できるようになる章です。</p>
+<pre><code class="language-text">量子ビットを準備する
+  ↓
+候補を重ね合わせる
+  ↓
+正解に印を付ける
+  ↓
+干渉で正解の波を大きくする
+  ↓
+測定して一つの答えを得る
+  ↓
+暗号の数学の問題に応用する
+</code></pre>
+<h3>先に結論</h3>
+<ul>
+<li>量子コンピューターは、すべての計算を速くする機械ではありません。</li>
+<li>重ね合わせただけでは、正解は分かりません。</li>
+<li><strong>干渉</strong>によって正解の確率を高めてから測定することが重要です。</li>
+<li><strong>グローバーのアルゴリズム</strong>は候補探しを平方根程度に速くします。</li>
+<li><strong>ショアのアルゴリズム</strong>は周期を見つけ、RSAやECCの安全性を脅かす可能性があります。</li>
+<li>だからPQCは、量子コンピューターを使う暗号ではなく、別の数学の問題を使う暗号です。</li>
+</ul>
+<h2>1　まず「暗号の金庫」を思い出す</h2>
+<p>暗号は、秘密を知らない人には逆向きの計算が難しいことを利用します。</p>
+<table>
+<thead>
+<tr>
+<th>暗号</th>
+<th>秘密を知らない人に難しい問題</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RSA</td>
+<td>大きな数を素因数分解する</td>
+</tr>
+<tr>
+<td>ECC</td>
+<td>楕円曲線上の計算を逆向きにたどる（離散対数）</td>
+</tr>
+<tr>
+<td>AES</td>
+<td>秘密鍵の候補を総当たりする</td>
+</tr>
+</tbody>
+</table>
+<h3>たとえ</h3>
+<p>RSAは「積 <code>p×q</code> は簡単に作れるが、答え <code>n</code> から <code>p</code> と <code>q</code> を見つけるのは難しい」金庫です。
+ECCは「出発点 <code>G</code> から何回も進むのは簡単だが、到着点から何回進んだかを逆算するのは難しい」金庫です。</p>
+<h3>確認</h3>
+<p>暗号を破るとは、暗号文を眺めて魔法で読むことではありません。
+<strong>安全性の土台になっている難しい数学の問題を解き、秘密鍵を求めること</strong>です。</p>
+<h2>2　普通のビットと量子ビット</h2>
+<h3>普通のビット</h3>
+<p>普通のコンピューターのビットは、スイッチのように <code>0</code> または <code>1</code> です。
+2ビットなら、状態は次の4つのうち一つです。</p>
+<pre><code class="language-text">00 / 01 / 10 / 11
+</code></pre>
+<h3>量子ビット</h3>
+<p>量子ビット（qubit：キュービット）は、測定する前には <code>0</code> と <code>1</code> に対応する振幅を組み合わせた状態になります。
+入口の比喩として「0と1が重なっている」と言えます。</p>
+<p>ただし、次の理解は間違いです。</p>
+<pre><code class="language-text">間違い：4候補を同時に保存して、最後に4つとも読める
+正しい：4候補の確率の波を作り、計算で波を組み替え、最後に一つを読む
+</code></pre>
+<h3>正確さを少しだけ足す</h3>
+<p>振幅は、確率そのものではありません。
+振幅を2乗したものが、測定でその結果を得る確率になります。</p>
+<pre><code class="language-text">振幅       → 波の高さ。プラスやマイナスを持てる
+振幅の2乗  → 測定結果の確率。マイナスにはならない
+</code></pre>
+<p>この「マイナスの波を使える」ことが、普通の確率の計算と違う重要な点です。</p>
+<h3>確認問題</h3>
+<p>量子ビットを使えば、計算結果を全部読み出せるでしょうか。</p>
+<p><strong>答え：</strong> いいえ。測定して取り出せるのは一つの結果です。正解が出やすくなるように、測定の前に波を操作します。</p>
+<h2>3　重ね合わせだけでは答えが出ない</h2>
+<p>4つの引き出し <code>0, 1, 2, 3</code> のうち、一つだけが当たりだとします。
+まず4候補を均等に重ね合わせます。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">候補</th>
+<th style="text-align: right;">振幅</th>
+<th style="text-align: right;">確率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">25%</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">25%</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">25%</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">25%</td>
+</tr>
+</tbody>
+</table>
+<p>振幅0.5を2乗すると0.25、つまり25%です。
+この状態で測定しても、どの候補も同じ確率です。</p>
+<pre><code class="language-text">重ね合わせ
+  ≠ 正解を知ること
+  = 正解を含む候補の波を準備すること
+</code></pre>
+<h3>たとえ</h3>
+<p>4つの部屋を同時に照らすライトを用意しただけでは、当たりの部屋は分かりません。
+当たりの部屋を目立たせる仕掛けが必要です。</p>
+<h2>4　オラクル：正解にだけ印を付ける</h2>
+<p>正解かどうかを判定する仕組みを<strong>オラクル</strong>と呼びます。
+今回は候補 <code>3</code> が当たりです。</p>
+<p>オラクルは答えを人間に教えるものではありません。
+量子状態の中で、正解候補の振幅の向きだけを反転します。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">候補</th>
+<th style="text-align: right;">オラクル前</th>
+<th style="text-align: right;">オラクル後</th>
+<th style="text-align: right;">確率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">25%</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">25%</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">25%</td>
+</tr>
+<tr>
+<td style="text-align: right;">3（正解）</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;"><strong>-0.5</strong></td>
+<td style="text-align: right;">25%</td>
+</tr>
+</tbody>
+</table>
+<p>ここで確率はまだ変わりません。
+<code>(-0.5)×(-0.5)=0.25</code> だからです。</p>
+<h3>なぜ印を付けるだけなのか</h3>
+<p>正解を見つけた人が、普通の計算機のように「正解は3です」と外へ出すわけではありません。
+正解だけ波の向きを変えることで、後の干渉で正解と不正解に差を作ります。</p>
+<h2>5　干渉：平均を鏡にして波を反転する</h2>
+<p>ここがグローバーの中心です。
+オラクルの後の振幅は、</p>
+<pre><code class="language-text">0.5, 0.5, 0.5, -0.5
+</code></pre>
+<p>です。</p>
+<p>まず平均を求めます。</p>
+<pre><code class="language-text">(0.5 + 0.5 + 0.5 - 0.5) ÷ 4 = 0.25
+</code></pre>
+<p>次に、平均 <code>0.25</code> を鏡の線にして、各振幅を反対側へ移します。
+計算は、</p>
+<pre><code class="language-text">反転後 = 2 × 平均 - 元の振幅
+</code></pre>
+<p>です。</p>
+<h3>不正解の計算</h3>
+<pre><code class="language-text">2 × 0.25 - 0.5
+= 0.5 - 0.5
+= 0
+</code></pre>
+<h3>正解の計算</h3>
+<pre><code class="language-text">2 × 0.25 - (-0.5)
+= 0.5 + 0.5
+= 1.0
+</code></pre>
+<p>結果はこうなります。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">候補</th>
+<th style="text-align: right;">反転後の振幅</th>
+<th style="text-align: right;">測定確率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0%</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0%</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0%</td>
+</tr>
+<tr>
+<td style="text-align: right;">3（正解）</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">100%</td>
+</tr>
+</tbody>
+</table>
+<p>振幅の合計が確率になるのではありません。
+振幅を2乗して確率にするので、正解の <code>1.0</code> は100%になります。</p>
+<h3>ここで何が起きたのか</h3>
+<pre><code class="language-text">オラクル：
+正解だけマイナスにする
+
+干渉：
+平均を基準に全体を反転する
+
+結果：
+不正解の波は消え、正解の波が大きくなる
+</code></pre>
+<p>これが「量子コンピューターが正解を探す」ことの中身です。
+候補を全部読み出したのではなく、波の足し算と引き算で測定結果の確率を偏らせました。</p>
+<h2>6　グローバーのアルゴリズム</h2>
+<p>グローバーのアルゴリズムは、次の操作を繰り返します。</p>
+<ol>
+<li>候補を重ね合わせる</li>
+<li>オラクルで正解の振幅を反転する</li>
+<li>平均を基準に全体を反転する</li>
+<li>最後に測定する</li>
+</ol>
+<p>4候補の場合は、上の計算を一回行うだけで正解の確率を100%にできます。
+候補が <code>N</code> 個ある一般の場合、必要な反復回数はおよそ <code>√N</code> です。</p>
+<p>100万個の候補なら、</p>
+<pre><code class="language-text">普通の総当たり：最大1,000,000回ほど確認
+グローバー：約√1,000,000 = 1,000回ほどの規模
+</code></pre>
+<p>です。</p>
+<h3>暗号への影響</h3>
+<p>AESのように「秘密鍵の候補を試して正しいか判定する」暗号では、グローバーによって総当たりが速くなる可能性があります。
+ただし、100万分の1が一瞬で1になるわけではありません。
+平方根程度の高速化なので、鍵を長くして候補数を増やす対策が考えられます。</p>
+<p><a href="models/quantum_basics.html">個別モデル：量子コンピューターの基本</a></p>
+<h2>7　ショアのアルゴリズム：周期を探す</h2>
+<p>グローバーは「候補を探す」方法でした。
+ショアのアルゴリズムは、数の並びに隠れている<strong>周期</strong>を探します。</p>
+<p>周期とは、同じ並びが繰り返す間隔です。</p>
+<pre><code class="language-text">1, 2, 4, 8, 1, 2, 4, 8, ...
+                     ↑ 4個ごとに繰り返す
+</code></pre>
+<h3>7.1　15を分解する小さな例</h3>
+<p>15を素因数分解して、3×5を見つけたいとします。
+次の関数を考えます。</p>
+<pre><code class="language-text">f(x) = 2^x mod 15
+</code></pre>
+<p>値を計算すると、</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">x</th>
+<th style="text-align: right;">0</th>
+<th style="text-align: right;">1</th>
+<th style="text-align: right;">2</th>
+<th style="text-align: right;">3</th>
+<th style="text-align: right;">4</th>
+<th style="text-align: right;">5</th>
+<th style="text-align: right;">6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;"><code>2^x mod 15</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
+<p><code>1, 2, 4, 8</code> が繰り返すので、周期は <code>r=4</code> です。</p>
+<p>周期が偶数なら、次を計算できます。</p>
+<pre><code class="language-text">2^(r/2) - 1 = 2^2 - 1 = 3
+2^(r/2) + 1 = 2^2 + 1 = 5
+</code></pre>
+<p>さらに最大公約数を求めると、</p>
+<pre><code class="language-text">gcd(3, 15) = 3
+gcd(5, 15) = 5
+</code></pre>
+<p>15の因数が見つかりました。</p>
+<h3>7.2　量子計算機はどこを担当するのか</h3>
+<p>この例のすべてを量子コンピューターが魔法で計算するわけではありません。
+量子計算機は、多くの <code>x</code> に対する関数の周期を、重ね合わせと干渉を使って見つける部分を速くします。
+周期が得られた後の最大公約数などは、普通のコンピューターでも計算できます。</p>
+<h3>7.3　RSAへの攻撃</h3>
+<p>RSAは、大きな数 <code>n=pq</code> を作るのは簡単だが、<code>n</code> から <code>p</code> と <code>q</code> を見つける素因数分解が難しいことを利用します。
+十分に大きく、誤りを訂正できる量子コンピューターでショアのアルゴリズムを実行できれば、素因数分解が大幅に速くなる可能性があります。</p>
+<pre><code class="language-text">公開鍵 n を入手
+  ↓
+素因数分解に関係する周期を量子計算で探す
+  ↓
+p と q を求める
+  ↓
+秘密鍵を再計算する
+  ↓
+RSAの暗号文や署名を破る手がかりを得る
+</code></pre>
+<h3>7.4　ECCへの攻撃</h3>
+<p>ECCは、公開された点 <code>G</code> から秘密の整数 <code>k</code> を使って <code>kG</code> を計算するのは簡単ですが、<code>G</code> と <code>kG</code> から <code>k</code> を逆算する離散対数が難しいことを利用します。
+ショアのアルゴリズムは、離散対数に関係する周期構造も量子計算で扱えるため、ECCも脅威になります。</p>
+<pre><code class="language-text">順方向：k と G から kG を計算する → 簡単
+逆方向：G と kG から k を求める → 普通の計算機では難しい
+量子計算：逆方向の問題を速く解く可能性
+</code></pre>
+<h3>RSAとECCで共通すること</h3>
+<p>量子計算機が「RSAという名前」や「楕円曲線という図形」を直接攻撃するのではありません。
+それぞれが安全性の土台にしている数学の問題を攻撃します。</p>
+<h2>8　量子コンピューターは今すぐ暗号を破っているのか</h2>
+<p>現時点で、インターネットのRSAやECCがすでに量子コンピューターで解読されている、という意味ではありません。
+大規模な攻撃には、量子ビットの誤りを訂正しながら長い計算を続ける実用的な量子計算機が必要です。</p>
+<p>しかし、暗号方式の変更には時間がかかります。
+今保存した通信を、将来の量子コンピューターで解読する攻撃は、<strong>harvest now, decrypt later</strong>（今収集して後で解読する）と呼ばれます。</p>
+<h2>9　PQCへの橋</h2>
+<p>ここまでの流れから、PQCの目的を説明できます。</p>
+<pre><code class="language-text">RSA：素因数分解が難しいことを利用
+ECC：離散対数が難しいことを利用
+量子計算：それらを速く解く可能性
+PQC：別の数学の問題を安全性の土台にする
+</code></pre>
+<p>PQCは「量子コンピューターを使う暗号」ではありません。
+量子計算機に対しても逆算しにくい数学の問題を使う、<strong>耐量子計算機暗号</strong>です。</p>
+<p>次章では、PQCの一例として、格子と誤差付き問題を学びます。</p>
+<h2>10　この章で省略した数学</h2>
+<p>中学生向けの本編では、次を証明しません。</p>
+<ul>
+<li>複素数と位相</li>
+<li>行列による量子ゲートの表現</li>
+<li>ヒルベルト空間</li>
+<li>量子フーリエ変換の証明</li>
+<li>ショアのアルゴリズムの計算量の証明</li>
+</ul>
+<p>しかし、次の因果関係は省略していません。</p>
+<pre><code class="language-text">重ね合わせだけでは答えは出ない
+  ↓
+正解の印付けが必要
+  ↓
+干渉で正解の確率を高める
+  ↓
+測定で一つの答えを得る
+  ↓
+その仕組みをグローバーやショアが利用する
+</code></pre>
+<h2>Teach-back</h2>
+<h3>課題1：重ね合わせ</h3>
+<p>「量子コンピューターは全候補を同時に読める」という説明を訂正してください。</p>
+<p><strong>模範回答：</strong></p>
+<blockquote>
+<p>量子コンピューターは候補の重ね合わせを作れますが、測定すると一つの結果しか得られません。干渉で正解の確率を高めてから測定することで、正解を見つけやすくします。</p>
+</blockquote>
+<h3>課題2：グローバー</h3>
+<p>グローバーの4候補の計算で、正解の振幅がどう変わったか説明してください。</p>
+<p><strong>模範回答：</strong></p>
+<blockquote>
+<p>最初は4候補の振幅がすべて0.5です。正解だけをオラクルで-0.5にします。平均は0.25なので、平均を鏡にして反転すると、不正解は0、正解は1になります。そのため、測定すると正解が100%で出ます。</p>
+</blockquote>
+<h3>課題3：ショアと暗号</h3>
+<p>ショアのアルゴリズムがRSAとECCを脅かす理由を説明してください。</p>
+<p><strong>模範回答：</strong></p>
+<blockquote>
+<p>RSAは素因数分解、ECCは離散対数が難しいことを安全性に使っています。ショアのアルゴリズムは量子計算で周期を見つける方法を使い、これらの問題を速く解く可能性があります。そのため、別の数学を使うPQCが必要になります。</p>
+</blockquote>
+<h2>NotebookLMの参考資料</h2>
+<p>この章の設計では、Gemini Notebook「現代暗号の基礎」に登録された次の資料を、役割ごとに読み分けました。</p>
+<ul>
+<li>『量子コンピュータの仕組み【グローバーのアルゴリズム】』</li>
+<li>4候補、振幅、オラクル、平均を基準にした反転、測定</li>
+<li>『量子コンピュータとは？中学生にもわかりやすく解説！』</li>
+<li>ビット、量子ビット、重ね合わせ、測定の入口</li>
+<li>『ＩＥＩＣＥ関西支部ＩＣＴ基礎講座』</li>
+<li>量子計算を情報処理として見る補助説明</li>
+<li>『耐量子計算機暗号（PQC）とは？』</li>
+<li>RSA・ECCからPQCへ移行する理由と脅威</li>
+</ul>
+<p>調査メモ：</p>
+<p><code>documents/intake/現代暗号の基礎_20260817/quantum_curriculum_deep_research.md</code></p>
+<p><code>documents/intake/現代暗号の基礎_20260817/grover_deep_research.md</code></p></div></section><section class="chapter" id="chapter-08"><div class="chapter-meta">Chapter 08 · 07_pqc.md</div><div class="chapter-body"><h1>08　量子計算機に対抗するPQC（Post-Quantum Cryptography）</h1>
+<h2>この章の問い</h2>
+<p>RSAの素因数分解やECCの離散対数が、十分強力な量子計算機で速く解かれる可能性があります。次の暗号は何を使えばよいでしょうか。</p>
+<h2>まず「何を破られるのか」を知る</h2>
+<p>暗号は、数学の問題を金庫の鍵にしています。RSAは大きな数の素因数分解、ECCは楕円曲線上の離散対数が、秘密を知らない人には難しいことを利用します。</p>
+<p>量子計算機は、すべての計算を魔法のように速くする機械ではありません。特定の問題に、特別なアルゴリズムを組み合わせると強力になります。</p>
+<ul>
+<li><strong>Shor（ショア）のアルゴリズム</strong>：十分に大きく誤りを訂正できる量子計算機があれば、RSAの素因数分解やECCの離散対数を高速に解く可能性があります。</li>
+<li><strong>Grover（グローバー）のアルゴリズム</strong>：AESやハッシュへの総当たりのような候補探しを、平方根程度に速くする可能性があります。ただし、AESが一瞬で解読されるという意味ではありません。</li>
+</ul>
+<p><a href="models/quantum_attack_intro.html">個別モデル：量子計算機と暗号の導入</a></p>
+<p>この違いが分かると、PQCの目的も見えてきます。RSAやECCの鍵をただ大きくするのではなく、量子計算機が得意とする攻撃の土台になっていない、別の数学の問題へ移るのです。</p>
+<h2>量子コンピューターは何をしているのか</h2>
+<p><a href="models/quantum_basics.html">個別モデル：量子コンピューターの基本</a></p>
+<h3>1　量子ビットは「答えを全部読める箱」ではない</h3>
+<p>普通のコンピューターのビットは、0か1のどちらかです。量子コンピューターの<strong>量子ビット（qubit：キュービット）</strong>は、測定する前には0と1に対応する<strong>振幅</strong>（確率の波の大きさ）を組み合わせた状態になります。</p>
+<p>ここで大切なのは、量子ビットが「0と1の答えを同時に保存して、最後に全部読める」という意味ではないことです。測定すると、結果は一つのビット列だけです。</p>
+<h3>2　重ね合わせから答えを取り出すには干渉が必要</h3>
+<p>重ね合わせを作るだけでは、正しい答えは見つかりません。測定したら、たくさんの候補のうち一つがランダムに出るだけです。</p>
+<p>量子アルゴリズムは、波の性質を利用します。正しい候補の波を強め、間違った候補の波を打ち消すように計算を組み立てます。この<strong>干渉</strong>が、量子計算の速さの核心です。</p>
+<h3>3　グローバーのアルゴリズム</h3>
+<p>候補が100万個あり、その中の一つが正解だとします。普通の方法では、候補を一つずつ調べます。グローバーのアルゴリズムは、正解かどうかを判定する仕組みを使って正解の振幅を少しずつ大きくします。</p>
+<p>必要な繰り返し回数は、およそ</p>
+<pre><code class="language-text">√1,000,000 = 1,000
+</code></pre>
+<p>です。ただし、これは「100万個を一度に読み出す」という意味ではありません。量子状態を作り、干渉を起こし、最後に測定して正解が出やすくする、という手順です。</p>
+<h3>4　ショアのアルゴリズム</h3>
+<p>RSAやECCには、計算の中に周期的な構造があります。ショアのアルゴリズムは、量子ビットの重ね合わせと干渉を使い、その<strong>周期</strong>を見つける問題に変換します。</p>
+<p>周期が分かると、RSAでは素因数分解、ECCでは離散対数を解く手がかりが得られます。したがって、ショアのアルゴリズムは「何でも速くする魔法」ではなく、特定の数学的構造を持つ問題に強いアルゴリズムです。</p>
+<h3>5　現実の量子コンピューターには制約がある</h3>
+<p>現在の量子コンピューターが、すぐにRSAやECCを破っているわけではありません。大規模な攻撃には、量子ビットの誤りを訂正しながら長い計算を続ける、実用的な量子計算機が必要です。</p>
+<p>それでも、暗号の交換には時間がかかります。今集めた暗号文を将来解読する「今保存して後で解読する」攻撃も考えられるため、将来に備えてPQCへ移行する準備が進められています。</p>
+<h2>PQCとは何か</h2>
+<p><strong>PQC（<em>Post-Quantum Cryptography</em>：ポスト量子暗号）とは、将来の強力な量子計算機でも破られにくいように考えられた暗号です。</strong></p>
+<p>「ポスト量子」は「量子計算機を使う」という意味ではありません。量子計算機に対抗する、という意味です。RSAやECCの鍵を大きくするだけではなく、安全性の土台となる数学の問題を別のものへ移します。</p>
+<h2>どう作るか</h2>
+<ol>
+<li>量子計算機でも効率よく解ける攻撃を調べる。</li>
+<li>それとは異なる、逆算が難しい数学の問題を選ぶ。</li>
+<li>その問題を、暗号化・鍵交換・署名の手順へ組み込む。</li>
+<li>普通のコンピュータでも計算できるか、安全性と性能を検証する。</li>
+</ol>
+<p>代表的な考え方には、格子、少しの誤差を含む計算、ハッシュ関数を利用する署名があります。誤差を含む学習問題は、英語で <em>Learning With Errors</em>（LWE）と呼ばれます。</p>
+<p>たとえば、規則正しい目印から少しずれた手がかりだけを渡されたとします。正しい規則を知っている人は計算できますが、知らない人は「どの目印からずれたのか」をたくさん試すことになります。PQCの一部は、このような「計算はできるが、秘密を知らない人の逆算は難しい」という性質を利用します。</p>
+<p><a href="models/pqc_lattice.html">個別モデル：PQCの格子と誤差</a></p>
+<p>モデルでは、規則的な格子点に少しずれた観測点を加えます。誤差がない場合と比べて、観測結果から元の規則を逆算する手がかりが減ることを確認してください。これは実際のPQCの安全性を証明するものではなく、考え方をつかむための模型です。</p>
+<h2>PQCを学ぶ意味</h2>
+<ul>
+<li><strong>意味</strong>：PQCは、将来の計算機でも逆算しにくい別の数学を使う暗号です。</li>
+<li><strong>必要な理由</strong>：現在のRSAやECCが、量子計算機によって危うくなる可能性があるからです。</li>
+<li><strong>役立つ場面</strong>：暗号を一度作って終わりにせず、計算機の進歩に合わせて更新する視点を持てます。</li>
+<li><strong>ないと困ること</strong>：PQCを「量子コンピュータを使う暗号」と誤解し、なぜ移行が必要か分からなくなります。</li>
+</ul>
+<pre><code class="language-text">RSA：*Rivest–Shamir–Adleman*（素因数分解）
+ECC：*Elliptic Curve Cryptography*（楕円曲線上の離散対数）
+PQC：*Post-Quantum Cryptography*（量子計算機でも解きにくい別の問題）
+</code></pre>
+<h2>本編での到達点</h2>
+<p>PQCの完全な数理を本編で証明するのではなく、「安全性の根拠となる数学の問題を交換する」という考え方を理解します。格子とLWEは発展章で扱います。</p>
+<h2>まとめ</h2>
+<p>有限体で計算の舞台を閉じ、楕円曲線上の点を足し、順方向の計算と逆方向の計算の難しさを分けました。その考え方は鍵交換や署名に使われ、さらに将来はPQCへ引き継がれていきます。</p>
+<h2>Teach-back</h2>
+<p><strong>課題</strong>：PQCは「量子コンピュータを使う暗号」ではないことを説明してください。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>PQCは、量子計算機に対抗するための暗号です。暗号を使う側が量子計算機を使うという意味ではありません。RSAやECCとは別の、量子計算機でも逆算しにくい数学の問題を安全性に利用します。</p>
+</blockquote>
+<p><strong>確認問題</strong>：PQCへ移行する理由は何ですか。</p>
+<p><strong>回答</strong>：</p>
+<blockquote>
+<p>将来、量子計算機によってRSAの素因数分解やECCの離散対数が速く解かれる可能性があるためです。安全性の土台となる数学を別の問題へ移す必要があります。</p>
+</blockquote></div></section><section class="chapter" id="chapter-09"><div class="chapter-meta">Chapter 09 · 08_compact_glossary.md</div><div class="chapter-body"><h1>09　通信を支える短い言葉</h1>
+<h2>ハッシュ</h2>
+<p>ハッシュ関数は、長いデータから短い「指紋」のような値を作ります。</p>
+<pre><code class="language-text">長いデータ → ハッシュ関数 → 短いハッシュ値
+</code></pre>
+<p>同じデータなら同じ値になります。データが少しでも変わると、ハッシュ値も大きく変わるように設計されています。</p>
+<p>ただし、ハッシュは暗号化ではありません。ハッシュ値から元の文章を復元するための鍵はありません。主な役割は「同じデータか」「途中で変わっていないか」を調べることです。</p>
+<h2>ハッシュはどう作るか</h2>
+<p>ハッシュ関数は、次のような手順で作られます。</p>
+<ol>
+<li>文章やファイルを、コンピュータが扱う数字の列に変える。</li>
+<li>数字の列をいくつかの小さなブロックに分ける。</li>
+<li>各ブロックを、足し算・入れ替え・ビット操作などの決められた計算で混ぜる。</li>
+<li>最後に、決まった長さの数字を出力する。</li>
+</ol>
+<p>入力が短くても長くても、出力の長さは同じです。例えば<strong>SHA-256</strong>（<em>Secure Hash Algorithm 256-bit</em>：256ビット安全ハッシュアルゴリズム）は、入力の長さに関係なく256ビットの値を出力します。</p>
+<h3>小さな模型</h3>
+<p>学習用に、文字を数字にして合計し、100で割った余りを出す方法を考えます。</p>
+<pre><code class="language-text">A = 1, B = 2, C = 3
+ABC → 1 + 2 + 3 = 6 → 6 mod 100
+</code></pre>
+<p>これはハッシュの「入力を短い値に縮める」部分を体験する模型です。しかし、<code>ABC</code> と <code>CBA</code> が同じ値になるため、実際の安全なハッシュには使えません。</p>
+<p>実用的なハッシュは、順番や各ビットの違いが広く結果へ影響するように複雑な混合を行います。それでも、同じ入力なら同じ値になり、少しの変更で値が大きく変わるよう設計されています。</p>
+<h2>ハッシュを作る目的</h2>
+<ul>
+<li><strong>短くする</strong>：長いファイルを短い値で照合できる。</li>
+<li><strong>変化を見つける</strong>：ダウンロードしたファイルが同じか確認できる。</li>
+<li><strong>署名と組み合わせる</strong>：長い文章そのものではなく、ハッシュ値に署名できる。</li>
+</ul>
+<p>ハッシュ値から元のデータを計算で戻せないこと、同じハッシュ値になる別の入力を見つけにくいことも、安全なハッシュの重要な条件です。</p>
+<h2>電子署名</h2>
+<p>電子署名は、紙のサインを画像にしたものではありません。</p>
+<ol>
+<li>文章のハッシュ値を作る</li>
+<li>その値を秘密鍵で署名する</li>
+<li>公開鍵で署名を検証する</li>
+</ol>
+<p>これにより、文章が変わっていないことと、秘密鍵を持つ人が署名したことを確認します。</p>
+<p>電子署名を学ぶ意味は、<strong>内容を隠す暗号化と、誰が作ったかを確かめる仕組みを区別すること</strong>です。</p>
+<h2>証明書</h2>
+<p>公開鍵だけでは、それが本当に目的のWebサイトの鍵か分かりません。証明書は「この名前の相手の公開鍵はこれです」という結び付きを証明します。</p>
+<p>証明書がないと、攻撃者が自分の公開鍵を本物のWebサイトのものとして見せても、利用者は見分けにくくなります。</p>
+<h2>鍵交換</h2>
+<p>鍵交換は、暗号文を作ることではありません。通信する2人が、盗み見られている通信路の上で同じ共通鍵を作る手続きです。</p>
+<p>ECCは、この鍵交換や電子署名の部品として使われます。長い本文の暗号化は、通常AESのような共通鍵暗号が担当します。</p>
+<p>この役割分担を知ると、「暗号」という言葉を一つの魔法としてではなく、目的ごとの道具として理解できます。</p>
+<h2>ひとことで整理</h2>
+<pre><code class="language-text">ハッシュ   ：データの指紋
+署名       ：秘密鍵を持つ人の証明
+証明書     ：公開鍵と名前の結び付き
+鍵交換     ：共通鍵を安全に合意する手続き
+暗号化     ：内容を読めない形に変える手続き
+</code></pre>
+<h2>次の問い</h2>
+<p>これらの部品は、実際のHTTPS通信の中でどの順番に使われているのでしょうか。</p>
+<h2>Teach-back</h2>
+<p><strong>課題</strong>：ハッシュと暗号化の違いを説明してください。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>暗号化は、鍵を使って内容を読めない形にし、正しい鍵で元に戻します。ハッシュは、内容から短い指紋を作りますが、そこから元の内容へ戻すための復号鍵はありません。ハッシュは主に変更や改ざんを見つけるために使います。</p>
+</blockquote>
+<p><strong>課題</strong>：電子署名と証明書の違いを説明してください。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>電子署名は、秘密鍵を持つ人が作ったことと、内容が変わっていないことを確認する仕組みです。証明書は、その公開鍵が本当に目的のWebサイトや相手のものだと結び付ける仕組みです。</p>
+</blockquote></div></section><section class="chapter" id="chapter-10"><div class="chapter-meta">Chapter 10 · 09_crypto_forms_and_lab.md</div><div class="chapter-body"><h1>10　暗号は実際にどんな形になるか</h1>
+<h2>この章の目的</h2>
+<p>これまで学んだ方式を、実際の入力から出力を作って確かめます。</p>
+<p>大切なのは、暗号方式によって「暗号文の見た目」も「秘密の置き場所」も違うことです。</p>
+<p><a href="models/crypto_lab.html">個別モデル：暗号化ラボ（シフト・XOR・RSA・SHA-256・AES）</a></p>
+<pre><code class="language-text">方式       入力              出力の例             秘密の中心
+シフト     文字              ずれた文字列         ずらす数
+XOR        数字の列          別の数字の列         共通鍵
+RSA        数字              大きな数字           秘密指数
+ハッシュ   文章・ファイル    固定長の指紋         復号鍵はない
+ECC        点・整数          公開点・署名         秘密の整数
+AES        データ            バイト列             共通鍵
+</code></pre>
+<h2>1. シフト暗号：文字がずれる</h2>
+<h3>やってみる</h3>
+<p>アルファベットを数字にして、3つずらします。</p>
+<pre><code class="language-text">A=0, B=1, ..., Z=25
+</code></pre>
+<p><code>CAT</code> は、</p>
+<pre><code class="language-text">C → F
+A → D
+T → W
+</code></pre>
+<p>となり、暗号文は <code>FDW</code> です。復号では3つ戻します。</p>
+<p>これは暗号の考え方を体験する模型です。文字の並びを試せばすぐ破れるため、現代の安全な暗号ではありません。</p>
+<h3>教え返し</h3>
+<blockquote>
+<p>シフト暗号では、アルゴリズムは公開しても、ずらす数を秘密にします。しかし候補が少ないため、全部試せば破れます。</p>
+</blockquote>
+<h2>2. XOR：同じ鍵で閉じて開ける</h2>
+<h3>XORとは何か</h3>
+<p>XORは、2つのビットが異なるとき1、同じとき0になる計算です。</p>
+<pre><code class="language-text">0 XOR 0 = 0
+0 XOR 1 = 1
+1 XOR 0 = 1
+1 XOR 1 = 0
+</code></pre>
+<p>同じ鍵をもう一度使うと元に戻ります。</p>
+<pre><code class="language-text">データ XOR 鍵 = 暗号文
+暗号文 XOR 鍵 = データ
+</code></pre>
+<h3>形を見てみる</h3>
+<pre><code class="language-text">データ   10110010
+鍵       01100101
+暗号文   11010111
+</code></pre>
+<pre><code class="language-text">暗号文   11010111
+鍵       01100101
+元データ 10110010
+</code></pre>
+<p>XORは共通鍵暗号の考え方を見せるのに便利ですが、同じ鍵を繰り返し使うだけでは安全な暗号になりません。</p>
+<h2>3. RSA：数字の暗号文と公開鍵</h2>
+<p>chapter 03の小さなRSAを使います。</p>
+<pre><code class="language-text">p=5, q=11
+n=55
+公開鍵=(n,e)=(55,3)
+秘密鍵=d=27
+</code></pre>
+<p>メッセージ <code>m=7</code> を暗号化すると、</p>
+<p>$$
+c\equiv7^3\equiv13\pmod {55}
+$$</p>
+<p>暗号文は数字 <code>13</code> です。受信者は秘密指数 <code>27</code> で、</p>
+<p>$$
+13^{27}\equiv7\pmod {55}
+$$</p>
+<p>として元に戻します。</p>
+<p>ここで見せたいのは、RSAの暗号文が「読めない文字」ではなく、公開鍵で計算された数になることです。実用RSAでは桁数も方式も異なり、この小例を安全な通信に使ってはいけません。</p>
+<h2>4. ハッシュ：暗号文ではなく指紋</h2>
+<p><code>hello</code> のSHA-256ハッシュは、入力の長さに関係なく256ビットの値になります。少しでも入力を変えると、出力全体が大きく変わります。</p>
+<pre><code class="language-text">入力       hello
+出力       固定長の16進数列
+</code></pre>
+<p>ハッシュには復号がありません。入力を隠すためではなく、ファイルやメッセージが変わっていないかを確認するために使います。</p>
+<h2>5. ECC：暗号文ではなく、公開点と秘密の計算</h2>
+<p>ECC（<em>Elliptic Curve Cryptography</em>：楕円曲線暗号）は、RSAのように文章を直接「楕円曲線の暗号文」へ変える方式ではありません。</p>
+<pre><code class="language-text">公開：曲線、基準点G、公開点kG
+秘密：整数k
+</code></pre>
+<p><code>kG</code> は公開しても、<code>G</code> と <code>kG</code> から <code>k</code> を戻すのが難しい、という構造を使います。</p>
+<h3>ECDHで通信する</h3>
+<p>ECDH（<em>Elliptic Curve Diffie–Hellman</em>）では、2人がそれぞれ秘密の整数を選び、公開点を交換します。公開点から同じ共通秘密を作り、その共通秘密をAESの鍵へ変換します。</p>
+<pre><code class="language-text">ECC / ECDH：共通鍵を作る
+AES        ：本文を暗号化する
+</code></pre>
+<h2>6. AES：実際のデータをバイト列にする</h2>
+<p>AES（<em>Advanced Encryption Standard</em>：高度暗号化標準）は、共通鍵を使ってデータを暗号化します。</p>
+<pre><code class="language-text">平文：Hello
+  ↓ AES + 共通鍵
+暗号文：読めないバイト列
+</code></pre>
+<p>AESの内部は、バイトの置換・並べ替え・有限体の計算を何度も組み合わせています。ここでは手作りのAESを作るのではなく、有限体が実際の暗号部品に使われることを確認します。</p>
+<h2>実演コーナーのルール</h2>
+<p>実際に操作するラボでは、各方式に次の4欄を置きます。</p>
+<ol>
+<li>入力</li>
+<li>秘密にするもの</li>
+<li>暗号化・変換後の出力</li>
+<li>復号または検証ができるか</li>
+</ol>
+<h3>方式ごとの注意</h3>
+<ul>
+<li>シフト暗号・小さなRSA・単純XORは、理論を学ぶための模型。</li>
+<li>ハッシュは変換できるが、復号する方式ではない。</li>
+<li>ECCは、鍵交換や署名のための数学的部品。</li>
+<li>AESは、実データを守る共通鍵暗号。</li>
+<li>実用上の鍵生成・乱数・パディング・認証を省いた小例は、安全な通信に使えない。</li>
+</ul>
+<h2>Teach-back</h2>
+<p><strong>課題</strong>：RSA、ECC、AESの出力の違いを説明してください。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>RSAでは、数字を公開鍵で計算した数字が暗号文になります。ECCでは、文章を直接暗号化するのではなく、公開点と秘密の整数の関係を使って共通鍵や署名を作ります。AESでは、共通鍵を使って文章やファイルを読めないバイト列へ変えます。</p>
+</blockquote>
+<p><strong>課題</strong>：ハッシュが暗号文でない理由を説明してください。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>暗号文は正しい鍵で元の文章へ戻しますが、ハッシュ値には復号鍵がありません。ハッシュは内容を隠すよりも、同じ内容か、途中で変わっていないかを確かめるための短い指紋です。</p>
+</blockquote></div></section><section class="chapter" id="chapter-11"><div class="chapter-meta">Chapter 11 · 02_finite_field.md</div><div class="chapter-body"><h1>02　時計の算数から有限体へ</h1>
+<h2>この章の問い</h2>
+<p>数がどこまでも大きくならず、決められた範囲の中で計算が続く世界を作れるでしょうか。</p>
+<h2><code>mod</code> とは何か</h2>
+<p><strong><code>mod</code> は、割り算の「余り」だけを使って計算する方法です。</strong></p>
+<p>7で割った余りだけを見る計算を <code>mod 7</code> と書きます。たとえば、10を7で割った余りは3です。</p>
+<pre><code class="language-text">10 ÷ 7 = 1 あまり 3
+</code></pre>
+<p>したがって <code>10 mod 7 = 3</code> です。<code>mod</code> は小数点を丸める方法ではなく、<strong>整数を割ったときの余りを使う方法</strong>です。</p>
+<p>たとえば、6に3を足すと9ですが、<code>mod 7</code> の世界では9を7で割った余りを見るので、</p>
+<p>$$
+6+3 \equiv 2 \pmod 7
+$$</p>
+<p>となります。7を超えたら、時計のように一周します。</p>
+<pre><code class="language-text">0 → 1 → 2 → 3 → 4 → 5 → 6 → 0 → …
+</code></pre>
+<h2>有限体とは何か</h2>
+<p><strong>有限体とは、有限個の数だけを使い、足し算・引き算・掛け算・割り算をしても計算の規則が壊れない数の世界です。</strong></p>
+<p>ただし、0で割ることはできません。0以外の数なら、その数を掛けて1になる「逆数」が同じ世界の中にあります。</p>
+<h2>有限体はどう作るか</h2>
+<p>最初の作り方は次の3段階です。</p>
+<ol>
+<li>素数 <code>p</code> を1つ選ぶ。</li>
+<li><code>0, 1, 2, ..., p-1</code> だけを数の世界にする。</li>
+<li>足し算・引き算・掛け算の答えを <code>mod p</code> の余りに戻す。</li>
+</ol>
+<p>たとえば <code>mod 5</code> では、数の世界は <code>{0, 1, 2, 3, 4}</code> です。</p>
+<p>$$
+4+3 \equiv 2 \pmod 5
+$$</p>
+<p>また、<code>2</code> の逆数は <code>3</code> です。</p>
+<p>$$
+2 \times 3 = 6 \equiv 1 \pmod 5
+$$</p>
+<p><code>p</code> を素数にするのは、0以外の数に必ず逆数を作れるようにするためです。</p>
+<p>ここで大切なのは、有限体が「小さい数だけの簡単な世界」という意味ではないことです。計算の規則を閉じ込めることで、点の数や計算の構造を正確に調べられます。</p>
+<h2>整数をどう扱うか</h2>
+<p><code>mod 5</code> の世界では、整数をその余りで代表させます。</p>
+<pre><code class="language-text">通常の整数        mod 5 での代表
+..., -1, 4, 9, ...       4
+...,  0, 5, 10, ...       0
+...,  1, 6, 11, ...       1
+</code></pre>
+<p>つまり、<code>mod 5</code> の数は小数ではありません。<code>0, 1, 2, 3, 4</code> という整数のどれかで表します。</p>
+<h2>有限体を学ぶ意味</h2>
+<ul>
+<li><strong>意味</strong>：有限体は、暗号の計算を「決められた数の世界」で行うための舞台です。</li>
+<li><strong>必要な理由</strong>：数が無限に広がる世界より、点や計算の規則を正確に調べられます。</li>
+<li><strong>役立つ場面</strong>：楕円曲線暗号の点、AES（<em>Advanced Encryption Standard</em>：高度暗号化標準）の内部計算、誤りを見つける符号などに使われます。</li>
+<li><strong>ないと困ること</strong>：楕円曲線を暗号に使うとき、どの点を対象にし、どの計算を公開するのかを決められません。</li>
+</ul>
+<h2>小さな世界を作って確かめる</h2>
+<p><code>p = 5</code> の世界を自分で作り、次を表にしてください。</p>
+<ol>
+<li><code>0, 1, 2, 3, 4</code> の足し算</li>
+<li>2倍していったときの巡回</li>
+<li>0でない数の逆数</li>
+</ol>
+<p>この小さな世界では、すべての計算を表にできます。後で楕円曲線をこの世界へ移すと、連続した曲線が有限個の点の集まりになります。</p>
+<h2>次の問い</h2>
+<p>有限体のような計算の世界を使うと、秘密を先に渡さずに通信できるでしょうか。</p>
+<h2>練習問題の解答とTeach-back</h2>
+<h3>問1：<code>mod 5</code>の足し算</h3>
+<p><code>4+3</code> を <code>mod 5</code> で計算します。</p>
+<pre><code class="language-text">4 + 3 = 7
+7 = 5 × 1 + 2
+</code></pre>
+<p>したがって、</p>
+<pre><code class="language-text">4 + 3 ≡ 2 (mod 5)
+</code></pre>
+<p>です。答えを0〜4へ戻すところがポイントです。</p>
+<h3>問2：逆数</h3>
+<p><code>mod 5</code> で、2の逆数を探します。</p>
+<pre><code class="language-text">2 × 1 = 2
+2 × 2 = 4
+2 × 3 = 6 ≡ 1
+</code></pre>
+<p>したがって、逆数は3です。</p>
+<h3>問3：なぜ素数を使うのか</h3>
+<p><code>mod 5</code>では、0以外の2・3・4に逆数があります。一方、<code>mod 6</code>では、</p>
+<pre><code class="language-text">2 × 3 ≡ 0 (mod 6)
+</code></pre>
+<p>となり、0でない数同士を掛けて0になります。このため、2に掛けて1になる数がありません。</p>
+<p>素数を法に選ぶと、0以外の数がすべて掛け算の逆数を持てます。これが素体を作る理由です。</p>
+<h3>Teach-back</h3>
+<p><strong>課題</strong>：「有限体は小さな整数の表です」とだけ説明するのが不十分なのはなぜですか。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>有限体は、有限個の数を集めただけではありません。その中で足し算・引き算・掛け算ができ、0以外の数には掛け算の逆数があります。つまり、数の集まりと計算規則がそろった世界です。暗号では、この規則の中で計算しながら逆算の難しさを作ります。</p>
+</blockquote></div></section>
+    <footer class="hero">
+      <h2>再生成</h2>
+      <pre><code>python tools/build_html.py --katex cdn</code></pre>
+    </footer>
+  </main>
+  
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  if (typeof renderMathInElement !== "function") return;
+  renderMathInElement(document.body, {
+    delimiters: [
+      {left: "$$", right: "$$", display: true},
+      {left: "\\[", right: "\\]", display: true},
+      {left: "$", right: "$", display: false},
+      {left: "\\(", right: "\\)", display: false}
+    ],
+    throwOnError: false
+  });
+});
+</script>
+
+</body>
+</html>

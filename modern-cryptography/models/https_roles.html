@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HTTPSの役割分担 | 現代暗号の基礎</title>
+  <style>
+    :root { --ink:#243b53; --muted:#52606d; --line:#d9e2ec; --soft:#eef5f9; --red:#c53030; --green:#276749; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#f5f7fa; color:var(--ink);
+      font-family:"Yu Gothic UI","Noto Sans JP",sans-serif; line-height:1.7; }
+    main { max-width:980px; margin:auto; padding:1.25rem; }
+    section { background:#fff; border:1px solid var(--line); border-radius:12px;
+      padding:1rem 1.2rem; margin-bottom:1rem; }
+    h1,h2 { line-height:1.35; }
+    h1 { margin:.2rem 0; }
+    .lead,.note { color:var(--muted); }
+    a { color:#486581; font-weight:700; }
+    .scene { display:grid; grid-template-columns:1fr .8fr 1fr; gap:.7rem; align-items:stretch; }
+    .actor { background:var(--soft); border-radius:8px; padding:.8rem; text-align:center; }
+    .actor strong { display:block; font-size:1.1rem; }
+    .attacker { border:2px dashed #d64545; background:#fff5f5; }
+    .arrow { display:flex; align-items:center; justify-content:center; color:#627d98; font-size:1.5rem; }
+    .message { min-height:3rem; padding:.7rem; border-radius:7px; background:#fff;
+      border:1px solid var(--line); margin-top:.6rem; font-family:Consolas,monospace; overflow-wrap:anywhere; }
+    .controls { display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; }
+    button { font:inherit; border:0; border-radius:6px; padding:.5rem .8rem; background:var(--ink); color:#fff; cursor:pointer; }
+    button:disabled { background:#bcccdc; cursor:default; }
+    #stepTitle { color:var(--green); font-weight:700; }
+    .role { display:grid; grid-template-columns:8rem 1fr; gap:.6rem; padding:.45rem 0; border-bottom:1px solid var(--line); }
+    .role:last-child { border-bottom:0; }
+    code { background:var(--soft); padding:.1rem .3rem; border-radius:4px; }
+    @media (max-width:700px) { .scene { grid-template-columns:1fr; } .arrow { transform:rotate(90deg); min-height:2rem; } .role { grid-template-columns:1fr; gap:0; } }
+  </style>
+</head>
+<body>
+<main>
+  <section>
+    <h1>HTTPSの役割分担</h1>
+    <p class="lead">一つの暗号ではなく、複数の部品が順番に働いて通信を守ります。</p>
+    <p><a href="../index.html">← 本体教材（目次）へ戻る</a></p>
+  </section>
+  <section class="scene">
+    <div class="actor"><strong>利用者</strong><span>ブラウザ</span><div id="clientMsg" class="message">接続したい</div></div>
+    <div class="arrow">→</div>
+    <div class="actor"><strong>Webサーバー</strong><span>証明書・秘密鍵</span><div id="serverMsg" class="message">待機中</div></div>
+    <div class="actor attacker"><strong>攻撃者</strong><span>通信を見たり、書き換えたりする</span><div id="attackerMsg" class="message">見えている情報</div></div>
+    <div class="arrow">↗</div>
+    <div class="arrow">↖</div>
+  </section>
+  <section>
+    <div class="controls">
+      <button id="prev">← 前</button>
+      <button id="next">次 →</button>
+      <span id="stepTitle"></span>
+    </div>
+    <p id="explanation"></p>
+  </section>
+  <section>
+    <h2>部品の役割</h2>
+    <div class="role"><strong>証明書</strong><span>公開鍵が本当に目的のWebサイトのものか確認する。</span></div>
+    <div class="role"><strong>ECDH</strong><span>公開情報を交換し、同じ共通鍵を合意する。</span></div>
+    <div class="role"><strong>AES</strong><span>合意した共通鍵で、長い本文を高速に暗号化する。</span></div>
+    <div class="role"><strong>ハッシュ</strong><span>データの指紋を作り、内容の変化を検出する。</span></div>
+  </section>
+</main>
+<script>
+(() => {
+  const steps = [
+    { title:"1. 接続を始める", client:"HTTPSで接続したい", server:"接続要求を受け取る", attacker:"要求は見える", explanation:"最初の要求は攻撃者にも見えます。暗号化は、相手が本物か確認してから始めます。" },
+    { title:"2. 証明書を確認する", client:"証明書を確認", server:"公開鍵と証明書を送る", attacker:"公開情報は見える", explanation:"証明書は、公開鍵とWebサイトの名前を結び付けます。公開鍵が見えても問題ありません。" },
+    { title:"3. ECDHで共通鍵を作る", client:"公開情報を送る", server:"公開情報を返す", attacker:"秘密の整数は見えない", explanation:"ECDH（楕円曲線ディフィー・ヘルマン）で、利用者とサーバーは同じ共通鍵を作ります。秘密の整数は送信しません。" },
+    { title:"4. AESで本文を守る", client:"AESで暗号文を送る", server:"AESで復号する", attacker:"読めないバイト列", explanation:"AES（高度暗号化標準）は、作った共通鍵で長い本文を高速に暗号化します。" },
+    { title:"5. ハッシュで変化を確認する", client:"指紋を確認する", server:"データを処理する", attacker:"書き換えると指紋が合わない", explanation:"ハッシュは暗号化ではなく、データの指紋です。途中で内容が変わると、期待した指紋と一致しません。" }
+  ];
+  let index=0;
+  const render=()=>{
+    const s=steps[index];
+    document.getElementById("stepTitle").textContent=s.title;
+    document.getElementById("clientMsg").textContent=s.client;
+    document.getElementById("serverMsg").textContent=s.server;
+    document.getElementById("attackerMsg").textContent=s.attacker;
+    document.getElementById("explanation").textContent=s.explanation;
+    document.getElementById("prev").disabled=index===0;
+    document.getElementById("next").disabled=index===steps.length-1;
+  };
+  document.getElementById("prev").onclick=()=>{if(index>0){index--;render();}};
+  document.getElementById("next").onclick=()=>{if(index<steps.length-1){index++;render();}};
+  render();
+})();
+</script>
+</body>
+</html>

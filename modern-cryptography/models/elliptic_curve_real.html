@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>実数平面の楕円曲線 | 現代暗号の基礎</title>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <style>
+    :root { --ink:#243b53; --muted:#52606d; --line:#d9e2ec; --soft:#eef5f9; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#f5f7fa; color:var(--ink);
+      font-family:"Yu Gothic UI","Noto Sans JP",sans-serif; line-height:1.7; }
+    main { max-width:920px; margin:auto; padding:1.25rem; }
+    section { background:#fff; border:1px solid var(--line); border-radius:12px;
+      padding:1rem 1.2rem; margin-bottom:1rem; }
+    h1,h2 { line-height:1.35; }
+    h1 { margin:.2rem 0; }
+    .lead,.note { color:var(--muted); }
+    #stage { width:100%; min-height:420px; border-radius:10px; overflow:hidden;
+      background:linear-gradient(#f8fbff,#eef5f9); }
+    canvas { display:block; width:100%; height:auto; }
+    .steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:.7rem; }
+    .step { padding:.7rem; background:var(--soft); border-radius:7px; }
+    .step strong { display:block; }
+    code { background:var(--soft); padding:.1rem .3rem; border-radius:4px; }
+  </style>
+</head>
+<body>
+<main>
+  <section>
+    <h1>実数平面の楕円曲線</h1>
+    <p class="lead">図形としての点の足し算を、まず小さな固定例で観察します。</p>
+    <p>このモデルは暗号そのものではなく、有限体へ進む前の直感用です。</p>
+    <p>「楕円」という名前は形からではなく、楕円積分に関係する数学の研究に由来します。</p>
+  </section>
+  <section>
+    <div id="stage" aria-label="楕円曲線と点の足し算"></div>
+  </section>
+  <section class="steps">
+    <div class="step"><strong>1. 点を選ぶ</strong><code>P=(0,1)</code> と <code>Q=(1,1)</code> は曲線上の点です。</div>
+    <div class="step"><strong>2. 直線を引く</strong>PとQを通る赤い直線を引きます。</div>
+    <div class="step"><strong>3. 第三の交点</strong>曲線ともう一度交わる点が <code>R=(-1,1)</code> です。</div>
+    <div class="step"><strong>4. 上下反転</strong> Rを反転した <code>(-1,-1)</code> を <code>P+Q</code> とします。</div>
+  </section>
+  <section>
+    <h2>式で確認する</h2>
+    <p>曲線は <code>y²=x³−x+1</code> です。PとQを通る直線は <code>y=1</code>。これを曲線へ代入すると、交点のx座標は <code>−1, 0, 1</code> になります。</p>
+    <p>この実数平面の図形操作を、暗号では整数の余りを使う計算規則へ置き換えます。</p>
+    <p class="note">次の段階では、同じ考え方を有限体上の点の集合で確認します。</p>
+  </section>
+</main>
+<script>
+(() => {
+  const stage = document.getElementById("stage");
+  const scene = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(-2.2, 2.2, 3, -2.5, .1, 10);
+  camera.position.z = 5;
+  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  stage.appendChild(renderer.domElement);
+  const group = new THREE.Group();
+  scene.add(group);
+  const color = { ink:0x243b53, red:0xd64545, gold:0xf0a202, green:0x2f855a, axis:0x9aa5b1 };
+
+  function line(points, material) {
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), material));
+  }
+  function dot(x, y, c, radius=.07) {
+    const mesh = new THREE.Mesh(new THREE.CircleGeometry(radius, 24), new THREE.MeshBasicMaterial({color:c}));
+    mesh.position.set(x, y, .1); group.add(mesh);
+  }
+  function label(text, x, y, c) {
+    const canvas = document.createElement("canvas");
+    canvas.width=160; canvas.height=70;
+    const ctx=canvas.getContext("2d");
+    ctx.font="bold 30px sans-serif"; ctx.fillStyle=c; ctx.textAlign="center"; ctx.textBaseline="middle";
+    ctx.fillText(text,80,35);
+    const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(canvas),transparent:true}));
+    sprite.scale.set(.48,.21,1); sprite.position.set(x,y,.2); group.add(sprite);
+  }
+  function draw() {
+    const material=(c,w=1)=>new THREE.LineBasicMaterial({color:c,linewidth:w});
+    line([new THREE.Vector3(-2.2,0,0),new THREE.Vector3(2.2,0,0)],material(color.axis));
+    line([new THREE.Vector3(0,-2.5,0),new THREE.Vector3(0,3,0)],material(color.axis));
+    const curve=[];
+    for(let i=0;i<=320;i++){
+      const x=-2.2+i*4.4/320;
+      const y2=x*x*x-x+1;
+      if(y2>=0){ const y=Math.sqrt(y2); curve.push(new THREE.Vector3(x,y,.02)); }
+    }
+    for(let i=320;i>=0;i--){
+      const x=-2.2+i*4.4/320;
+      const y2=x*x*x-x+1;
+      if(y2>=0){ const y=-Math.sqrt(y2); curve.push(new THREE.Vector3(x,y,.02)); }
+    }
+    line(curve,material(color.ink,2));
+    line([new THREE.Vector3(-1.6,1,0.04),new THREE.Vector3(1.6,1,0.04)],material(color.red,2));
+    line([new THREE.Vector3(-1,-1,0.03),new THREE.Vector3(-1,1,0.03)],material(color.axis));
+    dot(0,1,color.red); label("P=(0,1)",.25,1.25,"#c53030");
+    dot(1,1,color.red); label("Q=(1,1)",1.28,1.25,"#c53030");
+    dot(-1,1,color.gold); label("R=(-1,1)",-1.45,1.3,"#975a16");
+    dot(-1,-1,color.green); label("P+Q",-.62,-1.25,"#276749");
+  }
+  function resize(){
+    const width=Math.max(stage.clientWidth,320);
+    const height=Math.max(Math.min(width*.58,500),320);
+    renderer.setSize(width,height,false);
+    const aspect=width/height;
+    const halfHeight=2.6;
+    const halfWidth=Math.max(2.4,halfHeight*aspect);
+    camera.left=-halfWidth; camera.right=halfWidth;
+    camera.top=halfHeight; camera.bottom=-halfHeight;
+    camera.updateProjectionMatrix();
+  }
+  draw(); resize(); window.addEventListener("resize",resize);
+  renderer.setAnimationLoop(()=>renderer.render(scene,camera));
+})();
+</script>
+</body>
+</html>
