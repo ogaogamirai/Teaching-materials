@@ -6,7 +6,6 @@ from __future__ import annotations
 import argparse
 import html
 import re
-from datetime import datetime, timezone
 from pathlib import Path
 
 import markdown
@@ -111,7 +110,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 def build_document(chapters: list[Path], katex_mode: str) -> str:
-    generated = datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M %z")
     toc: list[str] = []
     sections: list[str] = []
 
@@ -195,17 +193,12 @@ def build_document(chapters: list[Path], katex_mode: str) -> str:
       <h1>現代暗号の基礎</h1>
       <p class="tagline">秘密の通信 → 有限体 → RSA → 楕円曲線 → ECDLP → 通信 → PQC</p>
       <p>中学2年生が、問いと操作を通して現代暗号の理論へ進むMarkdown正本からの統合版。</p>
-      <p>生成日時: {html.escape(generated)}</p>
     </header>
     <nav class="toc" id="toc" aria-label="章一覧">
       <h2>目次</h2>
       <ol>{"".join(toc)}</ol>
     </nav>
     {"".join(sections)}
-    <footer class="hero">
-      <h2>再生成</h2>
-      <pre><code>python tools/build_html.py --katex cdn</code></pre>
-    </footer>
   </main>
   {math_script()}
   <script>

@@ -58,7 +58,6 @@
       <h1>現代暗号の基礎</h1>
       <p class="tagline">秘密の通信 → 有限体 → RSA → 楕円曲線 → ECDLP → 通信 → PQC</p>
       <p>中学2年生が、問いと操作を通して現代暗号の理論へ進むMarkdown正本からの統合版。</p>
-      <p>生成日時: 2026-08-19 17:42 +0900</p>
     </header>
     <nav class="toc" id="toc" aria-label="章一覧">
       <h2>目次</h2>
@@ -1459,22 +1458,7 @@ PQC：別の数学の問題を安全性の土台にする
 <p><strong>模範回答：</strong></p>
 <blockquote>
 <p>RSAは素因数分解、ECCは離散対数が難しいことを安全性に使っています。ショアのアルゴリズムは量子計算で周期を見つける方法を使い、これらの問題を速く解く可能性があります。そのため、別の数学を使うPQCが必要になります。</p>
-</blockquote>
-<h2>NotebookLMの参考資料</h2>
-<p>この章の設計では、Gemini Notebook「現代暗号の基礎」に登録された次の資料を、役割ごとに読み分けました。</p>
-<ul>
-<li>『量子コンピュータの仕組み【グローバーのアルゴリズム】』</li>
-<li>4候補、振幅、オラクル、平均を基準にした反転、測定</li>
-<li>『量子コンピュータとは？中学生にもわかりやすく解説！』</li>
-<li>ビット、量子ビット、重ね合わせ、測定の入口</li>
-<li>『ＩＥＩＣＥ関西支部ＩＣＴ基礎講座』</li>
-<li>量子計算を情報処理として見る補助説明</li>
-<li>『耐量子計算機暗号（PQC）とは？』</li>
-<li>RSA・ECCからPQCへ移行する理由と脅威</li>
-</ul>
-<p>調査メモ：</p>
-<p><code>documents/intake/現代暗号の基礎_20260817/quantum_curriculum_deep_research.md</code></p>
-<p><code>documents/intake/現代暗号の基礎_20260817/grover_deep_research.md</code></p></div></section><section class="chapter" id="chapter-08" data-chapter-label="08　量子計算機に対抗するPQC（Post-Quantum Cryptography）"><div class="chapter-meta">Chapter 08 · 07_pqc.md</div><div class="chapter-body"><h1>08　量子計算機に対抗するPQC（Post-Quantum Cryptography）</h1>
+</blockquote></div></section><section class="chapter" id="chapter-08" data-chapter-label="08　量子計算機に対抗するPQC（Post-Quantum Cryptography）"><div class="chapter-meta">Chapter 08 · 07_pqc.md</div><div class="chapter-body"><h1>08　量子計算機に対抗するPQC（Post-Quantum Cryptography）</h1>
 <h2>この章の問い</h2>
 <p>RSAの素因数分解やECCの離散対数が、十分強力な量子計算機で速く解かれる可能性があります。次の暗号は何を使えばよいでしょうか。</p>
 <h2>まず「何を破られるのか」を知る</h2>
@@ -1819,10 +1803,6 @@ $$</p>
 <blockquote>
 <p>有限体は、有限個の数を集めただけではありません。その中で足し算・引き算・掛け算ができ、0以外の数には掛け算の逆数があります。つまり、数の集まりと計算規則がそろった世界です。暗号では、この規則の中で計算しながら逆算の難しさを作ります。</p>
 </blockquote></div></section>
-    <footer class="hero">
-      <h2>再生成</h2>
-      <pre><code>python tools/build_html.py --katex cdn</code></pre>
-    </footer>
   </main>
   
 <script>
