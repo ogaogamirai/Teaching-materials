@@ -11,10 +11,20 @@
     * { box-sizing:border-box; }
     body { margin:0; background:var(--bg); color:var(--ink);
       font-family:"Yu Gothic UI","Noto Sans JP",sans-serif; line-height:1.8; }
-    .page { max-width:960px; margin:auto; padding:2rem 1rem 4rem; }
+    .page { max-width:960px; margin:auto; padding:4.7rem 1rem 4rem; }
     .hero,.toc,.chapter { background:var(--paper); border:1px solid var(--line);
       border-radius:12px; padding:1.4rem 1.6rem; margin-bottom:1.25rem;
       box-shadow:0 6px 20px rgba(36,59,83,.05); }
+    .reading-nav { position:fixed; inset:0 0 auto; z-index:10; background:rgba(255,255,255,.96);
+      border-bottom:1px solid var(--line); box-shadow:0 2px 10px rgba(36,59,83,.08); }
+    .reading-nav-inner { max-width:960px; margin:auto; min-height:3.2rem; padding:.45rem 1rem;
+      display:flex; align-items:center; gap:.55rem; }
+    .reading-nav a { color:var(--accent); font-weight:700; text-decoration:none; white-space:nowrap; }
+    .reading-nav a:hover { text-decoration:underline; }
+    .reading-nav-current { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--muted); }
+    .reading-nav-current strong { color:var(--ink); font-weight:700; }
+    .reading-nav-separator { color:var(--line); }
+    #toc,.chapter { scroll-margin-top:4.3rem; }
     h1 { line-height:1.35; }
     h2,h3 { line-height:1.4; margin-top:2rem; }
     .tagline { color:var(--muted); }
@@ -36,18 +46,25 @@
   </style>
 </head>
 <body>
+  <nav class="reading-nav" aria-label="読書ナビゲーション">
+    <div class="reading-nav-inner">
+      <a href="#toc">目次</a>
+      <span class="reading-nav-separator" aria-hidden="true">|</span>
+      <span class="reading-nav-current">現在：<strong id="current-chapter">目次</strong></span>
+    </div>
+  </nav>
   <main class="page">
     <header class="hero">
       <h1>現代暗号の基礎</h1>
       <p class="tagline">秘密の通信 → 有限体 → RSA → 楕円曲線 → ECDLP → 通信 → PQC</p>
       <p>中学2年生が、問いと操作を通して現代暗号の理論へ進むMarkdown正本からの統合版。</p>
-      <p>生成日時: 2026-08-19 12:29 +0900</p>
+      <p>生成日時: 2026-08-19 17:42 +0900</p>
     </header>
     <nav class="toc" id="toc" aria-label="章一覧">
       <h2>目次</h2>
-      <ol><li><a href="#chapter-01">math toolbox</a></li><li><a href="#chapter-02">problem</a></li><li><a href="#chapter-03">rsa</a></li><li><a href="#chapter-04">elliptic curve</a></li><li><a href="#chapter-05">ecdlp</a></li><li><a href="#chapter-06">communication</a></li><li><a href="#chapter-07">quantum computers</a></li><li><a href="#chapter-08">pqc</a></li><li><a href="#chapter-09">compact glossary</a></li><li><a href="#chapter-10">crypto forms and lab</a></li><li><a href="#chapter-11">finite field</a></li></ol>
+      <ol><li><a href="#chapter-01">00　暗号を読むための数学の道具箱</a></li><li><a href="#chapter-02">01　秘密の通信には何が必要か</a></li><li><a href="#chapter-03">03　RSA（Rivest–Shamir–Adleman）――掛け算は簡単、逆算は難しい</a></li><li><a href="#chapter-04">04　楕円曲線の上で足し算する</a></li><li><a href="#chapter-05">05　ECDLP（Elliptic Curve Discrete Logarithm Problem）――点の足し算の逆算</a></li><li><a href="#chapter-06">06　実際の通信では役割を分担する</a></li><li><a href="#chapter-07">07　量子コンピューターと暗号の解読</a></li><li><a href="#chapter-08">08　量子計算機に対抗するPQC（Post-Quantum Cryptography）</a></li><li><a href="#chapter-09">09　通信を支える短い言葉</a></li><li><a href="#chapter-10">10　暗号は実際にどんな形になるか</a></li><li><a href="#chapter-11">02　時計の算数から有限体へ</a></li></ol>
     </nav>
-    <section class="chapter" id="chapter-01"><div class="chapter-meta">Chapter 01 · 00_math_toolbox.md</div><div class="chapter-body"><h1>00　暗号を読むための数学の道具箱</h1>
+    <section class="chapter" id="chapter-01" data-chapter-label="00　暗号を読むための数学の道具箱"><div class="chapter-meta">Chapter 01 · 00_math_toolbox.md</div><div class="chapter-body"><h1>00　暗号を読むための数学の道具箱</h1>
 <h2>この章の役割</h2>
 <p>この章は、暗号の計算に必要な数学を先に準備する章です。</p>
 <p>暗号では難しい公式を突然使うのではなく、</p>
@@ -335,7 +352,7 @@ mod p の数の世界
 <p><strong>模範回答</strong>：</p>
 <blockquote>
 <p>どちらも、対象の集まりと、その上で定めた計算規則を研究しています。有限体では数の足し算や掛け算を考え、楕円曲線では条件を満たす点と点の足し算を考えます。対象は違っても、規則が閉じているか、逆元があるかを調べるという見方が共通しています。</p>
-</blockquote></div></section><section class="chapter" id="chapter-02"><div class="chapter-meta">Chapter 02 · 01_problem.md</div><div class="chapter-body"><h1>01　秘密の通信には何が必要か</h1>
+</blockquote></div></section><section class="chapter" id="chapter-02" data-chapter-label="01　秘密の通信には何が必要か"><div class="chapter-meta">Chapter 02 · 01_problem.md</div><div class="chapter-body"><h1>01　秘密の通信には何が必要か</h1>
 <h2>この章の問い</h2>
 <p>あなたが友だちに秘密のメッセージを送りたいとします。途中の人に読まれず、書き換えられず、相手が本物だと確認するには何が必要でしょうか。</p>
 <blockquote>
@@ -373,7 +390,7 @@ mod p の数の世界
 </ol>
 <p>この3つを分けると、暗号化、ハッシュ、電子署名、証明書がそれぞれ何を担当するか見えてきます。</p>
 <h2>次の問い</h2>
-<p>同じ鍵で閉じて開ける方式は速そうです。しかし、その鍵を最初にどうやって相手へ渡せばよいでしょうか。</p></div></section><section class="chapter" id="chapter-03"><div class="chapter-meta">Chapter 03 · 03_rsa.md</div><div class="chapter-body"><h1>03　RSA（Rivest–Shamir–Adleman）――掛け算は簡単、逆算は難しい</h1>
+<p>同じ鍵で閉じて開ける方式は速そうです。しかし、その鍵を最初にどうやって相手へ渡せばよいでしょうか。</p></div></section><section class="chapter" id="chapter-03" data-chapter-label="03　RSA（Rivest–Shamir–Adleman）――掛け算は簡単、逆算は難しい"><div class="chapter-meta">Chapter 03 · 03_rsa.md</div><div class="chapter-body"><h1>03　RSA（Rivest–Shamir–Adleman）――掛け算は簡単、逆算は難しい</h1>
 <h2>この章の問い</h2>
 <p>誰でも見られる公開情報を使いながら、秘密の鍵を持つ人だけが復号できる仕組みを作れるでしょうか。</p>
 <p>RSAは、発明者の姓 <strong>Rivest（リベスト）・Shamir（シャミア）・Adleman（アドルマン）</strong> の頭文字を取った名前です。</p>
@@ -497,7 +514,7 @@ $$</p>
 <p>教材の小さなRSAは、鍵の作り方と復号の仕組みを理解する模型です。実用RSAでは、素因数分解の候補が現実的な時間で試せないほど大きな数と、安全な利用方式を使います。小例が解けることと、実用サイズが安全かどうかは分けて考えます。</p>
 </blockquote>
 <h2>次の問い</h2>
-<p>掛け算と素因数分解とは別の数学の山を作るには、どんな構造を使えばよいでしょうか。</p></div></section><section class="chapter" id="chapter-04"><div class="chapter-meta">Chapter 04 · 04_elliptic_curve.md</div><div class="chapter-body"><h1>04　楕円曲線の上で足し算する</h1>
+<p>掛け算と素因数分解とは別の数学の山を作るには、どんな構造を使えばよいでしょうか。</p></div></section><section class="chapter" id="chapter-04" data-chapter-label="04　楕円曲線の上で足し算する"><div class="chapter-meta">Chapter 04 · 04_elliptic_curve.md</div><div class="chapter-body"><h1>04　楕円曲線の上で足し算する</h1>
 <h2>この章の問い</h2>
 <p>普通の数の足し算ではなく、曲線の上の点を足すことはできるでしょうか。</p>
 <h2>楕円曲線は円ではない</h2>
@@ -658,7 +675,7 @@ $$</p>
 <p>実数上の図は、直線と第三の交点、上下反転という仕組みを目で理解する模型です。暗号では小数を使わず、整数をmod pで計算します。図形の操作を、有限体の計算式に置き換えて実行します。</p>
 </blockquote>
 <h2>次の問い</h2>
-<p>有限体の点を何度も足すと、順方向と逆方向の計算に差が生まれるでしょうか。</p></div></section><section class="chapter" id="chapter-05"><div class="chapter-meta">Chapter 05 · 05_ecdlp.md</div><div class="chapter-body"><h1>05　ECDLP（Elliptic Curve Discrete Logarithm Problem）――点の足し算の逆算</h1>
+<p>有限体の点を何度も足すと、順方向と逆方向の計算に差が生まれるでしょうか。</p></div></section><section class="chapter" id="chapter-05" data-chapter-label="05　ECDLP（Elliptic Curve Discrete Logarithm Problem）――点の足し算の逆算"><div class="chapter-meta">Chapter 05 · 05_ecdlp.md</div><div class="chapter-body"><h1>05　ECDLP（Elliptic Curve Discrete Logarithm Problem）――点の足し算の逆算</h1>
 <h2>この章の問い</h2>
 <p>基準点 <code>G</code> を何度も足して、公開点 <code>kG</code> を作ります。公開された <code>G</code> と <code>kG</code> から、秘密の回数 <code>k</code> を戻せるでしょうか。</p>
 <h2>スカラー倍とは何か</h2>
@@ -731,7 +748,7 @@ $$</p>
 <p>小さな例なら実際に点を足し、順方向と逆方向を体験できます。ただし、小例は全部試せるため安全ではありません。学習用の模型と、実用サイズの安全性を分けて理解するために使います。</p>
 </blockquote>
 <h2>次の問い</h2>
-<p>ECCは通信文を全部暗号化するのでしょうか。それとも、通信の中の別の役割を担当するのでしょうか。</p></div></section><section class="chapter" id="chapter-06"><div class="chapter-meta">Chapter 06 · 06_communication.md</div><div class="chapter-body"><h1>06　実際の通信では役割を分担する</h1>
+<p>ECCは通信文を全部暗号化するのでしょうか。それとも、通信の中の別の役割を担当するのでしょうか。</p></div></section><section class="chapter" id="chapter-06" data-chapter-label="06　実際の通信では役割を分担する"><div class="chapter-meta">Chapter 06 · 06_communication.md</div><div class="chapter-body"><h1>06　実際の通信では役割を分担する</h1>
 <h2>この章の問い</h2>
 <p>楕円曲線暗号だけで、長い文章や動画を全部暗号化するのでしょうか。</p>
 <h2>略語を先に読む</h2>
@@ -785,7 +802,7 @@ AES（高度暗号化標準）などの共通鍵暗号
 <p>公開鍵暗号は安全な鍵交換や署名には向いていますが、大量データの処理は共通鍵暗号の方が高速です。そのため、役割を分担します。</p>
 </blockquote>
 <h2>次の問い</h2>
-<p>RSAとECCの数学的な山が、将来の量子計算機で越えられるとしたら、次の暗号は何を土台にするのでしょうか。</p></div></section><section class="chapter" id="chapter-07"><div class="chapter-meta">Chapter 07 · 07_quantum_computers.md</div><div class="chapter-body"><h1>07　量子コンピューターと暗号の解読</h1>
+<p>RSAとECCの数学的な山が、将来の量子計算機で越えられるとしたら、次の暗号は何を土台にするのでしょうか。</p></div></section><section class="chapter" id="chapter-07" data-chapter-label="07　量子コンピューターと暗号の解読"><div class="chapter-meta">Chapter 07 · 07_quantum_computers.md</div><div class="chapter-body"><h1>07　量子コンピューターと暗号の解読</h1>
 <h2>この章の地図：本編とモデル</h2>
 <p>この章は二つの場を使う。解説の量は減らさない。置く場所を分ける。</p>
 <pre><code class="language-text">本編（この文章）　道を読む正本
@@ -809,9 +826,9 @@ AES（高度暗号化標準）などの共通鍵暗号
 <h3>本編の到達点</h3>
 <p>次の説明を、自分の言葉と図で教え返せれば合格です。</p>
 <blockquote>
-<p>量子回路が組めるのは、公開鍵と暗号化ルールがあるときである。<br>
-番号を錠に入れて開くか聞くだけの暗証では、Oracleが組めず、量子コンピューターでは解けない。<br>
-小さなRSAの検査 <code>x³ mod 55 == 13</code> は<strong>グローバー</strong>（候補探し）である。<br>
+<p>量子回路が組めるのは、公開鍵と暗号化ルールがあるときである。
+番号を錠に入れて開くか聞くだけの暗証では、Oracleが組めず、量子コンピューターでは解けない。
+小さなRSAの検査 <code>x³ mod 55 == 13</code> は<strong>グローバー</strong>（候補探し）である。
 <strong>ショア</strong>は同じ <code>n=55</code> の周期を探して素因数分解し、秘密鍵を作り直す。RSAを脅かす本命はショアである。</p>
 </blockquote>
 <h3>本編と挑戦コース</h3>
@@ -1457,7 +1474,7 @@ PQC：別の数学の問題を安全性の土台にする
 </ul>
 <p>調査メモ：</p>
 <p><code>documents/intake/現代暗号の基礎_20260817/quantum_curriculum_deep_research.md</code></p>
-<p><code>documents/intake/現代暗号の基礎_20260817/grover_deep_research.md</code></p></div></section><section class="chapter" id="chapter-08"><div class="chapter-meta">Chapter 08 · 07_pqc.md</div><div class="chapter-body"><h1>08　量子計算機に対抗するPQC（Post-Quantum Cryptography）</h1>
+<p><code>documents/intake/現代暗号の基礎_20260817/grover_deep_research.md</code></p></div></section><section class="chapter" id="chapter-08" data-chapter-label="08　量子計算機に対抗するPQC（Post-Quantum Cryptography）"><div class="chapter-meta">Chapter 08 · 07_pqc.md</div><div class="chapter-body"><h1>08　量子計算機に対抗するPQC（Post-Quantum Cryptography）</h1>
 <h2>この章の問い</h2>
 <p>RSAの素因数分解やECCの離散対数が、十分強力な量子計算機で速く解かれる可能性があります。次の暗号は何を使えばよいでしょうか。</p>
 <h2>まず「何を破られるのか」を知る</h2>
@@ -1529,7 +1546,7 @@ PQC：*Post-Quantum Cryptography*（量子計算機でも解きにくい別の�
 <p><strong>回答</strong>：</p>
 <blockquote>
 <p>将来、量子計算機によってRSAの素因数分解やECCの離散対数が速く解かれる可能性があるためです。安全性の土台となる数学を別の問題へ移す必要があります。</p>
-</blockquote></div></section><section class="chapter" id="chapter-09"><div class="chapter-meta">Chapter 09 · 08_compact_glossary.md</div><div class="chapter-body"><h1>09　通信を支える短い言葉</h1>
+</blockquote></div></section><section class="chapter" id="chapter-09" data-chapter-label="09　通信を支える短い言葉"><div class="chapter-meta">Chapter 09 · 08_compact_glossary.md</div><div class="chapter-body"><h1>09　通信を支える短い言葉</h1>
 <h2>ハッシュ</h2>
 <p>ハッシュ関数は、長いデータから短い「指紋」のような値を作ります。</p>
 <pre><code class="language-text">長いデータ → ハッシュ関数 → 短いハッシュ値
@@ -1594,7 +1611,7 @@ ABC → 1 + 2 + 3 = 6 → 6 mod 100
 <p><strong>模範回答</strong>：</p>
 <blockquote>
 <p>電子署名は、秘密鍵を持つ人が作ったことと、内容が変わっていないことを確認する仕組みです。証明書は、その公開鍵が本当に目的のWebサイトや相手のものだと結び付ける仕組みです。</p>
-</blockquote></div></section><section class="chapter" id="chapter-10"><div class="chapter-meta">Chapter 10 · 09_crypto_forms_and_lab.md</div><div class="chapter-body"><h1>10　暗号は実際にどんな形になるか</h1>
+</blockquote></div></section><section class="chapter" id="chapter-10" data-chapter-label="10　暗号は実際にどんな形になるか"><div class="chapter-meta">Chapter 10 · 09_crypto_forms_and_lab.md</div><div class="chapter-body"><h1>10　暗号は実際にどんな形になるか</h1>
 <h2>この章の目的</h2>
 <p>これまで学んだ方式を、実際の入力から出力を作って確かめます。</p>
 <p>大切なのは、暗号方式によって「暗号文の見た目」も「秘密の置き場所」も違うことです。</p>
@@ -1712,7 +1729,7 @@ AES        ：本文を暗号化する
 <p><strong>模範回答</strong>：</p>
 <blockquote>
 <p>暗号文は正しい鍵で元の文章へ戻しますが、ハッシュ値には復号鍵がありません。ハッシュは内容を隠すよりも、同じ内容か、途中で変わっていないかを確かめるための短い指紋です。</p>
-</blockquote></div></section><section class="chapter" id="chapter-11"><div class="chapter-meta">Chapter 11 · 02_finite_field.md</div><div class="chapter-body"><h1>02　時計の算数から有限体へ</h1>
+</blockquote></div></section><section class="chapter" id="chapter-11" data-chapter-label="02　時計の算数から有限体へ"><div class="chapter-meta">Chapter 11 · 02_finite_field.md</div><div class="chapter-body"><h1>02　時計の算数から有限体へ</h1>
 <h2>この章の問い</h2>
 <p>数がどこまでも大きくならず、決められた範囲の中で計算が続く世界を作れるでしょうか。</p>
 <h2><code>mod</code> とは何か</h2>
@@ -1823,5 +1840,24 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+  <script>
+  (() => {
+    const current = document.getElementById("current-chapter");
+    const sections = [...document.querySelectorAll(".chapter")];
+    if (!current || !sections.length) return;
+    const updateCurrentChapter = () => {
+      const readingTop = 4.3 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+      const chapterSwitchLine = readingTop + 120;
+      let active = sections[0];
+      sections.forEach((section) => {
+        if (section.getBoundingClientRect().top <= chapterSwitchLine) active = section;
+      });
+      current.textContent = active.dataset.chapterLabel;
+    };
+    window.addEventListener("scroll", updateCurrentChapter, { passive: true });
+    window.addEventListener("resize", updateCurrentChapter);
+    updateCurrentChapter();
+  })();
+  </script>
 </body>
 </html>

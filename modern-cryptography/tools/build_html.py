@@ -119,9 +119,17 @@ def build_document(chapters: list[Path], katex_mode: str) -> str:
         chapter_id = f"chapter-{index:02d}"
         title = chapter.stem.split("_", 1)[-1].replace("_", " ")
         body = render_markdown(chapter.read_text(encoding="utf-8"))
-        toc.append(f'<li><a href="#{chapter_id}">{html.escape(title)}</a></li>')
+        heading_match = re.search(r"<h1>(.*?)</h1>", body, re.DOTALL)
+        chapter_label = (
+            re.sub(r"<[^>]+>", "", heading_match.group(1))
+            if heading_match
+            else title
+        )
+        chapter_label = html.unescape(chapter_label).strip()
+        toc.append(f'<li><a href="#{chapter_id}">{html.escape(chapter_label)}</a></li>')
         sections.append(
-            f'<section class="chapter" id="{chapter_id}">'
+            f'<section class="chapter" id="{chapter_id}" '
+            f'data-chapter-label="{html.escape(chapter_label, quote=True)}">'
             f'<div class="chapter-meta">Chapter {index:02d} · {html.escape(chapter.name)}</div>'
             f'<div class="chapter-body">{body}</div>'
             "</section>"
@@ -140,10 +148,20 @@ def build_document(chapters: list[Path], katex_mode: str) -> str:
     * {{ box-sizing:border-box; }}
     body {{ margin:0; background:var(--bg); color:var(--ink);
       font-family:"Yu Gothic UI","Noto Sans JP",sans-serif; line-height:1.8; }}
-    .page {{ max-width:960px; margin:auto; padding:2rem 1rem 4rem; }}
+    .page {{ max-width:960px; margin:auto; padding:4.7rem 1rem 4rem; }}
     .hero,.toc,.chapter {{ background:var(--paper); border:1px solid var(--line);
       border-radius:12px; padding:1.4rem 1.6rem; margin-bottom:1.25rem;
       box-shadow:0 6px 20px rgba(36,59,83,.05); }}
+    .reading-nav {{ position:fixed; inset:0 0 auto; z-index:10; background:rgba(255,255,255,.96);
+      border-bottom:1px solid var(--line); box-shadow:0 2px 10px rgba(36,59,83,.08); }}
+    .reading-nav-inner {{ max-width:960px; margin:auto; min-height:3.2rem; padding:.45rem 1rem;
+      display:flex; align-items:center; gap:.55rem; }}
+    .reading-nav a {{ color:var(--accent); font-weight:700; text-decoration:none; white-space:nowrap; }}
+    .reading-nav a:hover {{ text-decoration:underline; }}
+    .reading-nav-current {{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--muted); }}
+    .reading-nav-current strong {{ color:var(--ink); font-weight:700; }}
+    .reading-nav-separator {{ color:var(--line); }}
+    #toc,.chapter {{ scroll-margin-top:4.3rem; }}
     h1 {{ line-height:1.35; }}
     h2,h3 {{ line-height:1.4; margin-top:2rem; }}
     .tagline {{ color:var(--muted); }}
@@ -165,6 +183,13 @@ def build_document(chapters: list[Path], katex_mode: str) -> str:
   </style>
 </head>
 <body>
+  <nav class="reading-nav" aria-label="読書ナビゲーション">
+    <div class="reading-nav-inner">
+      <a href="#toc">目次</a>
+      <span class="reading-nav-separator" aria-hidden="true">|</span>
+      <span class="reading-nav-current">現在：<strong id="current-chapter">目次</strong></span>
+    </div>
+  </nav>
   <main class="page">
     <header class="hero">
       <h1>現代暗号の基礎</h1>
@@ -183,6 +208,25 @@ def build_document(chapters: list[Path], katex_mode: str) -> str:
     </footer>
   </main>
   {math_script()}
+  <script>
+  (() => {{
+    const current = document.getElementById("current-chapter");
+    const sections = [...document.querySelectorAll(".chapter")];
+    if (!current || !sections.length) return;
+    const updateCurrentChapter = () => {{
+      const readingTop = 4.3 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+      const chapterSwitchLine = readingTop + 120;
+      let active = sections[0];
+      sections.forEach((section) => {{
+        if (section.getBoundingClientRect().top <= chapterSwitchLine) active = section;
+      }});
+      current.textContent = active.dataset.chapterLabel;
+    }};
+    window.addEventListener("scroll", updateCurrentChapter, {{ passive: true }});
+    window.addEventListener("resize", updateCurrentChapter);
+    updateCurrentChapter();
+  }})();
+  </script>
 </body>
 </html>
 """
