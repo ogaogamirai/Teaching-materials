@@ -12,7 +12,9 @@
     .buttons{display:flex;gap:.6rem;flex-wrap:wrap}button{font:inherit;border:0;border-radius:6px;padding:.55rem .8rem;background:var(--ink);color:#fff;cursor:pointer}button.active{background:var(--green)}
     .compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.card{background:var(--soft);border-radius:8px;padding:.8rem}.bar{height:1.4rem;background:#c53030;border-radius:4px;margin:.4rem 0}.short{width:28%;background:#276749}.medium{width:55%;background:#276749}
     .callout{padding:.7rem;background:#fff8e1;border-left:4px solid #d69e2e}.small{font-size:.92rem;color:var(--muted)}
-    @media(max-width:650px){.compare{grid-template-columns:1fr}}
+    .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;align-items:stretch}.flow div{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:.7rem;text-align:center}.flow strong{display:block;color:var(--green);margin-bottom:.3rem}
+    .distinction{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.distinction .card{border-top:4px solid var(--green)}.distinction .card:last-child{border-top-color:var(--red)}
+    @media(max-width:650px){.compare,.distinction{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}}
   </style>
 </head>
 <body>
@@ -21,6 +23,19 @@
     <h1>量子計算機は暗号をどう脅かすのか</h1>
     <p class="lead">PQCを理解するために、まず「現在の暗号の金庫」と「量子計算機が得意な開け方」を比べます。</p>
     <p><a href="../index.html">← 本体教材（目次）へ戻る</a></p>
+  </section>
+  <section>
+    <h2>このモデルの役割</h2>
+    <p>ここでは量子ビットの動作そのものを学びません。量子コンピューターの基本は、前章の操作モデルで「重ね合わせ → 印付け → 干渉 → 測定」を先に体験してください。</p>
+    <p>このモデルでは、その仕組みが暗号のどこに接続するかを整理します。量子計算機が暗号文を直接読むのではなく、暗号の安全性を支える<strong>数学の問題</strong>に別の解き方を適用する、という流れです。</p>
+    <div class="flow" aria-label="量子計算と暗号の接続">
+      <div><strong>① 暗号の金庫</strong>RSA・ECC・AESが使う難しい問題</div>
+      <div><strong>② 得意な構造</strong>候補探し、周期、離散対数</div>
+      <div><strong>③ 量子アルゴリズム</strong>GroverまたはShor</div>
+      <div><strong>④ 対策</strong>鍵の見直し、PQCへの移行</div>
+    </div>
+    <p class="note">「量子計算機なら何でも速い」という意味ではありません。問題の構造とアルゴリズムが対応するときに、速く解ける可能性があります。</p>
+    <p><a href="quantum_basics.html">← 前章：量子コンピューターの基本モデルへ</a></p>
   </section>
   <section>
     <h2>攻撃する相手を選ぶ</h2>
@@ -44,6 +59,14 @@
       <div class="card"><strong id="rightTitle">量子計算機</strong><p id="rightText">特定の数学の問題に、特別なアルゴリズムを使う。</p><div class="bar short"></div><p class="small">RSA/ECC：将来、逆算が現実的になる可能性</p></div>
     </div>
     <p class="note">これは計算時間の大小を正確に測る実験ではありません。「量子計算機なら何でも速い」のではなく、得意な問題とアルゴリズムがあることを表しています。</p>
+  </section>
+  <section>
+    <h2>二つの攻撃を混同しない</h2>
+    <div class="distinction">
+      <div class="card"><h3>Shor：公開鍵暗号の数学を狙う</h3><p>RSAは素因数分解、ECCは楕円曲線上の離散対数を安全性の土台にします。Shorは周期構造を利用して、これらの逆算を速くする可能性があります。</p><p><strong>影響：</strong>将来の大規模な誤り訂正量子計算機が前提。PQCへの移行が必要になります。</p></div>
+      <div class="card"><h3>Grover：候補を探す問題を狙う</h3><p>AESの鍵候補のように、正しいかを判定できる候補を探す問題が対象です。重ね合わせをそのまま読むのではなく、干渉で正解の確率を高めます。</p><p><strong>影響：</strong>一般に平方根程度の高速化。鍵を長くする対策と、現実のコスト評価が必要です。</p></div>
+    </div>
+    <div class="callout"><strong>説明の型：</strong>「何の数学を使う暗号か」→「量子アルゴリズムは何を速くするか」→「どの対策が必要か」の順に話すと、量子計算機を万能な解読機と誤解しにくくなります。</div>
   </section>
   <section>
     <h2>だからPQCが必要になる</h2>

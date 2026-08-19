@@ -6,6 +6,7 @@
 |----------|------|
 | [fourier-theory-v2](./fourier-theory-v2/) | フーリエ theory-v2 **学習用一冊**（GitHub Pages） |
 | [fourier-transform](./fourier-transform/) | フーリエ（原稿・正本 [`theory-v2`](./fourier-transform/theory-v2/)／旧 interactive は archive） |
+| [modern-cryptography](./modern-cryptography/) | 現代暗号の基礎（RSA・ECC・量子計算・PQC） |
 | [math-integers-guide](./math-integers-guide/) | 整数が面白いほどわかるシリーズ |
 | [math-combinatorics-guide](./math-combinatorics-guide/) | 組合せの直感ガイド |
 | [math-combinatorics-tool](./math-combinatorics-tool/) | 組合せツール（HTML） |
@@ -25,3 +26,9 @@
 3. プレーン版: [`path-to-structure/plain.html`](./path-to-structure/plain.html)
 
 詳細は各フォルダの `README.md` / `PLAN_*.md` を参照。
+
+## 現代暗号の基礎（すぐ見る）
+
+1. **学習用一冊（ブラウザ）:** [modern-cryptography（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/modern-cryptography/)
+2. **量子計算の操作盤:** [quantum_basics.html（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/modern-cryptography/models/quantum_basics.html)
+3. **原稿・設計:** [`modern-cryptography/`](./modern-cryptography/)

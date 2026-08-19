@@ -2,6 +2,11 @@
 
 中学2年生が、通信の問題から出発して、有限体・RSA・楕円曲線・ECDLP・実際の通信・PQCまで段階的に学ぶ教材です。
 
+## ブラウザで見る
+
+- [統合教材（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/modern-cryptography/)
+- [量子計算の操作盤（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/modern-cryptography/models/quantum_basics.html)
+
 ## 開発方針
 
 - 正本は `chapters/*.md`

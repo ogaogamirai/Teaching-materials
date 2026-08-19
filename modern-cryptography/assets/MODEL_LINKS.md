@@ -12,8 +12,7 @@
 | 楕円曲線上の点加算 | 2D | `models/elliptic_curve_addition.html` | ready | 群の操作 |
 | ECDLPのスカラー倍 | 2D | `models/ecdlp_scalar.html` | ready | 行きと帰りの難しさ |
 | HTTPSの役割分担 | 2D | `models/https_roles.html` | ready | ECC・AES・ハッシュ |
-| 量子計算機の暗号攻撃 | 2D | `models/quantum_attack_intro.html` | ready | Shor・Grover・PQCの動機 |
-| 量子コンピューターの基本 | interactive | `models/quantum_basics.html` | ready | 量子ビット・測定・干渉・Grover |
+| 量子コンピューターの基本 | interactive | `models/quantum_basics.html` | ready | 第7章の操作盤。錠とRSAの左右図、Grover振幅の4段階、測定。道の文章正本は本編 |
 | PQCの格子と誤差 | 2D | `models/pqc_lattice.html` | ready | PQC・LWEの入口 |
 | 方式別暗号化ラボ | interactive | `models/crypto_lab.html` | ready | 入力・秘密・出力・復号の比較 |
 
