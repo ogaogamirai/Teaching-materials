@@ -61,7 +61,7 @@
     </header>
     <nav class="toc" id="toc" aria-label="章一覧">
       <h2>目次</h2>
-      <ol><li><a href="#chapter-01">00　暗号を読むための数学の道具箱</a></li><li><a href="#chapter-02">01　秘密の通信には何が必要か</a></li><li><a href="#chapter-03">03　RSA（Rivest–Shamir–Adleman）――掛け算は簡単、逆算は難しい</a></li><li><a href="#chapter-04">04　楕円曲線の上で足し算する</a></li><li><a href="#chapter-05">05　ECDLP（Elliptic Curve Discrete Logarithm Problem）――点の足し算の逆算</a></li><li><a href="#chapter-06">06　実際の通信では役割を分担する</a></li><li><a href="#chapter-07">07　量子コンピューターと暗号の解読</a></li><li><a href="#chapter-08">08　量子計算機に対抗するPQC（Post-Quantum Cryptography）</a></li><li><a href="#chapter-09">09　通信を支える短い言葉</a></li><li><a href="#chapter-10">10　暗号は実際にどんな形になるか</a></li><li><a href="#chapter-11">02　時計の算数から有限体へ</a></li></ol>
+      <ol><li><a href="#chapter-01">00　暗号を読むための数学の道具箱</a></li><li><a href="#chapter-02">01　秘密の通信には何が必要か</a></li><li><a href="#chapter-03">02　時計の算数から有限体へ</a></li><li><a href="#chapter-04">03　RSA（Rivest–Shamir–Adleman）――掛け算は簡単、逆算は難しい</a></li><li><a href="#chapter-05">04　楕円曲線の上で足し算する</a></li><li><a href="#chapter-06">05　ECDLP（Elliptic Curve Discrete Logarithm Problem）――点の足し算の逆算</a></li><li><a href="#chapter-07">06　実際の通信では役割を分担する</a></li><li><a href="#chapter-08">07　量子コンピューターと暗号の解読</a></li><li><a href="#chapter-09">08　量子計算機に対抗するPQC（Post-Quantum Cryptography）</a></li><li><a href="#chapter-10">09　通信を支える短い言葉</a></li><li><a href="#chapter-11">10　暗号は実際にどんな形になるか</a></li></ol>
     </nav>
     <section class="chapter" id="chapter-01" data-chapter-label="00　暗号を読むための数学の道具箱"><div class="chapter-meta">Chapter 01 · 00_math_toolbox.md</div><div class="chapter-body"><h1>00　暗号を読むための数学の道具箱</h1>
 <h2>この章の役割</h2>
@@ -389,7 +389,96 @@ mod p の数の世界
 </ol>
 <p>この3つを分けると、暗号化、ハッシュ、電子署名、証明書がそれぞれ何を担当するか見えてきます。</p>
 <h2>次の問い</h2>
-<p>同じ鍵で閉じて開ける方式は速そうです。しかし、その鍵を最初にどうやって相手へ渡せばよいでしょうか。</p></div></section><section class="chapter" id="chapter-03" data-chapter-label="03　RSA（Rivest–Shamir–Adleman）――掛け算は簡単、逆算は難しい"><div class="chapter-meta">Chapter 03 · 03_rsa.md</div><div class="chapter-body"><h1>03　RSA（Rivest–Shamir–Adleman）――掛け算は簡単、逆算は難しい</h1>
+<p>同じ鍵で閉じて開ける方式は速そうです。しかし、その鍵を最初にどうやって相手へ渡せばよいでしょうか。</p></div></section><section class="chapter" id="chapter-03" data-chapter-label="02　時計の算数から有限体へ"><div class="chapter-meta">Chapter 03 · 02_finite_field.md</div><div class="chapter-body"><h1>02　時計の算数から有限体へ</h1>
+<h2>この章の問い</h2>
+<p>数がどこまでも大きくならず、決められた範囲の中で計算が続く世界を作れるでしょうか。</p>
+<h2><code>mod</code> とは何か</h2>
+<p><strong><code>mod</code> は、割り算の「余り」だけを使って計算する方法です。</strong></p>
+<p>7で割った余りだけを見る計算を <code>mod 7</code> と書きます。たとえば、10を7で割った余りは3です。</p>
+<pre><code class="language-text">10 ÷ 7 = 1 あまり 3
+</code></pre>
+<p>したがって <code>10 mod 7 = 3</code> です。<code>mod</code> は小数点を丸める方法ではなく、<strong>整数を割ったときの余りを使う方法</strong>です。</p>
+<p>たとえば、6に3を足すと9ですが、<code>mod 7</code> の世界では9を7で割った余りを見るので、</p>
+<p>$$
+6+3 \equiv 2 \pmod 7
+$$</p>
+<p>となります。7を超えたら、時計のように一周します。</p>
+<pre><code class="language-text">0 → 1 → 2 → 3 → 4 → 5 → 6 → 0 → …
+</code></pre>
+<h2>有限体とは何か</h2>
+<p><strong>有限体とは、有限個の数だけを使い、足し算・引き算・掛け算・割り算をしても計算の規則が壊れない数の世界です。</strong></p>
+<p>ただし、0で割ることはできません。0以外の数なら、その数を掛けて1になる「逆数」が同じ世界の中にあります。</p>
+<h2>有限体はどう作るか</h2>
+<p>最初の作り方は次の3段階です。</p>
+<ol>
+<li>素数 <code>p</code> を1つ選ぶ。</li>
+<li><code>0, 1, 2, ..., p-1</code> だけを数の世界にする。</li>
+<li>足し算・引き算・掛け算の答えを <code>mod p</code> の余りに戻す。</li>
+</ol>
+<p>たとえば <code>mod 5</code> では、数の世界は <code>{0, 1, 2, 3, 4}</code> です。</p>
+<p>$$
+4+3 \equiv 2 \pmod 5
+$$</p>
+<p>また、<code>2</code> の逆数は <code>3</code> です。</p>
+<p>$$
+2 \times 3 = 6 \equiv 1 \pmod 5
+$$</p>
+<p><code>p</code> を素数にするのは、0以外の数に必ず逆数を作れるようにするためです。</p>
+<p>ここで大切なのは、有限体が「小さい数だけの簡単な世界」という意味ではないことです。計算の規則を閉じ込めることで、点の数や計算の構造を正確に調べられます。</p>
+<h2>整数をどう扱うか</h2>
+<p><code>mod 5</code> の世界では、整数をその余りで代表させます。</p>
+<pre><code class="language-text">通常の整数        mod 5 での代表
+..., -1, 4, 9, ...       4
+...,  0, 5, 10, ...       0
+...,  1, 6, 11, ...       1
+</code></pre>
+<p>つまり、<code>mod 5</code> の数は小数ではありません。<code>0, 1, 2, 3, 4</code> という整数のどれかで表します。</p>
+<h2>有限体を学ぶ意味</h2>
+<ul>
+<li><strong>意味</strong>：有限体は、暗号の計算を「決められた数の世界」で行うための舞台です。</li>
+<li><strong>必要な理由</strong>：数が無限に広がる世界より、点や計算の規則を正確に調べられます。</li>
+<li><strong>役立つ場面</strong>：楕円曲線暗号の点、AES（<em>Advanced Encryption Standard</em>：高度暗号化標準）の内部計算、誤りを見つける符号などに使われます。</li>
+<li><strong>ないと困ること</strong>：楕円曲線を暗号に使うとき、どの点を対象にし、どの計算を公開するのかを決められません。</li>
+</ul>
+<h2>小さな世界を作って確かめる</h2>
+<p><code>p = 5</code> の世界を自分で作り、次を表にしてください。</p>
+<ol>
+<li><code>0, 1, 2, 3, 4</code> の足し算</li>
+<li>2倍していったときの巡回</li>
+<li>0でない数の逆数</li>
+</ol>
+<p>この小さな世界では、すべての計算を表にできます。後で楕円曲線をこの世界へ移すと、連続した曲線が有限個の点の集まりになります。</p>
+<h2>次の問い</h2>
+<p>有限体のような計算の世界を使うと、秘密を先に渡さずに通信できるでしょうか。</p>
+<h2>練習問題の解答とTeach-back</h2>
+<h3>問1：<code>mod 5</code>の足し算</h3>
+<p><code>4+3</code> を <code>mod 5</code> で計算します。</p>
+<pre><code class="language-text">4 + 3 = 7
+7 = 5 × 1 + 2
+</code></pre>
+<p>したがって、</p>
+<pre><code class="language-text">4 + 3 ≡ 2 (mod 5)
+</code></pre>
+<p>です。答えを0〜4へ戻すところがポイントです。</p>
+<h3>問2：逆数</h3>
+<p><code>mod 5</code> で、2の逆数を探します。</p>
+<pre><code class="language-text">2 × 1 = 2
+2 × 2 = 4
+2 × 3 = 6 ≡ 1
+</code></pre>
+<p>したがって、逆数は3です。</p>
+<h3>問3：なぜ素数を使うのか</h3>
+<p><code>mod 5</code>では、0以外の2・3・4に逆数があります。一方、<code>mod 6</code>では、</p>
+<pre><code class="language-text">2 × 3 ≡ 0 (mod 6)
+</code></pre>
+<p>となり、0でない数同士を掛けて0になります。このため、2に掛けて1になる数がありません。</p>
+<p>素数を法に選ぶと、0以外の数がすべて掛け算の逆数を持てます。これが素体を作る理由です。</p>
+<h3>Teach-back</h3>
+<p><strong>課題</strong>：「有限体は小さな整数の表です」とだけ説明するのが不十分なのはなぜですか。</p>
+<p><strong>模範回答</strong>：</p>
+<blockquote>
+<p>有限体は、有限個の数を集めただけではありません。その中で足し算・引き算・掛け算ができ、0以外の数には掛け算の逆数があります。つまり、数の集まりと計算規則がそろった世界です。暗号では、この規則の中で計算しながら逆算の難しさを作ります。</p>
+</blockquote></div></section><section class="chapter" id="chapter-04" data-chapter-label="03　RSA（Rivest–Shamir–Adleman）――掛け算は簡単、逆算は難しい"><div class="chapter-meta">Chapter 04 · 03_rsa.md</div><div class="chapter-body"><h1>03　RSA（Rivest–Shamir–Adleman）――掛け算は簡単、逆算は難しい</h1>
 <h2>この章の問い</h2>
 <p>誰でも見られる公開情報を使いながら、秘密の鍵を持つ人だけが復号できる仕組みを作れるでしょうか。</p>
 <p>RSAは、発明者の姓 <strong>Rivest（リベスト）・Shamir（シャミア）・Adleman（アドルマン）</strong> の頭文字を取った名前です。</p>
@@ -513,7 +602,7 @@ $$</p>
 <p>教材の小さなRSAは、鍵の作り方と復号の仕組みを理解する模型です。実用RSAでは、素因数分解の候補が現実的な時間で試せないほど大きな数と、安全な利用方式を使います。小例が解けることと、実用サイズが安全かどうかは分けて考えます。</p>
 </blockquote>
 <h2>次の問い</h2>
-<p>掛け算と素因数分解とは別の数学の山を作るには、どんな構造を使えばよいでしょうか。</p></div></section><section class="chapter" id="chapter-04" data-chapter-label="04　楕円曲線の上で足し算する"><div class="chapter-meta">Chapter 04 · 04_elliptic_curve.md</div><div class="chapter-body"><h1>04　楕円曲線の上で足し算する</h1>
+<p>掛け算と素因数分解とは別の数学の山を作るには、どんな構造を使えばよいでしょうか。</p></div></section><section class="chapter" id="chapter-05" data-chapter-label="04　楕円曲線の上で足し算する"><div class="chapter-meta">Chapter 05 · 04_elliptic_curve.md</div><div class="chapter-body"><h1>04　楕円曲線の上で足し算する</h1>
 <h2>この章の問い</h2>
 <p>普通の数の足し算ではなく、曲線の上の点を足すことはできるでしょうか。</p>
 <h2>楕円曲線は円ではない</h2>
@@ -674,7 +763,7 @@ $$</p>
 <p>実数上の図は、直線と第三の交点、上下反転という仕組みを目で理解する模型です。暗号では小数を使わず、整数をmod pで計算します。図形の操作を、有限体の計算式に置き換えて実行します。</p>
 </blockquote>
 <h2>次の問い</h2>
-<p>有限体の点を何度も足すと、順方向と逆方向の計算に差が生まれるでしょうか。</p></div></section><section class="chapter" id="chapter-05" data-chapter-label="05　ECDLP（Elliptic Curve Discrete Logarithm Problem）――点の足し算の逆算"><div class="chapter-meta">Chapter 05 · 05_ecdlp.md</div><div class="chapter-body"><h1>05　ECDLP（Elliptic Curve Discrete Logarithm Problem）――点の足し算の逆算</h1>
+<p>有限体の点を何度も足すと、順方向と逆方向の計算に差が生まれるでしょうか。</p></div></section><section class="chapter" id="chapter-06" data-chapter-label="05　ECDLP（Elliptic Curve Discrete Logarithm Problem）――点の足し算の逆算"><div class="chapter-meta">Chapter 06 · 05_ecdlp.md</div><div class="chapter-body"><h1>05　ECDLP（Elliptic Curve Discrete Logarithm Problem）――点の足し算の逆算</h1>
 <h2>この章の問い</h2>
 <p>基準点 <code>G</code> を何度も足して、公開点 <code>kG</code> を作ります。公開された <code>G</code> と <code>kG</code> から、秘密の回数 <code>k</code> を戻せるでしょうか。</p>
 <h2>スカラー倍とは何か</h2>
@@ -747,7 +836,7 @@ $$</p>
 <p>小さな例なら実際に点を足し、順方向と逆方向を体験できます。ただし、小例は全部試せるため安全ではありません。学習用の模型と、実用サイズの安全性を分けて理解するために使います。</p>
 </blockquote>
 <h2>次の問い</h2>
-<p>ECCは通信文を全部暗号化するのでしょうか。それとも、通信の中の別の役割を担当するのでしょうか。</p></div></section><section class="chapter" id="chapter-06" data-chapter-label="06　実際の通信では役割を分担する"><div class="chapter-meta">Chapter 06 · 06_communication.md</div><div class="chapter-body"><h1>06　実際の通信では役割を分担する</h1>
+<p>ECCは通信文を全部暗号化するのでしょうか。それとも、通信の中の別の役割を担当するのでしょうか。</p></div></section><section class="chapter" id="chapter-07" data-chapter-label="06　実際の通信では役割を分担する"><div class="chapter-meta">Chapter 07 · 06_communication.md</div><div class="chapter-body"><h1>06　実際の通信では役割を分担する</h1>
 <h2>この章の問い</h2>
 <p>楕円曲線暗号だけで、長い文章や動画を全部暗号化するのでしょうか。</p>
 <h2>略語を先に読む</h2>
@@ -801,7 +890,7 @@ AES（高度暗号化標準）などの共通鍵暗号
 <p>公開鍵暗号は安全な鍵交換や署名には向いていますが、大量データの処理は共通鍵暗号の方が高速です。そのため、役割を分担します。</p>
 </blockquote>
 <h2>次の問い</h2>
-<p>RSAとECCの数学的な山が、将来の量子計算機で越えられるとしたら、次の暗号は何を土台にするのでしょうか。</p></div></section><section class="chapter" id="chapter-07" data-chapter-label="07　量子コンピューターと暗号の解読"><div class="chapter-meta">Chapter 07 · 07_quantum_computers.md</div><div class="chapter-body"><h1>07　量子コンピューターと暗号の解読</h1>
+<p>RSAとECCの数学的な山が、将来の量子計算機で越えられるとしたら、次の暗号は何を土台にするのでしょうか。</p></div></section><section class="chapter" id="chapter-08" data-chapter-label="07　量子コンピューターと暗号の解読"><div class="chapter-meta">Chapter 08 · 07_quantum_computers.md</div><div class="chapter-body"><h1>07　量子コンピューターと暗号の解読</h1>
 <h2>この章の地図：本編とモデル</h2>
 <p>この章は二つの場を使う。解説の量は減らさない。置く場所を分ける。</p>
 <pre><code class="language-text">本編（この文章）　道を読む正本
@@ -1458,7 +1547,7 @@ PQC：別の数学の問題を安全性の土台にする
 <p><strong>模範回答：</strong></p>
 <blockquote>
 <p>RSAは素因数分解、ECCは離散対数が難しいことを安全性に使っています。ショアのアルゴリズムは量子計算で周期を見つける方法を使い、これらの問題を速く解く可能性があります。そのため、別の数学を使うPQCが必要になります。</p>
-</blockquote></div></section><section class="chapter" id="chapter-08" data-chapter-label="08　量子計算機に対抗するPQC（Post-Quantum Cryptography）"><div class="chapter-meta">Chapter 08 · 07_pqc.md</div><div class="chapter-body"><h1>08　量子計算機に対抗するPQC（Post-Quantum Cryptography）</h1>
+</blockquote></div></section><section class="chapter" id="chapter-09" data-chapter-label="08　量子計算機に対抗するPQC（Post-Quantum Cryptography）"><div class="chapter-meta">Chapter 09 · 07_pqc.md</div><div class="chapter-body"><h1>08　量子計算機に対抗するPQC（Post-Quantum Cryptography）</h1>
 <h2>この章の問い</h2>
 <p>RSAの素因数分解やECCの離散対数が、十分強力な量子計算機で速く解かれる可能性があります。次の暗号は何を使えばよいでしょうか。</p>
 <h2>まず「何を破られるのか」を知る</h2>
@@ -1530,7 +1619,7 @@ PQC：*Post-Quantum Cryptography*（量子計算機でも解きにくい別の�
 <p><strong>回答</strong>：</p>
 <blockquote>
 <p>将来、量子計算機によってRSAの素因数分解やECCの離散対数が速く解かれる可能性があるためです。安全性の土台となる数学を別の問題へ移す必要があります。</p>
-</blockquote></div></section><section class="chapter" id="chapter-09" data-chapter-label="09　通信を支える短い言葉"><div class="chapter-meta">Chapter 09 · 08_compact_glossary.md</div><div class="chapter-body"><h1>09　通信を支える短い言葉</h1>
+</blockquote></div></section><section class="chapter" id="chapter-10" data-chapter-label="09　通信を支える短い言葉"><div class="chapter-meta">Chapter 10 · 08_compact_glossary.md</div><div class="chapter-body"><h1>09　通信を支える短い言葉</h1>
 <h2>ハッシュ</h2>
 <p>ハッシュ関数は、長いデータから短い「指紋」のような値を作ります。</p>
 <pre><code class="language-text">長いデータ → ハッシュ関数 → 短いハッシュ値
@@ -1595,7 +1684,7 @@ ABC → 1 + 2 + 3 = 6 → 6 mod 100
 <p><strong>模範回答</strong>：</p>
 <blockquote>
 <p>電子署名は、秘密鍵を持つ人が作ったことと、内容が変わっていないことを確認する仕組みです。証明書は、その公開鍵が本当に目的のWebサイトや相手のものだと結び付ける仕組みです。</p>
-</blockquote></div></section><section class="chapter" id="chapter-10" data-chapter-label="10　暗号は実際にどんな形になるか"><div class="chapter-meta">Chapter 10 · 09_crypto_forms_and_lab.md</div><div class="chapter-body"><h1>10　暗号は実際にどんな形になるか</h1>
+</blockquote></div></section><section class="chapter" id="chapter-11" data-chapter-label="10　暗号は実際にどんな形になるか"><div class="chapter-meta">Chapter 11 · 09_crypto_forms_and_lab.md</div><div class="chapter-body"><h1>10　暗号は実際にどんな形になるか</h1>
 <h2>この章の目的</h2>
 <p>これまで学んだ方式を、実際の入力から出力を作って確かめます。</p>
 <p>大切なのは、暗号方式によって「暗号文の見た目」も「秘密の置き場所」も違うことです。</p>
@@ -1713,95 +1802,6 @@ AES        ：本文を暗号化する
 <p><strong>模範回答</strong>：</p>
 <blockquote>
 <p>暗号文は正しい鍵で元の文章へ戻しますが、ハッシュ値には復号鍵がありません。ハッシュは内容を隠すよりも、同じ内容か、途中で変わっていないかを確かめるための短い指紋です。</p>
-</blockquote></div></section><section class="chapter" id="chapter-11" data-chapter-label="02　時計の算数から有限体へ"><div class="chapter-meta">Chapter 11 · 02_finite_field.md</div><div class="chapter-body"><h1>02　時計の算数から有限体へ</h1>
-<h2>この章の問い</h2>
-<p>数がどこまでも大きくならず、決められた範囲の中で計算が続く世界を作れるでしょうか。</p>
-<h2><code>mod</code> とは何か</h2>
-<p><strong><code>mod</code> は、割り算の「余り」だけを使って計算する方法です。</strong></p>
-<p>7で割った余りだけを見る計算を <code>mod 7</code> と書きます。たとえば、10を7で割った余りは3です。</p>
-<pre><code class="language-text">10 ÷ 7 = 1 あまり 3
-</code></pre>
-<p>したがって <code>10 mod 7 = 3</code> です。<code>mod</code> は小数点を丸める方法ではなく、<strong>整数を割ったときの余りを使う方法</strong>です。</p>
-<p>たとえば、6に3を足すと9ですが、<code>mod 7</code> の世界では9を7で割った余りを見るので、</p>
-<p>$$
-6+3 \equiv 2 \pmod 7
-$$</p>
-<p>となります。7を超えたら、時計のように一周します。</p>
-<pre><code class="language-text">0 → 1 → 2 → 3 → 4 → 5 → 6 → 0 → …
-</code></pre>
-<h2>有限体とは何か</h2>
-<p><strong>有限体とは、有限個の数だけを使い、足し算・引き算・掛け算・割り算をしても計算の規則が壊れない数の世界です。</strong></p>
-<p>ただし、0で割ることはできません。0以外の数なら、その数を掛けて1になる「逆数」が同じ世界の中にあります。</p>
-<h2>有限体はどう作るか</h2>
-<p>最初の作り方は次の3段階です。</p>
-<ol>
-<li>素数 <code>p</code> を1つ選ぶ。</li>
-<li><code>0, 1, 2, ..., p-1</code> だけを数の世界にする。</li>
-<li>足し算・引き算・掛け算の答えを <code>mod p</code> の余りに戻す。</li>
-</ol>
-<p>たとえば <code>mod 5</code> では、数の世界は <code>{0, 1, 2, 3, 4}</code> です。</p>
-<p>$$
-4+3 \equiv 2 \pmod 5
-$$</p>
-<p>また、<code>2</code> の逆数は <code>3</code> です。</p>
-<p>$$
-2 \times 3 = 6 \equiv 1 \pmod 5
-$$</p>
-<p><code>p</code> を素数にするのは、0以外の数に必ず逆数を作れるようにするためです。</p>
-<p>ここで大切なのは、有限体が「小さい数だけの簡単な世界」という意味ではないことです。計算の規則を閉じ込めることで、点の数や計算の構造を正確に調べられます。</p>
-<h2>整数をどう扱うか</h2>
-<p><code>mod 5</code> の世界では、整数をその余りで代表させます。</p>
-<pre><code class="language-text">通常の整数        mod 5 での代表
-..., -1, 4, 9, ...       4
-...,  0, 5, 10, ...       0
-...,  1, 6, 11, ...       1
-</code></pre>
-<p>つまり、<code>mod 5</code> の数は小数ではありません。<code>0, 1, 2, 3, 4</code> という整数のどれかで表します。</p>
-<h2>有限体を学ぶ意味</h2>
-<ul>
-<li><strong>意味</strong>：有限体は、暗号の計算を「決められた数の世界」で行うための舞台です。</li>
-<li><strong>必要な理由</strong>：数が無限に広がる世界より、点や計算の規則を正確に調べられます。</li>
-<li><strong>役立つ場面</strong>：楕円曲線暗号の点、AES（<em>Advanced Encryption Standard</em>：高度暗号化標準）の内部計算、誤りを見つける符号などに使われます。</li>
-<li><strong>ないと困ること</strong>：楕円曲線を暗号に使うとき、どの点を対象にし、どの計算を公開するのかを決められません。</li>
-</ul>
-<h2>小さな世界を作って確かめる</h2>
-<p><code>p = 5</code> の世界を自分で作り、次を表にしてください。</p>
-<ol>
-<li><code>0, 1, 2, 3, 4</code> の足し算</li>
-<li>2倍していったときの巡回</li>
-<li>0でない数の逆数</li>
-</ol>
-<p>この小さな世界では、すべての計算を表にできます。後で楕円曲線をこの世界へ移すと、連続した曲線が有限個の点の集まりになります。</p>
-<h2>次の問い</h2>
-<p>有限体のような計算の世界を使うと、秘密を先に渡さずに通信できるでしょうか。</p>
-<h2>練習問題の解答とTeach-back</h2>
-<h3>問1：<code>mod 5</code>の足し算</h3>
-<p><code>4+3</code> を <code>mod 5</code> で計算します。</p>
-<pre><code class="language-text">4 + 3 = 7
-7 = 5 × 1 + 2
-</code></pre>
-<p>したがって、</p>
-<pre><code class="language-text">4 + 3 ≡ 2 (mod 5)
-</code></pre>
-<p>です。答えを0〜4へ戻すところがポイントです。</p>
-<h3>問2：逆数</h3>
-<p><code>mod 5</code> で、2の逆数を探します。</p>
-<pre><code class="language-text">2 × 1 = 2
-2 × 2 = 4
-2 × 3 = 6 ≡ 1
-</code></pre>
-<p>したがって、逆数は3です。</p>
-<h3>問3：なぜ素数を使うのか</h3>
-<p><code>mod 5</code>では、0以外の2・3・4に逆数があります。一方、<code>mod 6</code>では、</p>
-<pre><code class="language-text">2 × 3 ≡ 0 (mod 6)
-</code></pre>
-<p>となり、0でない数同士を掛けて0になります。このため、2に掛けて1になる数がありません。</p>
-<p>素数を法に選ぶと、0以外の数がすべて掛け算の逆数を持てます。これが素体を作る理由です。</p>
-<h3>Teach-back</h3>
-<p><strong>課題</strong>：「有限体は小さな整数の表です」とだけ説明するのが不十分なのはなぜですか。</p>
-<p><strong>模範回答</strong>：</p>
-<blockquote>
-<p>有限体は、有限個の数を集めただけではありません。その中で足し算・引き算・掛け算ができ、0以外の数には掛け算の逆数があります。つまり、数の集まりと計算規則がそろった世界です。暗号では、この規則の中で計算しながら逆算の難しさを作ります。</p>
 </blockquote></div></section>
   </main>
   

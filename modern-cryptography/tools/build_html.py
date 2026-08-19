@@ -56,7 +56,7 @@ def discover_chapters() -> list[Path]:
     preferred_order = [
         "00_math_toolbox.md",
         "01_problem.md",
-        "0_finite_field.md",
+        "02_finite_field.md",
         "03_rsa.md",
         "04_elliptic_curve.md",
         "05_ecdlp.md",
