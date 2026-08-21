@@ -1,0 +1,24 @@
+{
+  "active": "G",
+  "note_global": "theory-v3 動機主導ルート。学習順は G0→G9。",
+  "batches": [
+    {
+      "id": "G",
+      "title": "theory-v3 レビュー — G0〜G9",
+      "note": "動機主導ルート。謎の提示から答え合わせ、卒業まで。",
+      "preface": [],
+      "chapters": [
+        "chapters/G0_experience.md",
+        "chapters/G1_superposition.md",
+        "chapters/G2_circle_shadow.md",
+        "chapters/G3_area_measure.md",
+        "chapters/G4_orthogonality.md",
+        "chapters/G5_coefficients.md",
+        "chapters/G6_complex_rotation.md",
+        "chapters/G7_bridge_transform.md",
+        "chapters/G8_answer_jpeg.md",
+        "chapters/G9_teachback_graduation.md"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,4321 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>フーリエ変換 — ほどいて測る、組み立てて戻す</title>
+  <link rel="stylesheet" href="vendor/katex/katex.min.css" />
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --ink: #1c1a16;
+      --muted: #5c574e;
+      --card: #fffdf8;
+      --line: #d9d2c5;
+      --accent: #2c5f4a;
+      --accent-2: #c45c26;
+      --bar-h: 3.15rem;
+      --tap: 2.75rem;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+    }
+    * { box-sizing: border-box; }
+    html {
+      -webkit-text-size-adjust: 100%;
+      scroll-padding-top: calc(var(--bar-h) + var(--safe-top) + 0.4rem);
+      overflow-anchor: none;
+    }
+    body {
+      margin: 0;
+      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.75;
+      font-size: 17px;
+      overflow-anchor: none;
+    }
+    body.toc-open {
+      position: fixed;
+      left: 0;
+      right: 0;
+      width: 100%;
+      overflow: hidden;
+    }
+    a { color: var(--accent); }
+    .skip {
+      position: absolute; left: -999px; top: 0;
+    }
+    .skip:focus {
+      left: 0.5rem; top: 0.5rem; z-index: 80;
+      background: var(--card); padding: 0.4rem 0.7rem; border-radius: 8px;
+    }
+
+    .reader-bar {
+      position: sticky; top: 0; z-index: 30;
+      display: flex; align-items: center; gap: 0.4rem;
+      min-height: calc(var(--bar-h) + var(--safe-top));
+      padding: var(--safe-top) max(0.5rem, var(--safe-right)) 0 max(0.5rem, var(--safe-left));
+      background: rgba(247,245,240,0.96);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+    }
+    .reader-bar .bar-btn,
+    .reader-bar .bar-nav {
+      flex: 0 0 auto;
+      min-width: var(--tap);
+      min-height: var(--bar-h);
+      padding: 0 0.55rem;
+      border: 0;
+      background: transparent;
+      color: var(--accent);
+      font: inherit;
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    .reader-bar .bar-btn:active,
+    .reader-bar .bar-nav:active { background: #e7efe9; }
+    .reader-bar .bar-nav.is-disabled { color: #bbb; pointer-events: none; }
+    .bar-where {
+      flex: 1 1 auto;
+      min-width: 0;
+      padding: 0.15rem 0.15rem 0.2rem;
+    }
+    .bar-part {
+      display: block;
+      font-size: 0.68rem;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      line-height: 1.2;
+    }
+    .bar-unit {
+      display: block;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+
+    main {
+      max-width: 40rem;
+      margin: 0 auto;
+      padding: 0.9rem max(0.9rem, var(--safe-left)) calc(5.2rem + var(--safe-bottom)) max(0.9rem, var(--safe-right));
+    }
+    .book-open {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1.1rem 1.05rem 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .book-open h1 {
+      margin: 0 0 0.35rem;
+      font-size: 1.35rem;
+      line-height: 1.35;
+      color: var(--accent);
+    }
+    .lede { margin: 0 0 0.7rem; color: var(--muted); font-size: 0.95rem; }
+    .how { margin: 0; font-size: 0.9rem; color: var(--muted); }
+
+    #toc {
+      margin-top: 0.85rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--line);
+    }
+    .toc-part { margin: 0.55rem 0 0.7rem; }
+    .toc-part-name {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+    }
+    .toc-units {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .toc-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2.15rem;
+      padding: 0.2rem 0.55rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .toc-link.is-current {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .chapter {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 0.85rem 0.95rem 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .chap-nav {
+      display: flex;
+      gap: 0.35rem;
+      margin: 0.15rem 0 0.7rem;
+    }
+    .chapter .chap-nav:last-child { margin: 1rem 0 0; }
+    .chap-nav-link {
+      flex: 1 1 0;
+      min-height: var(--tap);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--accent);
+      text-decoration: none;
+      font: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .chap-nav-link.is-disabled { color: #bbb; pointer-events: none; }
+
+    h1,h2,h3,h4 { line-height: 1.35; }
+    h1 { font-size: 1.38rem; margin: 0.2rem 0 0.7rem; }
+    h2 {
+      font-size: 1.12rem;
+      margin-top: 1.45rem;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 0.2rem;
+    }
+    h3 { font-size: 1.02rem; margin-top: 1.15rem; }
+    blockquote {
+      margin: 0.8rem 0;
+      padding: 0.25rem 0.8rem;
+      border-left: 4px solid var(--accent);
+      background: #f0f7f3;
+    }
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 0.8rem 0;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 0.4rem 0.5rem;
+      vertical-align: top;
+    }
+    th { background: #efeae0; }
+    code {
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 0.88em;
+      background: #efeae0;
+      padding: 0.05em 0.3em;
+      border-radius: 4px;
+      word-break: break-word;
+    }
+    pre {
+      overflow: auto;
+      background: #1c1a16;
+      color: #f7f5f0;
+      padding: 0.85rem 0.9rem;
+      border-radius: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+    pre code { background: transparent; color: inherit; padding: 0; }
+    .figure, figure.review-fig {
+      margin: 1rem 0;
+      padding: 0.65rem;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      text-align: center;
+    }
+    .figure svg, figure.review-fig svg { max-width: 100%; height: auto; }
+    figcaption { margin-top: 0.4rem; color: var(--muted); font-size: 0.84rem; text-align: left; }
+    hr { border: 0; border-top: 1px solid var(--line); margin: 1.3rem 0; }
+    .katex-display { margin: 0.9rem 0; overflow: visible; }
+    .math-block {
+      display: block;
+      margin: 1rem 0;
+      padding: 0.15rem 0;
+      overflow: visible;
+      line-height: normal;
+      text-align: center;
+    }
+    p:has(> .katex-display) {
+      overflow: visible;
+      line-height: normal;
+      max-height: none;
+    }
+    .katex .text, .katex .mord.text, .katex .mathrm {
+      font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", sans-serif !important;
+    }
+    .katex-error {
+      color: #b00020;
+      background: #fde8ec;
+      border: 1px solid #e8a0ab;
+      padding: 0.15em 0.35em;
+      border-radius: 4px;
+    }
+    #math-status {
+      display: none;
+      margin: 0.6rem 0;
+      padding: 0.5rem 0.75rem;
+      background: #fff3cd;
+      border: 1px solid #e0c36a;
+      border-radius: 8px;
+      color: #5c4b00;
+      font-size: 0.9rem;
+    }
+
+    .fab-toc {
+      position: fixed;
+      right: max(0.85rem, var(--safe-right));
+      bottom: max(0.85rem, var(--safe-bottom));
+      z-index: 28;
+      min-width: 3.4rem;
+      min-height: 3.4rem;
+      padding: 0 0.95rem;
+      border: 0;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font: inherit;
+      font-size: 0.92rem;
+      font-weight: 700;
+      box-shadow: 0 6px 18px rgba(28,26,22,0.18);
+    }
+    @media (min-width: 800px) {
+      .fab-toc { display: none; }
+    }
+
+    .toc-sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+    }
+    .toc-sheet.is-open { display: block; }
+    .toc-sheet-back {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: rgba(28,26,22,0.38);
+      border: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .toc-sheet-panel {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      z-index: 1;
+      max-height: min(86vh, 40rem);
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      background: var(--card);
+      border-radius: 16px 16px 0 0;
+      padding: 0.7rem 0.9rem calc(1rem + var(--safe-bottom));
+      box-shadow: 0 -8px 28px rgba(28,26,22,0.12);
+      pointer-events: auto;
+    }
+    .toc-sheet-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.35rem;
+    }
+    .toc-sheet-head h2 { margin: 0; font-size: 1rem; border: 0; }
+    .toc-sheet-close {
+      min-width: var(--tap);
+      min-height: var(--tap);
+      border: 0;
+      background: transparent;
+      font: inherit;
+      font-size: 1.2rem;
+      color: var(--muted);
+    }
+    @media (min-width: 720px) {
+      .toc-sheet-panel {
+        left: 50%;
+        right: auto;
+        top: 12vh;
+        bottom: auto;
+        transform: translateX(-50%);
+        width: min(28rem, 92vw);
+        border-radius: 14px;
+        max-height: 76vh;
+      }
+    }
+    @media (max-width: 419px) {
+      body { font-size: 16px; }
+      .reader-bar .bar-nav-label { display: none; }
+      main { padding-left: max(0.7rem, var(--safe-left)); padding-right: max(0.7rem, var(--safe-right)); }
+      .chapter { padding: 0.75rem 0.7rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#toc">目次へ</a>
+  <header class="reader-bar" role="banner">
+    <button type="button" class="bar-btn toc-open" aria-haspopup="dialog" aria-controls="toc-sheet">目次</button>
+    <div class="bar-where" aria-live="polite">
+      <span class="bar-part" id="bar-part">G 動機主導</span>
+      <span class="bar-unit" id="bar-unit">G0 · 体験</span>
+    </div>
+    <a class="bar-nav" id="bar-prev" href="#" aria-label="前のユニット"><span aria-hidden="true">‹</span><span class="bar-nav-label">前</span></a>
+    <a class="bar-nav" id="bar-next" href="#" aria-label="次のユニット"><span class="bar-nav-label">次</span><span aria-hidden="true">›</span></a>
+  </header>
+
+  <main>
+    <div id="math-status">数式エンジンの読み込みに失敗しました。同じフォルダの vendor/katex を確認し、再読み込みしてください。</div>
+    <section class="book-open" id="top">
+      <h1>フーリエ変換</h1>
+      <p class="lede">複雑な信号を、単純な波の足し算として理解する。ほどいて測り、組み立てて戻す。</p>
+      <p class="how">下の目次から進む。いま読んでいるユニットは、上のバーに出る。いつでも「目次」で戻れる。</p>
+      <div id="toc">
+        <nav class="toc" aria-label="目次">
+<div class="toc-part"><div class="toc-part-name">G 動機主導</div><div class="toc-units"><a class="toc-link" href="#g0_experience" data-id="g0_experience" onclick="return window.bookGoTo ? (window.bookGoTo('g0_experience'), false) : true;">G0 体験</a><a class="toc-link" href="#g1_superposition" data-id="g1_superposition" onclick="return window.bookGoTo ? (window.bookGoTo('g1_superposition'), false) : true;">G1 足し算</a><a class="toc-link" href="#g2_circle_shadow" data-id="g2_circle_shadow" onclick="return window.bookGoTo ? (window.bookGoTo('g2_circle_shadow'), false) : true;">G2 円の影</a><a class="toc-link" href="#g3_area_measure" data-id="g3_area_measure" onclick="return window.bookGoTo ? (window.bookGoTo('g3_area_measure'), false) : true;">G3 面積</a><a class="toc-link" href="#g4_orthogonality" data-id="g4_orthogonality" onclick="return window.bookGoTo ? (window.bookGoTo('g4_orthogonality'), false) : true;">G4 直交</a><a class="toc-link" href="#g5_coefficients" data-id="g5_coefficients" onclick="return window.bookGoTo ? (window.bookGoTo('g5_coefficients'), false) : true;">G5 係数</a><a class="toc-link" href="#g6_complex_rotation" data-id="g6_complex_rotation" onclick="return window.bookGoTo ? (window.bookGoTo('g6_complex_rotation'), false) : true;">G6 e^{iθ}</a><a class="toc-link" href="#g7_bridge_transform" data-id="g7_bridge_transform" onclick="return window.bookGoTo ? (window.bookGoTo('g7_bridge_transform'), false) : true;">G7 橋</a><a class="toc-link" href="#g8_answer_jpeg" data-id="g8_answer_jpeg" onclick="return window.bookGoTo ? (window.bookGoTo('g8_answer_jpeg'), false) : true;">G8 答え合わせ</a><a class="toc-link" href="#g9_teachback_graduation" data-id="g9_teachback_graduation" onclick="return window.bookGoTo ? (window.bookGoTo('g9_teachback_graduation'), false) : true;">G9 卒業</a></div></div>
+</nav>
+      </div>
+    </section>
+    <section class="chapter" id="g0_experience" data-part="G" data-part-name="動機主導" data-code="G0" data-title="体験" data-bar="G0 · 体験" data-prev="" data-next="g1_superposition">
+<nav class="chap-nav" aria-label="前後のユニット"><span class="chap-nav-link is-disabled">‹ 前へ</span><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g1_superposition">次へ ›</a></nav>
+<h1 id="g0_experience-g0">G0. 体験 — 圧縮とスペクトルの魔法</h1>
+<blockquote>
+<p><strong>到達:</strong> JPEG の圧縮と音のスペクトルという「魔法」を体験し、「複雑な信号＝単純な波の足し算（分解）」を自分の言葉で言える。<br />
+<strong>この章の式:</strong> なし（言葉とイメージだけ）。謎を提示する章です。<br />
+<!-- eq-source: v2-A1 全体 + v2-E2 §1（式なしで再構成） --></p>
+</blockquote>
+<hr />
+<h2 id="g0_experience-0">0. この本は「謎解きの旅」です</h2>
+<p>多くの数学の教科書は、道具を順番に積み上げてから、最後に「応用」として扉を開けます。</p>
+<p>この本は逆です。</p>
+<p><strong>最初に魔法を見せます。そしてその正体を、自分の手で解きに行きます。</strong></p>
+<p>旅の終わり（G8）で、あなたは次の三つを手にしています。</p>
+<ol>
+<li><strong>理論</strong> — フーリエ変換の骨格を数式で理解している  </li>
+<li><strong>導出</strong> — 必要な公式を暗記ではなく自分で導ける  </li>
+<li><strong>応用</strong> — 波の変換と画像圧縮のしかけを、手順として実行できる</li>
+</ol>
+<p>いまは何一つ約束だけ。まずは謎を見に行きましょう。</p>
+<hr />
+<h2 id="g0_experience-1-1">1. 魔法① — 音：同じ「ド」なのに違う</h2>
+<p><strong>いま体験すること:</strong> ピアノとフルートで同じ「ド」を思い浮かべてください。高さは同じなのに、音色がまるで違います。耳はそれをすぐ見分けます。</p>
+<p><strong>問い:</strong> その違いは、どこにあるのか？</p>
+<p>一本の波の「形が違う」だけでは足りません。実際には、</p>
+<ul>
+<li>基音（基本の高さの波）  </li>
+<li>倍音（その整数倍の高さの波）</li>
+</ul>
+<p>が<strong>どれだけ混ざるか</strong>の割合が違う、と考えると説明できます。</p>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 210" width="480" height="210" role="img" aria-label="基音と倍音を足すと複雑な波になる">
+  <rect width="480" height="210" fill="#fffdf8"/>
+  <text x="10" y="18" font-size="12" fill="#1c1a16">音のイメージ：単純な波を足す</text>
+  <text x="12" y="48" font-size="11" fill="#2c5f4a">基音</text>
+  <path d="M50 55 C 80 25, 110 25, 140 55 S 200 85, 230 55 S 290 25, 320 55" fill="none" stroke="#2c5f4a" stroke-width="2"/>
+  <text x="12" y="108" font-size="11" fill="#2a6fad">倍音（例）</text>
+  <path d="M50 110 C 65 90, 80 90, 95 110 S 125 130, 140 110 S 170 90, 185 110 S 215 130, 230 110 S 260 90, 275 110 S 305 130, 320 110" fill="none" stroke="#2a6fad" stroke-width="2"/>
+  <text x="12" y="168" font-size="11" fill="#c45c26">足した波 ≈ 聞こえる形</text>
+  <path d="M50 165 C 70 130, 90 145, 110 155 S 150 120, 170 150 S 210 175, 230 145 S 270 125, 290 160 S 310 170, 320 155" fill="none" stroke="#c45c26" stroke-width="2.5"/>
+  <text x="340" y="70" font-size="11" fill="#555">ピアノとフルートで</text>
+  <text x="340" y="88" font-size="11" fill="#555">違うのは、だいたい</text>
+  <text x="340" y="106" font-size="11" fill="#555">「混ぜる割合」</text>
+  <text x="340" y="140" font-size="11" fill="#1c1a16">→ フーリエは</text>
+  <text x="340" y="158" font-size="11" fill="#1c1a16">混ざりを数で取り出す</text>
+</svg>
+<figcaption>上から基音・倍音・その足し算。音色の差は「どの波がどれだけ混ざるか」のイメージで捉える。</figcaption>
+</figure>
+
+<p>ここで最初の謎が生まれます。</p>
+<blockquote>
+<p>混ざった波を<strong>聞いて</strong>音色は分かる。でも、混ざり方を<strong>数として取り出す</strong>には、どうすればいいのか？</p>
+</blockquote>
+<hr />
+<h2 id="g0_experience-2-2">2. 魔法② — 画像：写真の一行は「波」だった</h2>
+<p>写真を一枚思い浮かべて、そのうち<strong>横一列</strong>だけを取り出してください。<br />
+左からの位置を横軸、明るさを縦軸にとってグラフにすると——山と谷の列、つまり<strong>波のグラフ</strong>になります。</p>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 200" width="480" height="200" role="img" aria-label="写真の1行を明るさの波にする">
+  <rect width="480" height="200" fill="#fffdf8"/>
+  <text x="10" y="18" font-size="12" fill="#1c1a16">画像のイメージ：1行の明るさ → 波のグラフ</text>
+  <rect x="20" y="40" width="28" height="36" fill="#222"/>
+  <rect x="48" y="40" width="28" height="36" fill="#444"/>
+  <rect x="76" y="40" width="28" height="36" fill="#666"/>
+  <rect x="104" y="40" width="28" height="36" fill="#888"/>
+  <rect x="132" y="40" width="28" height="36" fill="#bbb"/>
+  <rect x="160" y="40" width="28" height="36" fill="#ddd"/>
+  <rect x="188" y="40" width="28" height="36" fill="#999"/>
+  <rect x="216" y="40" width="28" height="36" fill="#555"/>
+  <rect x="244" y="40" width="28" height="36" fill="#333"/>
+  <rect x="272" y="40" width="28" height="36" fill="#777"/>
+  <rect x="300" y="40" width="28" height="36" fill="#aaa"/>
+  <rect x="328" y="40" width="28" height="36" fill="#ccc"/>
+  <text x="20" y="92" font-size="11" fill="#555">写真の横一列（マスの明るさ）</text>
+  <path d="M190 100 L190 118" stroke="#2c5f4a" stroke-width="2" marker-end="url(#a1-arr-img)"/>
+  <defs>
+    <marker id="g0_experience-a1-arr-img" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#2c5f4a"/>
+    </marker>
+  </defs>
+  <line x1="20" y1="160" x2="360" y2="160" stroke="#aaa" stroke-width="1"/>
+  <path d="M20 175 L48 168 L76 158 L104 150 L132 142 L160 138 L188 148 L216 162 L244 170 L272 155 L300 145 L328 140 L356 148" fill="none" stroke="#c45c26" stroke-width="2.5"/>
+  <text x="20" y="130" font-size="11" fill="#2a6fad">← ゆっくり変化（低周波のイメージ）</text>
+  <text x="200" y="130" font-size="11" fill="#c45c26">細かく凸凹（高周波のイメージ）→</text>
+  <text x="20" y="192" font-size="11" fill="#555">左からの位置 →</text>
+  <text x="370" y="155" font-size="11" fill="#555">明るさ</text>
+</svg>
+<figcaption>上: 写真の横一列。下: 位置を横軸・明るさを縦軸にしたグラフ。</figcaption>
+</figure>
+
+<p>さらに画像では、見た目と「細かさ」の対応が直感で掴めます。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>明るさの変化</th>
+<th>見た目</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ゆっくり変わる（<strong>低周波</strong>）</td>
+<td>大きな塊・なめらかさ・空のグラデーション</td>
+</tr>
+<tr>
+<td>細かくチカチカ変わる（<strong>高周波</strong>）</td>
+<td>エッジ・輪郭・ざらつき・文字</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>用語ボックス — 周波数（いまのイメージ）</strong><br />
+「どれくらい細かくくり返すか／変化するか」の速さ感。音の「高さ」に近い感覚です。正確な式はあとの章で出会います。</p>
+</blockquote>
+<hr />
+<h2 id="g0_experience-3-3-jpeg">3. 魔法③ — JPEG：目に見えないものを捨てている</h2>
+<p>JPEG で写真が圧縮されるとき、何が起きているのでしょう。</p>
+<p>ざっくり言えばこうです。</p>
+<blockquote>
+<p><strong>目立ちにくい細かい変化（高周波）を弱めて捨てることで、データ量を減らす。</strong></p>
+</blockquote>
+<p>捨てたのに、ほとんど見た目が変わらない。「目立つか目立たないか」を機械が判断できている——<br />
+これはつまり、<strong>画像の中の縞（波の部品）を一つずつ数えて、重要度をつけている</strong>ということです。</p>
+<p>二つ目の謎です。</p>
+<blockquote>
+<p>画像や音の中から、「どの波がどれだけ混ざっているか」を<strong>測る</strong>方法とは、一体どんな仕組みなのか？</p>
+</blockquote>
+<hr />
+<h2 id="g0_experience-4">4. 二つの魔法が指す同じ中心</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>音</th>
+<th>画像</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>複雑に見えるもの</td>
+<td>音色</td>
+<td>明るさの凸凹</td>
+</tr>
+<tr>
+<td>単純な部品</td>
+<td>基音・倍音などの波</td>
+<td>ゆっくり／細かい縞</td>
+</tr>
+<tr>
+<td>やりたいこと</td>
+<td>混ざりを数で取り出す</td>
+<td>縞の重要度をつけ、必要なら弱める</td>
+</tr>
+</tbody>
+</table></div>
+<p>どちらも同じ宣言に着地します。</p>
+<blockquote>
+<p><strong>信号＝（単純な）波の足し算／分解。</strong></p>
+</blockquote>
+<p>これが本書全体の入口イメージであり、ゴールです。フーリエ級数とフーリエ変換は、この宣言を数学として精密にしたものです。</p>
+<hr />
+<h2 id="g0_experience-5">5. 旅の地図 — 謎から謎へ</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>章</th>
+<th>問い</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>G0（いまここ）</td>
+<td>魔法を見た。<strong>何が起きているのか？</strong></td>
+</tr>
+<tr>
+<td>G1</td>
+<td>「波の足し算」って、式ではどう書く？</td>
+</tr>
+<tr>
+<td>G2</td>
+<td>部品の波 sin は、どこから来る？（円の影）</td>
+</tr>
+<tr>
+<td>G3</td>
+<td>「合っている度」を面積で測るには？</td>
+</tr>
+<tr>
+<td>G4</td>
+<td>目的の波だけを取り出す魔法（直交性）</td>
+</tr>
+<tr>
+<td>G5</td>
+<td>混ざり具合＝係数を、自分の手で導く</td>
+</tr>
+<tr>
+<td>G6</td>
+<td>回転を一文字 e^{iθ} で書く</td>
+</tr>
+<tr>
+<td>G7</td>
+<td>級数から変換へ — 有限から無限の橋</td>
+</tr>
+<tr>
+<td>G8</td>
+<td><strong>JPEG の謎に答え合わせ</strong> — 自分の手で実行する</td>
+</tr>
+<tr>
+<td>G9</td>
+<td>誰かに説明して卒業する</td>
+</tr>
+</tbody>
+</table></div>
+<p>各章の最後には、必ず「まだ解けていない疑問」が置かれます。それが次の章の入口です。</p>
+<hr />
+<h2 id="g0_experience-6">6. 章のまとめ</h2>
+<ul>
+<li>同じ高さの音でも音色が違うのは、「どの波がどれだけ混ざるか」の差  </li>
+<li>写真の一行は波のグラフ。ゆっくり＝低周波、細かい＝高周波  </li>
+<li>JPEG は「目立ちにくい高周波を捨てる」ことで圧縮している  </li>
+<li>入口宣言: <strong>信号＝単純な波の足し算／分解</strong>  </li>
+</ul>
+<h2 id="g0_experience-7">7. 確認</h2>
+<ol>
+<li>「複雑な信号＝波の足し算」を、音か画像のどちらかで一文で説明せよ。  </li>
+<li>画像で「高い周波数」が指すものを日常語で書け。  </li>
+<li>本書のゴール三つ（理論・導出・応用）を、自分の言葉で列挙せよ。  </li>
+<li>この章で残された最大の謎を、一文で書け。  </li>
+</ol>
+<hr />
+<h2 id="g0_experience-8">8. 次の章への引き</h2>
+<p>音も画像も「<strong>波の足し算</strong>」らしい——ことは分かった。</p>
+<p>では、足し算の相手である<strong>一本の単純な波</strong>は、式ではどう書くのか？<br />
+そして、波と波を「足す」とは、計算としては何をすることなのか？</p>
+<p>→ <a href="#g1_superposition">G1. 音は波の足し算だ</a></p>
+<nav class="chap-nav" aria-label="前後のユニット"><span class="chap-nav-link is-disabled">‹ 前へ</span><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g1_superposition">次へ ›</a></nav>
+</section>
+<section class="chapter" id="g1_superposition" data-part="G" data-part-name="動機主導" data-code="G1" data-title="音は波の足し算だ" data-bar="G1 · 音は波の足し算だ" data-prev="g0_experience" data-next="g2_circle_shadow">
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g0_experience">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g2_circle_shadow">次へ ›</a></nav>
+<h1 id="g1_superposition-g1">G1. 音は波の足し算だ</h1>
+<blockquote>
+<p><strong>到達:</strong> 一本の波を \(y(t)=A\sin(\omega t+\phi)\) と書き、「波を足す」とは各時刻の値を足すことだと式で扱える。同じ周波数どうしは一本にまとまり、違う周波数は潰せないことを導出できる。何本も足した部分和 \(s_N\) を自分で書ける。<br />
+<strong>この章で導くこと:</strong> 線形結合・同周波の一本化・部分和の型紙。<br />
+<!-- eq-source: v2-A2 §5–6 / v2-C1 / v2-C2 --></p>
+</blockquote>
+<hr />
+<h2 id="g1_superposition-0">0. 前章からの引き</h2>
+<p>G0 で見た魔法——音色も模様も「波の混ざり」——の正体を探す旅です。</p>
+<p>その第一歩は、<strong>部品と足し算を式の文法にすること</strong>。イメージのままでは、誰とも共有できず、計算もできません。</p>
+<p>この章で目指すのは三つです。</p>
+<ol>
+<li>部品である<strong>一本の波</strong>を式で書く  </li>
+<li>波と波を「<strong>足す</strong>」とは何かを定義する  </li>
+<li>何本も足した形（部分和）を書けるようにする  </li>
+</ol>
+<hr />
+<h2 id="g1_superposition-1">1. 一本の波の標準形</h2>
+<p>一本のいちばん単純なくり返し波は、次の形に書けます。</p>
+<div class="math-block">$$
+y(t) = A \sin(\omega t + \phi)
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「ワイティー イコール エー サイン（オメガ ティー プラス ファイ）」</li>
+</ul>
+<p>\(\sin\) の中身や円の正体にはまだ触れません。いま必要なのは、波が<strong>三つのつまみ</strong>を持つということです。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>名前</th>
+<th>記号（読み）</th>
+<th>何をするか</th>
+<th>日常での対応</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>振幅</strong></td>
+<td>\(A\)（エー）</td>
+<td>縦に何倍するか</td>
+<td>音の大きさ</td>
+</tr>
+<tr>
+<td><strong>周波数</strong></td>
+<td>\(\omega\)（オメガ）/ \(f\)（エフ）</td>
+<td>くり返しの速さ</td>
+<td>音の高さ</td>
+</tr>
+<tr>
+<td><strong>位相</strong></td>
+<td>\(\phi\)（ファイ）</td>
+<td>左右にずらす</td>
+<td>スタート位置</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>🪜 <strong>足場を渡す:</strong> なぜ基本部品が \(\sin\) なのか——その正体は「<strong>円運動の影</strong>」です。次章 G2 で、三角比から円から波へ、きちんと出会います。ここでは「つまみ付きの基本部品」として使って先へ進みます。</p>
+</blockquote>
+<p>周期と周波数の関係だけ、ここで手元に置きます。</p>
+<div class="math-block">$$
+f = \frac{1}{T}, \qquad \omega = 2\pi f
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「エフ イコール イチ オーバー ティー」「オメガ イコール ツーパイ エフ」  </li>
+<li><strong>よみ:</strong> 「\(\omega\) が大きい ↔ 波が速い」。\(2\pi\) の由来は G2。</li>
+</ul>
+<hr />
+<h2 id="g1_superposition-2">2. 「波を足す」とは何か</h2>
+<p>二つの信号 \(f(t)\)、\(g(t)\) を「混ぜる」とします。その意味はこうです。</p>
+<div class="math-block">$$
+(f+g)(t):=f(t)+g(t)
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「エフ プラス ジー、ティー、イコール エフティー プラス ジーティー」  </li>
+<li><strong>よみ:</strong> ある時刻の和の高さは、それぞれの高さの和。<strong>混ぜる、ではない。同じ時刻で足す。</strong></li>
+</ul>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 200" width="440" height="200" role="img" aria-label="同じ時刻の高さを足すと、和の波になる">
+  <rect width="440" height="200" fill="#fffdf8"/>
+  <text x="16" y="18" font-size="12" fill="#1c1a16">「足す」＝同じ時刻の高さを足す</text>
+  <line x1="200" y1="28" x2="200" y2="168" stroke="#c45c26" stroke-dasharray="4 3" stroke-width="1.2"/>
+  <text x="206" y="40" font-size="11" fill="#c45c26">同じ時刻 t</text>
+  <text x="16" y="58" font-size="12" fill="#2a6fad">f</text>
+  <line x1="40" y1="62" x2="380" y2="62" stroke="#eee" stroke-width="1"/>
+  <path d="M40 62 C70 42 100 42 130 62 S190 82 220 62 S280 42 310 62 S370 82 380 62" fill="none" stroke="#2a6fad" stroke-width="1.6"/>
+  <line x1="200" y1="62" x2="200" y2="48" stroke="#2a6fad" stroke-width="2"/>
+  <circle cx="200" cy="48" r="3" fill="#2a6fad"/>
+  <text x="386" y="52" font-size="11" fill="#2a6fad">高さ 2</text>
+  <text x="16" y="108" font-size="12" fill="#2c5f4a">g</text>
+  <line x1="40" y1="112" x2="380" y2="112" stroke="#eee" stroke-width="1"/>
+  <path d="M40 112 C85 92 130 92 175 112 S265 132 310 112 S370 92 380 112" fill="none" stroke="#2c5f4a" stroke-width="1.6"/>
+  <line x1="200" y1="112" x2="200" y2="96" stroke="#2c5f4a" stroke-width="2"/>
+  <circle cx="200" cy="96" r="3" fill="#2c5f4a"/>
+  <text x="386" y="100" font-size="11" fill="#2c5f4a">高さ 3</text>
+  <text x="8" y="158" font-size="12" fill="#c45c26">f+g</text>
+  <line x1="40" y1="162" x2="380" y2="162" stroke="#eee" stroke-width="1"/>
+  <path d="M40 162 C70 136 110 128 160 148 S230 188 280 158 S340 132 380 150" fill="none" stroke="#c45c26" stroke-width="2"/>
+  <line x1="200" y1="162" x2="200" y2="128" stroke="#c45c26" stroke-width="2"/>
+  <circle cx="200" cy="128" r="3.2" fill="#c45c26"/>
+  <text x="386" y="136" font-size="11" fill="#c45c26">2+3=5</text>
+</svg>
+<figcaption>ある時刻の f の高さと g の高さを足した値が、和の波のその時刻の高さ。</figcaption>
+</figure>
+
+<p>定数倍も同様です。まとめると、</p>
+<div class="math-block">$$
+(af+bg)(t)=a\,f(t)+b\,g(t).
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「エーエフ足すビージー」  </li>
+<li>これを波の <strong>線形結合</strong> と呼びます。</li>
+</ul>
+<blockquote>
+<p>フーリエの立場では、これを<strong>表し方のルール</strong>として採用します。「部品の波が信号なら、定数倍して足したものも信号として扱ってよい」。物理がいつも線形とは限りませんが、G0 の「波の足し算」という宣言を、式の文法にしたのです。</p>
+</blockquote>
+<h3 id="g1_superposition-_1">コマ送り — 定義を手でなぞる</h3>
+<ol>
+<li><strong>いま見る:</strong> \(t=0\) で \(f=0\)、\(g=0\)。和も当然 \(0\)。  </li>
+<li><strong>計算する:</strong> \(t=\pi/2\) で \(f=\sin(\pi/2)=1\)、\(g=2\sin(\pi/2)=2\)。和は \(3\)。  </li>
+<li><strong>判定する:</strong> 「各時刻で縦に足す」だけで、和の波形全体が決まる。</li>
+</ol>
+<hr />
+<h2 id="g1_superposition-3">3. 同じ周波数は、一本にまとまる</h2>
+<h3 id="g1_superposition-_2">主張</h3>
+<p>同じくり返し速さ \(\omega\) の \(\cos\) と \(\sin\) を足しても、それは振幅と位相が変わっただけの<strong>一本</strong>の正弦になります。</p>
+<div class="math-block">$$
+A\cos(\omega t)+B\sin(\omega t)=R\sin(\omega t+\psi).
+$$</div>
+<blockquote>
+<p>🪜 <strong>足場を渡す:</strong> 導出に使う<strong>加法定理</strong><br />
+$$
+> \sin(\alpha+\beta)=\sin\alpha\cos\beta+\cos\alpha\sin\beta.
+> $$<br />
+（読み: 「サイン アルファ プラス ベータ」。角度を足したサインは、バラして足せる。）導出の詳細は v2 本編 B′1 章。ここでは道具として使います。</p>
+</blockquote>
+<h3 id="g1_superposition-_3">導出 — 右辺を展開して係数を合わせる</h3>
+<p>加法定理より右辺は</p>
+<div class="math-block">$$
+R\sin(\omega t+\psi)
+=R\cos\psi\cdot\sin(\omega t)+R\sin\psi\cdot\cos(\omega t).
+$$</div>
+<p>左辺は \(B\sin(\omega t)+A\cos(\omega t)\)。両辺の \(\sin\) の係数、\(\cos\) の係数をそれぞれ等しく置きます。</p>
+<div class="math-block">$$
+R\cos\psi=B,
+\qquad
+R\sin\psi=A.
+$$</div>
+<p><strong>よみ:</strong> まとめ後の振幅と位相は、もとの \(A,B\) を「縦・横の成分」に持つ。</p>
+<h3 id="g1_superposition-math45-math46">\(R\) と \(\psi\) の決め方</h3>
+<p>両辺を二乗して足す。\(\cos^2+\sin^2=1\) より</p>
+<div class="math-block">$$
+R=\sqrt{A^2+B^2},
+\qquad
+\cos\psi=\frac{B}{R},\
+\sin\psi=\frac{A}{R}.
+$$</div>
+<p><strong>よみ:</strong> まとめ振幅は、\(A,B\) を直角三角形の二辺と見たときの<strong>斜辺</strong>。</p>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 210" width="400" height="210" role="img" aria-label="振幅AとBを直角の二辺にすると、斜辺がまとめ振幅R">
+  <rect width="400" height="210" fill="#fffdf8"/>
+  <text x="16" y="20" font-size="12" fill="#1c1a16">A と B を直角に置くと、斜辺がまとめ振幅 R</text>
+  <polygon points="70,170 214,170 214,62" fill="#c45c26" fill-opacity="0.10" stroke="#c45c26" stroke-width="2"/>
+  <rect x="202" y="158" width="12" height="12" fill="none" stroke="#c45c26" stroke-width="1.2"/>
+  <text x="128" y="188" font-size="13" fill="#2a6fad">B = 4（sin 側）</text>
+  <text x="226" y="122" font-size="13" fill="#2c5f4a">A = 3（cos 側）</text>
+  <text x="96" y="100" font-size="14" fill="#c45c26">R = 5</text>
+  <text x="16" y="206" font-size="12" fill="#555">3²+4²=5²。位相 ψ は、この三角形の向き。</text>
+</svg>
+<figcaption>\(A\cos(\omega t)+B\sin(\omega t)\) は、斜辺 \(R=\sqrt{A^2+B^2}\)・角 \(\psi\) の一本の正弦になる。</figcaption>
+</figure>
+
+<h3 id="g1_superposition-_4">検算（数値）</h3>
+<p>\(A=3\)、\(B=4\) なら \(R=5\)、\(\cos\psi=4/5\)、\(\sin\psi=3/5\)。<br />
+\(t=0\) で左辺 \(3\)、右辺 \(5\times(3/5)=3\)。一致。</p>
+<hr />
+<h2 id="g1_superposition-4">4. 違う周波数は、一本に潰せない</h2>
+<p>では \(\sin t+\sin(2t)\)（速さが違う部品）は、一本の \(R\sin(\Omega t+\psi)\) にまとまるでしょうか。</p>
+<p><strong>なりません。</strong> いくつかの時刻で値を見ると:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>\(t\)</th>
+<th>\(\sin t\)</th>
+<th>\(\sin(2t)\)</th>
+<th>和</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\(0\)</td>
+<td>\(0\)</td>
+<td>\(0\)</td>
+<td>\(0\)</td>
+</tr>
+<tr>
+<td>\(\pi\)</td>
+<td>\(0\)</td>
+<td>\(0\)</td>
+<td>\(0\)</td>
+</tr>
+<tr>
+<td>\(\pi/2\)</td>
+<td>\(1\)</td>
+<td>\(0\)</td>
+<td>\(1\)</td>
+</tr>
+<tr>
+<td>\(2\pi/3\)</td>
+<td>\(\sqrt{3}/2\)</td>
+<td>\(-\sqrt{3}/2\)</td>
+<td>\(0\)</td>
+</tr>
+</tbody>
+</table></div>
+<p>ゼロになる時刻の並び方が、単一の正弦の等間隔パターンと一致しない——つまり「うねり」が残ります。</p>
+<blockquote>
+<p><strong>足してよい。ただし、違う速さの部品は、足しても部品のまま残る。</strong></p>
+</blockquote>
+<p>これが重要です。<strong>だからこそ後の章で、「どれだけ混ざっているか」を取り出す方法が必要になります。</strong> 謎はまだ解けていませんが、形が見えてきました。</p>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 168" width="440" height="168" role="img" aria-label="同じ速さの波は一本にまとまり、違う速さは残る">
+  <rect width="440" height="168" fill="#fffdf8"/>
+  <text x="30" y="16" font-size="12" fill="#2c5f4a">同じ速さ → 一本のきれいなくり返し</text>
+  <text x="240" y="16" font-size="12" fill="#c45c26">違う速さ → 部品のまま残る</text>
+  <line x1="30" y1="70" x2="200" y2="70" stroke="#ddd" stroke-width="1"/>
+  <line x1="240" y1="70" x2="410" y2="70" stroke="#ddd" stroke-width="1"/>
+  <path d="M 30.0 70.0 L 34.2 63.7 L 38.5 57.6 L 42.8 51.8 L 47.0 46.5 L 51.2 41.7 L 55.5 37.6 L 59.8 34.4 L 64.0 32.0 L 68.2 30.5 L 72.5 30.0 L 76.8 30.5 L 81.0 32.0 L 85.2 34.4 L 89.5 37.6 L 93.8 41.7 L 98.0 46.5 L 102.2 51.8 L 106.5 57.6 L 110.8 63.7 L 115.0 70.0 L 119.2 76.3 L 123.5 82.4 L 127.8 88.2 L 132.0 93.5 L 136.2 98.3 L 140.5 102.4 L 144.8 105.6 L 149.0 108.0 L 153.2 109.5 L 157.5 110.0 L 161.8 109.5 L 166.0 108.0 L 170.2 105.6 L 174.5 102.4 L 178.8 98.3 L 183.0 93.5 L 187.2 88.2 L 191.5 82.4 L 195.8 76.3 L 200.0 70.0" fill="none" stroke="#2a6fad" stroke-width="1.1" opacity="0.55"/>
+  <path d="M 30.0 40.0 L 34.2 40.4 L 38.5 41.5 L 42.8 43.3 L 47.0 45.7 L 51.2 48.8 L 55.5 52.4 L 59.8 56.4 L 64.0 60.7 L 68.2 65.3 L 72.5 70.0 L 76.8 74.7 L 81.0 79.3 L 85.2 83.6 L 89.5 87.6 L 93.8 91.2 L 98.0 94.3 L 102.2 96.7 L 106.5 98.5 L 110.8 99.6 L 115.0 100.0 L 119.2 99.6 L 123.5 98.5 L 127.8 96.7 L 132.0 94.3 L 136.2 91.2 L 140.5 87.6 L 144.8 83.6 L 149.0 79.3 L 153.2 74.7 L 157.5 70.0 L 161.8 65.3 L 166.0 60.7 L 170.2 56.4 L 174.5 52.4 L 178.8 48.8 L 183.0 45.7 L 187.2 43.3 L 191.5 41.5 L 195.8 40.4 L 200.0 40.0" fill="none" stroke="#2c5f4a" stroke-width="1.1" opacity="0.55"/>
+  <path d="M 30.0 49.0 L 34.2 44.9 L 38.5 41.4 L 42.8 38.6 L 47.0 36.6 L 51.2 35.4 L 55.5 35.0 L 59.8 35.5 L 64.0 36.9 L 68.2 39.1 L 72.5 42.0 L 76.8 45.6 L 81.0 49.9 L 85.2 54.6 L 89.5 59.7 L 93.8 65.1 L 98.0 70.5 L 102.2 76.0 L 106.5 81.3 L 110.8 86.4 L 115.0 91.0 L 119.2 95.1 L 123.5 98.6 L 127.8 101.4 L 132.0 103.4 L 136.2 104.6 L 140.5 105.0 L 144.8 104.5 L 149.0 103.1 L 153.2 100.9 L 157.5 98.0 L 161.8 94.4 L 166.0 90.1 L 170.2 85.4 L 174.5 80.3 L 178.8 74.9 L 183.0 69.5 L 187.2 64.0 L 191.5 58.7 L 195.8 53.6 L 200.0 49.0" fill="none" stroke="#c45c26" stroke-width="2.2"/>
+  <path d="M 240.0 70.0 L 244.2 65.0 L 248.5 60.1 L 252.8 55.5 L 257.0 51.2 L 261.2 47.4 L 265.5 44.1 L 269.8 41.5 L 274.0 39.6 L 278.2 38.4 L 282.5 38.0 L 286.8 38.4 L 291.0 39.6 L 295.2 41.5 L 299.5 44.1 L 303.8 47.4 L 308.0 51.2 L 312.2 55.5 L 316.5 60.1 L 320.8 65.0 L 325.0 70.0 L 329.2 75.0 L 333.5 79.9 L 337.8 84.5 L 342.0 88.8 L 346.2 92.6 L 350.5 95.9 L 354.8 98.5 L 359.0 100.4 L 363.2 101.6 L 367.5 102.0 L 371.8 101.6 L 376.0 100.4 L 380.2 98.5 L 384.5 95.9 L 388.8 92.6 L 393.0 88.8 L 397.2 84.5 L 401.5 79.9 L 405.8 75.0 L 410.0 70.0" fill="none" stroke="#2a6fad" stroke-width="1.1" opacity="0.45"/>
+  <path d="M 240.0 70.0 L 244.2 60.1 L 248.5 51.2 L 252.8 44.1 L 257.0 39.6 L 261.2 38.0 L 265.5 39.6 L 269.8 44.1 L 274.0 51.2 L 278.2 60.1 L 282.5 70.0 L 286.8 79.9 L 291.0 88.8 L 295.2 95.9 L 299.5 100.4 L 303.8 102.0 L 308.0 100.4 L 312.2 95.9 L 316.5 88.8 L 320.8 79.9 L 325.0 70.0 L 329.2 60.1 L 333.5 51.2 L 337.8 44.1 L 342.0 39.6 L 346.2 38.0 L 350.5 39.6 L 354.8 44.1 L 359.0 51.2 L 363.2 60.1 L 367.5 70.0 L 371.8 79.9 L 376.0 88.8 L 380.2 95.9 L 388.8 100.4 L 393.0 100.4 L 397.2 95.9 L 401.5 88.8 L 405.8 79.9 L 410.0 70.0" fill="none" stroke="#2c5f4a" stroke-width="1.1" opacity="0.45"/>
+  <path d="M 240.0 70.0 L 244.2 59.8 L 248.5 50.3 L 252.8 42.2 L 257.0 36.1 L 261.2 32.4 L 265.5 31.3 L 269.8 32.6 L 274.0 36.1 L 278.2 41.5 L 282.5 48.0 L 286.8 55.1 L 291.0 62.0 L 295.2 68.2 L 299.5 73.1 L 303.8 76.4 L 308.0 78.0 L 312.2 77.8 L 316.5 76.1 L 320.8 73.4 L 325.0 70.0 L 329.2 66.6 L 333.5 63.9 L 337.8 62.2 L 342.0 62.0 L 346.2 63.6 L 350.5 66.9 L 354.8 71.8 L 359.0 78.0 L 363.2 84.9 L 367.5 92.0 L 371.8 98.5 L 376.0 103.9 L 380.2 107.4 L 384.5 108.7 L 388.8 107.6 L 393.0 103.9 L 397.2 97.8 L 401.5 89.7 L 405.8 80.2 L 410.0 70.0" fill="none" stroke="#c45c26" stroke-width="2.2"/>
+  <text x="30" y="150" font-size="11" fill="#555">細い2本を足すと、太い1本（同じくり返し）</text>
+  <text x="240" y="150" font-size="11" fill="#555">足しても、うねりが残る</text>
+</svg>
+<figcaption>左は同じくり返し速さ。足しても一本の正弦のまま。右は速さが違う。足しても部品は残る。</figcaption>
+</figure>
+
+<h3 id="g1_superposition-_5">小さな実例（手計算）</h3>
+<div class="math-block">$$
+f(t)=3\cos(2t)+4\sin(2t)
+$$</div>
+<p>§3 の手順より \(R=5\)、\(\cos\psi=4/5\)、\(\sin\psi=3/5\)。よって</p>
+<div class="math-block">$$
+f(t)=5\sin(2t+\psi).
+$$</div>
+<p>対照的に \(g(t)=\sin t+\sin(2t)\) は、この手続きでは一本化できません。二つの部品のまま扱います。</p>
+<hr />
+<h2 id="g1_superposition-5-math85-math86">5. 何本も足す — \(\sum\) と部分和 \(s_N\)</h2>
+<h3 id="g1_superposition-math87">\(\sum\)（シグマ）— 足し算の省略記号</h3>
+<p>\(n=1\) から \(N\) まで足す、を毎回長く書かないための記号です。</p>
+<div class="math-block">$$
+\sum_{n=1}^{N} u_n := u_1+u_2+\cdots+u_N.
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「シグマ、エヌが 1 からエヌまで、ユーエヌ」  </li>
+<li><strong>よみ:</strong> 新しい計算ではない。長いたし算にラベルを付けただけ。</li>
+</ul>
+<p>性質は二つ（どちらも「見たまんま」でよいです）:</p>
+<div class="math-block">$$
+\sum_{n=1}^{N}(c\,u_n)=c\sum_{n=1}^{N} u_n,
+\qquad
+\sum_{n=1}^{N}(u_n+v_n)=\sum_{n=1}^{N} u_n+\sum_{n=1}^{N} v_n.
+$$</div>
+<h3 id="g1_superposition-math90">部分和 \(s_N\) — 型紙</h3>
+<p>「定数＋整数倍波の \(\cos,\sin\) を、\(N\) 倍波まで足す」型を書きます。</p>
+<div class="math-block">$$
+s_N(t)
+=\frac{a_0}{2}
++\sum_{n=1}^{N}\bigl(a_n\cos(nt)+b_n\sin(nt)\bigr).
+$$</div>
+<ul>
+<li><strong>よみ:</strong>  </li>
+<li>\(a_0/2\) … 上下の底上げ（定数項）。\(1/2\) 付ける理由は G5 で揃う  </li>
+<li>\(a_n\cos(nt)+b_n\sin(nt)\) … 周波数 \(n\) の部品（§3 より、これは実は一本の正弦でもある）  </li>
+<li>\(a_0,a_n,b_n\) はいまは<strong>名札</strong>。値の決め方は G5——そこが謎の中心</li>
+</ul>
+<p>\(N\) を 1 つ増やすとは:</p>
+<div class="math-block">$$
+s_{N+1}(t)
+=s_N(t)+a_{N+1}\cos\bigl((N+1)t\bigr)+b_{N+1}\sin\bigl((N+1)t\bigr).
+$$</div>
+<p><strong>よみ:</strong> 「次の倍音」の箱を一つ足す。足し算で形が変わる。</p>
+<h3 id="g1_superposition-_6">部分和もくり返す（導出）</h3>
+<p>各部品 \(\sin(nt)\) は周期 \(2\pi\)（\(\sin(n(t+2\pi))=\sin(nt+2\pi n)=\sin(nt)\)、加法定理より）。部品が全部周期 \(2\pi\) なら、足したものもそう:</p>
+<div class="math-block">$$
+s_N(t+2\pi)=s_N(t).
+$$</div>
+<hr />
+<h2 id="g1_superposition-6">6. 体験 — 足すほど段差に近づく</h2>
+<p>係数の中身はまだ導けていませんが、「与えられた混ざり方」を代入して体験できます。<br />
+方形波（あとで G5 で本物を出します）の係数として次を使います。</p>
+<div class="math-block">$$
+a_0=0,\quad a_n=0,\quad
+b_n=
+\begin{cases}
+\dfrac{4}{n\pi} & n\text{ が奇数}\\[6pt]
+0 & n\text{ が偶数}.
+\end{cases}
+$$</div>
+<p>すると</p>
+<div class="math-block">$$
+\begin{align*}
+s_1(t)&=\frac{4}{\pi}\sin t,\\
+s_3(t)&=\frac{4}{\pi}\Bigl(\sin t+\frac{1}{3}\sin(3t)\Bigr),\\
+s_5(t)&=\frac{4}{\pi}\Bigl(\sin t+\frac{1}{3}\sin(3t)+\frac{1}{5}\sin(5t)\Bigr).
+\end{align*}
+$$</div>
+<p>一点で確かめる。\(t=\pi/2\) で:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>部分和</th>
+<th>式</th>
+<th>数値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\(s_1\)</td>
+<td>\(4/\pi\)</td>
+<td>\(\approx 1.27\)</td>
+</tr>
+<tr>
+<td>\(s_3\)</td>
+<td>\(\dfrac{4}{\pi}\bigl(1-\dfrac{1}{3}\bigr)\)</td>
+<td>\(\approx 0.85\)</td>
+</tr>
+<tr>
+<td>\(s_5\)</td>
+<td>\(\dfrac{4}{\pi}\bigl(1-\dfrac{1}{3}+\dfrac{1}{5}\bigr)\)</td>
+<td>\(\approx 1.10\)</td>
+</tr>
+</tbody>
+</table></div>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 250" width="430" height="250" role="img" aria-label="部分和を増やすと、ゆるい山が段差に近づく">
+  <rect width="430" height="250" fill="#fffdf8"/>
+  <text x="14" y="18" font-size="12" fill="#1c1a16">N を増やすと、波形が変わる</text>
+  <text x="8" y="52" font-size="11" fill="#555">s₁</text>
+  <line x1="50" y1="48" x2="370" y2="48" stroke="#ddd" stroke-width="1"/>
+  <path d="M 50 48 L 50 20 L 210 20 L 210 76 L 370 76 L 370 48" fill="none" stroke="#ccc" stroke-width="1.2"/>
+  <path d="M 50.0 48.0 L 58.0 42.4 L 66.0 37.0 L 74.0 31.8 L 82.0 27.0 L 90.0 22.8 L 98.0 19.2 L 106.0 16.2 L 114.0 14.1 L 122.0 12.8 L 130.0 12.3 L 138.0 12.8 L 146.0 14.1 L 154.0 16.2 L 162.0 19.2 L 170.0 22.8 L 178.0 27.0 L 186.0 31.8 L 194.0 37.0 L 202.0 42.4 L 210.0 48.0 L 218.0 53.6 L 226.0 59.0 L 234.0 64.2 L 242.0 69.0 L 250.0 73.2 L 258.0 76.8 L 266.0 79.8 L 274.0 81.9 L 282.0 83.2 L 290.0 83.7 L 298.0 83.2 L 306.0 81.9 L 314.0 79.8 L 322.0 76.8 L 330.0 73.2 L 338.0 69.0 L 346.0 64.2 L 354.0 59.0 L 362.0 53.6 L 370.0 48.0" fill="none" stroke="#c45c26" stroke-width="1.8"/>
+  <text x="8" y="122" font-size="11" fill="#555">s₃</text>
+  <line x1="50" y1="118" x2="370" y2="118" stroke="#ddd" stroke-width="1"/>
+  <path d="M 50 118 L 50 90 L 210 90 L 210 146 L 370 146 L 370 118" fill="none" stroke="#ccc" stroke-width="1.2"/>
+  <path d="M 50.0 118.0 L 58.0 107.0 L 66.0 97.4 L 74.0 90.1 L 82.0 85.7 L 90.0 84.4 L 98.0 85.5 L 106.0 88.1 L 114.0 91.1 L 122.0 93.4 L 130.0 94.2 L 138.0 93.4 L 146.0 91.1 L 154.0 88.1 L 162.0 85.5 L 170.0 84.4 L 178.0 85.7 L 186.0 90.1 L 194.0 97.4 L 202.0 107.0 L 210.0 118.0 L 218.0 129.0 L 226.0 138.6 L 234.0 145.9 L 242.0 150.3 L 250.0 151.6 L 258.0 150.5 L 266.0 147.9 L 274.0 144.9 L 282.0 142.6 L 290.0 141.8 L 298.0 142.6 L 306.0 144.9 L 314.0 147.9 L 322.0 150.5 L 330.0 151.6 L 338.0 150.3 L 346.0 145.9 L 354.0 138.6 L 362.0 129.0 L 370.0 118.0" fill="none" stroke="#c45c26" stroke-width="1.8"/>
+  <text x="8" y="192" font-size="11" fill="#555">s₅</text>
+  <line x1="50" y1="188" x2="370" y2="188" stroke="#ddd" stroke-width="1"/>
+  <path d="M 50 188 L 50 160 L 210 160 L 210 216 L 370 216 L 370 188" fill="none" stroke="#ccc" stroke-width="1.2"/>
+  <path d="M 50.0 188.0 L 58.0 172.0 L 66.0 160.2 L 74.0 155.0 L 82.0 155.7 L 90.0 159.4 L 98.0 162.6 L 106.0 163.1 L 114.0 161.1 L 122.0 158.3 L 130.0 157.1 L 138.0 158.3 L 146.0 161.1 L 154.0 163.1 L 162.0 162.6 L 170.0 159.4 L 178.0 155.7 L 186.0 155.0 L 194.0 160.2 L 202.0 172.0 L 210.0 188.0 L 218.0 204.0 L 226.0 215.8 L 234.0 221.0 L 242.0 220.3 L 250.0 216.6 L 258.0 213.4 L 266.0 212.9 L 274.0 214.9 L 282.0 217.7 L 290.0 218.9 L 298.0 217.7 L 306.0 214.9 L 314.0 212.9 L 322.0 213.4 L 330.0 216.6 L 338.0 220.3 L 346.0 221.0 L 354.0 215.8 L 362.0 204.0 L 370.0 188.0" fill="none" stroke="#c45c26" stroke-width="1.8"/>
+  <text x="46" y="240" font-size="11" fill="#888">0</text>
+  <text x="202" y="240" font-size="11" fill="#888">π</text>
+  <text x="354" y="240" font-size="11" fill="#888">2π</text>
+  <text x="250" y="240" font-size="11" fill="#aaa">薄い線＝目指す段差</text>
+</svg>
+<figcaption>灰色は方形波。\(s_1\) はゆるい山、\(s_3\)・\(s_5\) と足すほど段差に近づく。</figcaption>
+</figure>
+
+<blockquote>
+<p>🔬 <strong>Living Figure:</strong> <a href="https://ogaogamirai.github.io/public/2d-commons/viewer.html?model=fourier-partials">足すほど段差になる — フーリエ部分和</a>　（\(N\) をスライダーで動かして、段差への近づきを体感してください）</p>
+</blockquote>
+<p><strong>よみ:</strong> 足す部品が増えるほど、表せる形の自由度が上がる。無限まで伸ばせば……という話は G7 の橋までお預け。</p>
+<hr />
+<h2 id="g1_superposition-7">7. 章のまとめ</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>標準形</td>
+<td>\(y=A\sin(\omega t+\phi)\)。つまみは \(A,\omega,\phi\)</td>
+</tr>
+<tr>
+<td>足す</td>
+<td>各時刻で値を足す。線形結合 \(af+bg\)</td>
+</tr>
+<tr>
+<td>同周波</td>
+<td>一本の正弦にまとまる（\(R=\sqrt{A^2+B^2}\)）</td>
+</tr>
+<tr>
+<td>異周波</td>
+<td>潰せない。部品が残る → 取り出しが必要</td>
+</tr>
+<tr>
+<td>部分和</td>
+<td>\(s_N\) = 型紙。\(N\) で形が変わる</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="g1_superposition-8">8. 導出チェック（白紙で再現できるか）</h2>
+<ol>
+<li>「波を足す」の定義を一文で言え。  </li>
+<li>加法定理を使い、\(A\cos\omega t+B\sin\omega t\) が一本にまとまる理由を辿れ。  </li>
+<li>\(\sin t+\sin(2t)\) が一本にならない根拠を、表を使って述べよ。  </li>
+<li>\(s_N\) の型紙を書き、\(N\to N+1\) で何が起きるか言え。  </li>
+</ol>
+<h2 id="g1_superposition-9">9. 確認</h2>
+<ol>
+<li>\(5\cos t+12\sin t\) を \(R\sin(t+\psi)\) の形にせよ（\(R\) と \(\cos\psi,\sin\psi\)）。  </li>
+<li>\(s_N\) 全体が周期 \(2\pi\) でくり返す理由を、部品の言葉で述べよ。  </li>
+<li>\(\displaystyle\sum_{n=1}^{4}(2n)\) を展開して計算せよ。  </li>
+<li>（コントラスト）「足してよい」ことと「一本にまとまる」ことは、なぜ別の話か。  </li>
+</ol>
+<hr />
+<h2 id="g1_superposition-10">10. 次の章への引き</h2>
+<p>合成は、もうできます。どんな複雑な波も、\(\sin\) と \(\cos\) の足し算の<strong>型</strong>に載りました。</p>
+<p>でも、よく見てください。この章、一度も答えていないことがあります——</p>
+<p><strong>そもそも、なぜ「円」の関数 \(\sin\) が波の正体なのか？</strong></p>
+<p>そして最大の謎はまだ手つかずです。<strong>混ざった波から、目的の波だけを「取り出す」には、何が必要か。</strong></p>
+<p>まず前者を解きに、円の世界へ降りていきます。</p>
+<p>→ <a href="#g2_circle_shadow">G2. 円の影が波を作る</a></p>
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g0_experience">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g2_circle_shadow">次へ ›</a></nav>
+</section>
+<section class="chapter" id="g2_circle_shadow" data-part="G" data-part-name="動機主導" data-code="G2" data-title="円の影が波を作る" data-bar="G2 · 円の影が波を作る" data-prev="g1_superposition" data-next="g3_area_measure">
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g1_superposition">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g3_area_measure">次へ ›</a></nav>
+<h1 id="g2_circle_shadow-g2-sin">G2. 円の影が波を作る — sin の正体</h1>
+<blockquote>
+<p><strong>到達:</strong> ラジアンで角を測れ、単位円上の点と \(\sin,\cos\) が同じものであると説明でき、等速円運動の縦の影から \(y=A\sin(\omega t+\phi)\) を自分で組み立てられる。<br />
+<strong>この章で導くこと:</strong> 弧長とラジアン、単位円の同定、標準形の幾何的導出。<br />
+<strong>前章からの引き:</strong> 「なぜ円の関数 \(\sin\) が波の正体なのか」に答える章。<br />
+<!-- eq-source: v2-B1 / v2-B2 / v2-B3 --></p>
+</blockquote>
+<hr />
+<h2 id="g2_circle_shadow-0">0. 前章からの引き</h2>
+<p>G1 では、\(\sin\) を「つまみ付きの基本部品」として使いました。足し算の文法は手に入りました。</p>
+<p>でも約束しましたよね——<strong>なぜ \(\sin\) が波の正体なのか</strong>。</p>
+<p>答えは一行です。</p>
+<blockquote>
+<p><strong>波とは、回る点の影である。</strong></p>
+</blockquote>
+<p>この章ではそれを、中学の直角三角形から始めて、自分の手で組み立てます。</p>
+<hr />
+<h2 id="g2_circle_shadow-1">1. 角度を「長さ」で測る — ラジアン</h2>
+<h3 id="g2_circle_shadow-_1">度数法の不便</h3>
+<p>一周を \(360^\circ\) とするのは歴史の偶然です（1年がおよそ360日だった古代の暦）。数学的には「なぜ360？」という疑問に答えられません。</p>
+<h3 id="g2_circle_shadow-_2">弧長で測る</h3>
+<p>半径 \(r\) の円で、弧の長さ \(s\) と中心角 \(\theta\) には次の関係があります。</p>
+<div class="math-block">$$
+s = r\theta
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「エス イコール アール シータ」  </li>
+<li><strong>よみ:</strong> 円の一部（弧）の長さ ＝ 半径 × 中心角（ラジアン）。</li>
+</ul>
+<p>ここから<strong>ラジアン</strong>が生まれます。</p>
+<blockquote>
+<p><strong>半径と同じ長さの弧</strong>を張る角度を \(1\) ラジアンとする。</p>
+</blockquote>
+<p>一周の弧の長さは \(2\pi r\)。だから一周は</p>
+<div class="math-block">$$
+2\pi r = r\theta \implies \theta = 2\pi \text{（ラジアン）}
+$$</div>
+<p>つまり:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>度</th>
+<th>\(0^\circ\)</th>
+<th>\(90^\circ\)</th>
+<th>\(180^\circ\)</th>
+<th>\(270^\circ\)</th>
+<th>\(360^\circ\)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ラジアン</td>
+<td>\(0\)</td>
+<td>\(\dfrac{\pi}{2}\)</td>
+<td>\(\pi\)</td>
+<td>\(\dfrac{3\pi}{2}\)</td>
+<td>\(2\pi\)</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>読み:</strong> 「パイ オーバー ツー」「パイ」「ツーパイ」  </li>
+<li><strong>よみ:</strong> 一周 \(2\pi\)。これで「なぜ \(\omega = 2\pi f\) に \(2\pi\) が付くのか」の答えが出ました——<strong>一周が \(2\pi\) ラジアンだから</strong>。</li>
+</ul>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 190" width="380" height="190" role="img" aria-label="ラジアンの定義：半径と同じ長さの弧が1ラジアン">
+  <rect width="380" height="190" fill="#fffdf8"/>
+  <circle cx="120" cy="95" r="60" fill="#e8f2ec" stroke="#2c5f4a" stroke-width="2"/>
+  <line x1="120" y1="95" x2="180" y2="95" stroke="#c45c26" stroke-width="2"/>
+  <line x1="120" y1="95" x2="172" y2="63" stroke="#2a6fad" stroke-width="2"/>
+  <path d="M 180 95 A 60 60 0 0 0 172 63" fill="none" stroke="#c45c26" stroke-width="5" stroke-opacity="0.35"/>
+  <text x="140" y="88" font-size="12" fill="#c45c26">半径 r</text>
+  <text x="185" y="70" font-size="11" fill="#2a6fad">弧 s = r</text>
+  <text x="30" y="30" font-size="12" fill="#1c1a16">半径と同じ長さの弧 → 角は 1 ラジアン</text>
+  <text x="30" y="170" font-size="12" fill="#555">一周の弧は 2πr なので、一周 = 2π ラジアン</text>
+</svg>
+<figcaption>弧の長さで角を測る。半径分の弧が 1 ラジアン。一周は \(2\pi\)。</figcaption>
+</figure>
+
+<hr />
+<h2 id="g2_circle_shadow-2-sin">2. 単位円の上では、sin は「高さ」そのもの</h2>
+<h3 id="g2_circle_shadow-2">三角比のおさらい（中2の足場）</h3>
+<p>直角三角形で、注目する鋭角を \(\theta\) とすると:</p>
+<div class="math-block">$$
+\sin\theta = \frac{\text{対辺}}{\text{斜辺}}, \qquad \cos\theta = \frac{\text{隣辺}}{\text{斜辺}}
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「サイン・シータ イコール タイヘン オーバー シャヘン」</li>
+</ul>
+<p>相似だから、三角形を大きくしても比は不変——\(\sin\theta\) は「角が決める数」です。</p>
+<h3 id="g2_circle_shadow-_3">単位円に乗せる</h3>
+<p>半径 \(1\) の円（<strong>単位円</strong>）の中心を原点に置き、右向き軸から角 \(\theta\) の方向を見ます。<br />
+斜辺が \(1\) になる直角三角形を作ると:</p>
+<div class="math-block">$$
+\text{対辺} = 1\times\sin\theta=\sin\theta,
+\qquad
+\text{隣辺} = 1\times\cos\theta=\cos\theta.
+$$</div>
+<p>つまり、単位円上の点の座標そのものになります。</p>
+<div class="math-block">$$
+(\,x,\ y\,) = (\cos\theta,\ \sin\theta)
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「コサイン・シータ、サイン・シータ」  </li>
+<li><strong>よみ:</strong> 単位円の上では、<strong>横座標が cos、縦座標が sin</strong>。「比の名札」だった \(\sin\) が、「点の高さ」に変わる瞬間です。</li>
+</ul>
+<p>半径 \(A\) の円なら相似で \(A\) 倍:</p>
+<div class="math-block">$$
+P = (\,A\cos\theta,\ A\sin\theta\,)
+$$</div>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 220" width="340" height="220" role="img" aria-label="単位円上の点：横がcos、縦がsin">
+  <rect width="340" height="220" fill="#fffdf8"/>
+  <line x1="40" y1="110" x2="320" y2="110" stroke="#aaa" stroke-width="1"/>
+  <line x1="100" y1="20" x2="100" y2="200" stroke="#aaa" stroke-width="1"/>
+  <circle cx="100" cy="110" r="70" fill="none" stroke="#2c5f4a" stroke-width="2"/>
+  <line x1="100" y1="110" x2="149" y2="61" stroke="#888" stroke-width="1.5"/>
+  <circle cx="149" cy="61" r="4" fill="#c45c26"/>
+  <line x1="149" y1="61" x2="149" y2="110" stroke="#2a6fad" stroke-width="2"/>
+  <line x1="100" y1="110" x2="149" y2="110" stroke="#2c5f4a" stroke-width="2"/>
+  <path d="M 130 110 A 30 30 0 0 0 124 92" fill="none" stroke="#c45c26" stroke-width="1.5"/>
+  <text x="136" y="102" font-size="12" fill="#c45c26">θ</text>
+  <text x="156" y="90" font-size="12" fill="#2a6fad">(cosθ, sinθ)</text>
+  <text x="104" y="86" font-size="11" fill="#555">高さ = sinθ</text>
+  <text x="104" y="128" font-size="11" fill="#555">横 = cosθ</text>
+</svg>
+<figcaption>単位円の上では、点の縦座標が \(\sin\theta\)、横座標が \(\cos\theta\)。</figcaption>
+</figure>
+
+<hr />
+<h2 id="g2_circle_shadow-3">3. 回すと波になる — 影の導出</h2>
+<p>いよいよ本題です。半径 \(A\) の円の上を、点 \(P\) が<strong>等速</strong>（速さ一定）で反時計まわりするとします。</p>
+<h3 id="g2_circle_shadow-1_1">ステップ1 — 角を時間で書く</h3>
+<p>等速なら、角は時間に比例して増えます。\(t=0\) での初期角を \(\phi\) として:</p>
+<div class="math-block">$$
+\theta(t) = \omega t + \phi
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「シータ イコール オメガ ティー プラス ファイ」  </li>
+<li><strong>よみ:</strong> いまの向き ＝（時間とともに増えた分）＋（最初のずれ）。</li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>記号</th>
+<th>読み</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\(\omega\)</td>
+<td>オメガ</td>
+<td>角速度（1秒に何ラジアン回るか）</td>
+</tr>
+<tr>
+<td>\(\phi\)</td>
+<td>ファイ</td>
+<td>スタート時刻の角</td>
+</tr>
+<tr>
+<td>等速</td>
+<td>—</td>
+<td>回る速さが一定</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="g2_circle_shadow-2_1">ステップ2 — 縦だけ見る</h3>
+<p>点 \(P=(A\cos\theta, A\sin\theta)\) の<strong>縦座標だけ</strong>を記録します（左右は捨てる）:</p>
+<div class="math-block">$$
+y(t) = A\sin\theta(t) = A\sin(\omega t + \phi)
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「ワイティー イコール エー サイン（オメガ ティー プラス ファイ）」</li>
+</ul>
+<p><strong>これが G1 の標準形です。</strong> 暗記の看板ではなく、<strong>回る点の高さ</strong>として導かれました。</p>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 200" width="460" height="200" role="img" aria-label="円運動の縦の影が波になる">
+  <rect width="460" height="200" fill="#fffdf8"/>
+  <circle cx="90" cy="100" r="55" fill="none" stroke="#2c5f4a" stroke-width="2"/>
+  <line x1="90" y1="100" x2="129" y2="61" stroke="#888" stroke-width="1.5"/>
+  <circle cx="129" cy="61" r="4" fill="#c45c26"/>
+  <line x1="160" y1="45" x2="160" y2="155" stroke="#2a6fad" stroke-width="2" stroke-dasharray="4 3"/>
+  <circle cx="160" cy="61" r="3.5" fill="#2a6fad"/>
+  <text x="90" y="175" text-anchor="middle" font-size="12" fill="#1c1a16">回る点 P</text>
+  <text x="168" y="65" font-size="11" fill="#2a6fad">縦だけ</text>
+  <line x1="200" y1="100" x2="440" y2="100" stroke="#aaa" stroke-width="1"/>
+  <path d="M200 100 C 230 45, 260 45, 290 100 S 350 155, 380 100 S 430 45, 440 70" fill="none" stroke="#c45c26" stroke-width="2.5"/>
+  <text x="320" y="30" text-anchor="middle" font-size="12" fill="#1c1a16">高さ y を時間で記録 → 波</text>
+  <text x="200" y="188" font-size="11" fill="#555">時間 t →</text>
+</svg>
+<figcaption>左: 等速で回る点。中央の破線: 縦の位置だけ見る。右: 高さを時間順に並べるとサイン波。</figcaption>
+</figure>
+
+<blockquote>
+<p>🔬 <strong>Living Figure:</strong> <a href="https://ogaogamirai.github.io/public/3d-commons/viewer.html?model=circle-shadow">円の影がサイン波を作る — 動く3Dモデルで確かめる</a>　（回す速さも変えられる。真上から見ると、横の影＝コサインも現れます）</p>
+</blockquote>
+<h3 id="g2_circle_shadow-_4">コマ送り — 導出を自分の手でたどる</h3>
+<ol>
+<li><strong>角を書く:</strong> \(\theta=\omega t+\phi\)（等速なので一次式）  </li>
+<li><strong>単位円の同定を使う:</strong> 縦 \(=A\sin\theta\)  </li>
+<li><strong>代入:</strong> \(y=A\sin(\omega t+\phi)\)  </li>
+<li><strong>検算:</strong> \(A\) を2倍 → 円も影も縦が2倍。\(\omega\) を2倍 → 波も二倍速。\(\phi\) を変える → スタート位置だけずれる  </li>
+</ol>
+<h3 id="g2_circle_shadow-_5">必然性 — なぜ「円の影」なのか</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>やり方</th>
+<th>足りないところ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>公式として暗記</td>
+<td>\(A,\omega,\phi\) が「なぜそこにいるのか」が見えない</td>
+</tr>
+<tr>
+<td>波の絵だけ描く</td>
+<td>速さやずれを人に同じ式で伝えられない</td>
+</tr>
+<tr>
+<td><strong>円の縦の影から組み立てる</strong></td>
+<td>三つのつまみが一つの絵の部品として全部そろう</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>「くり返す」＝円が一周すること  </li>
+<li>「速さ」＝角速度 \(\omega\)  </li>
+<li>「ずれ」＝スタート角 \(\phi\)  </li>
+<li>「振れ幅」＝半径 \(A\)  </li>
+</ul>
+<blockquote>
+<p><strong>波の三つまみは別々の魔法ではなく、一つの円運動を縦だけ見たときの部品である。</strong></p>
+</blockquote>
+<hr />
+<h2 id="g2_circle_shadow-4-math64">4. \(2\pi\) の再訪 — つまみ同士の接続</h2>
+<p>周期 \(T\)（一回りにかかる時間）で一周するなら、角は \(T\) 秒で \(2\pi\) 増える:</p>
+<div class="math-block">$$
+\omega T = 2\pi \implies \omega = \frac{2\pi}{T} = 2\pi f
+$$</div>
+<ul>
+<li><strong>よみ:</strong> G1 の看板だった「\(\omega=2\pi f\)」の \(2\pi\) の正体は、<strong>一周の角</strong>でした。</li>
+</ul>
+<hr />
+<h2 id="g2_circle_shadow-5">5. 横の影はコサイン — 同じ一族</h2>
+<p>同じ点の<strong>横座標</strong>を記録すれば:</p>
+<div class="math-block">$$
+x(t) = A\cos(\omega t + \phi)
+$$</div>
+<p>そして両者は、\(90^\circ\)（\(\pi/2\) ラジアン）だけずれた同じ一族です:</p>
+<div class="math-block">$$
+\cos\theta = \sin\left(\theta + \frac{\pi}{2}\right)
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「コサイン・シータ イコール サイン（シータ プラス パイ オーバー ツー）」  </li>
+<li><strong>よみ:</strong> 縦と横の影は、同じ円の見方の違い。フーリエ級数で \(\sin\) と \(\cos\) を<strong>両方</strong>足す理由もここに見えています——片方だけでは、円の半分しか見ていないから。</li>
+</ul>
+<hr />
+<h2 id="g2_circle_shadow-6">6. 章のまとめ</h2>
+<ul>
+<li>ラジアン: 弧の長さで測る角。一周 \(=2\pi\)  </li>
+<li>単位円の上では、縦座標が \(\sin\)、横座標が \(\cos\)  </li>
+<li>等速円運動の縦の影: \(\theta=\omega t+\phi\) → \(y=A\sin(\omega t+\phi)\)  </li>
+<li>三つのつまみは「一つの円運動の部品」  </li>
+<li>横の影が \(\cos\)。\(\sin\) と \(\cos\) は \(90^\circ\) ずれた一族  </li>
+</ul>
+<h2 id="g2_circle_shadow-7">7. 導出チェック（白紙で）</h2>
+<ol>
+<li>一周が \(2\pi\) ラジアンになる理由を、弧の長さで言え。  </li>
+<li>単位円上の点の座標を \(\sin,\cos\) で書け。  </li>
+<li>\(\theta=\omega t+\phi\) から \(y(t)\) を導け。  </li>
+<li>\(\omega=2\pi f\) の \(2\pi\) の由来を一文で言え。  </li>
+</ol>
+<h2 id="g2_circle_shadow-8">8. 確認</h2>
+<ol>
+<li>「サイン波の公式は円と無関係に暗記するもの」を訂正せよ。  </li>
+<li>\(A\) を変えたとき、円と波のそれぞれ何がどう変わるか言え。  </li>
+<li>横の影がコサインになることを、単位円の同定で一文にせよ。  </li>
+</ol>
+<hr />
+<h2 id="g2_circle_shadow-9">9. 次の章への引き</h2>
+<p>部品の正体は分かりました。<strong>回る点の影</strong>——これで「波の足し算」の部品にも、足し算の文法にも、自信があります。</p>
+<p>さあ、いよいよ最大の謎が迫ります。混ざった波から目的の波を取り出すには？</p>
+<p>その鍵を握るのは、意外にも「<strong>面積</strong>」です。「二つの波が合っている度合い」を、面積で測る方法——そのための道具（積分）を、必要なぶんだけ手に入れます。</p>
+<p>→ <a href="#g3_area_measure">G3. 面積で「合ってる度」を測る</a></p>
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g1_superposition">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g3_area_measure">次へ ›</a></nav>
+</section>
+<section class="chapter" id="g3_area_measure" data-part="G" data-part-name="動機主導" data-code="G3" data-title="面積で「合ってる度」を測る" data-bar="G3 · 面積で「合ってる度」を測る" data-prev="g2_circle_shadow" data-next="g4_orthogonality">
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g2_circle_shadow">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g4_orthogonality">次へ ›</a></nav>
+<h1 id="g3_area_measure-g3">G3. 面積で「合ってる度」を測る — 積分の最小セット</h1>
+<blockquote>
+<p><strong>到達:</strong> 定積分を「符号つきの足し上げ」として読み、\(\int\sin=-\cos\) などを微分での検算つきで使える。線形性・区間の分割・向きの反転を式変形で扱え、「整数回まわる波を一周積分すると 0」を自分で示せる。<br />
+<strong>この章で導くこと:</strong> 積分の定義・\(\sin/\cos\) の積分・フーリエで使う性質の最小セット。<br />
+<strong>前章からの引き:</strong> 波の取り出しの鍵が「面積」であることを見る章。<br />
+<!-- eq-source: v2-Bp4 / v2-Bp5 --></p>
+</blockquote>
+<hr />
+<h2 id="g3_area_measure-0">0. 前章からの引き — なぜ突然「面積」か</h2>
+<p>G1 の最後で確かめたことを思い出してください。</p>
+<p><strong>違う周波数の波は、足しても部品のまま残る。</strong><br />
+だから混ざった信号から、目的の波だけを取り出す方法が必要です。</p>
+<p>その鍵になるのが、この章で手に入れる道具——<strong>積分</strong>です。</p>
+<p>発想はこうです。「二つの波が似ている／合っている」を、目ではなく<strong>数</strong>で判定したい。<br />
+そのために、二つの波を掛け合わせたものの<strong>面積</strong>を測ります。合っているほど面積が大きく残り、無関係なら打ち消してゼロになる——次章 G4 でこの魔法を目の当たりにします。</p>
+<p>その準備として、いま必要なぶんだけ、積分を手に入れます。</p>
+<hr />
+<h2 id="g3_area_measure-1">1. 積分とは — 符号つきの足し上げ</h2>
+<p>関数 \(f(x)\) の \(a\) から \(b\) までの<strong>定積分</strong></p>
+<div class="math-block">$$
+\int_a^b f(x)\,dx
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「インテグラル エーからビー、エフ エックス ディーエックス」  </li>
+<li><strong>よみ:</strong> グラフと横軸のあいだを、細かい短冊に切って<strong>足し上げたもの</strong>。</li>
+</ul>
+<p>大事なのは「符号つき」だという点です。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>場所</th>
+<th>扱い</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>グラフが軸の<strong>上</strong></td>
+<td>プラスの面積</td>
+</tr>
+<tr>
+<td>グラフが軸の<strong>下</strong></td>
+<td>マイナスの面積</td>
+</tr>
+</tbody>
+</table></div>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 230" width="440" height="230" role="img" aria-label="サイン波の上側と下側の面積が打ち消し合う">
+  <rect width="440" height="230" fill="#faf6ef"/>
+  <g transform="translate(40,16)">
+    <line x1="0" y1="90" x2="380" y2="90" stroke="#3d3a36" stroke-width="1"/>
+    <line x1="0" y1="175" x2="0" y2="8" stroke="#3d3a36" stroke-width="1"/>
+    <path d="M 0 90 C 30 20, 60 20, 90 90 Z" fill="#2a6f6a" fill-opacity="0.28" stroke="none"/>
+    <path d="M 90 90 C 120 160, 150 160, 180 90 Z" fill="#c45c26" fill-opacity="0.28" stroke="none"/>
+    <path d="M 0 90 C 30 20, 60 20, 90 90 S 150 160, 180 90 S 240 20, 270 90 S 330 160, 360 90" fill="none" stroke="#3d3a36" stroke-width="2"/>
+    <text x="36" y="62" font-size="13" fill="#2a6f6a">+</text>
+    <text x="126" y="128" font-size="13" fill="#c45c26">−</text>
+    <text x="-4" y="186" font-size="11" fill="#3d3a36">0</text>
+    <text x="82" y="186" font-size="11" fill="#3d3a36">π</text>
+    <text x="168" y="186" font-size="11" fill="#3d3a36">2π</text>
+    <text x="8" y="12" font-size="12" fill="#3d3a36">y</text>
+    <text x="368" y="106" font-size="12" fill="#3d3a36">θ</text>
+    <text x="250" y="28" font-size="13" fill="#3d3a36">y = sin θ</text>
+  </g>
+  <text x="24" y="218" font-size="12" fill="#5c5852">0 から 2π まで足すと、上側と下側が打ち消して 0。</text>
+</svg>
+<figcaption>サインを一周するとプラスとマイナスが同じ量なので、面積の合計は 0。</figcaption>
+</figure>
+
+<h3 id="g3_area_measure-_1">計算のしかた — 原始関数の端点差</h3>
+<p>短冊を一つずつ足すのは大変です。実際の計算はこうやります。<br />
+\(F'(x)=f(x)\) となる関数 \(F\)（\(f\) の<strong>原始関数</strong>）が見つかれば、</p>
+<div class="math-block">$$
+\int_a^b f(x)\,dx=F(b)-F(a).
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「エフ ビー マイナス エフ エー」  </li>
+<li><strong>よみ:</strong> 足し上げの結果は、原始関数の<strong>端点の差</strong>で出せる。</li>
+</ul>
+<blockquote>
+<p>🪜 <strong>足場を渡す:</strong> \(F'(x)=f(x)\) の記号は「\(F\) を微分すると \(f\)」という意味です。微分そのものの作り方（極限の定義から \((\sin)'=\cos\) を導く道程）は G6 の橋で渡します。この章では「微分したら戻るか」の<strong>検算</strong>だけを信頼のよりどころにします。</p>
+</blockquote>
+<hr />
+<h2 id="g3_area_measure-2-math26">2. \(\sin,\cos\) の積分 — 検算つき</h2>
+<h3 id="g3_area_measure-math27">\(\int\cos=\sin\)</h3>
+<p>\((\sin\theta)'=\cos\theta\) なので、\(\sin\theta\) は \(\cos\theta\) の原始関数:</p>
+<div class="math-block">$$
+\int\cos\theta\,d\theta=\sin\theta+C.
+$$</div>
+<p><strong>検算:</strong> 右辺を微分 → \(\cos\theta\)。戻った。</p>
+<h3 id="g3_area_measure-math32">\(\int\sin=-\cos\)</h3>
+<p>\((\cos\theta)'=-\sin\theta\)。両辺に \(-1\) を掛けると \((-\cos\theta)'=\sin\theta\)。よって</p>
+<div class="math-block">$$
+\int\sin\theta\,d\theta=-\cos\theta+C.
+$$</div>
+<p><strong>検算:</strong> \((-\cos\theta)'=-(-\sin\theta)=\sin\theta\)。戻った。</p>
+<p>（\(C\) は定数。微分すると 0 になって消えるので、端点差では効きません。）</p>
+<h3 id="g3_area_measure-math38">速さ \(n\) 倍の波</h3>
+<p>\(n\) が整数のとき:</p>
+<div class="math-block">$$
+\int\sin(nx)\,dx=-\frac{1}{n}\cos(nx)+C,
+\qquad
+\int\cos(nx)\,dx=\frac{1}{n}\sin(nx)+C.
+$$</div>
+<p><strong>検算（片方だけ）:</strong> \(\left(-\frac{1}{n}\cos(nx)\right)'=-\frac{1}{n}\times(-\sin(nx))\times n=\sin(nx)\)。戻った。</p>
+<h3 id="g3_area_measure-_2">例 — 一周すると打ち消す</h3>
+<div class="math-block">$$
+\int_0^{2\pi}\sin\theta\,d\theta=\bigl[-\cos\theta\bigr]_0^{2\pi}=-1-(-1)=0.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 上の山と下の谷が同じ量なので、一周の合計は 0。<strong>この「打ち消し」こそ、次章の魔法の燃料になります。</strong></li>
+</ul>
+<hr />
+<h2 id="g3_area_measure-3">3. あとで必ず使う性質 — 式変形で出す</h2>
+<p>フーリエの計算では、「波を足したもの」「定数倍したもの」をまとめて積分します。ばらしてよいのか？　ばらしてよい、を今ここで確めておきます。</p>
+<h3 id="g3_area_measure-_3">線形性 — 和と定数倍は外に出せる</h3>
+<p>\(F'=f\)、\(G'=g\) なら、\((aF+bG)'=af+bg\) なので、\(aF+bG\) は \(af+bg\) の原始関数。よって端点差は</p>
+<div class="math-block">$$
+\int_a^b\bigl(af+bg\bigr)\,dx
+=a\int_a^b f\,dx+b\int_a^b g\,dx.
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「和の積分は積分の和、定数は外へ」  </li>
+<li><strong>よみ:</strong> 波を先に足してから積分しても、積分してから足しても同じ。  </li>
+<li><strong>コントラスト:</strong> ばらせるのは<strong>和と定数倍だけ</strong>。\(\int\sin x\cdot\cos x\,dx\) のような<strong>積</strong>は、これでは外に出せません。積の扱いには別の道具（加法定理）が要る——それも次章すぐ使います。</li>
+</ul>
+<h3 id="g3_area_measure-_4">定数の積分</h3>
+<p>\(F(x)=cx\) とすれば \(F'=c\)。だから</p>
+<div class="math-block">$$
+\int_a^b c\,dx=c(b-a),
+\qquad
+\int_a^b 1\,dx=b-a.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 高さ \(c\) の横棒を幅ぶん足すと、\(c\times\)幅。</li>
+</ul>
+<h3 id="g3_area_measure-_5">区間の分割</h3>
+<p>\(F(c)-F(a)=\bigl(F(c)-F(b)\bigr)+\bigl(F(b)-F(a)\bigr)\) はただの数のたし算。定義を当てはめると:</p>
+<div class="math-block">$$
+\int_a^c f\,dx=\int_a^b f\,dx+\int_b^c f\,dx.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 途中で切って足してよい。</li>
+</ul>
+<h3 id="g3_area_measure-_6">向きの反転</h3>
+<p>\(F(a)-F(b)=-\bigl(F(b)-F(a)\bigr)\) より:</p>
+<div class="math-block">$$
+\int_b^a f\,dx=-\int_a^b f\,dx,
+\qquad
+\int_a^a f\,dx=0.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 逆向きに足すと符号が逆。幅ゼロなら 0。</li>
+</ul>
+<hr />
+<h2 id="g3_area_measure-4">4. フーリエの燃料 — 一周積分の帰結</h2>
+<p>ここまでの道具を組み合わせます。整数 \(n\neq 0\) について:</p>
+<div class="math-block">$$
+\begin{aligned}
+\int_0^{2\pi}\sin(nx)\,dx
+&=\Bigl[-\frac{1}{n}\cos(nx)\Bigr]_0^{2\pi}\\
+&=-\frac{1}{n}\bigl(\underbrace{\cos(2\pi n)}_{=1}-\underbrace{\cos 0}_{=1}\bigr)=0.
+\end{aligned}
+$$</div>
+<p>同様に</p>
+<div class="math-block">$$
+\int_0^{2\pi}\cos(nx)\,dx=\Bigl[\frac{1}{n}\sin(nx)\Bigr]_0^{2\pi}
+=\frac{1}{n}\bigl(\sin(2\pi n)-\sin 0\bigr)=0.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 整数回まわる \(\sin,\cos\) を一周分足すと、上下（左右）が打ち消して <strong>0</strong>。</li>
+</ul>
+<p>一方、ずっと 1 の場合は打ち消さない:</p>
+<div class="math-block">$$
+\int_0^{2\pi}1\,dx=2\pi.
+$$</div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>積分</th>
+<th>結果</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\(\int_0^{2\pi}\sin(nx)\,dx\)</td>
+<td>\(0\)</td>
+<td>打ち消す</td>
+</tr>
+<tr>
+<td>\(\int_0^{2\pi}\cos(nx)\,dx\)</td>
+<td>\(0\)</td>
+<td>打ち消す</td>
+</tr>
+<tr>
+<td>\(\int_0^{2\pi}1\,dx\)</td>
+<td>\(2\pi\)</td>
+<td>1 だけは打ち消さない</td>
+</tr>
+</tbody>
+</table></div>
+<p>最後の「1 だけ残る」は、あとの係数 \(a_0\)（波形全体の底上げ成分）の扱いに効いてきます。</p>
+<h3 id="g3_area_measure-_7">コマ送り — 自分の手で一周積分する</h3>
+<ol>
+<li><strong>いま書く:</strong> \(\displaystyle\int_0^{2\pi}\sin(2x)\,dx\)  </li>
+<li><strong>公式:</strong> \(\int\sin(nx)=-\frac{1}{n}\cos(nx)\)。\(n=2\)  </li>
+<li><strong>代入:</strong> \(\bigl[-\frac{1}{2}\cos(2x)\bigr]_0^{2\pi}=-\frac{1}{2}(1-1)=0\)  </li>
+<li><strong>判定:</strong> 二倍速でも打ち消す。どんな整数倍でも同じ  </li>
+</ol>
+<hr />
+<h2 id="g3_area_measure-5">5. 「合ってる度」への予行演習</h2>
+<p>道具は揃いました。しかし、よく考えると足りないものがあります。</p>
+<p>G3 冒頭の構想は「<strong>二つの波を掛け合わせたものの面積</strong>」でした。つまり</p>
+<div class="math-block">$$
+\int_0^{2\pi}\sin(mt)\,\sin(nt)\,dt
+$$</div>
+<p>のような、<strong>積の積分</strong>を測りたい。でも §3 のコントラストで見たとおり、積は線形性では扱えません。</p>
+<p>どうするか。<strong>積を、足し算に変形できればいい。</strong> その変形機械——加法定理の仲間たち——が、次章の幕開けです。</p>
+<h2 id="g3_area_measure-6">6. 章のまとめ</h2>
+<ul>
+<li>積分 ＝ 符号つきの足し上げ。計算は原始関数の端点差  </li>
+<li>\(\int\sin=-\cos\)、\(\int\cos=\sin\)（微分で検算できる）  </li>
+<li>線形性（和・定数倍は外に出せる）、分割、向きの反転  </li>
+<li>整数回まわる波の一周積分は 0。ただし 1 は \(2\pi\)  </li>
+<li>まだできないこと: <strong>積の積分</strong> —— 次章の主役  </li>
+</ul>
+<h2 id="g3_area_measure-7">7. 導出チェック（白紙で）</h2>
+<ol>
+<li>\(\int\sin\theta\,d\theta=-\cos\theta+C\) を、微分の検算つきで言え。  </li>
+<li>\(\int_0^{2\pi}\sin(2\theta)\,d\theta=0\) を、端点代入まで再現せよ。  </li>
+<li>線形性が「原始関数のどの性質」から出るか一文で言え。  </li>
+<li>積 \(\sin x\cos x\) の積分が、線形性でできない理由を言え。  </li>
+</ol>
+<h2 id="g3_area_measure-8">8. 確認</h2>
+<ol>
+<li>\(\displaystyle\int_0^{\pi}(3\sin x-2)\,dx\) を求めよ。  </li>
+<li>\(\displaystyle\int_{\pi}^{2\pi}\sin x\,dx\) の値と、その意味（どちら側が多いか）を言え。  </li>
+<li>\(\displaystyle\int_0^{2\pi}\bigl(2\sin t+3\cos(2t)\bigr)\,dt\) を、性質を使ってばらして計算せよ。  </li>
+<li>（予行演習）「二つの波の類似度を \(\int f g\) で測りたい」——なぜ掛けるのかは説明できなくてよい。面積の言葉で「合っている」と「無関係」がどう違うか、予想を書け。  </li>
+</ol>
+<hr />
+<h2 id="g3_area_measure-9">9. 次の章への引き</h2>
+<p>道具は揃った。積を足し算に変える機械も、もう手元にある（G2 の加法定理）。</p>
+<p>さあ、魔法の時間です。</p>
+<p><strong>二つの異なる周波数の波を掛けて一周積分すると——完璧に 0 になります。</strong> どんな組でも、です。<br />
+そして同じ周波数同士だけが、値を残します。</p>
+<p>これが「目的の波だけを取り出す魔法（直交性）」です。</p>
+<p>→ <a href="#g4_orthogonality">G4. 目的の波だけを取り出す魔法</a></p>
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g2_circle_shadow">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g4_orthogonality">次へ ›</a></nav>
+</section>
+<section class="chapter" id="g4_orthogonality" data-part="G" data-part-name="動機主導" data-code="G4" data-title="目的の波だけを取り出す魔法" data-bar="G4 · 目的の波だけを取り出す魔法" data-prev="g3_area_measure" data-next="g5_coefficients">
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g3_area_measure">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g5_coefficients">次へ ›</a></nav>
+<h1 id="g4_orthogonality-g4">G4. 目的の波だけを取り出す魔法 — 直交性</h1>
+<blockquote>
+<p><strong>到達:</strong> 積を和に直す公式を加法定理から導き、\(\int_0^{2\pi}\sin(mt)\sin(nt)\,dt\) などが \(m\neq n\) で 0・同じ番号で \(\pi\) になることを自分で示せる。「掛けて一周積分すると、自分以外が消える」と言える。<br />
+<strong>この章が本編の山場です。</strong> G1 からの謎——「混ざった波から目的の波を取り出すには？」——に答えが出ます。<br />
+<!-- eq-source: v2-C3 --></p>
+</blockquote>
+<hr />
+<h2 id="g4_orthogonality-0">0. 前章からの引き — 魔法の仕組みを見る時間です</h2>
+<p>G3 で道具は揃いました。</p>
+<ul>
+<li>「合ってる度」は面積（積分）で測る  </li>
+<li>積は足し算に変形できる（加法定理）  </li>
+</ul>
+<p>準備が整ったので、いよいよ魔法そのものを見ます。まず予告編として、絵で確かめます。</p>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 236" width="440" height="236" role="img" aria-label="違う番号のサインを掛けると、積の面積が打ち消し合う">
+  <rect width="440" height="236" fill="#fffdf8"/>
+  <text x="16" y="18" font-size="12" fill="#1c1a16">違う番号を掛けると、一周で打ち消す</text>
+  <line x1="40" y1="56" x2="400" y2="56" stroke="#ddd" stroke-width="1"/>
+  <path d="M 40.0 56.0 L 51.2 50.5 L 62.5 45.3 L 73.8 40.4 L 85.0 36.2 L 96.2 32.7 L 107.5 30.1 L 118.8 28.5 L 130.0 28.0 L 141.2 28.5 L 152.5 30.1 L 163.8 32.7 L 175.0 36.2 L 186.3 40.4 L 197.5 45.3 L 208.7 50.5 L 220.0 56.0 L 231.3 61.5 L 242.5 66.7 L 253.7 71.6 L 265.0 75.8 L 276.2 79.3 L 287.5 81.9 L 298.8 83.5 L 310.0 84.0 L 321.2 83.5 L 332.5 81.9 L 343.8 79.3 L 355.0 75.8 L 366.2 71.6 L 377.5 66.7 L 388.8 61.5 L 400.0 56.0" fill="none" stroke="#2a6fad" stroke-width="1.5"/>
+  <path d="M 40.0 56.0 L 51.2 45.3 L 62.5 36.2 L 73.8 30.1 L 85.0 28.0 L 96.2 30.1 L 107.5 36.2 L 118.8 45.3 L 130.0 56.0 L 141.2 66.7 L 152.5 75.8 L 163.8 81.9 L 175.0 84.0 L 186.3 81.9 L 197.5 75.8 L 208.7 66.7 L 220.0 56.0 L 231.3 45.3 L 242.5 36.2 L 253.7 30.1 L 265.0 28.0 L 276.2 30.1 L 287.5 36.2 L 298.8 45.3 L 310.0 56.0 L 321.2 66.7 L 332.5 75.8 L 343.8 81.9 L 355.0 84.0 L 366.2 81.9 L 377.5 75.8 L 388.8 66.7 L 400.0 56.0" fill="none" stroke="#2c5f4a" stroke-width="1.5"/>
+  <text x="300" y="36" font-size="11" fill="#2a6fad">sin t</text>
+  <text x="348" y="36" font-size="11" fill="#2c5f4a">sin 2t</text>
+  <text x="16" y="118" font-size="12" fill="#1c1a16">積 sin t · sin 2t</text>
+  <line x1="40" y1="168" x2="400" y2="168" stroke="#bbb" stroke-width="1"/>
+  <path d="M 40.0 168.0 L 47.5 166.3 L 55.0 161.5 L 62.5 154.5 L 70.0 146.3 L 77.5 138.6 L 85.0 132.6 L 92.5 129.7 L 100.0 130.5 L 107.5 135.3 L 115.0 143.9 L 122.5 155.2 L 130.0 168.0 Z" fill="#2c5f4a" fill-opacity="0.28" stroke="none"/>
+  <path d="M 130.0 168.0 L 137.5 180.8 L 145.0 192.1 L 152.5 200.7 L 160.0 205.5 L 167.5 206.3 L 175.0 203.4 L 182.5 197.4 L 190.0 189.7 L 197.5 181.5 L 205.0 174.5 L 212.5 169.7 L 220.0 168.0 Z" fill="#c45c26" fill-opacity="0.28" stroke="none"/>
+  <path d="M 220.0 168.0 L 227.5 169.7 L 235.0 174.5 L 242.5 181.5 L 250.0 189.7 L 257.5 197.4 L 265.0 203.4 L 272.5 206.3 L 280.0 205.5 L 287.5 200.7 L 295.0 192.1 L 302.5 180.8 L 310.0 168.0 Z" fill="#c45c26" fill-opacity="0.28" stroke="none"/>
+  <path d="M 310.0 168.0 L 317.5 155.2 L 325.0 143.9 L 332.5 135.3 L 340.0 130.5 L 347.5 129.7 L 355.0 132.6 L 362.5 138.6 L 370.0 146.3 L 377.5 154.5 L 385.0 161.5 L 392.5 166.3 L 400.0 168.0 Z" fill="#2c5f4a" fill-opacity="0.28" stroke="none"/>
+  <path d="M 40.0 168.0 L 47.5 166.3 L 55.0 161.5 L 62.5 154.5 L 70.0 146.3 L 77.5 138.6 L 85.0 132.6 L 92.5 129.7 L 100.0 130.5 L 107.5 135.3 L 115.0 143.9 L 122.5 155.2 L 130.0 168.0 L 137.5 180.8 L 145.0 192.1 L 152.5 200.7 L 160.0 205.5 L 167.5 206.3 L 175.0 203.4 L 182.5 197.4 L 190.0 189.7 L 197.5 181.5 L 205.0 174.5 L 212.5 169.7 L 220.0 168.0 L 227.5 169.7 L 235.0 174.5 L 242.5 181.5 L 250.0 189.7 L 257.5 197.4 L 265.0 203.4 L 272.5 206.3 L 280.0 205.5 L 287.5 200.7 L 295.0 192.1 L 302.5 180.8 L 310.0 168.0 L 317.5 155.2 L 325.0 143.9 L 332.5 135.3 L 340.0 130.5 L 347.5 129.7 L 355.0 132.6 L 362.5 138.6 L 370.0 146.3 L 377.5 154.5 L 385.0 161.5 L 392.5 166.3 L 400.0 168.0" fill="none" stroke="#1c1a16" stroke-width="1.6"/>
+  <text x="78" y="148" font-size="11" fill="#2c5f4a">+</text>
+  <text x="168" y="198" font-size="11" fill="#c45c26">−</text>
+  <text x="258" y="198" font-size="11" fill="#c45c26">−</text>
+  <text x="348" y="148" font-size="11" fill="#2c5f4a">+</text>
+  <text x="40" y="226" font-size="11" fill="#555">緑の面積とオレンジの面積が同じ → 一周足すと 0</text>
+</svg>
+<figcaption>違う番号のサインを掛けると、積はプラスとマイナスを同じだけ持つ。一周足すと 0。これが「直交」の絵。</figcaption>
+</figure>
+
+<p><strong>掛けて、一周、積分する。</strong> それだけで違う波が消える——なぜそうなるのか、この章で全部導出します。</p>
+<hr />
+<h2 id="g4_orthogonality-1">1. 何のためにやるか — 取り出しの作戦</h2>
+<p>G1 の部分和を思い出してください。</p>
+<div class="math-block">$$
+s_N(t)=\frac{a_0}{2}+\sum_{n=1}^{N}\bigl(a_n\cos(nt)+b_n\sin(nt)\bigr)
+$$</div>
+<p>係数 \(a_n,b_n\)（各波の混ざり具合）はまだ「名札」。<strong>これを取り出したい。</strong></p>
+<p>作戦はこうです:</p>
+<ol>
+<li>両辺に \(\sin(mt)\) を掛ける  </li>
+<li>\(0\) から \(2\pi\) まで積分する  </li>
+<li><strong>\(m\) 以外の項がすべて 0</strong> になり、\(b_m\) だけが残る  </li>
+</ol>
+<p>ステップ 3 の「自分以外が消える」のが本章の主役。係数の完成式は次章 G5 です。</p>
+<h3 id="g4_orthogonality-_1">コントラスト — ほかの方法ではだめか</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>やり方</th>
+<th>できること</th>
+<th>弱いところ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>グラフを目で見る</td>
+<td>直感</td>
+<td>係数の数が取れない</td>
+</tr>
+<tr>
+<td>一点の値だけ見る</td>
+<td>計算は軽い</td>
+<td>未知数が一点では決まらない</td>
+</tr>
+<tr>
+<td><strong>部品を掛けて一周積分</strong></td>
+<td>他項が消えて一つ残る</td>
+<td>積分の計算が要る（本章で閉じる）</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="g4_orthogonality-2-1">2. 準備① — 積を和にする機械</h2>
+<p>\(\sin(mt)\sin(nt)\) のままでは積分できません（G3 §3 のコントラスト）。そこで加法定理を使って<strong>積を和に変形</strong>します。</p>
+<p>G1 の 🪜 足場で使った \(\sin(\alpha+\beta)\) と同じく、余弦にも加法定理があります:</p>
+<div class="math-block">$$
+\cos(\alpha-\beta)=\cos\alpha\cos\beta+\sin\alpha\sin\beta,
+$$</div>
+<div class="math-block">$$
+\cos(\alpha+\beta)=\cos\alpha\cos\beta-\sin\alpha\sin\beta.
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「コサイン アルファ マイナス ベータ……」</li>
+</ul>
+<p>この二式は、<strong>足すと片方、引くともう片方</strong>が現れる構造をしています。順番に機械を作ります。</p>
+<h3 id="g4_orthogonality-_2">正弦どうし（引く）</h3>
+<p>辺々を引くと \(\cos\alpha\cos\beta\) が消えます:</p>
+<div class="math-block">$$
+\cos(\alpha-\beta)-\cos(\alpha+\beta)=2\sin\alpha\sin\beta
+$$</div>
+<div class="math-block">$$
+\implies
+\sin\alpha\sin\beta=\frac{1}{2}\Bigl(\cos(\alpha-\beta)-\cos(\alpha+\beta)\Bigr).
+$$</div>
+<ul>
+<li><strong>よみ:</strong> サインの積は、「差のコサイン引く 和のコサイン」の半分。</li>
+</ul>
+<h3 id="g4_orthogonality-_3">余弦どうし（足す）</h3>
+<p>辺々を足すと \(\sin\alpha\sin\beta\) が打ち消します:</p>
+<div class="math-block">$$
+\implies
+\cos\alpha\cos\beta=\frac{1}{2}\Bigl(\cos(\alpha-\beta)+\cos(\alpha+\beta)\Bigr).
+$$</div>
+<h3 id="g4_orthogonality-_4">正弦×余弦</h3>
+<p>\(\sin\) 版の加法定理二式</p>
+<div class="math-block">$$
+\begin{aligned}
+&\sin(\alpha+\beta)=\sin\alpha\cos\beta+\cos\alpha\sin\beta,\\
+&\sin(\alpha-\beta)=\sin\alpha\cos\beta-\cos\alpha\sin\beta
+\end{aligned}
+$$</div>
+<p>を足せば:</p>
+<div class="math-block">$$
+\implies
+\sin\alpha\cos\beta=\frac{1}{2}\Bigl(\sin(\alpha+\beta)+\sin(\alpha-\beta)\Bigr).
+$$</div>
+<p>これで三つの変形機械が揃いました。<strong>どれも「積 → 和・差の平均」</strong> という同じ形です。</p>
+<hr />
+<h2 id="g4_orthogonality-3-2">3. 準備② — 一周積分の在庫確認</h2>
+<p>G3 の帰結（整数 \(k\neq 0\)）:</p>
+<div class="math-block">$$
+\int_0^{2\pi}\sin(kt)\,dt=0,
+\qquad
+\int_0^{2\pi}\cos(kt)\,dt=0,
+\qquad
+\int_0^{2\pi}1\,dt=2\pi.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 整数回まわる部品は一周で打ち消す。ただし定数 1 だけは残る。</li>
+</ul>
+<hr />
+<h2 id="g4_orthogonality-4">4. 魔法そのもの — 三つの直交関係</h2>
+<h3 id="g4_orthogonality-41-math34math35">4.1 \(\sin(mt)\times\sin(nt)\)、\(m\neq n\)</h3>
+<p>機械（正弦どうし）に \(\alpha=mt,\ \beta=nt\) を入れます:</p>
+<div class="math-block">$$
+\sin(mt)\sin(nt)
+=\frac{1}{2}\Bigl(\cos((m-n)t)-\cos((m+n)t)\Bigr).
+$$</div>
+<p>積分して線形性でばらす:</p>
+<div class="math-block">$$
+\begin{aligned}
+\int_0^{2\pi}\sin(mt)\sin(nt)\,dt
+&=\frac{1}{2}\underbrace{\int_0^{2\pi}\cos((m-n)t)\,dt}_{m-n\neq 0 \Rightarrow 0}\\
+&\quad-\frac{1}{2}\underbrace{\int_0^{2\pi}\cos((m+n)t)\,dt}_{m+n\geq 3 \Rightarrow 0}
+=0.
+\end{aligned}
+$$</div>
+<p><strong>違う番号なら、必ず 0。</strong></p>
+<h3 id="g4_orthogonality-42-math37">4.2 同じ番号 \(m=n\)</h3>
+<p>\(\alpha=\beta=nt\) を入れると差の角が 0 になり:</p>
+<div class="math-block">$$
+\sin^2(nt)=\frac{1}{2}\bigl(\underbrace{\cos 0}_{=1}-\cos(2nt)\bigr)
+=\frac{1}{2}\bigl(1-\cos(2nt)\bigr).
+$$</div>
+<p>積分すると:</p>
+<div class="math-block">$$
+\int_0^{2\pi}\sin^2(nt)\,dt
+=\frac{1}{2}\cdot 2\pi-\frac{1}{2}\underbrace{\int_0^{2\pi}\cos(2nt)\,dt}_{=0}
+=\pi.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 自分自身との積は下に落ちない（いつも 0 以上）。だから面積が残り、その値は \(\pi\)。</li>
+</ul>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 200" width="440" height="200" role="img" aria-label="同じ番号を掛けると積は下に落ちず、面積がパイになる">
+  <rect width="440" height="200" fill="#fffdf8"/>
+  <text x="16" y="18" font-size="12" fill="#1c1a16">同じ番号どうし：sin t × sin t ＝ いつも 0 以上</text>
+  <line x1="40" y1="150" x2="400" y2="150" stroke="#bbb" stroke-width="1"/>
+  <path d="M 40.0 150.0 L 49.0 148.3 L 58.0 143.3 L 67.0 135.6 L 76.0 125.8 L 85.0 115.0 L 94.0 104.2 L 103.0 94.4 L 112.0 86.7 L 121.0 81.7 L 130.0 80.0 L 139.0 81.7 L 148.0 86.7 L 157.0 94.4 L 166.0 104.2 L 175.0 115.0 L 184.0 125.8 L 193.0 135.6 L 202.0 143.3 L 211.0 148.3 L 220.0 150.0 L 229.0 148.3 L 238.0 143.3 L 247.0 135.6 L 256.0 125.8 L 265.0 115.0 L 274.0 104.2 L 283.0 94.4 L 292.0 86.7 L 301.0 81.7 L 310.0 80.0 L 319.0 81.7 L 328.0 86.7 L 337.0 94.4 L 346.0 104.2 L 355.0 115.0 L 364.0 125.8 L 373.0 135.6 L 382.0 143.3 L 391.0 148.3 L 400.0 150.0 L 400 150 L 40 150 Z" fill="#2c5f4a" fill-opacity="0.22" stroke="#2c5f4a" stroke-width="1.6"/>
+  <text x="36" y="168" font-size="11" fill="#555">0</text>
+  <text x="212" y="168" font-size="11" fill="#555">π</text>
+  <text x="384" y="168" font-size="11" fill="#555">2π</text>
+  <text x="168" y="118" font-size="13" fill="#2c5f4a">面積 = π</text>
+  <text x="16" y="190" font-size="11" fill="#555">前の図（違う番号）は＋と−が打ち消し。自分自身は残る。</text>
+</svg>
+<figcaption>同じ番号なら面積が \(\pi\) だけ残る。これが次章、係数の分母になります。</figcaption>
+</figure>
+
+<blockquote>
+<p>🔬 <strong>Living Figure:</strong> <a href="https://ogaogamirai.github.io/public/2d-commons/viewer.html?model=orthogonality-product">直交性 — 掛けて一周足すと消える</a>　（\(m,n\) を動かすと、打ち消しと残りがその場で見られます）</p>
+</blockquote>
+<h3 id="g4_orthogonality-43-math42-math43">4.3 \(\cos\times\cos\) と \(\sin\times\cos\)</h3>
+<p>まったく同じ手順で:</p>
+<div class="math-block">$$
+\int_0^{2\pi}\cos(mt)\cos(nt)\,dt=
+\begin{cases}
+0 & (m\neq n)\\
+\pi & (m=n)
+\end{cases}
+$$</div>
+<div class="math-block">$$
+\int_0^{2\pi}\sin(mt)\cos(nt)\,dt=0
+\quad(\text{同じ番号でも }0！)
+$$</div>
+<p>最後のものだけ確認しましょう。機械に入れると</p>
+<div class="math-block">$$
+\sin(nt)\cos(nt)=\frac{1}{2}\Bigl(\sin(2nt)+\sin 0\Bigr)=\frac{1}{2}\sin(2nt),
+$$</div>
+<p>一周積分すれば §3 より 0。<strong>サインとコサインは、たとえ同じ番号でも直交します。</strong></p>
+<h3 id="g4_orthogonality-_5">コマ送り — 自分の手で一組閉じる</h3>
+<ol>
+<li><strong>選ぶ:</strong> \(m=2,\ n=3\) の \(\sin\) どうし  </li>
+<li><strong>変形:</strong> \(\sin 2t\sin 3t=\frac{1}{2}\bigl(\cos t-\cos 5t\bigr)\)  </li>
+<li><strong>積分:</strong> \(\cos t\) も \(\cos 5t\) も整数回まわりなので一周で 0  </li>
+<li><strong>判定:</strong> 積の面積は 0。直交  </li>
+</ol>
+<hr />
+<h2 id="g4_orthogonality-5">5. 直交関係の一覧表</h2>
+<p>正整数 \(m,n\)、区間 \([0,2\pi]\):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>積分</th>
+<th>\(m\neq n\)</th>
+<th>\(m=n\)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\(\int\sin(mt)\sin(nt)\,dt\)</td>
+<td>\(0\)</td>
+<td>\(\pi\)</td>
+</tr>
+<tr>
+<td>\(\int\cos(mt)\cos(nt)\,dt\)</td>
+<td>\(0\)</td>
+<td>\(\pi\)</td>
+</tr>
+<tr>
+<td>\(\int\sin(mt)\cos(nt)\,dt\)</td>
+<td>\(0\)</td>
+<td>\(0\)</td>
+</tr>
+<tr>
+<td>\(\int 1\cdot\sin(nt)\,dt\)</td>
+<td>—</td>
+<td>\(0\)</td>
+</tr>
+<tr>
+<td>\(\int 1\cdot 1\,dt\)</td>
+<td>—</td>
+<td>\(2\pi\)</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>直交（ちょっこう）</strong> ＝ 掛けて区間積分すると 0。ベクトルの「垂直」の仲間です。垂直な方向同士は互いに混ざらない——だから成分ごとに分離できる。</p>
+</blockquote>
+<hr />
+<h2 id="g4_orthogonality-6">6. 魔法の実演 — 名札に値が入りはじめる</h2>
+<p>いよいよ作戦を実行します。\(s_N\) に \(\sin(mt)\) を掛けて、一周積分します。</p>
+<div class="math-block">$$
+\begin{aligned}
+\int_0^{2\pi}s_N(t)\sin(mt)\,dt
+&=\int_0^{2\pi}\frac{a_0}{2}\sin(mt)\,dt\\
+&\quad+\sum_{n=1}^{N}a_n\underbrace{\int\cos(nt)\sin(mt)\,dt}_{=0}
++\sum_{n=1}^{N}b_n\int\sin(nt)\sin(mt)\,dt.
+\end{aligned}
+$$</div>
+<p>一覧表を使って消していくと:</p>
+<ul>
+<li>定数項 \(\frac{a_0}{2}\) … \(\int 1\cdot\sin = 0\) で消える  </li>
+<li>\(a_n\) の項 … \(\sin\times\cos\) は全部 0 で消える  </li>
+<li>\(b_n\) の項 … \(n\neq m\) は 0 で消え、<strong>\(n=m\) だけが残る</strong>  </li>
+</ul>
+<p>残ったのは:</p>
+<div class="math-block">$$
+\int_0^{2\pi}s_N(t)\sin(mt)\,dt=b_m\int_0^{2\pi}\sin^2(mt)\,dt=b_m\,\pi.
+$$</div>
+<p>移項すれば:</p>
+<div class="math-block">$$
+b_m=\frac{1}{\pi}\int_0^{2\pi}s_N(t)\sin(mt)\,dt.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 和の中から、目的の係数 \(b_m\) だけが式に残った。<strong>混ざった波から、目的の波の強さを測る方法が見つかった。</strong></li>
+</ul>
+<p>\(a_m\) も \(a_0\) も同じ手続きで取り出せます——それを整理して公式に仕上げるのが、次章です。</p>
+<hr />
+<h2 id="g4_orthogonality-7">7. 章のまとめ</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>段</th>
+<th>やったこと</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>機械</td>
+<td>加法定理から「積→和・差の平均」を導出</td>
+</tr>
+<tr>
+<td>異周波</td>
+<td>掛けて一周積分すると 0</td>
+</tr>
+<tr>
+<td>同周波 \(\sin\) または \(\cos\)</td>
+<td>二乗積分が \(\pi\)</td>
+</tr>
+<tr>
+<td>\(\sin\times\cos\)</td>
+<td>いつも 0</td>
+</tr>
+<tr>
+<td>実演</td>
+<td>\(s_N\) から \(b_m\) だけを取り出せた</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="g4_orthogonality-8">8. 導出チェック（白紙で）</h2>
+<ol>
+<li>\(\sin\alpha\sin\beta\) の積和公式を、余弦の加法定理二式の引き算から再現せよ。  </li>
+<li>\(m=2,n=3\) で「掛けて一周積分すると 0」を、順を追って書け。  </li>
+<li>\(\sin^2(nt)=\frac{1-\cos(2nt)}{2}\) を導け。  </li>
+<li>\(\int_0^{2\pi}\sin^2(nt)\,dt=\pi\) を最後まで計算せよ。  </li>
+<li>§6 の実演で「\(n\neq m\) の項が消える」箇所すべてに印を付け、何の性質で消えたか書け。  </li>
+</ol>
+<h2 id="g4_orthogonality-9">9. 確認</h2>
+<ol>
+<li>「直交」を、ベクトルの垂直との対応も添えて一文で説明せよ。  </li>
+<li>\(\sin\) と \(\cos\) が同じ番号でも直交する理由を言え。  </li>
+<li>係数の分母に \(\pi\) が現れる理由を、「面積」の言葉で述べよ。  </li>
+<li>（振り返り）G1 で「潰せない」と結論したことが、なぜここで武器になったか一言で。  </li>
+</ol>
+<hr />
+<h2 id="g4_orthogonality-10">10. 次の章への引き</h2>
+<p>魔法の原理は完全に解明しました。<strong>掛けて一周積分——それだけで、混ざった波の中から目的の部品の強さが測れる。</strong></p>
+<p>あとは掃き溜めだけです。\(b_m\) と同じやり方で \(a_m\)、そして底上げの \(a_0\) を取り出し、</p>
+<p><strong>フーリエ級数の完成形</strong>——G0 で見た魔法の数学的宣言——を、あなた自身の手で書き上げます。</p>
+<p>→ <a href="#g5_coefficients">G5. 係数公式を自分の手で導く</a></p>
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g3_area_measure">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g5_coefficients">次へ ›</a></nav>
+</section>
+<section class="chapter" id="g5_coefficients" data-part="G" data-part-name="動機主導" data-code="G5" data-title="係数公式を自分の手で導く" data-bar="G5 · 係数公式を自分の手で導く" data-prev="g4_orthogonality" data-next="g6_complex_rotation">
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g4_orthogonality">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g6_complex_rotation">次へ ›</a></nav>
+<h1 id="g5_coefficients-g5">G5. 係数公式を自分の手で導く — フーリエ級数、完成</h1>
+<blockquote>
+<p><strong>到達:</strong> 直交性から \(a_0,a_n,b_n\) の公式を自分で導出し、方形波の例で係数を積分から最後まで計算できる。G1 で「与えられたもの」として使った係数の<strong>由来が閉じる</strong>。<br />
+<strong>この章で導くこと:</strong> 実数形フーリエ級数の完成公式＋方形波の完全計算。<br />
+<!-- eq-source: v2-C4 / v2-C5 --></p>
+</blockquote>
+<hr />
+<h2 id="g5_coefficients-0">0. 前章からの引き</h2>
+<p>G4 の最後で、魔法は一度だけ実演しました。\(s_N\) に \(\sin(mt)\) を掛けて一周積分すると——\(b_m\) だけが残った。</p>
+<p>あと残っているのは整理です。</p>
+<ol>
+<li>\(b_m\) と同じ手続きで \(a_m\) も取り出す  </li>
+<li>底上げ成分 \(a_0\) も取り出す  </li>
+<li>「なぜ級数では \(a_0/2\) と書くのか」を揃える  </li>
+<li>完成公式を、本物の波（方形波）で試す  </li>
+</ol>
+<p>これが終わると、<strong>G0 の宣言「信号＝波の足し算」が、積分で計算できる技術になります。</strong></p>
+<hr />
+<h2 id="g5_coefficients-1-math31">1. \(b_m\) — 前章の完成</h2>
+<p>まず前章の結論を正式に置きます（\(1\leq m\leq N\)）:</p>
+<div class="math-block">$$
+b_m=\frac{1}{\pi}\int_0^{2\pi}s_N(t)\sin(mt)\,dt.
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「ビーエム イコール ワンパイ カケル、エスエヌにサイン・エムティーを掛けて一周足したもの」  </li>
+<li><strong>よみ:</strong> 掛けて一周足して、\(\pi\) で割る。\(\pi\) は「自分自身との面積」（G4 §4.2）だった。</li>
+</ul>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 168" width="440" height="168" role="img" aria-label="掛けて一周積分すると、欲しい係数だけが残る">
+  <rect width="440" height="168" fill="#fffdf8"/>
+  <text x="16" y="20" font-size="12" fill="#1c1a16">混ざった束から、一本分だけ取り出す</text>
+  <rect x="20" y="40" width="44" height="52" rx="4" fill="#eee8dc" stroke="#bbb"/>
+  <text x="28" y="70" font-size="11" fill="#555">a₀/2</text>
+  <rect x="72" y="40" width="44" height="52" rx="4" fill="#eee8dc" stroke="#bbb"/>
+  <text x="80" y="62" font-size="11" fill="#555">a₁</text>
+  <text x="76" y="78" font-size="10" fill="#888">cos t</text>
+  <rect x="124" y="36" width="52" height="60" rx="4" fill="#c45c26" fill-opacity="0.18" stroke="#c45c26" stroke-width="1.8"/>
+  <text x="134" y="62" font-size="12" fill="#c45c26">b₁</text>
+  <text x="128" y="80" font-size="10" fill="#c45c26">sin t</text>
+  <rect x="184" y="40" width="44" height="52" rx="4" fill="#eee8dc" stroke="#bbb"/>
+  <text x="192" y="62" font-size="11" fill="#555">a₂</text>
+  <text x="186" y="78" font-size="10" fill="#888">cos 2t</text>
+  <rect x="236" y="40" width="44" height="52" rx="4" fill="#eee8dc" stroke="#bbb"/>
+  <text x="244" y="62" font-size="11" fill="#555">b₂</text>
+  <text x="238" y="78" font-size="10" fill="#888">sin 2t</text>
+  <text x="290" y="70" font-size="16" fill="#888">…</text>
+  <path d="M 150 100 L 150 118" stroke="#c45c26" stroke-width="1.6" marker-end="url(#arr)"/>
+  <defs>
+    <marker id="g5_coefficients-arr" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+      <path d="M 0 0 L 8 4 L 0 8 Z" fill="#c45c26"/>
+    </marker>
+  </defs>
+  <text x="162" y="116" font-size="11" fill="#c45c26">× sin t して一周積分</text>
+  <rect x="108" y="128" width="84" height="28" rx="4" fill="#c45c26" fill-opacity="0.16" stroke="#c45c26"/>
+  <text x="118" y="146" font-size="12" fill="#c45c26">b₁ × π だけ残る</text>
+  <text x="220" y="146" font-size="11" fill="#555">ほかは打ち消し（G4）</text>
+</svg>
+<figcaption>欲しい部品を掛けて一周足すと、自分以外は 0。残りを \(\pi\) で割ると係数になる。</figcaption>
+</figure>
+
+<hr />
+<h2 id="g5_coefficients-2-math36">2. \(a_m\) — 同じ作戦をコサインで</h2>
+<p>\(s_N\) の両辺に \(\cos(mt)\) を掛けて、\(0\) から \(2\pi\) まで積分します。</p>
+<div class="math-block">$$
+\begin{aligned}
+\int_0^{2\pi}s_N(t)\cos(mt)\,dt
+&=\underbrace{\int \frac{a_0}{2}\cos(mt)\,dt}_{=0}
++\sum_{n=1}^{N}a_n\underbrace{\int\cos(nt)\cos(mt)\,dt}_{n=m \text{ のみ } \pi}\\
+&\quad+\sum_{n=1}^{N}b_n\underbrace{\int\sin(nt)\cos(mt)\,dt}_{\text{いつも }0}.
+\end{aligned}
+$$</div>
+<p>消える項を G4 の一覧表で確認:</p>
+<ul>
+<li>定数項 … \(\int 1\cdot\cos = 0\)  </li>
+<li>\(b_n\) の項 … \(\sin\times\cos\) は同じ番号でも 0  </li>
+<li>\(a_n\) の項 … \(n=m\) だけ \(\pi\) を残す  </li>
+</ul>
+<p>だから:</p>
+<div class="math-block">$$
+\int_0^{2\pi}s_N(t)\cos(mt)\,dt=a_m\,\pi
+\implies
+a_m=\frac{1}{\pi}\int_0^{2\pi}s_N(t)\cos(mt)\,dt.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> コサインを掛けて一周足してパイで割る。\(b_m\) と<strong>まったく同じ型</strong>です。</li>
+</ul>
+<hr />
+<h2 id="g5_coefficients-3-math48">3. \(a_0\) — 何も掛けずに積分する</h2>
+<p>定数を取り出すには、定数 \(1\) を掛ければいい（＝何も掛けない）。</p>
+<div class="math-block">$$
+\begin{aligned}
+\int_0^{2\pi}s_N(t)\,dt
+&=\frac{a_0}{2}\cdot 2\pi
++\sum_{n=1}^{N}a_n\underbrace{\int\cos(nt)\,dt}_{=0}\\
+&\quad+\sum_{n=1}^{N}b_n\underbrace{\int\sin(nt)\,dt}_{=0}
+=a_0\,\pi.
+\end{aligned}
+$$</div>
+<div class="math-block">$$
+a_0=\frac{1}{\pi}\int_0^{2\pi}s_N(t)\,dt.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 振動部品は一周で打ち消すから、残るのは底上げだけ。「一周の平均」は \(\dfrac{1}{2\pi}\int s_N=\dfrac{a_0}{2}\)、つまり \(a_0\) は「<strong>平均の 2 倍</strong>」。</li>
+</ul>
+<h3 id="g5_coefficients-math52">なぜ級数では \(a_0/2\) と書くのか</h3>
+<p>ここで小さな疑問が生まれます。なぜ本体側で半分にしておくのか？</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>書き方</th>
+<th>取り出し公式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>定数を「ただの \(a_0\)」と書く</td>
+<td>\(a_0=\dfrac{1}{2\pi}\int s_N\) —— \(n\geq 1\) の \(\dfrac{1}{\pi}\) と<strong>ずれる</strong></td>
+</tr>
+<tr>
+<td>定数を「\(a_0/2\)」と書く</td>
+<td>\(a_0=\dfrac{1}{\pi}\int s_N\) —— <strong>すべての係数が同じ型</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>観察してみましょう。定数関数 1 は \(\cos(0\cdot t)=1\) と見えます。すると三つの公式はどれも</p>
+<div class="math-block">$$
+(\text{係数})=\frac{1}{\pi}\int_0^{2\pi}s_N(t)\times(\text{その部品})\,dt
+$$</div>
+<p>という<strong>一つの型</strong>に統一されます。半分に書いておくのは暗記のためではなく、<strong>公式を一本に揃えるため</strong>なのです。</p>
+<hr />
+<h2 id="g5_coefficients-4-math60">4. 本体へ — もとの信号 \(f\) への読み替え</h2>
+<p>いままで取り出しの練習台だったのは近似 \(s_N\) でした。<br />
+周期 \(2\pi\) の信号 \(f\) が無限の部品で表されるとき（収束の細部は後回しでよい）、</p>
+<div class="math-block">$$
+f(t)
+=
+\frac{a_0}{2}
++\sum_{n=1}^{\infty}\bigl(a_n\cos(nt)+b_n\sin(nt)\bigr),
+$$</div>
+<p>係数は \(s_N\) を \(f\) に替えるだけで出ます:</p>
+<div class="math-block">$$
+\begin{align*}
+a_0&=\frac{1}{\pi}\int_0^{2\pi}f(t)\,dt,\\[4pt]
+a_n&=\frac{1}{\pi}\int_0^{2\pi}f(t)\cos(nt)\,dt
+&& (n\geq 1),\\[4pt]
+b_n&=\frac{1}{\pi}\int_0^{2\pi}f(t)\sin(nt)\,dt
+&& (n\geq 1).
+\end{align*}
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「ワンパイ カケル、エフに部品を掛けて一周足したもの」  </li>
+<li><strong>よみ:</strong> <strong>もとの波形に、取りたい部品を掛けて一周足し、パイで割る。</strong> それが全部です。</li>
+</ul>
+<h3 id="g5_coefficients-_1">小さな検算 — 公式が逆操作になっているか</h3>
+<p>G1 で「与えられたもの」として使った \(s_1(t)=\dfrac{4}{\pi}\sin t\)。この \(b_1\) を新しい公式で求め直します:</p>
+<div class="math-block">$$
+b_1
+=\frac{1}{\pi}\int_0^{2\pi}\frac{4}{\pi}\sin t\cdot\sin t\,dt
+=\frac{4}{\pi^2}\int_0^{2\pi}\sin^2 t\,dt.
+$$</div>
+<p>さらに $\int_0^{2\pi}\sin^2 t\,dt=\pi$ を代入:</p>
+<div class="math-block">$$
+b_1=\frac{4}{\pi^2}\cdot\pi=\frac{4}{\pi}.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 公式に入れたら、もとの値が戻ってきた。取り出しが正しく逆向きの操作になっている確認です。</li>
+</ul>
+<hr />
+<h2 id="g5_coefficients-5">5. 完成！　実数形フーリエ級数</h2>
+<p>道具が全部揃いました。完成形を掲げます。</p>
+<div class="math-block">$$
+f(t)
+\sim
+\frac{a_0}{2}
++\sum_{n=1}^{\infty}\bigl(a_n\cos(nt)+b_n\sin(nt)\bigr),
+$$</div>
+<div class="math-block">$$
+\begin{aligned}
+a_0&=\frac{1}{\pi}\int_0^{2\pi}f(t)\,dt,\\
+a_n&=\frac{1}{\pi}\int f\cos(nt)\,dt,\quad
+b_n=\frac{1}{\pi}\int f\sin(nt)\,dt.
+\end{aligned}
+$$</div>
+<p>（記号 \(\sim\) は「級数として対応する」。連続な点では等号と思ってよい、と当面は扱います。）</p>
+<p><strong>G0 の「信号＝単純な波の足し算」が、積分ひとつで部品ごとの強さを測れる技術になりました。</strong></p>
+<p>でもまだ終わりません。公式が本当に動くところを、自分の手で見ます。</p>
+<hr />
+<h2 id="g5_coefficients-6">6. 実戦 — 方形波を分解する</h2>
+<h3 id="g5_coefficients-_2">例の設定</h3>
+<p>値が \(\pm1\) だけの方形波（半周 \(+1\)、次の半周 \(-1\)、くり返し）。切り替え点の一两点の値は積分に影響しないので気にしません。</p>
+<div class="math-block">$$
+f(t)=
+\begin{cases}
+\phantom{-}1 & 0<t<\pi,\\
+-1 & \pi<t<2\pi.
+\end{cases}
+$$</div>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 170" width="440" height="170" role="img" aria-label="方形波は半周プラス1、次の半周マイナス1">
+  <rect width="440" height="170" fill="#fffdf8"/>
+  <text x="16" y="20" font-size="12" fill="#1c1a16">方形波 f(t) — 半周 +1、半周 −1</text>
+  <line x1="40" y1="90" x2="400" y2="90" stroke="#bbb" stroke-width="1"/>
+  <line x1="40" y1="28" x2="40" y2="152" stroke="#bbb" stroke-width="1"/>
+  <path d="M 40 90 L 40 44 L 210 44 L 210 136 L 380 136 L 380 90" fill="none" stroke="#c45c26" stroke-width="2.4"/>
+  <rect x="40" y="44" width="170" height="46" fill="#2c5f4a" fill-opacity="0.12"/>
+  <rect x="210" y="90" width="170" height="46" fill="#c45c26" fill-opacity="0.12"/>
+  <text x="108" y="72" font-size="13" fill="#2c5f4a">+1</text>
+  <text x="278" y="118" font-size="13" fill="#c45c26">−1</text>
+  <text x="36" y="162" font-size="11" fill="#555">0</text>
+  <text x="204" y="162" font-size="11" fill="#555">π</text>
+  <text x="368" y="162" font-size="11" fill="#555">2π</text>
+  <text x="48" y="38" font-size="11" fill="#888">このあと同じ形がくり返す</text>
+</svg>
+<figcaption>値が \(\pm 1\) だけなので、積分は区間を二つに切るだけ。</figcaption>
+</figure>
+
+<h3 id="g5_coefficients-math73">\(a_0\) — 上と下は打ち消す</h3>
+<p>区間の分割（G3）で二つに切ります:</p>
+<div class="math-block">$$
+a_0
+=\frac{1}{\pi}\left(
+\int_0^{\pi}1\,dt+\int_{\pi}^{2\pi}(-1)\,dt
+\right)
+=\frac{1}{\pi}\bigl(\pi-\pi\bigr)=0.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 上半分と下半分の面積が同じ。底上げなし。</li>
+</ul>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 150" width="440" height="150" role="img" aria-label="方形波の上半分と下半分の面積が打ち消してエーゼロはゼロ">
+  <rect width="440" height="150" fill="#fffdf8"/>
+  <text x="16" y="18" font-size="12" fill="#1c1a16">a₀：上の面積と下の面積が同じ</text>
+  <line x1="40" y1="78" x2="400" y2="78" stroke="#bbb" stroke-width="1"/>
+  <rect x="40" y="36" width="170" height="42" fill="#2c5f4a" fill-opacity="0.28" stroke="#2c5f4a"/>
+  <rect x="210" y="78" width="170" height="42" fill="#c45c26" fill-opacity="0.28" stroke="#c45c26"/>
+  <text x="104" y="62" font-size="13" fill="#2c5f4a">+π</text>
+  <text x="274" y="104" font-size="13" fill="#c45c26">−π</text>
+  <text x="36" y="136" font-size="11" fill="#555">0</text>
+  <text x="204" y="136" font-size="11" fill="#555">π</text>
+  <text x="368" y="136" font-size="11" fill="#555">2π</text>
+  <text x="300" y="28" font-size="12" fill="#555">足すと 0 → a₀ = 0</text>
+</svg>
+<figcaption>\(a_0\) は「一周の合計」。プラス半周とマイナス半周が同じ量なので 0。</figcaption>
+</figure>
+
+<h3 id="g5_coefficients-math75">\(a_n\) — コサインは混ざらない</h3>
+<div class="math-block">$$
+a_n
+=\frac{1}{\pi}\left(
+\int_0^{\pi}\cos(nt)\,dt
+-\int_{\pi}^{2\pi}\cos(nt)\,dt
+\right).
+$$</div>
+<p>原始関数は \(\dfrac{\sin(nt)}{n}\)。端点は \(\sin(n\pi)=\sin(2\pi n)=0\)（\(n\) 整数）なので両方の積分が 0:</p>
+<div class="math-block">$$
+a_n=0
+\quad(n\geq 1).
+$$</div>
+<ul>
+<li><strong>よみ:</strong> この上下対称な波には、コサイン部品が一つも混ざらない。</li>
+</ul>
+<h3 id="g5_coefficients-math79">\(b_n\) — サインだけが残る</h3>
+<div class="math-block">$$
+b_n
+=\frac{1}{\pi}\left(
+\int_0^{\pi}\sin(nt)\,dt
+-\int_{\pi}^{2\pi}\sin(nt)\,dt
+\right).
+$$</div>
+<p>原始関数は \(-\dfrac{\cos(nt)}{n}\)。各区間を計算すると:</p>
+<div class="math-block">$$
+\int_0^{\pi}\sin(nt)\,dt
+=\Bigl[-\frac{\cos(nt)}{n}\Bigr]_0^{\pi}
+=\frac{1-\cos(n\pi)}{n},
+$$</div>
+<div class="math-block">$$
+\int_{\pi}^{2\pi}\sin(nt)\,dt
+=\Bigl[-\frac{\cos(nt)}{n}\Bigr]_{\pi}^{2\pi}
+=\frac{-1+\cos(n\pi)}{n}.
+$$</div>
+<p>代入してまとめる:</p>
+<div class="math-block">$$
+b_n
+=\frac{1}{\pi}\cdot\frac{2\bigl(1-\cos(n\pi)\bigr)}{n}.
+$$</div>
+<p>あとは \(\cos(n\pi)\) の場合分けだけです:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>\(n\)</th>
+<th>\(\cos(n\pi)\)</th>
+<th>\(b_n\)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>偶数</td>
+<td>\(1\)</td>
+<td>\(0\)</td>
+</tr>
+<tr>
+<td>奇数</td>
+<td>\(-1\)</td>
+<td>\(\dfrac{2\times 2}{n\pi}=\dfrac{4}{n\pi}\)</td>
+</tr>
+</tbody>
+</table></div>
+<div class="math-block">$$
+b_n=
+\begin{cases}
+\dfrac{4}{n\pi} & n\text{ が奇数},\\[6pt]
+0 & n\text{ が偶数}.
+\end{cases}
+$$</div>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 150" width="440" height="150" role="img" aria-label="偶数番号のビーはゼロ、奇数番号だけ残る">
+  <rect width="440" height="150" fill="#fffdf8"/>
+  <text x="16" y="20" font-size="12" fill="#1c1a16">残る部品は、奇数倍のサインだけ</text>
+  <rect x="16" y="36" width="52" height="70" rx="4" fill="#eee8dc" stroke="#ccc"/>
+  <text x="28" y="58" font-size="11" fill="#888">b₁</text>
+  <text x="22" y="78" font-size="12" fill="#c45c26">4/π</text>
+  <text x="24" y="96" font-size="10" fill="#888">奇数</text>
+  <rect x="76" y="36" width="52" height="70" rx="4" fill="#f3f1ea" stroke="#ddd"/>
+  <text x="88" y="58" font-size="11" fill="#aaa">b₂</text>
+  <text x="94" y="80" font-size="14" fill="#aaa">0</text>
+  <rect x="136" y="36" width="52" height="70" rx="4" fill="#eee8dc" stroke="#ccc"/>
+  <text x="148" y="58" font-size="11" fill="#888">b₃</text>
+  <text x="140" y="78" font-size="12" fill="#c45c26">4/(3π)</text>
+  <text x="144" y="96" font-size="10" fill="#888">奇数</text>
+  <rect x="196" y="36" width="52" height="70" rx="4" fill="#f3f1ea" stroke="#ddd"/>
+  <text x="208" y="58" font-size="11" fill="#aaa">b₄</text>
+  <text x="214" y="80" font-size="14" fill="#aaa">0</text>
+  <rect x="256" y="36" width="52" height="70" rx="4" fill="#eee8dc" stroke="#ccc"/>
+  <text x="268" y="58" font-size="11" fill="#888">b₅</text>
+  <text x="260" y="78" font-size="12" fill="#c45c26">4/(5π)</text>
+  <text x="264" y="96" font-size="10" fill="#888">奇数</text>
+  <text x="318" y="76" font-size="16" fill="#888">…</text>
+  <text x="16" y="132" font-size="11" fill="#555">a₀ も aₙ も 0。級数はサインの奇数倍だけになる。</text>
+</svg>
+<figcaption>偶数番は計算すると消える。強さは番号 \(n\) で割られるので、高い倍音ほど小さい。</figcaption>
+</figure>
+
+<h3 id="g5_coefficients-_3">級数の完成形</h3>
+<div class="math-block">$$
+f(t)
+=
+\frac{4}{\pi}\left(
+\sin t+\frac{1}{3}\sin(3t)+\frac{1}{5}\sin(5t)+\cdots
+\right).
+$$</div>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 170" width="440" height="170" role="img" aria-label="方形波に部分和を重ねると、段差に近づく">
+  <rect width="440" height="170" fill="#fffdf8"/>
+  <text x="16" y="18" font-size="12" fill="#1c1a16">いま出した級数を、もとの方形波に重ねる</text>
+  <line x1="40" y1="90" x2="400" y2="90" stroke="#ddd" stroke-width="1"/>
+  <path d="M 40 90 L 40 54 L 220 54 L 220 126 L 400 126 L 400 90" fill="none" stroke="#bbb" stroke-width="1.6"/>
+  <path d="M 40.0 90.0 L 49.0 69.4 L 58.0 54.3 L 67.0 47.6 L 76.0 48.5 L 85.0 53.3 L 94.0 57.4 L 103.0 58.0 L 112.0 55.4 L 121.0 51.9 L 130.0 50.3 L 139.0 51.9 L 148.0 55.4 L 157.0 58.0 L 166.0 57.4 L 175.0 53.3 L 184.0 48.5 L 193.0 47.6 L 202.0 54.3 L 211.0 69.4 L 220.0 90.0 L 229.0 110.6 L 238.0 125.7 L 247.0 132.4 L 256.0 131.5 L 265.0 126.7 L 274.0 122.6 L 283.0 122.0 L 292.0 124.6 L 301.0 128.1 L 310.0 129.7 L 319.0 128.1 L 328.0 124.6 L 337.0 122.0 L 346.0 122.6 L 355.0 126.7 L 364.0 131.5 L 373.0 132.4 L 382.0 125.7 L 391.0 110.6 L 400.0 90.0" fill="none" stroke="#c45c26" stroke-width="2"/>
+  <text x="36" y="156" font-size="11" fill="#555">0</text>
+  <text x="212" y="156" font-size="11" fill="#555">π</text>
+  <text x="384" y="156" font-size="11" fill="#555">2π</text>
+  <text x="300" y="36" font-size="11" fill="#888">薄い線＝方形波</text>
+  <text x="300" y="52" font-size="11" fill="#c45c26">太い線＝s₅</text>
+</svg>
+<figcaption>G1 で「与えられたもの」として眺めた曲線が、いまは自分で導いた係数から出ている。</figcaption>
+</figure>
+
+<blockquote>
+<p>🔬 <strong>Living Figure:</strong> <a href="https://ogaogamirai.github.io/public/2d-commons/viewer.html?model=fourier-partials">足すほど段差になる — フーリエ部分和</a>　（いま導いた係数の足し算を、\(N\) を変えながら眺め直してみてください）</p>
+</blockquote>
+<p><strong>G1 の思い出:</strong> あのとき \(b_n=\frac{4}{n\pi}\) は「与えられた混ざり方」でした。いまは、積分三つで<strong>あなた自身の手が導いた</strong>ものです。</p>
+<h3 id="g5_coefficients-_4">一点での検算</h3>
+<p>連続区間の代表点 \(t=\pi/2\)（そこでは \(f=1\)）で級数を見ると:</p>
+<div class="math-block">$$
+\frac{4}{\pi}\left(1-\frac{1}{3}+\frac{1}{5}-\frac{1}{7}+\cdots\right).
+$$</div>
+<p>括弧内は有名な交代和で \(\pi/4\) に向かいます（証明は必須にしない）。向かう先は \(\dfrac{4}{\pi}\cdot\dfrac{\pi}{4}=1\)——もとの値に戻ります。</p>
+<hr />
+<h2 id="g5_coefficients-7">7. 章のまとめ</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>係数</th>
+<th>公式</th>
+<th>掛けたもの</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\(a_0\)</td>
+<td>\(\dfrac{1}{\pi}\int_0^{2\pi}f\,dt\)</td>
+<td>\(1\)</td>
+</tr>
+<tr>
+<td>\(a_n\)</td>
+<td>\(\dfrac{1}{\pi}\int_0^{2\pi}f\cos(nt)\,dt\)</td>
+<td>\(\cos(nt)\)</td>
+</tr>
+<tr>
+<td>\(b_n\)</td>
+<td>\(\dfrac{1}{\pi}\int_0^{2\pi}f\sin(nt)\,dt\)</td>
+<td>\(\sin(nt)\)</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>級数本体は定数を \(a_0/2\) と書く（公式を一本に揃えるため）  </li>
+<li>方形波: \(a_0=a_n=0\)、奇数 \(n\) のみ \(b_n=4/(n\pi)\)  </li>
+<li><strong>実数の \(\sin,\cos\) だけで、分解の道はここまで完走しました</strong></li>
+</ul>
+<h2 id="g5_coefficients-8">8. 導出チェック（白紙で）</h2>
+<ol>
+<li>\(a_m\) の取り出しを、直交関係の引用つきで再現せよ。  </li>
+<li>\(a_0\) が「一周平均の 2 倍」になる理由を言え。  </li>
+<li>\(a_0/2\) 表記の利点を一文で述べよ。  </li>
+<li>方形波の \(b_n\) 計算を、原始関数の代入から場合分けまで通して書け。  </li>
+</ol>
+<h2 id="g5_coefficients-9">9. 確認</h2>
+<ol>
+<li>完成公式（級数＋係数三つ）を何も見ずに書け。  </li>
+<li>\(a_2\) を求める手順を、言葉だけで（何を掛け、どこまで足し、何で割るか）述べよ。  </li>
+<li>方形波にコサインが混ざらない理由を、波形の対称性で一言考察せよ。  </li>
+<li>（振り返り）G0 の宣言が、この章でどんな「技術」になったか一文で。  </li>
+</ol>
+<hr />
+<h2 id="g5_coefficients-10">10. 次の章への引き</h2>
+<p>ここまでの道のりを振り返ってください。</p>
+<ul>
+<li>部品: 円の影（G2）  </li>
+<li>文法: 足し算（G1）  </li>
+<li>測り方: 面積（G3）  </li>
+<li>分離: 直交（G4）  </li>
+<li>完成: 係数公式（G5）  </li>
+</ul>
+<p><strong>実数だけで、ここまで来ました。</strong></p>
+<p>でも、少し不格好なところがあります。部品が \(\sin\) と \(\cos\) の<strong>ペア</strong>で、式がどうしても縦長になる。そして「回転」という円の本質を、実数の世界では横に抱えているだけです。</p>
+<p>複素数を使えば、<strong>回転そのものを一文字 \(e^{i\theta}\) で書ける</strong>——そうなると級数は劇的に引き締まり、そして「有限から無限への橋」（フーリエ変換）が見えてきます。</p>
+<p>→ <a href="#g6_complex_rotation">G6. e^{iθ} — 回転を一文字で書く</a></p>
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g4_orthogonality">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g6_complex_rotation">次へ ›</a></nav>
+</section>
+<section class="chapter" id="g6_complex_rotation" data-part="G" data-part-name="動機主導" data-code="G6" data-title="e^{iθ}" data-bar="G6 · e^{iθ}" data-prev="g5_coefficients" data-next="g7_bridge_transform">
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g5_coefficients">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g7_bridge_transform">次へ ›</a></nav>
+<h1 id="g6_complex_rotation-g6-ei">G6. e^{iθ} — 回転を一文字で書く</h1>
+<blockquote>
+<p><strong>到達:</strong> \(a+bi\) の四則ができ、極形式で<strong>掛け算＝拡大と回転</strong>を加法定理から導出できる。\(e^{i\theta}=\cos\theta+i\sin\theta\)（オイラーの公式）を微分の一意性から導出し、回転の合成を指数の積として使える。<br />
+<strong>この章で導くこと:</strong> 複素数の最小セット＋オイラーの公式。<br />
+<!-- eq-source: v2-D0 / v2-D1 --></p>
+</blockquote>
+<hr />
+<h2 id="g6_complex_rotation-0">0. 前章からの引き — 実数だけの不格好さ</h2>
+<p>G5 でフーリエ級数は完成しました。でも、もう一度式を見てください。</p>
+<div class="math-block">$$
+f(t)=\frac{a_0}{2}+\sum_{n=1}^{\infty}\bigl(a_n\cos(nt)+b_n\sin(nt)\bigr)
+$$</div>
+<p>部品が <strong>\(\sin\) と \(\cos\) のペア</strong>です。一つの周波数 \(n\) を表すのに、係数が二つ、関数も二つ。G2 では「縦と横の影は同じ円の見方の違い」と言いました——ならば、円をまるごと一つの数にまとめられないのか？</p>
+<p>この章で立てる問いはこうです。</p>
+<blockquote>
+<p><strong>「角を足す」ことを、「掛け算」で書けないか？</strong></p>
+</blockquote>
+<p>答えは <strong>はい</strong> です。しかもその鍵は、数学で最も美しい公式の一つにたどり着きます。</p>
+<hr />
+<h2 id="g6_complex_rotation-1-math43">1. 新しい数 — \(i\) と複素数</h2>
+<p>実数の世界には、二乗して \(-1\) になる数はありません。そこで新しい記号を導入し、ルールを<strong>ひとつだけ</strong>置きます。</p>
+<div class="math-block">$$
+i^2=-1.
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「アイの二乗はマイナスいち」</li>
+</ul>
+<p>これを使って、実数 \(a,b\) で次の形の数を作ります:</p>
+<div class="math-block">$$
+z=a+bi.
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「エー足すビーアイ」  </li>
+<li>\(a\) を <strong>実部</strong>、\(b\) を <strong>虚部</strong> と呼ぶ。</li>
+</ul>
+<h3 id="g6_complex_rotation-_1">平面の点として読む</h3>
+<p>\(z=a+bi\) を、座標平面の点 \((a,b)\) だと思ってください。横が実部、縦が虚部。</p>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240" width="360" height="240" role="img" aria-label="複素数は平面の点。横が実部、縦が虚部">
+  <rect width="360" height="240" fill="#fffdf8"/>
+  <text x="16" y="20" font-size="12" fill="#1c1a16">z = a + bi は、点 (a, b)</text>
+  <line x1="40" y1="150" x2="330" y2="150" stroke="#bbb" stroke-width="1"/>
+  <line x1="80" y1="28" x2="80" y2="220" stroke="#bbb" stroke-width="1"/>
+  <line x1="80" y1="150" x2="230" y2="70" stroke="#c45c26" stroke-width="2"/>
+  <circle cx="230" cy="70" r="5" fill="#c45c26"/>
+  <line x1="230" y1="70" x2="230" y2="150" stroke="#2a6fad" stroke-dasharray="4 3" stroke-width="1.2"/>
+  <line x1="80" y1="150" x2="230" y2="150" stroke="#2c5f4a" stroke-width="2"/>
+  <text x="140" y="168" font-size="12" fill="#2c5f4a">a（実部・横）</text>
+  <text x="238" y="118" font-size="12" fill="#2a6fad">b（虚部・縦）</text>
+  <text x="236" y="62" font-size="13" fill="#c45c26">z</text>
+  <text x="118" y="100" font-size="12" fill="#555">r = |z|</text>
+  <path d="M110 150 A 30 30 0 0 0 104 128" fill="none" stroke="#888" stroke-width="1.2"/>
+  <text x="118" y="138" font-size="12" fill="#555">θ</text>
+  <text x="310" y="166" font-size="11" fill="#888">Re</text>
+  <text x="56" y="36" font-size="11" fill="#888">Im</text>
+</svg>
+<figcaption>横が実部、縦が虚部。原点からの長さが \(|z|\)、実軸からの角が偏角。</figcaption>
+</figure>
+
+<p>原点からの距離は三平方で:</p>
+<div class="math-block">$$
+|z|=|a+bi|=\sqrt{a^2+b^2}.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> ゼットの絶対値 ＝ 原点からの長さ。</li>
+</ul>
+<h3 id="g6_complex_rotation-math51-math52">\(i\) を掛けるたび、\(90^\circ\) 回る</h3>
+<p>\(i^2=-1\) というたった一つのルールが、単位円上の回転を生みます。</p>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240" width="360" height="240" role="img" aria-label="アイを掛けるたびに単位円を90度ずつ回る">
+  <rect width="360" height="240" fill="#fffdf8"/>
+  <text x="16" y="20" font-size="12" fill="#1c1a16">i を掛けるたびに、90° ずつ回る</text>
+  <line x1="30" y1="130" x2="250" y2="130" stroke="#ddd" stroke-width="1"/>
+  <line x1="140" y1="28" x2="140" y2="220" stroke="#ddd" stroke-width="1"/>
+  <circle cx="140" cy="130" r="70" fill="none" stroke="#ccc" stroke-width="1.4"/>
+  <circle cx="210" cy="130" r="5" fill="#2c5f4a"/>
+  <text x="218" y="128" font-size="12" fill="#2c5f4a">1</text>
+  <circle cx="140" cy="60" r="5" fill="#2a6fad"/>
+  <text x="148" y="54" font-size="12" fill="#2a6fad">i</text>
+  <circle cx="70" cy="130" r="5" fill="#c45c26"/>
+  <text x="28" y="128" font-size="12" fill="#c45c26">−1</text>
+  <circle cx="140" cy="200" r="5" fill="#555"/>
+  <text x="148" y="214" font-size="12" fill="#555">−i</text>
+  <path d="M200 100 A 50 50 0 0 0 170 80" fill="none" stroke="#c45c26" stroke-width="1.4"/>
+  <path d="M110 80 A 50 50 0 0 0 90 110" fill="none" stroke="#c45c26" stroke-width="1.4"/>
+  <path d="M90 150 A 50 50 0 0 0 120 180" fill="none" stroke="#c45c26" stroke-width="1.4"/>
+  <path d="M170 180 A 50 50 0 0 0 200 150" fill="none" stroke="#c45c26" stroke-width="1.4"/>
+  <text x="260" y="70" font-size="12" fill="#1c1a16">i¹ = i</text>
+  <text x="260" y="92" font-size="12" fill="#1c1a16">i² = −1</text>
+  <text x="260" y="114" font-size="12" fill="#1c1a16">i³ = −i</text>
+  <text x="260" y="136" font-size="12" fill="#1c1a16">i⁴ = 1</text>
+</svg>
+<figcaption>掛けるたびに反時計まわりへ四分の一円。一周すると 1 に戻る。</figcaption>
+</figure>
+
+<hr />
+<h2 id="g6_complex_rotation-2-math54">2. 四則 — ルールは「展開＋\(i^2=-1\)」だけ</h2>
+<h3 id="g6_complex_rotation-_2">たし算・ひき算</h3>
+<p>実部どうし・虚部どうし:</p>
+<div class="math-block">$$
+(a+bi)+(c+di)=(a+c)+(b+d)i.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 平面では矢印（ベクトル）を足すのと同じ。</li>
+</ul>
+<h3 id="g6_complex_rotation-_3">かけ算</h3>
+<p>普通の括弧展開をして、\(i^2=-1\) だけ使います:</p>
+<div class="math-block">$$
+\begin{align*}
+(a+bi)(c+di)
+&=ac+adi+bci+bd\underbrace{i^2}_{=-1}\\
+&=(ac-bd)+(ad+bc)i.
+\end{align*}
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 実部は「実×実 − 虚×虚」、虚部は「実×虚＋虚×実」。  </li>
+</ul>
+<p>例: \((1+i)(1+i)=1+2i+i^2=2i\)。</p>
+<h3 id="g6_complex_rotation-_4">共役とわり算</h3>
+<p>虚部の符号だけ反転したものを<strong>共役</strong>といいます: \(\overline{a+bi}=a-bi\)。<br />
+共役を掛けると虚部が消えます:</p>
+<div class="math-block">$$
+(a+bi)(a-bi)=a^2+b^2=|z|^2.
+$$</div>
+<p>わり算は、分母に共役を掛けて分母を実数化するだけ:</p>
+<div class="math-block">$$
+\frac{a+bi}{c+di}
+=\frac{(a+bi)(c-di)}{(c+di)(c-di)}
+=\frac{(a+bi)(c-di)}{c^2+d^2}.
+$$</div>
+<p>これで足し引き掛け割れる。\(\mathbb{R}^2\) の平面が、四則のそろった「数の世界」になりました。</p>
+<hr />
+<h2 id="g6_complex_rotation-3">3. 極形式 — 「距離と角」で書く</h2>
+<p>点を「横・縦」ではなく「距離・角」で書きます。\(r=|z|\)、そして</p>
+<div class="math-block">$$
+\cos\theta=\frac{a}{r},
+\qquad
+\sin\theta=\frac{b}{r}
+$$</div>
+<p>となる角 \(\theta\) を取れば:</p>
+<div class="math-block">$$
+z=a+bi=r\cos\theta+i\,r\sin\theta=r(\cos\theta+i\sin\theta).
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「アール カケル コサインシータ プラス アイ サインシータ」  </li>
+<li><strong>よみ:</strong> 「長さ \(r\) だけ進んだ方向 \(\theta\)」の点。</li>
+</ul>
+<p>\(r=1\) なら、単位円上の点 \((\cos\theta,\sin\theta)\) に \(i\) を付けたものそのもの——<strong>G2 の絵がそのまま使えます</strong>。</p>
+<hr />
+<h2 id="g6_complex_rotation-4">4. 掛け算＝拡大と回転</h2>
+<h3 id="g6_complex_rotation-_5">主張</h3>
+<div class="math-block">$$
+\begin{align*}
+&r_1(\cos\theta_1+i\sin\theta_1)
+\cdot
+r_2(\cos\theta_2+i\sin\theta_2)\\
+&=
+r_1 r_2\Bigl(\cos(\theta_1+\theta_2)+i\sin(\theta_1+\theta_2)\Bigr).
+\end{align*}
+$$</div>
+<ul>
+<li><strong>読み:</strong> 長さは掛け算、角はたし算。  </li>
+<li><strong>つまり: 掛けることは、伸ばすことと、回すこと。</strong></li>
+</ul>
+<h3 id="g6_complex_rotation-_6">導出 — 加法定理がここで効く</h3>
+<p>左辺を展開します:</p>
+<div class="math-block">$$
+\begin{align*}
+&(r_1\cos\theta_1+i r_1\sin\theta_1)(r_2\cos\theta_2+i r_2\sin\theta_2)\\
+&=r_1 r_2\Bigl(
+\underbrace{\cos\theta_1\cos\theta_2-\sin\theta_1\sin\theta_2}_{=\,\cos(\theta_1+\theta_2)}
++i\underbrace{(\cos\theta_1\sin\theta_2+\sin\theta_1\cos\theta_2)}_{=\,\sin(\theta_1+\theta_2)}
+\Bigr),
+\end{align*}
+$$</div>
+<p>括弧の中身は、まさに G1・G4 で何度も使った<strong>加法定理</strong>そのものでした:</p>
+<div class="math-block">$$
+\cos(\theta_1+\theta_2)=\cos\theta_1\cos\theta_2-\sin\theta_1\sin\theta_2,
+$$</div>
+<div class="math-block">$$
+\sin(\theta_1+\theta_2)=\sin\theta_1\cos\theta_2+\cos\theta_1\sin\theta_2.
+$$</div>
+<p>これで主張が出ました。<strong>G4 で「積を和に直す機械」として使った加法定理が、ここでは「掛け算を回転に翻訳する機械」として戻ってくる</strong>のです。</p>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 230" width="400" height="230" role="img" aria-label="二つの複素数を掛けると長さは積、角は和">
+  <rect width="400" height="230" fill="#fffdf8"/>
+  <text x="16" y="18" font-size="12" fill="#1c1a16">掛ける ＝ 長さは積、角は和</text>
+  <line x1="30" y1="170" x2="280" y2="170" stroke="#ddd" stroke-width="1"/>
+  <line x1="80" y1="28" x2="80" y2="210" stroke="#ddd" stroke-width="1"/>
+  <line x1="80" y1="170" x2="190" y2="130" stroke="#2a6fad" stroke-width="2"/>
+  <circle cx="190" cy="130" r="4" fill="#2a6fad"/>
+  <text x="196" y="126" font-size="12" fill="#2a6fad">z₁（角 θ₁）</text>
+  <line x1="80" y1="170" x2="150" y2="90" stroke="#2c5f4a" stroke-width="2"/>
+  <circle cx="150" cy="90" r="4" fill="#2c5f4a"/>
+  <text x="70" y="78" font-size="12" fill="#2c5f4a">z₂（角 θ₂）</text>
+  <line x1="80" y1="170" x2="230" y2="48" stroke="#c45c26" stroke-width="2.4"/>
+  <circle cx="230" cy="48" r="5" fill="#c45c26"/>
+  <text x="238" y="46" font-size="12" fill="#c45c26">z₁z₂（角 θ₁+θ₂）</text>
+  <path d="M115 170 A 35 35 0 0 0 112 152" fill="none" stroke="#2a6fad" stroke-width="1.2"/>
+  <path d="M118 170 A 38 38 0 0 0 108 138" fill="none" stroke="#2c5f4a" stroke-width="1.2"/>
+  <path d="M122 170 A 42 42 0 0 0 104 122" fill="none" stroke="#c45c26" stroke-width="1.3"/>
+  <text x="290" y="100" font-size="12" fill="#555">長さ r₁r₂</text>
+  <text x="290" y="120" font-size="12" fill="#555">向きは足した角</text>
+</svg>
+<figcaption>新しい矢印の長さは元の長さの積、向きは元の角の和。</figcaption>
+</figure>
+
+<h3 id="g6_complex_rotation-math66-math67">検算 — \(i\) を掛けると \(90^\circ\)</h3>
+<p>\(i=\cos\frac{\pi}{2}+i\sin\frac{\pi}{2}\) なので、\(i\) を掛ける＝\(90^\circ\) 回す。<br />
+座標でも確認できます: \((a+bi)\cdot i=ai+bi^2=-b+ai\)。点 \((a,b)\to(-b,a)\)。確かに \(90^\circ\) 回転です。</p>
+<h3 id="g6_complex_rotation-_7">単位円上なら「回転のみ」</h3>
+<p>\(r_1=r_2=1\) だと長さは変わらず:</p>
+<div class="math-block">$$
+(\cos\theta_1+i\sin\theta_1)(\cos\theta_2+i\sin\theta_2)
+=\cos(\theta_1+\theta_2)+i\sin(\theta_1+\theta_2).
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 単位の複素数を掛けることは、<strong>その角だけ回すこと</strong>。</li>
+</ul>
+<hr />
+<h2 id="g6_complex_rotation-5">5. 問いの答えが近づく — しかし記法が重い</h2>
+<p>問い「角を足すことを掛け算で書けないか」には、もう答えられています:</p>
+<div class="math-block">$$
+\begin{aligned}
+&\text{角の和 } \theta_1+\theta_2\\
+&\quad\Longleftrightarrow\quad
+(\cos\theta_1+i\sin\theta_1)\times(\cos\theta_2+i\sin\theta_2)
+\end{aligned}
+$$</div>
+<p>ただし、まだ不満が残ります。\(\cos\theta+i\sin\theta\) は<strong>毎回二文字ぶんの式</strong>です。</p>
+<p>一方、実数の世界にはこんな性質がありました:</p>
+<blockquote>
+<p>🪜 <strong>足場を渡す:</strong> 指数関数 \(e^x\)（イーのエックス エックス乗）<br />
+$$
+> e^x:=\sum_{n=0}^{\infty}\frac{x^n}{n!}=1+x+\frac{x^2}{2!}+\cdots,
+> \qquad
+> (e^x)'=e^x,
+> \qquad
+> e^{x+y}=e^x e^y.
+> $$<br />
+（級数定義から項ごとに微分すると \((e^x)'=e^x\)、そこから指数法則まで出ます。導出の全道程は v2 本編 B′6 章。ここでは「自分自身が微分になる魔法の定数 \(e\simeq 2.718\cdots\)」として使います。）</p>
+</blockquote>
+<p>もし</p>
+<div class="math-block">$$
+e^{i\theta}\overset{?}{=}\cos\theta+i\sin\theta
+$$</div>
+<p>と言ってよいなら、回転の合成は</p>
+<div class="math-block">$$
+e^{i\theta_1}e^{i\theta_2}=e^{i(\theta_1+\theta_2)}
+$$</div>
+<p>——<strong>回転が、ただのべき乗になります。</strong></p>
+<p>これは等号が成立するかどうか確かめるべき主張です。次節で証明します。</p>
+<hr />
+<h2 id="g6_complex_rotation-6-ei">6. e^{iθ} を定義して、微分する</h2>
+<h3 id="g6_complex_rotation-_8">定義（級数）</h3>
+<p>実数版の定義に \(i\theta\) を代入します:</p>
+<div class="math-block">$$
+e^{i\theta}
+:=\sum_{n=0}^{\infty}\frac{(i\theta)^n}{n!}.
+$$</div>
+<p>展開すると:</p>
+<div class="math-block">$$
+e^{i\theta}=1+i\theta+\frac{(i\theta)^2}{2!}+\frac{(i\theta)^3}{3!}+\cdots.
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「イーのアイシータ」  </li>
+<li>\(i\) の累乗は \(i^2=-1\) だけで回ります: \(i^0=1,\ i=i,\ i^2=-1,\ i^3=-i,\ i^4=1,\ldots\)  </li>
+<li>特に \(\theta=0\) で \(e^{i\cdot 0}=1\)。</li>
+</ul>
+<h3 id="g6_complex_rotation-math85">微分すると \(i\) 倍</h3>
+<p>級数を項ごとに \(\theta\) で微分します（\(n=0\) 項は消える）:</p>
+<div class="math-block">$$
+\frac{d}{d\theta}\frac{(i\theta)^n}{n!}
+=\frac{n(i\theta)^{n-1}\cdot i}{n!}
+=\frac{i\,(i\theta)^{n-1}}{(n-1)!}.
+$$</div>
+<p>番号を \(m=n-1\) と置き直して集めると:</p>
+<div class="math-block">$$
+\frac{d}{d\theta}e^{i\theta}
+=i\sum_{m=0}^{\infty}\frac{(i\theta)^m}{m!}
+=i\,e^{i\theta}.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 微分すると、自分の \(i\) 倍になる。</li>
+</ul>
+<p>なぜ \(i\) 倍が自然かは、絵で見ると美しいです。</p>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 230" width="380" height="230" role="img" aria-label="微分するとアイ倍。半径に直角な接線方向へ進む">
+  <rect width="380" height="230" fill="#fffdf8"/>
+  <text x="16" y="18" font-size="12" fill="#1c1a16">微分する ＝ i 倍 ＝ 接線方向へ進む</text>
+  <line x1="30" y1="140" x2="250" y2="140" stroke="#ddd" stroke-width="1"/>
+  <line x1="130" y1="28" x2="130" y2="210" stroke="#ddd" stroke-width="1"/>
+  <circle cx="130" cy="140" r="70" fill="none" stroke="#ccc" stroke-width="1.5"/>
+  <line x1="130" y1="140" x2="180" y2="82" stroke="#2a6fad" stroke-width="2"/>
+  <circle cx="180" cy="82" r="5" fill="#2a6fad"/>
+  <text x="186" y="76" font-size="12" fill="#2a6fad">e^{iθ}</text>
+  <line x1="180" y1="82" x2="250" y2="120" stroke="#c45c26" stroke-width="2.2"/>
+  <text x="230" y="108" font-size="12" fill="#c45c26">i e^{iθ}</text>
+  <text x="16" y="222" font-size="11" fill="#555">i 倍は 90° 回すこと。円の上を進む向きは、半径と直角（接線）。</text>
+</svg>
+<figcaption>\(\theta\) を少し増やすと点は円に沿って動く。その瞬間の進む向きが \(i\,e^{i\theta}\)。</figcaption>
+</figure>
+
+<p>また、\(-i\theta\) 版も同様に \((e^{-i\theta})'=-i\,e^{-i\theta}\)。積の微分で</p>
+<div class="math-block">$$
+\frac{d}{d\theta}\bigl(e^{i\theta}e^{-i\theta}\bigr)=0
+$$</div>
+<p>なので \(e^{i\theta}e^{-i\theta}\) は定数、\(\theta=0\) での値より</p>
+<div class="math-block">$$
+e^{i\theta}e^{-i\theta}=1
+$$</div>
+<p>——\(e^{-i\theta}\) は逆数です。</p>
+<hr />
+<h2 id="g6_complex_rotation-7">7. オイラーの公式 — 証明</h2>
+<p>比較相手を用意します:</p>
+<div class="math-block">$$
+u(\theta):=\cos\theta+i\sin\theta,
+\qquad
+u(0)=\cos 0+i\sin 0=1.
+$$</div>
+<p>微分すると（G3 の 🪜 足場の \((\sin)'=\cos,\ (\cos)'=-\sin\) —— こちらの導出は v2 本編 B′2→B′3 の鎖）:</p>
+<div class="math-block">$$
+u'(\theta)=-\sin\theta+i\cos\theta.
+$$</div>
+<p>一方、</p>
+<div class="math-block">$$
+i\,u(\theta)=i\cos\theta+i^2\sin\theta=i\cos\theta-\sin\theta.
+$$</div>
+<p>一致しました:</p>
+<div class="math-block">$$
+u'(\theta)=i\,u(\theta).
+$$</div>
+<h3 id="g6_complex_rotation-w">一意性 — 比 w を見る</h3>
+<p>\(e^{i\theta}\) と \(u\) は、どちらも「<strong>微分すると \(i\) 倍、かつ \(\theta=0\) で 1</strong>」を満たします。<br />
+比を見ましょう:</p>
+<div class="math-block">$$
+w(\theta):=u(\theta)\,e^{-i\theta}.
+$$</div>
+<p>積の微分で</p>
+<div class="math-block">$$
+w'(\theta)
+=u'e^{-i\theta}+u(e^{-i\theta})'
+=i u e^{-i\theta}-i u e^{-i\theta}
+=0.
+$$</div>
+<p>だから \(w\) は<strong>定数</strong>。\(\theta=0\) で \(w(0)=1\times1=1\)。ゆえに \(w(\theta)\equiv 1\)、すなわち</p>
+<div class="math-block">$$
+u(\theta)=e^{i\theta}.
+$$</div>
+<div class="math-block">$$
+\boxed{\ e^{i\theta}=\cos\theta+i\sin\theta\ }
+$$</div>
+<ul>
+<li><strong>読み:</strong> オイラーの公式  </li>
+<li><strong>よみ:</strong> 回転を一文字で書いた数。円の縦成分（\(\sin\)）と横成分（\(\cos\)）が、一つのべき乗に統合されました。</li>
+</ul>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" width="400" height="250" role="img" aria-label="単位円上の点がイーのアイシータ。横がコサイン、縦がサイン">
+  <rect width="400" height="250" fill="#fffdf8"/>
+  <text x="16" y="20" font-size="12" fill="#1c1a16">e^{iθ} は、単位円上の点</text>
+  <line x1="30" y1="150" x2="300" y2="150" stroke="#bbb" stroke-width="1"/>
+  <line x1="160" y1="30" x2="160" y2="230" stroke="#bbb" stroke-width="1"/>
+  <circle cx="160" cy="150" r="80" fill="none" stroke="#2c5f4a" stroke-width="1.8"/>
+  <line x1="160" y1="150" x2="208" y2="78" stroke="#c45c26" stroke-width="2"/>
+  <circle cx="208" cy="78" r="5" fill="#c45c26"/>
+  <line x1="208" y1="78" x2="208" y2="150" stroke="#c45c26" stroke-dasharray="4 3" stroke-width="1.2"/>
+  <line x1="160" y1="150" x2="208" y2="150" stroke="#2a6fad" stroke-width="2"/>
+  <text x="214" y="72" font-size="13" fill="#c45c26">e^{iθ}</text>
+  <text x="164" y="168" font-size="11" fill="#2a6fad">cos θ</text>
+  <text x="214" y="118" font-size="11" fill="#c45c26">sin θ</text>
+  <path d="M188 150 A 28 28 0 0 0 176 126" fill="none" stroke="#888" stroke-width="1.2"/>
+  <text x="190" y="136" font-size="12" fill="#555">θ</text>
+  <text x="300" y="80" font-size="12" fill="#1c1a16">横 = cos θ</text>
+  <text x="300" y="100" font-size="12" fill="#1c1a16">縦 = sin θ</text>
+  <text x="300" y="128" font-size="12" fill="#555">だから</text>
+  <text x="300" y="148" font-size="12" fill="#c45c26">e^{iθ} = cosθ + i sinθ</text>
+</svg>
+<figcaption>G2 の単位円の絵が、一文字の数になった。</figcaption>
+</figure>
+
+<blockquote>
+<p>🔬 <strong>Living Figure:</strong> <a href="https://ogaogamirai.github.io/public/3d-commons/viewer.html?model=euler-spiral">複素正弦波とオイラーの螺旋 — 3D で観察</a>　（見る角度によって真円・サイン波・コサイン波に姿を変えます）</p>
+</blockquote>
+<hr />
+<h2 id="g6_complex_rotation-8">8. すぐに使う帰結</h2>
+<h3 id="g6_complex_rotation-_9">回転の合成＝指数の積（問いの完全回答）</h3>
+<div class="math-block">$$
+e^{i\theta_1}e^{i\theta_2}=e^{i(\theta_1+\theta_2)}.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 角の足し算が、指数の掛け算になった。§0 の問いへの最終回答。</li>
+</ul>
+<h3 id="g6_complex_rotation-_10">実部・虚部・共役</h3>
+<div class="math-block">$$
+\begin{aligned}
+&\cos\theta=\operatorname{Re}(e^{i\theta}),
+\qquad
+\sin\theta=\operatorname{Im}(e^{i\theta}),\\
+&\overline{e^{i\theta}}=e^{-i\theta}=\cos\theta-i\sin\theta.
+\end{aligned}
+$$</div>
+<h3 id="g6_complex_rotation-_11">有名な特別値</h3>
+<div class="math-block">$$
+e^{i\pi}=\cos\pi+i\sin\pi=-1
+\quad\Longrightarrow\quad
+e^{i\pi}+1=0.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 半周回ると 1 の反対側。\(e,i,\pi,1,0\) が一行に並ぶ、有名な式の正体は「円の半周」でした。</li>
+</ul>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 230" width="380" height="230" role="img" aria-label="特別な角は円の四隅">
+  <rect width="380" height="230" fill="#fffdf8"/>
+  <text x="16" y="18" font-size="12" fill="#1c1a16">特別な角は、円の四隅</text>
+  <line x1="30" y1="130" x2="250" y2="130" stroke="#ddd" stroke-width="1"/>
+  <line x1="140" y1="28" x2="140" y2="210" stroke="#ddd" stroke-width="1"/>
+  <circle cx="140" cy="130" r="70" fill="none" stroke="#ccc" stroke-width="1.5"/>
+  <circle cx="210" cy="130" r="5" fill="#2c5f4a"/>
+  <text x="218" y="126" font-size="11" fill="#2c5f4a">e^{i·0}=1</text>
+  <circle cx="140" cy="60" r="5" fill="#2a6fad"/>
+  <text x="148" y="52" font-size="11" fill="#2a6fad">e^{iπ/2}=i</text>
+  <circle cx="70" cy="130" r="5" fill="#c45c26"/>
+  <text x="8" y="126" font-size="11" fill="#c45c26">e^{iπ}=−1</text>
+  <circle cx="140" cy="200" r="5" fill="#555"/>
+  <text x="148" y="214" font-size="11" fill="#555">e^{i3π/2}=−i</text>
+</svg>
+<figcaption>四隅は検算用の目印。</figcaption>
+</figure>
+
+<h3 id="g6_complex_rotation-_12">極形式の書き換え</h3>
+<p>§3 の極形式は、いまこう書けます:</p>
+<div class="math-block">$$
+z=r(\cos\theta+i\sin\theta)=r\,e^{i\theta}.
+$$</div>
+<p>掛け算も一目です:</p>
+<div class="math-block">$$
+(r_1 e^{i\theta_1})(r_2 e^{i\theta_2})=r_1 r_2\,e^{i(\theta_1+\theta_2)}.
+$$</div>
+<hr />
+<h2 id="g6_complex_rotation-9">9. 章のまとめ</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>段</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>定義</td>
+<td>\(i^2=-1\)、\(z=a+bi\)、平面の点</td>
+</tr>
+<tr>
+<td>四則</td>
+<td>展開＋共役</td>
+</tr>
+<tr>
+<td>積</td>
+<td>長さは積、角は和（加法定理）</td>
+</tr>
+<tr>
+<td>定義</td>
+<td>\(e^{i\theta}=\sum(i\theta)^n/n!\)、微分で \(i\) 倍</td>
+</tr>
+<tr>
+<td>一意性</td>
+<td>\(u=\cos+i\sin\) も \(u'=iu\)、\(u(0)=1\) → 等しい</td>
+</tr>
+<tr>
+<td>結論</td>
+<td>\(e^{i\theta}=\cos\theta+i\sin\theta\)、合成は \(e^{i(\theta_1+\theta_2)}\)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="g6_complex_rotation-10">10. 導出チェック（白紙で）</h2>
+<ol>
+<li>\((a+bi)(c+di)\) を展開せよ。  </li>
+<li>極形式の積「長さは積・角は和」を加定理を引用して再現せよ。  </li>
+<li>\((e^{i\theta})'=i e^{i\theta}\) を、項ごと微分で再現せよ。  </li>
+<li>\(w=u e^{-i\theta}\) の微分が 0 になる変形を書け。  </li>
+<li>\(e^{i\pi}+1=0\) を、オイラーの公式から計算せよ。  </li>
+</ol>
+<h2 id="g6_complex_rotation-11">11. 確認</h2>
+<ol>
+<li>\(i^0\) から \(i^5\) を書け。  </li>
+<li>\(\dfrac{1+i}{1-i}\) を計算せよ。  </li>
+<li>「\(i\) を掛けると \(90^\circ\) 回る」を、座標変換で確認せよ。  </li>
+<li>\(e^{-i\theta}=\cos\theta-i\sin\theta\) を導け。  </li>
+<li>（振り返り）\(\cos\theta+i\sin\theta\) が「回転の一文字表記」であることを、合成の式で示せ。  </li>
+</ol>
+<hr />
+<h2 id="g6_complex_rotation-12">12. 次の章への引き</h2>
+<p>回転を一文字で書けるようになりました。これで道具は、すべて揃っています。</p>
+<ul>
+<li>波の部品: \(e^{int}\)（回転そのもの）  </li>
+<li>分離の技術: 掛けて一周積分（G4）  </li>
+<li>測る道具: 積分（G3）  </li>
+</ul>
+<p>次章は仕上げです。級数を複素形に書き直し、周期 \(T\) を無限に伸ばして——<strong>有限のくり返しから、無限の一本道（フーリエ変換）へ橋を渡します。</strong></p>
+<p>→ <a href="#g7_bridge_transform">G7. 級数から変換へ — 有限から無限の橋</a></p>
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g5_coefficients">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g7_bridge_transform">次へ ›</a></nav>
+</section>
+<section class="chapter" id="g7_bridge_transform" data-part="G" data-part-name="動機主導" data-code="G7" data-title="級数から変換へ" data-bar="G7 · 級数から変換へ" data-prev="g6_complex_rotation" data-next="g8_answer_jpeg">
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g6_complex_rotation">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g8_answer_jpeg">次へ ›</a></nav>
+<h1 id="g7_bridge_transform-g7">G7. 級数から変換へ — 有限から無限の橋</h1>
+<blockquote>
+<p><strong>到達:</strong> 複素級数を書け、\(T\to\infty\) で周波数が連続になり和が積分に見える橋を式で辿れる。フーリエ変換対を定義として使い、矩形パルスの \(F(\omega)\) を積分から出し、混ぜる・ずらす・伸ばすの三性質を導出できる。<br />
+<strong>この章で理論はゴールです。</strong> G8 で JPEG の謎に答えに行きます。<br />
+<!-- eq-source: v2-D2 / v2-D3 / v2-D4 / v2-D5（地図部分は章末に圧縮収録） --></p>
+</blockquote>
+<hr />
+<h2 id="g7_bridge_transform-0">0. 前章からの引き — 部品を一本にする</h2>
+<p>G6 で回転を一文字 \(e^{i\theta}\) に書けるようになりました。まずは G5 の級数を、この新部品で書き直します。すると式が劇的に引き締まり——そして「くり返さない信号」への扉が開きます。</p>
+<p>この章の道のり:</p>
+<ol>
+<li>\(\cos,\sin\) を \(e^{\pm int}\) で書く → 級数が一本の和になる  </li>
+<li>周期 \(T\) を無限に伸ばす → とびとびの周波数が連続になる  </li>
+<li>和が積分に変わる → <strong>フーリエ変換対</strong>の完成  </li>
+<li>矩形パルスで変換を実際に計算する  </li>
+<li>混ぜる・ずらす・伸ばすの三性質を導出する  </li>
+</ol>
+<hr />
+<h2 id="g7_bridge_transform-1-math36">1. \(\cos,\sin\) を回転で書く</h2>
+<p>G6 のオイラー公式とその共役:</p>
+<div class="math-block">$$
+e^{i\theta}=\cos\theta+i\sin\theta,
+\qquad
+e^{-i\theta}=\cos\theta-i\sin\theta.
+$$</div>
+<p>足すと縦成分が消え、引くと横成分が消えます:</p>
+<div class="math-block">$$
+\cos\theta=\frac{e^{i\theta}+e^{-i\theta}}{2},
+\qquad
+\sin\theta=\frac{e^{i\theta}-e^{-i\theta}}{2i}.
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「コサイン イコール、イーのアイシータ プラス マイナス、オーバー ツー」  </li>
+<li><strong>よみ:</strong> コサイン ＝ 右回転と左回転の<strong>平均</strong>。サイン ＝ 差を \(2i\) で割ったもの。</li>
+</ul>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 210" width="400" height="210" role="img" aria-label="コサインは右回転と左回転の平均">
+  <rect width="400" height="210" fill="#fffdf8"/>
+  <text x="16" y="20" font-size="12" fill="#1c1a16">cos θ ＝ 右回りと左回りの平均</text>
+  <line x1="40" y1="120" x2="280" y2="120" stroke="#bbb" stroke-width="1"/>
+  <line x1="160" y1="28" x2="160" y2="190" stroke="#bbb" stroke-width="1"/>
+  <circle cx="160" cy="120" r="70" fill="none" stroke="#ddd" stroke-width="1.2"/>
+  <line x1="160" y1="120" x2="220" y2="62" stroke="#2a6fad" stroke-width="2"/>
+  <circle cx="220" cy="62" r="4.5" fill="#2a6fad"/>
+  <text x="226" y="58" font-size="12" fill="#2a6fad">e^{iθ}</text>
+  <line x1="160" y1="120" x2="220" y2="178" stroke="#2c5f4a" stroke-width="2"/>
+  <circle cx="220" cy="178" r="4.5" fill="#2c5f4a"/>
+  <text x="226" y="190" font-size="12" fill="#2c5f4a">e^{-iθ}</text>
+  <circle cx="220" cy="120" r="4" fill="#c45c26"/>
+  <line x1="220" y1="62" x2="220" y2="178" stroke="#c45c26" stroke-dasharray="3 3" stroke-width="1"/>
+  <text x="228" y="116" font-size="12" fill="#c45c26">平均 → cos θ</text>
+</svg>
+<figcaption>同じ角で逆向きに回る二つの平均。縦は打ち消し、横の \(\cos\theta\) だけ残る。</figcaption>
+</figure>
+
+<p>「波 ＝ 往復」だったものが、「波 ＝ 二つの逆向き回転」になりました。</p>
+<hr />
+<h2 id="g7_bridge_transform-2">2. 複素形フーリエ級数</h2>
+<h3 id="g7_bridge_transform-_1">ペアを束ねる</h3>
+<p>G5 の一項 \(a_n\cos(nt)+b_n\sin(nt)\) に上の式を代入してまとめると:</p>
+<div class="math-block">$$
+\begin{aligned}
+a_n\cos(nt)+b_n\sin(nt)
+&=\underbrace{\Bigl(\frac{a_n-i b_n}{2}\Bigr)}_{c_n}e^{int}\\
+&\quad+\underbrace{\Bigl(\frac{a_n+i b_n}{2}\Bigr)}_{c_{-n}}e^{-int}.
+\end{aligned}
+$$</div>
+<p>そこで複素係数をこう定義します:</p>
+<div class="math-block">$$
+c_0=\frac{a_0}{2},
+\qquad
+c_n=\frac{a_n-i b_n}{2},
+\qquad
+c_{-n}=\frac{a_n+i b_n}{2}
+\quad(n\geq1).
+$$</div>
+<ul>
+<li><strong>よみ:</strong> \(c_n\) は「コサイン部品とサイン部品を一つの矢印に束ねたもの」。実部が cos の混ざり、虚部が sin の混ざり。</li>
+</ul>
+<p>すると級数全体が、たった一本になります:</p>
+<div class="math-block">$$
+f(t)
+\sim
+\sum_{n=-\infty}^{\infty} c_n e^{int}.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 正負すべての整数番号の<strong>回転部品</strong>の和。番号の符号は回る向き（プラス＝反時計、マイナス＝時計）。</li>
+</ul>
+<h3 id="g7_bridge_transform-_2">取り出し — 逆回転を掛けて一周積分</h3>
+<p>G4 の魔法はそのまま使えます。\(e^{int}\) どうしには次の直交性があります（\(\int e^{ikt}=\int\cos+\,i\int\sin=0\)、\(k\neq0\)；\(k=0\) では \(2\pi\)）:</p>
+<div class="math-block">$$
+\int_0^{2\pi}e^{i(n-m)t}\,dt
+=
+\begin{cases}
+2\pi & n=m\\
+0 & n\neq m
+\end{cases}
+$$</div>
+<p>だから両辺に \(e^{-imt}\)（逆回転）を掛けて一周積分すれば、\(n=m\) だけ残ります:</p>
+<div class="math-block">$$
+c_n
+=\frac{1}{2\pi}\int_0^{2\pi}f(t)e^{-int}\,dt.
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「シーエヌ イコール、ワン オーバー ツーパイ カケル、エフにマイナスアイエヌティーを掛けて一周足したもの」</li>
+</ul>
+<h3 id="g7_bridge_transform-_3">実数形との行き来（検算）</h3>
+<p>\(n\geq1\) で \(e^{-int}=\cos(nt)-i\sin(nt)\) を入れると:</p>
+<div class="math-block">$$
+\begin{aligned}
+c_n
+&=\frac{1}{2}\underbrace{\frac{1}{\pi}\int f\cos(nt)\,dt}_{a_n}
+-\frac{i}{2}\underbrace{\frac{1}{\pi}\int f\sin(nt)\,dt}_{b_n}\\
+&=\frac{a_n-i b_n}{2}.
+\end{aligned}
+$$</div>
+<p>一致しました。逆方向は \(a_n=c_n+c_{-n},\ b_n=i(c_n-c_{-n}),\ a_0=2c_0\)。</p>
+<blockquote>
+<p><strong>G5 の三つの積分公式が、\(c_n\) 一つに束ねられました。</strong> これが複素化の恩恵です。</p>
+</blockquote>
+<hr />
+<h2 id="g7_bridge_transform-3">3. 橋 — 周期を無限に伸ばす</h2>
+<h3 id="g7_bridge_transform-_4">問い</h3>
+<p>級数は「同じ形がいつまでもくり返す」信号向けでした。<br />
+でも G0 で見たのは、音の一撃・画像の一枚きり——<strong>くり返さない信号</strong>です。</p>
+<p>あれも周波数で語れないのでしょうか？</p>
+<h3 id="g7_bridge_transform-math52">作戦: 周期 \(T\) をどんどん大きくする</h3>
+<p>まず周期を一般の \(T\) に広げます。基本角周波数（一周期でちょうど一周する速さ）は:</p>
+<div class="math-block">$$
+\omega_0=\frac{2\pi}{T}.
+$$</div>
+<p>部品は整数倍 \(e^{in\omega_0 t}\)。級数と係数は（区間長 \(2\pi\)→\(T\)、角速度 \(n\)→\(n\omega_0\) への置き換え）:</p>
+<div class="math-block">$$
+\begin{aligned}
+f(t)
+&\sim
+\sum_{n=-\infty}^{\infty} c_n e^{in\omega_0 t},\\
+c_n
+&=\frac{1}{T}\int_{-T/2}^{T/2}f(t)e^{-in\omega_0 t}\,dt.
+\end{aligned}
+$$</div>
+<p>（\(T=2\pi\) とすれば \(\omega_0=1\) で前節に戻る検算もできます。）</p>
+<h3 id="g7_bridge_transform-_5">刻みが細くなる</h3>
+<p>隣り合う周波数の間隔は:</p>
+<div class="math-block">$$
+\Delta\omega=(n+1)\omega_0-n\omega_0=\omega_0=\frac{2\pi}{T}.
+$$</div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>\(T\)</th>
+<th>\(\Delta\omega\)</th>
+<th>イメージ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>小さい</td>
+<td>粗い</td>
+<td>とびとびの純音だけ</td>
+</tr>
+<tr>
+<td>大きい</td>
+<td>細かい</td>
+<td>目盛りが密集</td>
+</tr>
+<tr>
+<td>\(\to\infty\)</td>
+<td>\(\to 0\)</td>
+<td><strong>連続な周波数軸</strong></td>
+</tr>
+</tbody>
+</table></div>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 200" width="440" height="200" role="img" aria-label="周期を長くすると周波数の目盛りが密集する">
+  <rect width="440" height="200" fill="#fffdf8"/>
+  <text x="16" y="18" font-size="12" fill="#1c1a16">周期 T を伸ばすと、周波数の刻みが細かくなる</text>
+  <text x="16" y="48" font-size="11" fill="#555">T 小</text>
+  <line x1="70" y1="44" x2="420" y2="44" stroke="#ddd" stroke-width="1"/>
+  <line x1="100" y1="34" x2="100" y2="54" stroke="#c45c26" stroke-width="2"/>
+  <line x1="190" y1="34" x2="190" y2="54" stroke="#c45c26" stroke-width="2"/>
+  <line x1="280" y1="34" x2="280" y2="54" stroke="#c45c26" stroke-width="2"/>
+  <line x1="370" y1="34" x2="370" y2="54" stroke="#c45c26" stroke-width="2"/>
+  <text x="16" y="96" font-size="11" fill="#555">T 大</text>
+  <line x1="70" y1="92" x2="420" y2="92" stroke="#ddd" stroke-width="1"/>
+  <line x1="88" y1="82" x2="88" y2="102" stroke="#c45c26" stroke-width="2"/>
+  <line x1="124" y1="82" x2="124" y2="102" stroke="#c45c26" stroke-width="2"/>
+  <line x1="160" y1="82" x2="160" y2="102" stroke="#c45c26" stroke-width="2"/>
+  <line x1="196" y1="82" x2="196" y2="102" stroke="#c45c26" stroke-width="2"/>
+  <line x1="232" y1="82" x2="232" y2="102" stroke="#c45c26" stroke-width="2"/>
+  <line x1="268" y1="82" x2="268" y2="102" stroke="#c45c26" stroke-width="2"/>
+  <line x1="304" y1="82" x2="304" y2="102" stroke="#c45c26" stroke-width="2"/>
+  <line x1="340" y1="82" x2="340" y2="102" stroke="#c45c26" stroke-width="2"/>
+  <line x1="376" y1="82" x2="376" y2="102" stroke="#c45c26" stroke-width="2"/>
+  <line x1="412" y1="82" x2="412" y2="102" stroke="#c45c26" stroke-width="2"/>
+  <text x="16" y="144" font-size="11" fill="#555">T→∞</text>
+  <line x1="70" y1="140" x2="420" y2="140" stroke="#c45c26" stroke-width="3"/>
+  <text x="70" y="178" font-size="11" fill="#555">とびとびの純音 → 目盛りが密集 → 連続な周波数軸</text>
+</svg>
+<figcaption>一本一本が番号 \(n\omega_0\)。周期が長いほど隙間 \(\Delta\omega\) が狭い。隙間ゼロの極限が積分。</figcaption>
+</figure>
+
+<h3 id="g7_bridge_transform-_6">和を積分に並べ替える</h3>
+<p>係数の式に \(T\) を掛けます:</p>
+<div class="math-block">$$
+T c_n
+=\int_{-T/2}^{T/2}f(t)e^{-in\omega_0 t}\,dt.
+$$</div>
+<p>右辺は「周期の窓の中だけの \(f\)」に逆回転を掛けて足したもの。窓（\(T\)）が広がると、これは全時間の積分</p>
+<div class="math-block">$$
+F(\omega):=\int_{-\infty}^{\infty}f(t)e^{-i\omega t}\,dt
+$$</div>
+<p>の標本点 \(\omega=n\omega_0=n\Delta\omega\) での値に近づきます（窓の外は \(f=0\) とみなす）。つまり \(T c_n \approx F(n\Delta\omega)\)。</p>
+<p>次に級数側。\(1=\dfrac{\Delta\omega}{2\pi}\cdot T\)（\(\Delta\omega=2\pi/T\) より）を使って:</p>
+<div class="math-block">$$
+\begin{aligned}
+f(t)
+&\sim
+\sum_{n=-\infty}^{\infty}
+(T c_n)\,e^{i(n\Delta\omega) t}\cdot\frac{\Delta\omega}{2\pi}\\
+&\approx
+\sum_{n=-\infty}^{\infty}
+F(n\Delta\omega)\,e^{i(n\Delta\omega) t}\cdot\frac{\Delta\omega}{2\pi}.
+\end{aligned}
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 「高さ \(F\)・位置 \(n\Delta\omega\)・幅 \(\Delta\omega\)」の<strong>短冊</strong>を足して最後に \(2\pi\) で割る。</li>
+</ul>
+<p>\(\Delta\omega\to 0\) で短冊の和は積分そのものに見える:</p>
+<div class="math-block">$$
+f(t)
+\sim
+\frac{1}{2\pi}\int_{-\infty}^{\infty}F(\omega)\,e^{i\omega t}\,d\omega.
+$$</div>
+<p><strong>橋を渡りました。</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>級数（周期あり）</th>
+<th>変換（くり返さない）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>とびとびの \(n\omega_0\)</td>
+<td>連続な \(\omega\)</td>
+</tr>
+<tr>
+<td>和 \(\sum_n\)</td>
+<td>積分 \(\int d\omega\)</td>
+</tr>
+<tr>
+<td>係数 \(c_n\)（各番号の分量）</td>
+<td>密度 \(F(\omega)\)</td>
+</tr>
+<tr>
+<td>一周期で割る \(1/T\)</td>
+<td>全時間で積分</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="g7_bridge_transform-4">4. フーリエ変換対 — 定義</h2>
+<p>ほどく側と組み立てる側を、正式な定義として固定します。</p>
+<div class="math-block">$$
+F(\omega):=\int_{-\infty}^{\infty}f(t)\,e^{-i\omega t}\,dt
+\qquad\text{（フーリエ変換：ほどいて測る）}
+$$</div>
+<div class="math-block">$$
+f(t)=\frac{1}{2\pi}\int_{-\infty}^{\infty}F(\omega)\,e^{i\omega t}\,d\omega
+\qquad\text{（逆変換：測った分量で組み立て直す）}
+$$</div>
+<p>組 \((f,F)\) を<strong>フーリエ変換対</strong>と呼びます。</p>
+<h3 id="g7_bridge_transform-_7">なぜ「逆」が要るのか</h3>
+<p>数学で「逆」とは「やって、もう一度やると出発点に戻る」操作です。\(+5\) の逆は \(-5\)。<br />
+時間を逆回しする、という意味ではありません。</p>
+<p>G5 ですでに同じ往復をしていました:</p>
+<ol>
+<li>\(f\) に部品を掛けて一周積分 → 係数（<strong>ほどく</strong>）  </li>
+<li>係数で部品を足す → 波（<strong>組み立てる</strong>）  </li>
+</ol>
+<p>2 がなければ 1 は数字の表で終わります。足し戻せてはじめて「この波はこれらの部品だった」と言える。<br />
+そして逆が本当に効くのはここからです——</p>
+<blockquote>
+<p><strong>周波数側で手を加えてから、時間に戻せる。</strong><br />
+高い周波数だけ弱めて戻すと、波はなめらかになる。……あれ？　これは、あの魔法の話では？</p>
+</blockquote>
+<p>（G8 で答え合わせです。）</p>
+<h3 id="g7_bridge_transform-math91">符号と \(2\pi\) の居場所</h3>
+<ul>
+<li>測るときは相手の回転を打ち消す向き \(e^{-i\omega t}\)、戻すときは本物の回転 \(e^{+i\omega t}\)——符号が逆なのは往復の往と復だから  </li>
+<li>\(2\pi\) が片側だけ付くのは、橋で出た前因子 \(\Delta\omega/(2\pi)\) の行き先。「戻すときの単位換算」と覚えます</li>
+</ul>
+<hr />
+<h2 id="g7_bridge_transform-5">5. 実戦 — 矩形パルスを変換する</h2>
+<h3 id="g7_bridge_transform-_8">例の設定</h3>
+<p>幅 \(a\) の矩形パルス（時刻ゼロ付近だけ高さ 1、外は 0）:</p>
+<div class="math-block">$$
+f(t)=
+\begin{cases}
+1 & |t|\le a/2,\\
+0 & |t|>a/2.
+\end{cases}
+$$</div>
+<p>ゼロの区間は積分に寄与しないので:</p>
+<div class="math-block">$$
+F(\omega)=\int_{-a/2}^{a/2}e^{-i\omega t}\,dt.
+$$</div>
+<h3 id="g7_bridge_transform-math97">\(\omega=0\) のとき</h3>
+<p>\(e^0=1\) なので:</p>
+<div class="math-block">$$
+F(0)=\int_{-a/2}^{a/2}1\,dt=a.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> ゼロ周波数の重み ＝ パルスの面積。</li>
+</ul>
+<h3 id="g7_bridge_transform-math99">\(\omega\neq 0\) のとき</h3>
+<p>原始関数は \(e^{-i\omega t}/(-i\omega)\)（\((e^{kt})'=ke^{kt}\) で \(k=-i\omega\)）。端点代入すると:</p>
+<div class="math-block">$$
+F(\omega)
+=\Bigl[\frac{e^{-i\omega t}}{-i\omega}\Bigr]_{-a/2}^{a/2}.
+$$</div>
+<p>分子を整理すると:</p>
+<div class="math-block">$$
+F(\omega)=\frac{e^{-i\omega a/2}-e^{i\omega a/2}}{-i\omega}.
+$$</div>
+<p>分子は \(\alpha=\omega a/2\) として \(e^{-i\alpha}-e^{i\alpha}=-2i\sin\alpha\)（§1 の式の裏返し）。よって:</p>
+<div class="math-block">$$
+F(\omega)
+=\frac{-2i\sin(\omega a/2)}{-i\omega}
+=\frac{2\sin(\omega a/2)}{\omega}.
+$$</div>
+<p>\(\omega\to 0\) では \(\sin x\sim x\) なので \(a\) に戻り、\(\omega=0\) の結果とつながります。<br />
+そこで \(\operatorname{sinc}\)（シンク）関数</p>
+<div class="math-block">$$
+\operatorname{sinc}(x):=\frac{\sin x}{x}
+\quad(x\neq 0),\qquad
+\operatorname{sinc}(0):=1
+$$</div>
+<p>を使えば、まとめて:</p>
+<div class="math-block">$$
+\boxed{\ F(\omega)=a\,\operatorname{sinc}\Bigl(\frac{\omega a}{2}\Bigr)\ }
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「エフオメガ イコール エー カケル シンク、オメガエー パー ツー」</li>
+</ul>
+<h3 id="g7_bridge_transform-_9">読み取り — 幅のトレードオフ</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>時間側</th>
+<th>周波数側</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>幅 \(a\) が<strong>広い</strong></td>
+<td>sinc の山が<strong>細い</strong>（低周波に集中）</td>
+</tr>
+<tr>
+<td>幅 \(a\) が<strong>狭い</strong></td>
+<td>山が<strong>広い</strong>（高い周波数まで広がる）</td>
+</tr>
+</tbody>
+</table></div>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 200" width="440" height="200" role="img" aria-label="短い矩形パルスの変換は、中央が高く左右に波打つ形">
+  <rect width="440" height="200" fill="#fffdf8"/>
+  <text x="16" y="18" font-size="12" fill="#1c1a16">短いパルス → 周波数は広くにじむ</text>
+  <text x="40" y="40" font-size="11" fill="#555">時間 f(t)</text>
+  <line x1="24" y1="110" x2="200" y2="110" stroke="#bbb" stroke-width="1"/>
+  <path d="M 40 110 L 80 110 L 80 58 L 150 58 L 150 110 L 190 110" fill="none" stroke="#2c5f4a" stroke-width="2"/>
+  <text x="96" y="80" font-size="11" fill="#2c5f4a">幅 a</text>
+  <text x="230" y="40" font-size="11" fill="#555">周波数 F(ω)</text>
+  <line x1="220" y1="110" x2="428" y2="110" stroke="#bbb" stroke-width="1"/>
+  <path d="M 228.0 111.4 L 234.0 110.6 L 240.0 109.8 L 246.0 108.9 L 252.0 108.0 L 258.0 107.4 L 264.0 106.9 L 270.0 106.8 L 276.0 107.1 L 282.0 107.7 L 288.0 108.6 L 294.0 109.8 L 300.0 111.2 L 306.0 112.6 L 312.0 113.8 L 318.0 114.8 L 324.0 115.4 L 330.0 115.4 L 336.0 114.8 L 342.0 113.4 L 348.0 111.5 L 354.0 108.8 L 360.0 105.7 L 366.0 102.3 L 372.0 98.7 L 378.0 95.1 L 384.0 91.8 L 390.0 89.0 L 396.0 86.8 L 402.0 85.5 L 408.0 85.0 L 414.0 85.5 L 420.0 86.8" fill="none" stroke="#c45c26" stroke-width="1.8"/>
+  <text x="24" y="188" font-size="11" fill="#555">時間で短い ↔ 周波数で広い。</text>
+</svg>
+<figcaption>矩形の変換は sinc 型。パルスが短いほど、スペクトルの山は横に広がる。</figcaption>
+</figure>
+
+<blockquote>
+<p>🔬 <strong>Living Figure:</strong> <a href="https://ogaogamirai.github.io/public/2d-commons/viewer.html?model=pulse-sinc-tradeoff">短いパルスほど広くにじむ — sinc</a>　（幅 \(a\) のスライダーに対して、山の広さが即座に応答します）</p>
+</blockquote>
+<ul>
+<li><strong>よみ:</strong> 短いパルスほど、いろいろな速さの回転を混ぜないと作れない。長いパルスはゆっくり成分だけで足りる。</li>
+</ul>
+<hr />
+<h2 id="g7_bridge_transform-6">6. 三つの性質 — 毎回積分しなくてよくする</h2>
+<p>新しい波形のたびに変換をゼロから積分するのは大変です。でも波の作り方には、何度も出る変形が三つあります。<strong>時間側で変形してからほどくのと、ほどいてから周波数側で同じことをするのは同じ</strong>——を定義から導きます。</p>
+<h3 id="g7_bridge_transform-_10">線形性（混ぜる）</h3>
+<div class="math-block">$$
+\mathcal{F}\{\alpha f+\beta g\}=\alpha F+\beta G.
+$$</div>
+<ul>
+<li><strong>導出:</strong> 積分の線形性（G3）でばらすだけ。  </li>
+<li><strong>よみ:</strong> 二つの音を同時に鳴らした全体の混ざりは、それぞれの混ざりの和。そうでなければ部品に分ける意味がない。</li>
+</ul>
+<h3 id="g7_bridge_transform-_11">平行移動（ずらす）</h3>
+<div class="math-block">$$
+\mathcal{F}\bigl\{f(t-t_0)\bigr\}=e^{-i\omega t_0}F(\omega).
+$$</div>
+<ul>
+<li><strong>導出:</strong> 置換 \(u=t-t_0\)。指数の中のたし算が、オイラーの積則で外に出る:<br />
+$$
+\int f(u)e^{-i\omega(u+t_0)}du=e^{-i\omega t_0}\int f(u)e^{-i\omega u}du.
+$$</li>
+<li><strong>よみ:</strong> 遅れても、混ざりの大きさ \(|F|\) は同じ。動くのは各回転のスタート角だけ（\(e^{-i\omega t_0}\) は距離 1 の回転なので、掛けても大きさが変わらない——G6 §8）。</li>
+</ul>
+<h3 id="g7_bridge_transform-_12">スケール（伸ばす／縮める）</h3>
+<div class="math-block">$$
+\mathcal{F}\bigl\{f(at)\bigr\}=\frac{1}{|a|}F\Bigl(\frac{\omega}{a}\Bigr).
+$$</div>
+<ul>
+<li><strong>導出（\(a>0\)）:</strong> 置換 \(u=at,\ dt=du/a\) で<br />
+$$
+\int f(u)\,e^{-i(\omega/a)u}\,\frac{du}{a}=\frac{1}{a}F(\omega/a).
+$$<br />
+（\(a<0\) では向きの反転ともう一度打ち消し合って、前因子はやはり \(1/|a|\)。）</li>
+<li><strong>よみ:</strong> 時間をつぶす ↔ 周波数が広がる。§5 の「短いパルス ↔ 広いスペクトル」の一般形。</li>
+</ul>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 170" width="440" height="170" role="img" aria-label="時間を縮めると周波数は広がる">
+  <rect width="440" height="170" fill="#fffdf8"/>
+  <text x="16" y="18" font-size="12" fill="#1c1a16">時間を縮める ↔ 周波数は広がる</text>
+  <text x="36" y="42" font-size="11" fill="#555">時間</text>
+  <line x1="24" y1="88" x2="200" y2="88" stroke="#ddd" stroke-width="1"/>
+  <path d="M 50 88 L 80 88 L 80 48 L 160 48 L 160 88 L 190 88" fill="none" stroke="#2a6fad" stroke-width="1.5"/>
+  <path d="M 70 88 L 95 88 L 95 58 L 130 58 L 130 88 L 155 88" fill="none" stroke="#c45c26" stroke-width="2"/>
+  <text x="86" y="120" font-size="10" fill="#2a6fad">広い（遅い）</text>
+  <text x="100" y="136" font-size="10" fill="#c45c26">狭い（速い）</text>
+  <text x="236" y="42" font-size="11" fill="#555">周波数</text>
+  <line x1="220" y1="88" x2="428" y2="88" stroke="#ddd" stroke-width="1"/>
+  <path d="M 250 88 L 280 40 L 310 88 L 340 70 L 370 88" fill="none" stroke="#c45c26" stroke-width="2"/>
+  <path d="M 270 88 L 290 58 L 310 88 L 330 76 L 350 88" fill="none" stroke="#2a6fad" stroke-width="1.5"/>
+  <text x="292" y="120" font-size="10" fill="#c45c26">広い</text>
+  <text x="268" y="136" font-size="10" fill="#2a6fad">狭い</text>
+</svg>
+<figcaption>時間側でつぶすと、周波数側は横に伸びる。</figcaption>
+</figure>
+
+<h3 id="g7_bridge_transform-_13">使用例 — 積分やり直さずに書く</h3>
+<p>矩形を \(t_0=1\) 遅らせた信号の変換は、積分なしで \(e^{-i\omega}F(\omega)\)（山の形そのまま）。<br />
+さらに時間方向に 2 倍へ伸ばした \(f(t/2)\) なら \(a=1/2\) で \(2F(2\omega)\)（細く・高く）。<br />
+線形性と合わせれば、「遅らせた矩形を二つ足した波」の \(F\) も即座に書けます。</p>
+<hr />
+<h2 id="g7_bridge_transform-7-g0">7. 理論の地図 — G0 からここまで</h2>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 250" width="440" height="250" role="img" aria-label="体験から変換までの一本道">
+  <rect width="440" height="250" fill="#fffdf8"/>
+  <text x="16" y="20" font-size="12" fill="#1c1a16">theory-v3 の一本道</text>
+  <rect x="16" y="36" width="96" height="36" rx="5" fill="#eee8dc" stroke="#888"/>
+  <text x="30" y="58" font-size="12" fill="#555">G0 体験（魔法）</text>
+  <text x="118" y="58" font-size="14" fill="#888">→</text>
+  <rect x="134" y="36" width="90" height="36" rx="5" fill="#eee8dc" stroke="#888"/>
+  <text x="146" y="58" font-size="12" fill="#555">G1-G2 足し算・円</text>
+  <text x="230" y="58" font-size="14" fill="#888">→</text>
+  <rect x="246" y="36" width="88" height="36" rx="5" fill="#eee8dc" stroke="#888"/>
+  <text x="260" y="58" font-size="12" fill="#555">G3-G4 面積・直交</text>
+  <text x="340" y="58" font-size="14" fill="#888">→</text>
+  <rect x="356" y="36" width="68" height="36" rx="5" fill="#eee8dc" stroke="#888"/>
+  <text x="366" y="58" font-size="12" fill="#555">G5 級数</text>
+  <rect x="16" y="96" width="96" height="36" rx="5" fill="#c45c26" fill-opacity="0.12" stroke="#c45c26"/>
+  <text x="32" y="118" font-size="12" fill="#c45c26">G6 オイラー</text>
+  <text x="118" y="118" font-size="14" fill="#888">→</text>
+  <rect x="134" y="96" width="90" height="36" rx="5" fill="#c45c26" fill-opacity="0.12" stroke="#c45c26"/>
+  <text x="148" y="118" font-size="12" fill="#c45c26">G7 複素級数</text>
+  <text x="230" y="118" font-size="14" fill="#888">→</text>
+  <rect x="246" y="96" width="88" height="36" rx="5" fill="#c45c26" fill-opacity="0.12" stroke="#c45c26"/>
+  <text x="264" y="118" font-size="12" fill="#c45c26">橋 Δω→0</text>
+  <text x="340" y="118" font-size="14" fill="#888">→</text>
+  <rect x="356" y="96" width="68" height="36" rx="5" fill="#2a6fad" fill-opacity="0.12" stroke="#2a6fad"/>
+  <text x="366" y="118" font-size="12" fill="#2a6fad">変換対</text>
+  <rect x="16" y="156" width="180" height="36" rx="5" fill="#2c5f4a" fill-opacity="0.12" stroke="#2c5f4a"/>
+  <text x="34" y="178" font-size="12" fill="#2c5f4a">ほどく／戻す・混ぜるずらす伸ばす</text>
+  <text x="202" y="178" font-size="14" fill="#888">→</text>
+  <rect x="222" y="156" width="202" height="36" rx="5" fill="#2c5f4a" fill-opacity="0.12" stroke="#2c5f4a"/>
+  <text x="240" y="178" font-size="12" fill="#2c5f4a">G8 音・画像への答え合わせ</text>
+  <text x="16" y="220" font-size="11" fill="#555">灰色＝土台。オレンジ＝回転で一本化。緑＝測って戻す。青＝到達点。</text>
+</svg>
+<figcaption>謎の提示から、測って戻す技術まで。残りは答え合わせと卒業。</figcaption>
+</figure>
+
+<h3 id="g7_bridge_transform-_14">忘れたときの飛び先</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>思い出すこと</th>
+<th>章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>なぜ足し算で表すか / 円の影</td>
+<td>G0–G2</td>
+</tr>
+<tr>
+<td>面積（積分）の道具</td>
+<td>G3</td>
+</tr>
+<tr>
+<td>直交と係数公式</td>
+<td>G4–G5</td>
+</tr>
+<tr>
+<td>複素・オイラー</td>
+<td>G6</td>
+</tr>
+<tr>
+<td>橋・変換対・三性質</td>
+<td>本章</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="g7_bridge_transform-8">8. 章のまとめ</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>回転で書く</td>
+<td>\(\cos\theta=(e^{i\theta}+e^{-i\theta})/2\)</td>
+</tr>
+<tr>
+<td>複素級数</td>
+<td>\(f\sim\sum c_n e^{int}\)、\(c_n=\frac{1}{2\pi}\int fe^{-int}dt\)</td>
+</tr>
+<tr>
+<td>橋</td>
+<td>\(\Delta\omega=2\pi/T\to0\) で \(\sum\to\int\)</td>
+</tr>
+<tr>
+<td>変換対</td>
+<td>\(F=\int fe^{-i\omega t}dt\)、\(f=\frac{1}{2\pi}\int Fe^{i\omega t}d\omega\)</td>
+</tr>
+<tr>
+<td>矩形例</td>
+<td>\(F=a\,\mathrm{sinc}(\omega a/2)\)</td>
+</tr>
+<tr>
+<td>三性質</td>
+<td>線形性／平行移動／スケール</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="g7_bridge_transform-9">9. 導出チェック（白紙で）</h2>
+<ol>
+<li>\(\cos,\sin\) を \(e^{\pm i\theta}\) で書け。  </li>
+<li>\(c_n\) の積分公式を、直交性の引用つきで導け。  </li>
+<li>(153) 型の並べ替えで \(T\Delta\omega/(2\pi)=1\) を確認せよ。  </li>
+<li>矩形の \(F(\omega)\) を、端点代入から sinc まで通して計算せよ。  </li>
+<li>平行移動の性質を、置換積分で再現せよ。  </li>
+</ol>
+<h2 id="g7_bridge_transform-10">10. 確認</h2>
+<ol>
+<li>変換対の二式を何も見ずに書き、どちらが測る側か言え。  </li>
+<li>「逆変換の逆」は何の逆か、一文で述べよ。  </li>
+<li>パルスが狭いほど \(F\) が横に広がる理由を、sinc の式から説明せよ。  </li>
+<li>「時間を 2 倍速につぶす」と周波数側で何が起きるか、性質の式で言え。  </li>
+<li>（振り返り）級数と変換の違いを「周期」「周波数」「組み立て方」の三点で対比せよ。  </li>
+</ol>
+<hr />
+<h2 id="g7_bridge_transform-11">11. 次の章への引き</h2>
+<p>道具は、すべて揃いました。</p>
+<ul>
+<li>分解する技術: 変換 \(F(\omega)\)  </li>
+<li>弱める技術: 周波数側で手を加える  </li>
+<li>戻す技術: 逆変換  </li>
+</ul>
+<p>さあ、最初の駅に戻りましょう。</p>
+<p><strong>G0 で見たあの魔法——JPEG は何を捨てていたのか？——の正体に、自分の手で答え合わせをします。</strong></p>
+<p>→ <a href="#g8_answer_jpeg">G8. JPEG の正体に戻る</a></p>
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g6_complex_rotation">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g8_answer_jpeg">次へ ›</a></nav>
+</section>
+<section class="chapter" id="g8_answer_jpeg" data-part="G" data-part-name="動機主導" data-code="G8" data-title="JPEG の正体に戻る" data-bar="G8 · JPEG の正体に戻る" data-prev="g7_bridge_transform" data-next="g9_teachback_graduation">
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g7_bridge_transform">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g9_teachback_graduation">次へ ›</a></nav>
+<h1 id="g8_answer_jpeg-g8-jpeg">G8. JPEG の正体に戻る — 謎の答え合わせ</h1>
+<blockquote>
+<p><strong>到達:</strong> 波形から「どの速さがどれだけ混ざるか」を手計算で出し、言葉で読める。画像を縞の重ね合わせとして捉え、ぼかし・エッジ・圧縮を「どの縞を残すか」の操作として自分で実行できる。G0 で提示した謎に、式で答えられる。<br />
+<strong>この章は旅の答え合わせです。</strong><br />
+<!-- eq-source: v2-E1 / v2-E2 --></p>
+</blockquote>
+<hr />
+<h2 id="g8_answer_jpeg-0-g0">0. G0 で見た魔法——思い出してください</h2>
+<p>旅の最初の日に、三つの魔法を見ました。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>G0 の魔法</th>
+<th>謎</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>同じ「ド」なのにピアノとフルートの音色が違う</td>
+<td>混ざり方を<strong>数として取り出す</strong>には？</td>
+</tr>
+<tr>
+<td>写真の一行は波だった</td>
+<td>「ゆっくり／細かい変化」を測るには？</td>
+</tr>
+<tr>
+<td>JPEG は目立たないものを捨てて圧縮する</td>
+<td><strong>何をどう捨てているのか？</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>そして歩いてきました。足し算（G1）、円の影（G2）、面積（G3）、直交（G4）、級数（G5）、回転の一文字（G6）、無限への橋（G7）。</p>
+<p>道具は全部あります。<strong>答え合わせに行きましょう。</strong></p>
+<hr />
+<h2 id="g8_answer_jpeg-1">1. まず道具選び — 級数か、変換か</h2>
+<p>波形を目の前にしたとき、知りたいことは一つ:</p>
+<blockquote>
+<p>この波には、どの速さの回転が、どれだけ混ざっているか。</p>
+</blockquote>
+<p>迷ったらこの一文で決まります:</p>
+<blockquote>
+<p>ずっと同じ形がくり返すか？　<strong>はい → 級数。いいえ → 変換。</strong></p>
+</blockquote>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 168" width="440" height="168" role="img" aria-label="くり返す波は級数、一度きりの波は変換">
+  <rect width="440" height="168" fill="#fffdf8"/>
+  <text x="16" y="20" font-size="12" fill="#1c1a16">同じ仕事（混ざりを測る）。答えの形が違う</text>
+  <text x="36" y="44" font-size="11" fill="#2c5f4a">くり返す → 級数（棒）</text>
+  <line x1="24" y1="88" x2="200" y2="88" stroke="#ddd" stroke-width="1"/>
+  <path d="M 28 88 L 28 58 L 52 58 L 52 118 L 76 118 L 76 58 L 100 58 L 100 118 L 124 118 L 124 58 L 148 58 L 148 118 L 172 118 L 172 88" fill="none" stroke="#2c5f4a" stroke-width="2"/>
+  <text x="236" y="44" font-size="11" fill="#c45c26">一度きり → 変換（連続な山）</text>
+  <line x1="220" y1="88" x2="428" y2="88" stroke="#ddd" stroke-width="1"/>
+  <path d="M 228 88 L 268 88 L 300 40 L 332 88 L 420 88" fill="none" stroke="#c45c26" stroke-width="2"/>
+  <text x="16" y="148" font-size="11" fill="#555">左の棒はとびとびの倍音。右の山は、あらゆる速さの重み。</text>
+</svg>
+<figcaption>くり返すなら棒（線スペクトル）、一度きりなら山（連続スペクトル）。</figcaption>
+</figure>
+
+<h3 id="g8_answer_jpeg-_1">手計算チェックリスト（変換）</h3>
+<ol>
+<li>\(f(t)\) を区間ごとに書く（ゼロのところは積分から外す）  </li>
+<li>\(F(\omega)=\int f e^{-i\omega t}dt\) に代入する  </li>
+<li>原始関数を使って端点代入する  </li>
+<li>\(F(0)\) やピークの位置を読む  </li>
+<li>「遅い成分が多いか／広い帯域か」を一言で言う  </li>
+</ol>
+<hr />
+<h2 id="g8_answer_jpeg-2">2. 音の答え合わせ — 音色とはスペクトルだった</h2>
+<h3 id="g8_answer_jpeg-1_1">例① — 一度消える音（変換）</h3>
+<p>「叩いてすぐ消える音」の原型として、時刻ゼロで高さ 1、左右に減衰する山を考えます（\(a>0\)）:</p>
+<div class="math-block">$$
+f(t)=e^{-a|t|}
+=
+\begin{cases}
+e^{at} & t<0,\\
+e^{-at} & t\ge 0.
+\end{cases}
+$$</div>
+<p>左右に分けて積分します。</p>
+<p>右側（\(t\ge0\)）:</p>
+<div class="math-block">$$
+\begin{aligned}
+\int_{0}^{\infty}e^{-(a+i\omega)t}\,dt
+&=\Bigl[\frac{e^{-(a+i\omega)t}}{-(a+i\omega)}\Bigr]_{0}^{\infty}\\
+&=\frac{1}{a+i\omega}.
+\end{aligned}
+$$</div>
+<p>左側（\(t<0\)）も同様に \(\dfrac{1}{a-i\omega}\)。和を取ると:</p>
+<div class="math-block">$$
+F(\omega)
+=\frac{1}{a+i\omega}+\frac{1}{a-i\omega}
+=\frac{2a}{a^2+\omega^2}.
+$$</div>
+<ul>
+<li><strong>読み:</strong> 「ツーエー オーバー エーニージョウ タス オメガニジョウ」  </li>
+<li><strong>よみ:</strong> 実数で、\(\omega=0\) で最大 \(2/a\)。裾は \(1/\omega^2\) で滑らかに減る。</li>
+</ul>
+<p>確認計算: \(a=1\) なら \(F(0)=2\)、\(F(1)=1\)。</p>
+<p><strong>解釈:</strong> \(a\) が大きい＝速く消える音ほど、山は低く・横に広い。G7 の「短いパルス ↔ 広いスペクトル」と同じ標語です。</p>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 200" width="440" height="200" role="img" aria-label="速く消える山ほど、周波数の山は横に広い">
+  <rect width="440" height="200" fill="#fffdf8"/>
+  <text x="16" y="18" font-size="12" fill="#1c1a16">速く消える ↔ 周波数は広い山</text>
+  <text x="40" y="40" font-size="11" fill="#555">時間 f(t)</text>
+  <line x1="24" y1="110" x2="200" y2="110" stroke="#bbb" stroke-width="1"/>
+  <path d="M 40 110 L 70 100 L 100 70 L 112 48 L 124 70 L 154 100 L 184 110" fill="none" stroke="#2c5f4a" stroke-width="2"/>
+  <text x="96" y="132" font-size="11" fill="#2c5f4a">ゼロで尖る山</text>
+  <text x="230" y="40" font-size="11" fill="#555">周波数 F(ω)</text>
+  <line x1="220" y1="110" x2="428" y2="110" stroke="#bbb" stroke-width="1"/>
+  <path d="M 228 108 L 250 96 L 280 60 L 310 44 L 340 60 L 370 96 L 420 108" fill="none" stroke="#c45c26" stroke-width="2"/>
+  <text x="24" y="168" font-size="11" fill="#555">a が大きい（急に消える）ほど、右の山は低く・横に広がる。</text>
+</svg>
+<figcaption>時間で急 ↔ 周波数で広い。</figcaption>
+</figure>
+
+<h3 id="g8_answer_jpeg-2_1">例② — くり返す音（級数・線スペクトル）</h3>
+<p>G5 で完全計算した方形波を思い出しましょう。\(a_n=0\)、奇数のみ \(b_n=4/(n\pi)\)。<br />
+これを「棒グラフ」として眺めると——<strong>線スペクトル</strong>です。</p>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 180" width="440" height="180" role="img" aria-label="方形波の線スペクトルは奇数の棒だけ">
+  <rect width="440" height="180" fill="#fffdf8"/>
+  <text x="16" y="18" font-size="12" fill="#1c1a16">くり返す方形波 → 奇数の棒だけ</text>
+  <line x1="24" y1="150" x2="420" y2="150" stroke="#bbb" stroke-width="1"/>
+  <line x1="80" y1="150" x2="80" y2="40" stroke="#2c5f4a" stroke-width="8"/>
+  <line x1="160" y1="150" x2="160" y2="88" stroke="#2c5f4a" stroke-width="8"/>
+  <line x1="240" y1="150" x2="240" y2="108" stroke="#2c5f4a" stroke-width="8"/>
+  <line x1="320" y1="150" x2="320" y2="120" stroke="#2c5f4a" stroke-width="8"/>
+  <text x="72" y="168" font-size="11" fill="#555">n=1</text>
+  <text x="152" y="168" font-size="11" fill="#555">n=3</text>
+  <text x="232" y="168" font-size="11" fill="#555">n=5</text>
+  <text x="312" y="168" font-size="11" fill="#555">n=7</text>
+  <text x="120" y="36" font-size="11" fill="#c45c26">偶数は高さ 0（棒が立たない）</text>
+</svg>
+<figcaption>基本波が最も高く、奇数倍音が \(1/n\) で弱くなる。</figcaption>
+</figure>
+
+<p><strong>ここで魔法①が解けます。</strong></p>
+<blockquote>
+<p>ピアノとフルートの違い ＝ <strong>この棒の並び方が違う</strong>。<br />
+同じ基本高さでも、「何倍音がどれだけ混ざるか」の配分が楽器ごとに違う。<br />
+フーリエ級数はその配分を、掛けて一周積分という確定した手続きで取り出せる。</p>
+</blockquote>
+<p>耳は無意識にこの分解をして音色を聞き分けていた——それを、私たちは式でできるようになりました。</p>
+<blockquote>
+<p>🔬 <strong>Living Figure:</strong> <a href="https://ogaogamirai.github.io/public/2d-commons/viewer.html?model=fourier-partials">足すほど段差になる — フーリエ部分和</a>　（棒の正体である級数の足し算を、もう一度手で動かしてみましょう）</p>
+</blockquote>
+<h3 id="g8_answer_jpeg-3-f">例③ — 性質だけで新しい波の F を書く</h3>
+<p>積分なしでも書けます。幅 2 の矩形（\(F_0=2\operatorname{sinc}\omega\)）を時間で 2 倍圧縮してから \(t=1\) 遅らせた \(g(t)=f_0(2(t-1))\):</p>
+<ol>
+<li>スケール（\(a=2\)）: \(\mathcal{F}\{f_0(2t)\}=\operatorname{sinc}(\omega/2)\)  </li>
+<li>ずらし（\(t_0=1\)）: \(G(\omega)=e^{-i\omega}\operatorname{sinc}\bigl(\frac{\omega}{2}\bigr)\)  </li>
+</ol>
+<p>G7 の三性質が、ここで道具として働きます。</p>
+<hr />
+<h2 id="g8_answer_jpeg-3-jpeg">3. 画像の答え合わせ — JPEG が捨てていたもの</h2>
+<h3 id="g8_answer_jpeg-_2">画像は二次元の信号</h3>
+<p>位置 \((x,y)\) ごとの明るさ \(f(x,y)\)。一次元の \(t\) が縦と横の二つになっただけです。<br />
+変換も二変数に延ばします:</p>
+<div class="math-block">$$
+F(u,v):=\iint f(x,y)\,e^{-i(ux+vy)}\,dx\,dy,
+\qquad
+f(x,y)=\frac{1}{(2\pi)^2}\iint F(u,v)\,e^{i(ux+vy)}\,du\,dv.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 画像を「いろいろな向き・細かさの<strong>縞</strong>」の重ね合わせとして書く。\(F(u,v)\) が各縞の混ざり具合。逆変換で測った分量どおり縞を足して戻す。</li>
+</ul>
+<p>縞 \(e^{i(ux+vy)}\) の読み方:</p>
+<ul>
+<li>\((u,v)\) の<strong>向き</strong> ＝ 縞の向き（縦縞・横縞・斜め）  </li>
+<li>原点からの距離 \(|(u,v)|\) ＝ 縞の細かさ。大きいほど細かい ＝ <strong>高周波</strong>  </li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>スペクトル側</th>
+<th>画像側の見た目</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>低周波が強い</td>
+<td>大きな明るい／暗い塊、なめらかな空や肌</td>
+</tr>
+<tr>
+<td>高周波が強い</td>
+<td>輪郭、髪の毛、文字、ざらつき</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>標語: なめらかさは低周波。鋭さ・細かさは高周波。</strong></p>
+</blockquote>
+<h3 id="g8_answer_jpeg-1_2">操作① — ぼかし（ローパス）</h3>
+<p>周波数側で手を加えてから戻す——逆変換が初めて「作り替える」ために働きます。</p>
+<div class="math-block">$$
+F_{\mathrm{blur}}(u,v)
+=
+\begin{cases}
+F(u,v) & \sqrt{u^2+v^2}\le R,\\
+0 & \sqrt{u^2+v^2}>R.
+\end{cases}
+$$</div>
+<ul>
+<li><strong>よみ:</strong> 半径 \(R\) より外側（高周波）を捨てる。線形性より、「残した縞だけを足し直す」操作。\(R\) が小さいほど強くぼける。</li>
+</ul>
+<h3 id="g8_answer_jpeg-2_2">操作② — エッジ強調（ハイパス)</h3>
+<p>逆発想——中心（低周波）を落とす:</p>
+<div class="math-block">$$
+F_{\mathrm{edge}}(u,v)
+=
+\begin{cases}
+0 & \sqrt{u^2+v^2}\le R,\\
+F(u,v) & \sqrt{u^2+v^2}>R.
+\end{cases}
+$$</div>
+<p>平坦な面は灰色に近づき、境界線だけが残ります。</p>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 188" width="440" height="188" role="img" aria-label="中心を残すとぼける。外側を残すと輪郭が残る">
+  <rect width="440" height="188" fill="#fffdf8"/>
+  <text x="16" y="20" font-size="12" fill="#1c1a16">残す場所が、見た目を決める</text>
+  <circle cx="90" cy="92" r="52" fill="#eee8dc" stroke="#bbb"/>
+  <circle cx="90" cy="92" r="22" fill="#2c5f4a" fill-opacity="0.35" stroke="#2c5f4a"/>
+  <text x="68" y="96" font-size="11" fill="#2c5f4a">残す</text>
+  <text x="48" y="160" font-size="11" fill="#2c5f4a">ローパス → ぼける</text>
+  <circle cx="250" cy="92" r="52" fill="#f3e0d4" stroke="#bbb"/>
+  <circle cx="250" cy="92" r="22" fill="#fffdf8" stroke="#c45c26"/>
+  <text x="228" y="88" font-size="11" fill="#c45c26">捨てる</text>
+  <text x="204" y="160" font-size="11" fill="#c45c26">ハイパス → 輪郭</text>
+  <text x="330" y="80" font-size="11" fill="#555">円の内側が</text>
+  <text x="330" y="98" font-size="11" fill="#555">原点付近</text>
+  <text x="330" y="116" font-size="11" fill="#555">＝粗い縞</text>
+</svg>
+<figcaption>中心（低周波）だけ残して戻すとぼける。外側（高周波）だけ残すと輪郭。</figcaption>
+</figure>
+
+<h3 id="g8_answer_jpeg-3">操作③ — 圧縮。そして、あの謎の答え</h3>
+<p>JPEG の骨格はこうです:</p>
+<ol>
+<li>画像（小さなブロックごと）を周波数成分に分解する  </li>
+<li>低周波は精度よく残す  </li>
+<li><strong>高周波は丸める・ゼロにする</strong>  </li>
+<li>残った係数だけ保存。開くときは逆変換で近似画像を作る  </li>
+</ol>
+<p>データ量を減らせる理由は、<strong>目が細かい高周波の誤差に鈍い</strong>から。捨てても、ほとんど見えない。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>強く圧縮</th>
+<th>弱く圧縮</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>高周波を多く捨てる</td>
+<td>多く残す</td>
+</tr>
+<tr>
+<td>ファイルは小さい</td>
+<td>大きい</td>
+</tr>
+<tr>
+<td>にじみ・ブロックノイズが出やすい</td>
+<td>細部が残る</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<blockquote>
+<h3 id="g8_answer_jpeg-_3">🎉 謎の解答</h3>
+<p><strong>G0 の問い:「JPEG は、何をどう捨てているのか？」</strong></p>
+<p><strong>答え: 画像の中の「細かい縞」（高周波成分）の係数を、粗く丸めて捨てている。</strong></p>
+<p>どの縞がどれだけ混ざっているかは、フーリエ変換——掛けて積分して測る——で分かる。<br />
+測ったあとだから、重要な縞（低周波）とそうでない縞（高周波）を選別できる。<br />
+そして逆変換で、残った縞だけを足し直せば近似画像になる。</p>
+<p>「測れる」→「選べる」→「捨てられる」→「戻せる」。<br />
+あの魔法の正体は、私たちが G3〜G7 で一歩ずつ作った道具そのものでした。</p>
+</blockquote>
+<hr />
+<h2 id="g8_answer_jpeg-4-22">4. 手で追うミニ実験 — 2×2 画素</h2>
+<p>計算機なしで、圧縮の思想を紙の上で確かめます。</p>
+<h3 id="g8_answer_jpeg-_4">設定</h3>
+<p>明るさだけ考えた 2×2 画像:</p>
+<div class="math-block">$$
+\begin{pmatrix}
+8 & 8 \\
+8 & 2
+\end{pmatrix}
+$$</div>
+<p>右下だけ暗い——<strong>角にエッジ</strong>がある画像です。</p>
+<h3 id="g8_answer_jpeg-_5">手順</h3>
+<ol>
+<li><strong>平均を求める:</strong> 全体の平均は \((8+8+8+2)/4=6.5\)。「画面全体の底上げ」＝低周波（直流）成分  </li>
+<li><strong>細部を指す:</strong> 右下だけ平均からのずれが大きい。この「ずれ」が高周波側の成分  </li>
+<li><strong>ローパスの極論:</strong> 全部を平均 6.5 で塗りつぶす → \(\begin{pmatrix}6.5&6.5\\6.5&6.5\end{pmatrix}\)。エッジが消えた＝<strong>ぼかしの行き着く先</strong>  </li>
+<li><strong>ハイパスの極論:</strong> 平均を引いた残り \(\begin{pmatrix}1.5&1.5\\1.5&-4.5\end{pmatrix}\) だけ残す → 一様部分は消え、右下の差が際立つ＝<strong>エッジ抽出の行き着く先</strong>  </li>
+</ol>
+<p>これは §3 の (blur)(edge) の超縮小版です。大きな画像でも、やっていることは同じ——<strong>成分に分けて、残す場所を選ぶ</strong>。</p>
+<hr />
+<h2 id="g8_answer_jpeg-5">5. おまけ — 音が数字になる瞬間</h2>
+<p>録音ファイルは、連続な空気の揺れではなく<strong>数値の列</strong>です。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>段階</th>
+<th>やること</th>
+<th>捨てる情報</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>標本化</strong></td>
+<td>時間を間隔 \(T_s\) ごとに読む（\(f_s=1/T_s\) 点/秒）</td>
+<td>点と点のあいだ</td>
+</tr>
+<tr>
+<td><strong>量子化</strong></td>
+<td>各値を有限ビットの整数に丸める</td>
+<td>高さの細部</td>
+</tr>
+</tbody>
+</table></div>
+<p>刻みが粗すぎると、速い振動が遅い波に化けます（エイリアシング）。防ぐ目安が<strong>ナイキスト条件</strong>:</p>
+<div class="math-block">$$
+f_s>2 f_{\max}.
+$$</div>
+<ul>
+<li><strong>よみ:</strong> いちばん細かい波について、1 周期あたり 2 点より多く取れ。CD の \(44100\,\mathrm{Hz}\) は「可聴域の上限約 20kHz の 2 倍強を確保」しているわけです。</li>
+</ul>
+<p>計算機でサンプル列のスペクトルを直接計算するのが DFT（離散フーリエ変換）——積分 \(\int fe^{-i\omega t}dt\) が有限和 \(\sum_n f[n]e^{-i2\pi kn/N}\) に変わっただけ、という対応まで押さえておけば十分です。</p>
+<hr />
+<h2 id="g8_answer_jpeg-6">6. 章のまとめ</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>問い</th>
+<th>答え</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>音色の違いはどこにあるか</td>
+<td>倍音の混ざり具合（線スペクトル）。級数で取り出せる</td>
+</tr>
+<tr>
+<td>一度消える音の混ざり</td>
+<td>変換 \(F(\omega)\)。例: \(2a/(a^2+\omega^2)\)</td>
+</tr>
+<tr>
+<td>JPEG は何を捨てているか</td>
+<td>高周波（細かい縞）の係数。目が鈍いことを利用</td>
+</tr>
+<tr>
+<td>どうやって戻すか</td>
+<td>残した縞で逆変換</td>
+</tr>
+<tr>
+<td>音のデジタル化</td>
+<td>標本化＋量子化。ナイキスト \(f_s>2f_{\max}\)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="g8_answer_jpeg-7">7. 手を動かす確認</h2>
+<ol>
+<li>「サイレンが規則正しく鳴り続ける音」と「一回だけ鳴って消える音」——それぞれ級数・変換のどちらを使うか、理由とともに述べよ。  </li>
+<li>\(a=2\) の指数パルスで \(F(0)\) と \(F(2)\) を求めよ。  </li>
+<li>方形波の \(b_1,b_2,b_3\) を言い、棒の強さの順に並べよ。  </li>
+<li>ローパスで \(R\) を小さくすると、なぜよりぼけるか。  </li>
+<li>圧縮が「高周波を粗くする」理由を、目の性質と結びつけて一文で書け。  </li>
+<li>2×2 実験で、ハイパス版の行列を自分で計算せよ。  </li>
+<li>最高周波数 \(20\,\mathrm{kHz}\) を残したいときの \(f_s\) の下限の目安を言え。  </li>
+</ol>
+<hr />
+<h2 id="g8_answer_jpeg-8">8. 最後の駅へ</h2>
+<p>三つの魔法すべてに、式で答えました。</p>
+<p>あなたは今——</p>
+<ul>
+<li>円の影から波を作り（G2）  </li>
+<li>面積で合ってる度を測り（G3）  </li>
+<li>直交で部品を取り出し（G4）  </li>
+<li>係数を自分の手で導き（G5）  </li>
+<li>回転を一文字にまとめ（G6）  </li>
+<li>無限への橋を渡り（G7）  </li>
+<li><strong>JPEG の正体に自分で答えた</strong>（本章）  </li>
+</ul>
+<p>残る駅はひとつ。<strong>誰かに説明できたら、卒業です。</strong></p>
+<p>→ <a href="#g9_teachback_graduation">G9. Teach-Back — 誰かに説明して卒業する</a></p>
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g7_bridge_transform">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><a class="chap-nav-link" href="#g9_teachback_graduation">次へ ›</a></nav>
+</section>
+<section class="chapter" id="g9_teachback_graduation" data-part="G" data-part-name="動機主導" data-code="G9" data-title="Teach-Back" data-bar="G9 · Teach-Back" data-prev="g8_answer_jpeg" data-next="">
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g8_answer_jpeg">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><span class="chap-nav-link is-disabled">次へ ›</span></nav>
+<h1 id="g9_teachback_graduation-g9-teach-back">G9. Teach-Back — 誰かに説明して卒業する</h1>
+<blockquote>
+<p><strong>到達:</strong> G0 からここまでを、式を指しながら自分の言葉で一本に語れる。詰まった駅だけ、元の章へ戻れる。<br />
+<strong>この章は本編の最終章です。合格条件は「誰かに説明できる」こと。</strong><br />
+<!-- eq-source: v2-E3（地図は G7 §7 にも収録） --></p>
+</blockquote>
+<hr />
+<h2 id="g9_teachback_graduation-0">0. なぜ「説明」が卒業条件なのか</h2>
+<p>長い旅でした。最後に確かめるのは、暗記ではなく<strong>説明できるか</strong>です。</p>
+<p>理解には段階があります。</p>
+<ol>
+<li>読んで分かった気になる  </li>
+<li>式を追える  </li>
+<li>自分で導ける  </li>
+<li><strong>人に伝えられる</strong> ← 本書の合格ライン</li>
+</ol>
+<p>G0 で「魔法を見せて、正体を解きに行く」と約束しました。その約束を、あなた自身の言葉で語り直すのがこの章です。</p>
+<p>やり方:</p>
+<ol>
+<li>§1 のチェックリストを、何も見ずに埋めてみる  </li>
+<li>§2 の台本で、声に出すか紙に書いて通す  </li>
+<li>詰まった項目だけ、§3 の飛び先へ戻る  </li>
+<li>§4 の表で、できた／まだを自分で付ける  </li>
+</ol>
+<figure class="review-fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 120" width="440" height="120" role="img" aria-label="測る・戻す・混ぜる・刻む・ぼかすを一本で語る">
+  <rect width="440" height="120" fill="#fffdf8"/>
+  <text x="16" y="22" font-size="12" fill="#1c1a16">一本で語れたら、到達</text>
+  <rect x="12" y="40" width="72" height="36" rx="5" fill="#2c5f4a" fill-opacity="0.12" stroke="#2c5f4a"/>
+  <text x="28" y="62" font-size="12" fill="#2c5f4a">測る</text>
+  <rect x="96" y="40" width="72" height="36" rx="5" fill="#2c5f4a" fill-opacity="0.12" stroke="#2c5f4a"/>
+  <text x="112" y="62" font-size="12" fill="#2c5f4a">戻す</text>
+  <rect x="180" y="40" width="72" height="36" rx="5" fill="#c45c26" fill-opacity="0.12" stroke="#c45c26"/>
+  <text x="196" y="62" font-size="12" fill="#c45c26">混ぜる</text>
+  <rect x="264" y="40" width="72" height="36" rx="5" fill="#c45c26" fill-opacity="0.12" stroke="#c45c26"/>
+  <text x="280" y="62" font-size="12" fill="#c45c26">刻む</text>
+  <rect x="348" y="40" width="80" height="36" rx="5" fill="#2a6fad" fill-opacity="0.12" stroke="#2a6fad"/>
+  <text x="368" y="62" font-size="12" fill="#2a6fad">ぼかす</text>
+  <text x="16" y="100" font-size="11" fill="#555">変換・逆変換・線形・標本化・高周波を切る。</text>
+</svg>
+<figcaption>五つの動詞を、式を指しながら一本の物語にできればよい。</figcaption>
+</figure>
+
+<hr />
+<h2 id="g9_teachback_graduation-1">1. 最終チェックリスト（白紙で）</h2>
+<h3 id="g9_teachback_graduation-_1">物語</h3>
+<ul>
+<li>[ ] 「複雑な信号＝単純な波の足し算／分解」を一文で言える  </li>
+<li>[ ] 標準形 \(y=A\sin(\omega t+\phi)\) の各文字の意味と、円の影としての由来  </li>
+<li>[ ] 「くり返す→級数／一度きり→変換」の使い分け  </li>
+</ul>
+<h3 id="g9_teachback_graduation-_2">導出できる公式（指差し確認）</h3>
+<ul>
+<li>[ ] オイラー \(e^{i\theta}=\cos\theta+i\sin\theta\)（微分の一意性から）  </li>
+<li>[ ] 直交性 \(\int\sin(mt)\sin(nt)=\pi\delta_{mn}\)（積和公式から）  </li>
+<li>[ ] 実数形係数 \(a_0,a_n,b_n\) ／複素形 \(c_n\)、両者の行き来  </li>
+<li>[ ] 変換対 \(F(\omega)=\int fe^{-i\omega t}dt\) / 逆変換（\(T\to\infty\) の橋から）  </li>
+<li>[ ] 三性質：線形性・平行移動・スケール  </li>
+</ul>
+<h3 id="g9_teachback_graduation-_3">応用</h3>
+<ul>
+<li>[ ] 音色＝倍音スペクトルの説明  </li>
+<li>[ ] 矩形パルス → sinc、「狭い ↔ 広い」のトレードオフ  </li>
+<li>[ ] JPEG が捨てているもの（高周波）と、なぜ見た目が保たれるか  </li>
+<li>[ ] ナイキスト条件 \(f_s>2f_{\max}\) の意味  </li>
+</ul>
+<hr />
+<h2 id="g9_teachback_graduation-2">2. 誰かに説明する台本</h2>
+<p>相手は「三角比は知っているが、フーリエは初めて」の人。各問で<strong>式を書いてから</strong>言葉を添えます。</p>
+<h3 id="g9_teachback_graduation-a-g0g2">ブロック A — 入口と円（G0–G2）</h3>
+<p><strong>A1.</strong> 「音も画像も、単純な波の足し算」とはどういう意味か。JPEG との関係も添えて。<br />
+<strong>A2.</strong> なぜ \(\sin\) が部品なのか。「回る点の縦の影」を使って説明せよ。<br />
+<strong>A3.</strong> ラジアンとは何か。なぜ一周が \(2\pi\) なのか、弧の長さで説明せよ。</p>
+<h3 id="g9_teachback_graduation-b-g3g4">ブロック B — 面積と直交（G3–G4）</h3>
+<p><strong>B1.</strong> 二つの波の「合ってる度」を面積で測るとはどういうことか。<br />
+<strong>B2.</strong> 直交性を一言で言い、「掛けて一周積分すると自分以外が消える」理由を積和公式で示せ。<br />
+<strong>B3.</strong> \(\sin^2(nt)\) の一周積分が \(\pi\) になる理由を言え。これがどこで効くか。</p>
+<h3 id="g9_teachback_graduation-c-g5g6">ブロック C — 係数とオイラー（G5–G6）</h3>
+<p><strong>C1.</strong> フーリエ級数（実数形）の完成形を書き、\(b_n=\frac{1}{\pi}\int f\sin(nt)dt\) を指して「掛けて一周してパイで割る」を実況せよ。<br />
+<strong>C2.</strong> 方形波で奇数の \(b_n\) だけ残る理由を、計算の芯か対称性の言葉で答えよ。<br />
+<strong>C3.</strong> オイラーの公式を述べ、角の和が掛け算になることを示せ。<br />
+<strong>C4.</strong> \(e^{i\pi}+1=0\) は何を言っている式か、円の言葉で答えよ。</p>
+<h3 id="g9_teachback_graduation-d-g7">ブロック D — 変換（G7）</h3>
+<p><strong>D1.</strong> 級数から変換への橋を、「周期を長くすると周波数の刻みが細かくなる」＋\(\Delta\omega=2\pi/T\) で語れ。<br />
+<strong>D2.</strong> 変換対を書け。どちらが「ほどく」でどちらが「組み立てる」か。「逆」は何の逆か。<br />
+<strong>D3.</strong> 混ぜる・ずらす・伸ばすを式で書け。ずらしても \(|F|\) が変わらない理由も。<br />
+<strong>D4.</strong> 矩形パルスの変換が sinc 型になることと、「狭い ↔ 広い」を語れ（積分の細部より形の意味）。  </p>
+<h3 id="g9_teachback_graduation-e-g8">ブロック E — 応用（G8）</h3>
+<p><strong>E1.</strong> 一度きりの減衰音とくり返すブザー音。級数／変換のどちらを選ぶか。<br />
+<strong>E2.</strong> 音のデジタル化の二段階（標本化・量子化）とナイキスト条件を説明せよ。<br />
+<strong>E3.</strong> 画像の「ぼかし」をスペクトル操作として説明せよ。<br />
+<strong>E4.</strong> JPEG 圧縮が「高周波を粗くする」理由を、目の性質と結びつけて述べよ。  </p>
+<hr />
+<h2 id="g9_teachback_graduation-3">3. 詰まったときの飛び先</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>詰まり</th>
+<th>戻る章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>動機・魔法の提示</td>
+<td>G0</td>
+</tr>
+<tr>
+<td>足し算の文法・部品</td>
+<td>G1</td>
+</tr>
+<tr>
+<td>円・ラジアン・影</td>
+<td>G2</td>
+</tr>
+<tr>
+<td>積分の道具</td>
+<td>G3</td>
+</tr>
+<tr>
+<td>直交</td>
+<td>G4</td>
+</tr>
+<tr>
+<td>係数公式・方形波</td>
+<td>G5</td>
+</tr>
+<tr>
+<td>複素・オイラー</td>
+<td>G6</td>
+</tr>
+<tr>
+<td>橋・変換対・性質</td>
+<td>G7</td>
+</tr>
+<tr>
+<td>波の手計算・標本化・画像・圧縮</td>
+<td>G8</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="g9_teachback_graduation-4">4. 自己採点表</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>領域</th>
+<th>できた</th>
+<th>まだ</th>
+<th>メモ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>物語（入口・円の影）</td>
+<td>□</td>
+<td>□</td>
+<td></td>
+</tr>
+<tr>
+<td>面積・直交</td>
+<td>□</td>
+<td>□</td>
+<td></td>
+</tr>
+<tr>
+<td>係数の導出</td>
+<td>□</td>
+<td>□</td>
+<td></td>
+</tr>
+<tr>
+<td>オイラー・複素級数</td>
+<td>□</td>
+<td>□</td>
+<td></td>
+</tr>
+<tr>
+<td>変換対・三性質</td>
+<td>□</td>
+<td>□</td>
+<td></td>
+</tr>
+<tr>
+<td>波の応用＋デジタル化</td>
+<td>□</td>
+<td>□</td>
+<td></td>
+</tr>
+<tr>
+<td>画像の応用（JPEG）</td>
+<td>□</td>
+<td>□</td>
+<td></td>
+</tr>
+<tr>
+<td>一本の物語として語れる</td>
+<td>□</td>
+<td>□</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>合格の目安:</strong> 「まだ」がゼロに近く、§2 を誰かに通して質問に答えられた。<br />
+残った「まだ」は、飛び先の章で閉じる。それがこの本の使い方です。</p>
+<hr />
+<h2 id="g9_teachback_graduation-5">5. 卒業</h2>
+<p>数式を指して——</p>
+<blockquote>
+<p><strong>測る</strong>（変換・係数）／ <strong>戻す</strong>（逆変換・級数）／ <strong>混ぜる</strong>（線形性）／ <strong>刻む</strong>（標本化）／ <strong>ぼかす</strong>（高周波を切る）</p>
+</blockquote>
+<p>を一本の物語で語れたあなたへ。</p>
+<p>G0 の夜、あなたはピアノとフルートの違いの前に立ち止まりました。<br />
+JPEG が何かを勝手に捨てている、と不思議に思いました。</p>
+<p>そして今日、あなたはこう言えます。</p>
+<blockquote>
+<p>「あれは、波を円の影として作り、面積で測り、直交で分け、回転を一文字にまとめ、<br />
+有限から無限への橋を渡って、必要な縞だけを選び取る技術だった」</p>
+</blockquote>
+<p>中2の三角比から始まった道が、大学レベルのフーリエ変換と、その実用まで届いています。<br />
+公式は暗記ではありません。あなたが自分の手で導いたものです。</p>
+<p><strong>ご卒業おめでとうございます。</strong></p>
+<p>次の冒険——DFT/FFT の詳細、不確定性原理、あるいは 3D Commons への Living Figure 化——は、いつでもここから歩き出せます。</p>
+<hr />
+<p><em>theory-v3 — 動機主導版・了</em></p>
+<nav class="chap-nav" aria-label="前後のユニット"><a class="chap-nav-link" href="#g8_answer_jpeg">‹ 前へ</a><button type="button" class="chap-nav-link toc-open">目次</button><span class="chap-nav-link is-disabled">次へ ›</span></nav>
+</section>
+  </main>
+
+  <button type="button" class="fab-toc toc-open" aria-haspopup="dialog" aria-controls="toc-sheet">目次</button>
+
+  <div class="toc-sheet" id="toc-sheet">
+    <button type="button" class="toc-sheet-back" tabindex="-1" aria-label="目次を閉じる"></button>
+    <div class="toc-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="toc-sheet-title">
+      <div class="toc-sheet-head">
+        <h2 id="toc-sheet-title">目次</h2>
+        <button type="button" class="toc-sheet-close" aria-label="閉じる">×</button>
+      </div>
+      <nav class="toc toc-in-sheet" aria-label="目次">
+<div class="toc-part"><div class="toc-part-name">G 動機主導</div><div class="toc-units"><a class="toc-link" href="#g0_experience" data-id="g0_experience" onclick="return window.bookGoTo ? (window.bookGoTo('g0_experience'), false) : true;">G0 体験</a><a class="toc-link" href="#g1_superposition" data-id="g1_superposition" onclick="return window.bookGoTo ? (window.bookGoTo('g1_superposition'), false) : true;">G1 足し算</a><a class="toc-link" href="#g2_circle_shadow" data-id="g2_circle_shadow" onclick="return window.bookGoTo ? (window.bookGoTo('g2_circle_shadow'), false) : true;">G2 円の影</a><a class="toc-link" href="#g3_area_measure" data-id="g3_area_measure" onclick="return window.bookGoTo ? (window.bookGoTo('g3_area_measure'), false) : true;">G3 面積</a><a class="toc-link" href="#g4_orthogonality" data-id="g4_orthogonality" onclick="return window.bookGoTo ? (window.bookGoTo('g4_orthogonality'), false) : true;">G4 直交</a><a class="toc-link" href="#g5_coefficients" data-id="g5_coefficients" onclick="return window.bookGoTo ? (window.bookGoTo('g5_coefficients'), false) : true;">G5 係数</a><a class="toc-link" href="#g6_complex_rotation" data-id="g6_complex_rotation" onclick="return window.bookGoTo ? (window.bookGoTo('g6_complex_rotation'), false) : true;">G6 e^{iθ}</a><a class="toc-link" href="#g7_bridge_transform" data-id="g7_bridge_transform" onclick="return window.bookGoTo ? (window.bookGoTo('g7_bridge_transform'), false) : true;">G7 橋</a><a class="toc-link" href="#g8_answer_jpeg" data-id="g8_answer_jpeg" onclick="return window.bookGoTo ? (window.bookGoTo('g8_answer_jpeg'), false) : true;">G8 答え合わせ</a><a class="toc-link" href="#g9_teachback_graduation" data-id="g9_teachback_graduation" onclick="return window.bookGoTo ? (window.bookGoTo('g9_teachback_graduation'), false) : true;">G9 卒業</a></div></div>
+</nav>
+    </div>
+  </div>
+
+  <script src="vendor/katex/katex.min.js"></script>
+  <script src="vendor/katex/auto-render.min.js"></script>
+  <script>
+    (function () {
+      var chapters = Array.prototype.slice.call(document.querySelectorAll("section.chapter"));
+      var barPart = document.getElementById("bar-part");
+      var barUnit = document.getElementById("bar-unit");
+      var barPrev = document.getElementById("bar-prev");
+      var barNext = document.getElementById("bar-next");
+      var sheet = document.getElementById("toc-sheet");
+      var currentId = "";
+
+      function setCurrent(ch) {
+        if (!ch || ch.id === currentId) return;
+        currentId = ch.id;
+        barPart.textContent = (ch.getAttribute("data-part") || "") + " " + (ch.getAttribute("data-part-name") || "");
+        barUnit.textContent = ch.getAttribute("data-bar") || "";
+        var prev = ch.getAttribute("data-prev") || "";
+        var next = ch.getAttribute("data-next") || "";
+        if (prev) {
+          barPrev.href = "#" + prev;
+          barPrev.classList.remove("is-disabled");
+        } else {
+          barPrev.href = "#toc";
+          barPrev.classList.add("is-disabled");
+        }
+        if (next) {
+          barNext.href = "#" + next;
+          barNext.classList.remove("is-disabled");
+        } else {
+          barNext.href = "#toc";
+          barNext.classList.add("is-disabled");
+        }
+        var links = document.querySelectorAll(".toc-link");
+        for (var i = 0; i < links.length; i++) {
+          links[i].classList.toggle("is-current", links[i].getAttribute("data-id") === currentId);
+        }
+      }
+
+      function updateFromScroll() {
+        var y = 72;
+        var current = chapters[0];
+        for (var i = 0; i < chapters.length; i++) {
+          if (chapters[i].getBoundingClientRect().top <= y) current = chapters[i];
+        }
+        if (current) setCurrent(current);
+      }
+
+      var ticking = false;
+      window.addEventListener("scroll", function () {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(function () {
+          ticking = false;
+          updateFromScroll();
+        });
+      }, { passive: true });
+
+      var navSeq = 0;
+      var tocLockY = 0;
+
+      function barOffset() {
+        var bar = document.querySelector(".reader-bar");
+        return (bar ? bar.offsetHeight : 56) + 8;
+      }
+
+      function findTarget(id) {
+        if (!id) return null;
+        try { id = decodeURIComponent(id); } catch (e0) {}
+        var chapter = document.querySelector("section.chapter[id=\"" + id.replace(/"/g, "") + "\"]");
+        if (chapter) return chapter;
+        return document.getElementById(id);
+      }
+
+      function goToId(id, updateHash) {
+        if (updateHash === undefined) updateHash = true;
+        var el = findTarget(id);
+        if (!el) return false;
+        var seq = ++navSeq;
+
+        function applyScroll() {
+          if (seq !== navSeq) return;
+          var y = el.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop || 0) - barOffset();
+          if (y < 0) y = 0;
+          try {
+            window.scrollTo(0, y);
+          } catch (e1) {
+            if (el.scrollIntoView) el.scrollIntoView(true);
+          }
+        }
+
+        applyScroll();
+        window.requestAnimationFrame(applyScroll);
+        setTimeout(applyScroll, 50);
+
+        if (updateHash) {
+          var nextHash = "#" + (el.id || id);
+          if (location.hash !== nextHash) {
+            try {
+              history.replaceState(null, "", nextHash);
+            } catch (e2) {}
+          }
+        }
+        if (el.classList && el.classList.contains("chapter")) setCurrent(el);
+        else if (id === "toc" || id === "top") {
+          currentId = "";
+          updateFromScroll();
+        }
+        return true;
+      }
+
+      function unlockTocSheet() {
+        if (!sheet.classList.contains("is-open") && !document.body.classList.contains("toc-open")) {
+          return;
+        }
+        sheet.classList.remove("is-open");
+        document.body.classList.remove("toc-open");
+        document.body.style.top = "";
+        window.scrollTo(0, tocLockY);
+      }
+
+      function openToc() {
+        tocLockY = window.pageYOffset || document.documentElement.scrollTop || 0;
+        sheet.classList.add("is-open");
+        document.body.classList.add("toc-open");
+        document.body.style.top = "-" + tocLockY + "px";
+        var cur = sheet.querySelector(".toc-link.is-current");
+        if (cur && cur.scrollIntoView) cur.scrollIntoView({ block: "nearest" });
+      }
+      function closeToc() {
+        unlockTocSheet();
+      }
+
+      function eventEl(ev) {
+        var t = ev.target;
+        if (t && t.nodeType === 3) t = t.parentNode;
+        return t;
+      }
+
+      document.addEventListener("click", function (ev) {
+        var t = eventEl(ev);
+        if (!t || !t.closest) return;
+
+        var openBtn = t.closest(".toc-open");
+        if (openBtn) {
+          ev.preventDefault();
+          if (sheet.classList.contains("is-open")) closeToc();
+          else openToc();
+          return;
+        }
+        // 背面オーバーレイ / 閉じるボタン（パネル内リンクより先に取らない）
+        if (t.classList && (t.classList.contains("toc-sheet-back") || t.classList.contains("toc-sheet-close"))) {
+          ev.preventDefault();
+          closeToc();
+          return;
+        }
+        if (t.closest(".toc-sheet-close")) {
+          ev.preventDefault();
+          closeToc();
+          return;
+        }
+        var jump = t.closest("a.toc-link, a.chap-nav-link, a.bar-nav");
+        if (!jump) return;
+        var href = jump.getAttribute("href") || "";
+        if (href.charAt(0) !== "#" || href.length < 2) return;
+        ev.preventDefault();
+        var targetId = jump.getAttribute("data-id") || href.slice(1);
+        var fromSheet = !!jump.closest(".toc-sheet");
+        if (fromSheet) {
+          unlockTocSheet();
+          setTimeout(function () { goToId(targetId, true); }, 0);
+        } else {
+          goToId(targetId, true);
+        }
+      }, true);
+
+      document.addEventListener("keydown", function (ev) {
+        if (ev.key === "Escape" && sheet.classList.contains("is-open")) closeToc();
+      });
+
+      window.addEventListener("hashchange", function () {
+        var id = location.hash ? location.hash.slice(1) : "";
+        if (id) goToId(id, false);
+      });
+
+      window.bookGoTo = goToId;
+
+      if (typeof renderMathInElement === "function" && typeof katex !== "undefined") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "\\[", right: "\\]", display: true },
+            { left: "\\(", right: "\\)", display: false }
+          ],
+          throwOnError: false,
+          errorColor: "#b00020",
+          strict: "ignore"
+        });
+      } else {
+        var el = document.getElementById("math-status");
+        if (el) el.style.display = "block";
+      }
+
+      updateFromScroll();
+      if (location.hash) {
+        var hashedId = location.hash.slice(1);
+        setTimeout(function () { goToId(hashedId, false); }, 0);
+      }
+    })();
+  </script>
+  <!-- book-nav:v5 toc-panel-zindex+onclick -->
+</body>
+</html>
