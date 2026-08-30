@@ -1,0 +1,48 @@
+<!-- layout v4 2026-08-30: widen panel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">三角形の面積 S = 1/2 bc sin A の導出図</title>
+  <desc id="desc">底辺aに対する高さhを、辺cと角Bの一方からc·sinBとして読むことを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 21px; fill: #334155; }
+    .side { font-size: 21px; fill: #334155; }
+    .sm { font-size: 17px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formula { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="540" y="42" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <line x1="90" y1="300" x2="430" y2="300" stroke="#38bdf8" stroke-width="7" stroke-linecap="round"/>
+  <line x1="200" y1="100" x2="430" y2="300" stroke="#f59e0b" stroke-width="7" stroke-linecap="round"/>
+  <line x1="200" y1="100" x2="90" y2="300" stroke="#10b981" stroke-width="7" stroke-linecap="round"/>
+  <line x1="200" y1="100" x2="200" y2="300" stroke="#ef4444" stroke-width="3" stroke-dasharray="7 5"/>
+
+  <path d="M 110.0 300.0 A 20 20 0 0 0 99.6 282.5" fill="none" stroke="#334155" stroke-width="3"/>
+
+  <text x="206" y="88" class="label">A</text>
+  <text x="66" y="324" class="label">B</text>
+  <text x="440" y="324" class="label">C</text>
+  <text x="252" y="330" class="side" fill="#0369a1">a</text>
+  <text x="340" y="196" class="side" fill="#b45309">b</text>
+  <text x="128" y="192" class="side" fill="#047857">c</text>
+  <text x="216" y="216" class="sm" fill="#b45309">h = c sinB</text>
+  <text x="118" y="288" class="sm" fill="#334155">B</text>
+
+  <text x="560" y="86" class="heading">面積 S の導出</text>
+  <text x="560" y="124" class="formula">S = 1/2 × 底辺 × 高さ</text>
+  <text x="560" y="152" class="formula">　 = 1/2 × a × (c sin B)</text>
+  <text x="560" y="186" class="formula">S = 1/2 ×(辺)(辺)× sin(夾角)</text>
+  <line x1="560" y1="204" x2="824" y2="204" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="560" y="224" class="note">・内接円：S = 1/2 r(a+b+c)</text>
+  <text x="560" y="248" class="note">・ヘロンの公式（3 辺だけ）</text>
+  <text x="560" y="272" class="note">　S = √{s(s−a)(s−b)(s−c)}</text>
+  <text x="560" y="302" class="formula">診断：4・5・30° → S = 5</text>
+  <text x="560" y="328" class="note">sin30° = 1/2　高さは自動で読める</text>
+  <text x="560" y="352" class="note">「高さが測れない」場面の救世主</text>
+</svg>

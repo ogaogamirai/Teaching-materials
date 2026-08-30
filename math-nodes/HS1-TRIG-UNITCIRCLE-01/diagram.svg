@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" role="img" aria-labelledby="title desc">
+  <title id="title">単位円上の 60° と 120° の点 P</title>
+  <desc id="desc">半径1の円周上の点Pのx座標がcosθ、y座標がsinθで、120°の点ではx座標が負になることを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 20px; }
+    .labelS { font-size: 16px; }
+    .heading { font-size: 24px; font-weight: 700; fill: #334155; }
+    .formula { font-size: 19px; fill: #475569; }
+    .note { font-size: 18px; fill: #475569; }
+    .axislabel { font-size: 22px; fill: #64748b; }
+  </style>
+
+  <rect width="820" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="560" y="38" width="236" height="330" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <line x1="100" y1="210" x2="408" y2="210" stroke="#94a3b8" stroke-width="3"/>
+  <line x1="250" y1="60" x2="250" y2="360" stroke="#94a3b8" stroke-width="3"/>
+
+  <circle cx="250" cy="210" r="140" fill="none" stroke="#64748b" stroke-width="3"/>
+
+  <line x1="180" y1="204" x2="320" y2="204" stroke="#38bdf8" stroke-width="8" stroke-linecap="round"/>
+  <line x1="180" y1="88.8" x2="180" y2="210" stroke="#10b981" stroke-width="8" stroke-linecap="round"/>
+  <line x1="320" y1="88.8" x2="320" y2="210" stroke="#10b981" stroke-width="8" stroke-linecap="round"/>
+
+  <line x1="250" y1="210" x2="320" y2="88.8" stroke="#f59e0b" stroke-width="6" stroke-linecap="round"/>
+  <line x1="250" y1="210" x2="180" y2="88.8" stroke="#f59e0b" stroke-width="6" stroke-linecap="round"/>
+
+  <path d="M 276.0 210.0 A 26 26 0 0 0 263.0 187.5" fill="none" stroke="#334155" stroke-width="3"/>
+  <path d="M 263.0 187.5 A 26 26 0 0 0 237.0 187.5" fill="none" stroke="#334155" stroke-width="3"/>
+
+  <circle cx="320" cy="88.8" r="7" fill="#0ea5e9"/>
+  <circle cx="180" cy="88.8" r="7" fill="#ef4444"/>
+
+  <text x="270" y="238" class="axislabel">x</text>
+  <text x="240" y="84" class="axislabel">y</text>
+  <text x="238" y="292" class="axislabel">O</text>
+
+  <text x="272" y="168" class="label" fill="#334155">60°</text>
+  <text x="216" y="168" class="label" fill="#334155">120°</text>
+
+  <text x="332" y="84" class="label" fill="#b45309">P₁ (60°)</text>
+  <text x="138" y="84" class="label" text-anchor="end" fill="#b45309">P₂ (120°)</text>
+
+  <text x="337" y="234" class="label" fill="#0369a1">cos 60° = 1/2</text>
+  <text x="172" y="234" class="labelS" text-anchor="end" fill="#0369a1">cos 120° = −1/2</text>
+  <text x="330" y="140" class="label" fill="#047857">sin 60° = √3/2</text>
+  <text x="172" y="140" class="labelS" text-anchor="end" fill="#047857">sin 120° = √3/2</text>
+  <text x="368" y="378" class="label" fill="#64748b">OP₁ = OP₂ = 半径 1</text>
+
+  <text x="580" y="80" class="heading">単位円の読み方</text>
+  <text x="580" y="124" class="formula">cos θ = 点 P の x 座標</text>
+  <text x="580" y="156" class="formula">sin θ = 点 P の y 座標</text>
+  <text x="580" y="188" class="formula">tan θ = y / x</text>
+  <line x1="580" y1="208" x2="772" y2="208" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="580" y="240" class="note">60° と 120° は</text>
+  <text x="580" y="266" class="note">y 軸の左右に映る形</text>
+  <text x="580" y="292" class="note">sin は同じ値のまま</text>
+  <text x="580" y="318" class="note">cos の符号だけ変わる</text>
+  <text x="580" y="348" class="note">→ cos 120° = −1/2</text>
+</svg>

@@ -1,0 +1,54 @@
+<!-- layout v4 2026-08-30: widen panel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">加法定理から 2 倍角への導出フロー</title>
+  <desc id="desc">加法定理にβ=αを代入して2倍角が生まれ、基本相互関係でcosの3形に分かれる流れを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; rx: 10; }
+    .head { font-size: 15px; font-weight: 700; fill: #334155; }
+    .form { font-size: 16px; fill: #475569; }
+    .sub { font-size: 13px; fill: #94a3b8; }
+    .arrow { stroke: #94a3b8; stroke-width: 2.5; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <rect x="60" y="46" width="420" height="72" rx="12" class="box"/>
+  <text x="84" y="78" class="head">加法定理（母公式）</text>
+  <text x="84" y="102" class="form">sin(α±β) = sinα cosβ ± cosα sinβ</text>
+
+  <line x1="270" y1="118" x2="270" y2="142" class="arrow"/>
+  <polygon points="262,142 270,152 278,142" fill="#94a3b8"/>
+  <text x="284" y="136" class="sub">β → α と置く</text>
+
+  <rect x="60" y="154" width="420" height="60" rx="12" class="box"/>
+  <text x="84" y="180" class="head">2 倍角（加法定理から自動で）</text>
+  <text x="84" y="202" class="form">sin 2α = 2 sinα cosα　・　cos 2α = cos²α − sin²α</text>
+
+  <line x1="270" y1="214" x2="270" y2="238" class="arrow"/>
+  <polygon points="262,238 270,248 278,238" fill="#94a3b8"/>
+  <text x="284" y="232" class="sub">sin²α + cos²α = 1 で改造</text>
+
+  <rect x="60" y="250" width="420" height="88" rx="12" class="box"/>
+  <text x="84" y="276" class="head">cos の 3 形・tan</text>
+  <text x="84" y="298" class="form">cos 2α = 2cos²α − 1 ＝ 1 − 2sin²α</text>
+  <text x="84" y="322" class="form">tan 2α = 2tanα / (1 − tan²α)</text>
+
+  <text x="568" y="88" class="heading">2 倍角の公式</text>
+  <text x="568" y="124" class="form">sin 2α = 2 sinα cosα</text>
+  <text x="568" y="148" class="form">cos 2α = cos²α − sin²α</text>
+  <text x="568" y="172" class="form">　　　　= 2cos²α − 1</text>
+  <text x="568" y="196" class="form">　　　　＝ 1 − 2sin²α</text>
+  <line x1="568" y1="214" x2="824" y2="214" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="242" class="note">β = α の代入だけで出る</text>
+  <text x="568" y="268" class="note">cos の 3 形はどれも同じ値</text>
+  <text x="568" y="294" class="note">tan は 1 − tan²α ≠ 0 に注意</text>
+  <text x="568" y="322" class="note">半角公式（次数下げ）への入口</text>
+  <text x="568" y="348" class="note">倍角で周期は半分の π</text>
+</svg>

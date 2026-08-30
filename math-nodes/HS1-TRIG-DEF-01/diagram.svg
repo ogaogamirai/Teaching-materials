@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" role="img" aria-labelledby="title desc">
+  <title id="title">角θを基準にした直角三角形</title>
+  <desc id="desc">底辺が隣辺、右側の縦辺が対辺、斜めの辺が斜辺であることを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 24px; }
+    .formula { font-size: 20px; fill: #475569; }
+    .heading { font-size: 24px; font-weight: 700; fill: #334155; }
+    .reading { font-size: 17px; fill: #475569; }
+  </style>
+
+  <rect width="820" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="58" width="250" height="330" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <line x1="92" y1="300" x2="450" y2="300" stroke="#38bdf8" stroke-width="8" stroke-linecap="round"/>
+  <line x1="450" y1="300" x2="450" y2="115" stroke="#10b981" stroke-width="8" stroke-linecap="round"/>
+  <line x1="92" y1="300" x2="450" y2="115" stroke="#f59e0b" stroke-width="8" stroke-linecap="round"/>
+
+  <path d="M 122 300 A 30 30 0 0 0 119 286" fill="none" stroke="#334155" stroke-width="4"/>
+  <path d="M 424 300 L 424 274 L 450 274" fill="none" stroke="#334155" stroke-width="4"/>
+
+  <text x="108" y="278" class="label" fill="#334155">θ</text>
+  <text x="242" y="342" class="label" text-anchor="middle" fill="#0369a1">隣辺 a</text>
+  <text x="430" y="215" class="label" text-anchor="end" fill="#047857">対辺 o</text>
+  <text x="276" y="180" class="label" text-anchor="middle" transform="rotate(-27 276 180)" fill="#b45309">斜辺 h</text>
+
+  <text x="575" y="101" class="heading">基準の角 θ</text>
+  <text x="575" y="145" class="formula">sin θ = 対辺 / 斜辺</text>
+  <text x="575" y="180" class="formula">cos θ = 隣辺 / 斜辺</text>
+  <text x="575" y="215" class="formula">tan θ = 対辺 / 隣辺</text>
+  <line x1="575" y1="238" x2="772" y2="238" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="575" y="267" class="heading" style="font-size:20px;">読み方</text>
+  <text x="575" y="296" class="reading">θ = シータ</text>
+  <text x="575" y="322" class="reading">sin = サイン</text>
+  <text x="575" y="348" class="reading">cos = コサイン</text>
+  <text x="575" y="374" class="reading">tan = タンジェント</text>
+</svg>

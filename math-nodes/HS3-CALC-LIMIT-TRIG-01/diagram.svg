@@ -1,0 +1,116 @@
+<!-- layout v6 2026-08-30: Q1 zoom + 3-bar length comparison -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">sinθ ＜ θ ＜ tanθ（第一象限・長さの比較）</title>
+  <desc id="desc">第一象限に拡大した単位円で sinθ・θ（弧）・tanθ の3つの長さを並べて比べる図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 18px; fill: #334155; }
+    .sm { font-size: 15px; fill: #475569; }
+    .tag { font-size: 17px; font-weight: 700; fill: #334155; }
+    .tick { font-size: 13px; fill: #94a3b8; }
+    .meas { font-size: 17px; font-weight: 700; }
+    .barlbl { font-size: 16px; font-weight: 700; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <defs>
+    <clipPath id="q1">
+      <rect x="60" y="48" width="460" height="246"/>
+    </clipPath>
+  </defs>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <text x="68" y="72" class="tag">第一象限に拡大（半径 1）</text>
+  <text x="68" y="96" class="sm" fill="#b45309">sin θ  ＜  θ（弧・rad）  ＜  tan θ</text>
+
+  <!-- 軸（clip 外：x 軸が切れないように） -->
+  <line x1="68" y1="288" x2="300" y2="288" stroke="#94a3b8" stroke-width="3"/>
+  <line x1="88" y1="288" x2="88" y2="118" stroke="#94a3b8" stroke-width="3"/>
+
+  <!-- ===== 幾何図（第一象限のみ・clip） ===== -->
+  <g clip-path="url(#q1)">
+    <!-- 第一象限の円弧（薄い） -->
+    <path d="M 256 288 A 168 168 0 0 0 88 120" fill="none" stroke="#cbd5e1" stroke-width="2"/>
+
+    <!-- θ の弧 AP（オレンジ） -->
+    <path d="M 256 288 A 168 168 0 0 0 220.4 184.6" fill="none" stroke="#f59e0b" stroke-width="9" stroke-linecap="round"/>
+
+    <!-- 接線 x = 1 -->
+    <line x1="256" y1="130" x2="256" y2="288" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="7 5"/>
+
+    <!-- 半径 OP と延長 -->
+    <line x1="88" y1="288" x2="220.4" y2="184.6" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+    <line x1="220.4" y1="184.6" x2="256" y2="156.7" stroke="#f59e0b" stroke-width="3" stroke-dasharray="5 4"/>
+
+    <!-- ① sinθ（緑・太） -->
+    <line x1="220.4" y1="184.6" x2="220.4" y2="288" stroke="#10b981" stroke-width="9" stroke-linecap="round"/>
+
+    <!-- ③ tanθ（青・太） -->
+    <line x1="256" y1="156.7" x2="256" y2="288" stroke="#0ea5e9" stroke-width="9" stroke-linecap="round"/>
+
+    <!-- 角 θ -->
+    <path d="M 118 288 A 30 30 0 0 0 106.5 269.3" fill="none" stroke="#475569" stroke-width="3"/>
+
+    <circle cx="220.4" cy="184.6" r="6" fill="#eab308"/>
+    <circle cx="256" cy="156.7" r="6" fill="#ef4444"/>
+    <circle cx="256" cy="288" r="5" fill="#64748b"/>
+  </g>
+
+  <!-- 点ラベル（軸のすぐ上・説明文と分離） -->
+  <text x="76" y="278" class="tick">O</text>
+  <text x="264" y="278" class="tick">A</text>
+  <text x="226" y="176" class="label">P</text>
+  <text x="262" y="148" class="label" fill="#b45309">T</text>
+
+  <!-- 3 長さの寸法（左右に分離） -->
+  <!-- ① sinθ：左側ブラケット -->
+  <line x1="204" y1="184.6" x2="204" y2="288" stroke="#10b981" stroke-width="2"/>
+  <line x1="198" y1="184.6" x2="210" y2="184.6" stroke="#10b981" stroke-width="2"/>
+  <line x1="198" y1="288" x2="210" y2="288" stroke="#10b981" stroke-width="2"/>
+  <text x="178" y="240" class="meas" fill="#047857" text-anchor="end">① sin θ</text>
+
+  <!-- ② θ 弧：弧の左下（③ と分離） -->
+  <text x="168" y="252" class="meas" fill="#b45309">② θ（弧・rad）</text>
+
+  <!-- ③ tanθ：右側ブラケット -->
+  <line x1="272" y1="156.7" x2="272" y2="288" stroke="#0ea5e9" stroke-width="2"/>
+  <line x1="266" y1="156.7" x2="278" y2="156.7" stroke="#0ea5e9" stroke-width="2"/>
+  <line x1="266" y1="288" x2="278" y2="288" stroke="#0ea5e9" stroke-width="2"/>
+  <text x="308" y="218" class="meas" fill="#0369a1">③ tan θ</text>
+
+  <!-- ===== 下段：長さの棒グラフ比較（説明文は枠内上部のみ） ===== -->
+  <rect x="68" y="308" width="452" height="84" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="84" y="326" class="sm" fill="#64748b">長さの比較（θ 小さいとき）</text>
+
+  <line x1="84" y1="378" x2="500" y2="378" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- 棒：底辺 y=378 -->
+  <rect x="108" y="343.3" width="36" height="34.7" rx="4" fill="#10b981"/>
+  <rect x="238" y="340.7" width="36" height="37.3" rx="4" fill="#f59e0b"/>
+  <rect x="368" y="336" width="36" height="42" rx="4" fill="#0ea5e9"/>
+
+  <text x="126" y="394" class="barlbl" fill="#047857" text-anchor="middle">① sin θ</text>
+  <text x="256" y="394" class="barlbl" fill="#b45309" text-anchor="middle">② θ</text>
+  <text x="386" y="394" class="barlbl" fill="#0369a1" text-anchor="middle">③ tan θ</text>
+
+  <text x="180" y="358" class="sm" fill="#94a3b8" text-anchor="middle">＜</text>
+  <text x="310" y="354" class="sm" fill="#94a3b8" text-anchor="middle">＜</text>
+
+  <!-- 右パネル -->
+  <text x="568" y="88" class="heading">三角関数の極限</text>
+  <text x="568" y="128" class="formp">sinθ ＜ θ ＜ tanθ（図の大小）</text>
+  <text x="568" y="154" class="formp">→ cosθ ≤ sinθ/θ ≤ 1</text>
+  <line x1="568" y1="172" x2="824" y2="172" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="202" class="note">はさみうち → lim sinθ/θ ＝ 1</text>
+  <text x="568" y="228" class="note">この式は「rad」のときだけ成立</text>
+  <text x="568" y="260" class="formp">診断：lim sin3θ/θ ＝ 3</text>
+  <text x="568" y="290" class="note">→ (sin x)' ＝ cos x の門</text>
+  <text x="568" y="318" class="note">（数値：sin0.01/0.01≈0.9999…）</text>
+</svg>

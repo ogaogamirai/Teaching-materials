@@ -1,0 +1,58 @@
+<!-- layout v5 2026-08-30: y=x² 座標再計算・接線/曲線修正 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">割線から接線へ：平均変化率から瞬間へ</title>
+  <desc id="desc">y=x²の点A(a,f(a))・B(a+h,f(a+h))を結ぶ割線が、h→0でAの接線に重なることを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 19px; }
+    .tick { font-size: 13px; fill: #94a3b8; }
+    .sm { font-size: 15px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <line x1="90" y1="330" x2="470" y2="330" stroke="#94a3b8" stroke-width="3"/>
+  <line x1="230" y1="60" x2="230" y2="380" stroke="#94a3b8" stroke-width="3"/>
+
+  <!-- y = x²（a=1, h=1 の例） -->
+  <polyline fill="none" stroke="#64748b" stroke-width="4" stroke-linejoin="round"
+    points="230,330 237.2,329.6 244.4,328.6 251.6,326.8 258.8,324.2 266,321 273.2,317 280.4,312.4 287.6,307 294.8,300.8 302,294 309.2,286.4 316.4,278.2 323.6,269.2 330.8,259.4 338,249 345.2,237.8 352.4,226 359.6,213.4 366.8,200 374,186 381.2,171.2 388.4,155.8 395.6,139.6 402.8,122.6 410,105"/>
+
+  <!-- 接線：A での傾き f'(a)=2a -->
+  <line x1="215" y1="367.5" x2="395" y2="217.5" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+  <!-- 割線 AB -->
+  <line x1="290" y1="305" x2="350" y2="230" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+
+  <circle cx="290" cy="305" r="7" fill="#0ea5e9"/>
+  <circle cx="350" cy="230" r="7" fill="#eab308"/>
+
+  <line x1="290" y1="305" x2="350" y2="305" stroke="#34d399" stroke-width="3" stroke-dasharray="7 5"/>
+  <line x1="350" y1="305" x2="350" y2="230" stroke="#34d399" stroke-width="3" stroke-dasharray="7 5"/>
+
+  <text x="278" y="352" class="tick">a</text>
+  <text x="338" y="352" class="tick">a+h</text>
+  <text x="274" y="300" class="sm" fill="#0369a1">A</text>
+  <text x="356" y="224" class="sm" fill="#b45309">B</text>
+  <text x="312" y="318" class="sm" fill="#10b981">h</text>
+  <text x="356" y="272" class="sm" fill="#10b981">f(a+h)−f(a)</text>
+  <text x="218" y="358" class="sm" fill="#ef4444">接線（h→0）</text>
+  <text x="318" y="258" class="sm" fill="#0369a1">割線（平均変化率）</text>
+
+  <text x="568" y="88" class="heading">微分法</text>
+  <text x="568" y="120" class="formp">f'(x) ＝ lim{h→0}</text>
+  <text x="568" y="142" class="formp">　(f(x+h)−f(x))/h</text>
+  <text x="568" y="168" class="formp">(x^n)' ＝ n·x^(n−1)</text>
+  <line x1="568" y1="186" x2="824" y2="186" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="216" class="note">割線（平均）→ 接線（瞬間）</text>
+  <text x="568" y="242" class="note">展開 → h で割る → lim の 3 手</text>
+  <text x="568" y="274" class="formp">診断：x³ → 3x²</text>
+  <text x="568" y="304" class="note">多項式は線形性で項ごとに</text>
+  <text x="568" y="330" class="note">三角関数・極限の微分へ続く</text>
+</svg>

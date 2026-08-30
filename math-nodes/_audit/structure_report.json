@@ -1,0 +1,386 @@
+{
+  "summary": {
+    "total": 46,
+    "issues": 0,
+    "warnings": 1,
+    "approved": 1,
+    "missing_dirs": [],
+    "extra_dirs": [],
+    "stray_root": [
+      "root lesson.md",
+      "root diagram.svg"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "ELEM-CIRCLE-01",
+      "status": "draft",
+      "lines": 195,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "ELEM-NUM-01",
+      "status": "draft",
+      "lines": 182,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "ELEM-RATIO-01",
+      "status": "draft",
+      "lines": 189,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "EULER-CONVERGENCE-01",
+      "status": "draft",
+      "lines": 216,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS1-TRIG-ANGLECONV-01",
+      "status": "draft",
+      "lines": 248,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS1-TRIG-AREA-01",
+      "status": "draft",
+      "lines": 243,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS1-TRIG-COSINELAW-01",
+      "status": "draft",
+      "lines": 251,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS1-TRIG-DEF-01",
+      "status": "approved",
+      "lines": 265,
+      "has_svg": true,
+      "issues": [],
+      "warnings": [
+        "ontology diagnostic_query not found in body"
+      ]
+    },
+    {
+      "id": "HS1-TRIG-IDENTITY-01",
+      "status": "draft",
+      "lines": 243,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS1-TRIG-SINELAW-01",
+      "status": "draft",
+      "lines": 238,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS1-TRIG-UNITCIRCLE-01",
+      "status": "draft",
+      "lines": 315,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS2-CALC-DIFF-POLY-01",
+      "status": "draft",
+      "lines": 223,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS2-COMPLEX-NUM-01",
+      "status": "draft",
+      "lines": 214,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS2-EXP-FUNC-01",
+      "status": "draft",
+      "lines": 201,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS2-EXP-LOG-01",
+      "status": "draft",
+      "lines": 232,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS2-TRIG-ADDITION-01",
+      "status": "draft",
+      "lines": 338,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS2-TRIG-DOUBLE-01",
+      "status": "draft",
+      "lines": 219,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS2-TRIG-GENERALANGLE-01",
+      "status": "draft",
+      "lines": 238,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS2-TRIG-GRAPH-01",
+      "status": "draft",
+      "lines": 265,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS2-TRIG-HALF-01",
+      "status": "draft",
+      "lines": 221,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS2-TRIG-PRODSUM-01",
+      "status": "draft",
+      "lines": 250,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS2-TRIG-RADIAN-01",
+      "status": "draft",
+      "lines": 243,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS2-TRIG-SYNTHESIS-01",
+      "status": "draft",
+      "lines": 232,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS2-TRIG-TRIPLE-01",
+      "status": "draft",
+      "lines": 238,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS3-CALC-DIFF-TRIG-01",
+      "status": "draft",
+      "lines": 222,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS3-CALC-E-DEF-01",
+      "status": "draft",
+      "lines": 223,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS3-CALC-HIGHER-DIFF-01",
+      "status": "draft",
+      "lines": 205,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS3-CALC-LIMIT-TRIG-01",
+      "status": "draft",
+      "lines": 227,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS3-COMPLEX-DEMOIVRE-01",
+      "status": "draft",
+      "lines": 213,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "HS3-COMPLEX-PLANE-01",
+      "status": "draft",
+      "lines": 225,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "JH-ALG-EXPR-01",
+      "status": "draft",
+      "lines": 222,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "JH-ALG-QUADRATIC-01",
+      "status": "draft",
+      "lines": 242,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "JH-COORD-DISTANCE-01",
+      "status": "draft",
+      "lines": 216,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "JH-COORD-PLANE-01",
+      "status": "draft",
+      "lines": 216,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "JH-FUNC-LINEAR-01",
+      "status": "draft",
+      "lines": 226,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "JH-GEO-CIRCLE-ANGLE-01",
+      "status": "draft",
+      "lines": 238,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "JH-GEO-CIRCLE-INCIRCUM-01",
+      "status": "draft",
+      "lines": 222,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "JH-GEO-PARALLEL-01",
+      "status": "draft",
+      "lines": 214,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "JH-GEO-PYTHAGORAS-01",
+      "status": "draft",
+      "lines": 220,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "JH-GEO-ROTATION-01",
+      "status": "draft",
+      "lines": 210,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "JH-GEO-SIMILAR-01",
+      "status": "draft",
+      "lines": 210,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "JH-GEO-TRI-BASIC-01",
+      "status": "draft",
+      "lines": 219,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "JH-GEO-TRI-CONG-01",
+      "status": "draft",
+      "lines": 206,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "JH-NUM-SIGN-01",
+      "status": "draft",
+      "lines": 269,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "JH-NUM-SQRT-01",
+      "status": "draft",
+      "lines": 225,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "id": "UNIV-CALC-TAYLOR-01",
+      "status": "draft",
+      "lines": 210,
+      "has_svg": true,
+      "issues": [],
+      "warnings": []
+    }
+  ]
+}

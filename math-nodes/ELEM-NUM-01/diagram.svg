@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" role="img" aria-labelledby="title desc">
+  <title id="title">1 を 10 等分・100 等分（0.1 と 0.01）</title>
+  <desc id="desc">大きな四角を10列に分け、さらに10等分して 0.1 と 0.01 を示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 22px; fill: #334155; }
+    .sm { font-size: 16px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="820" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="252" height="312" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <rect x="80" y="80" width="320" height="320" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="4"/>
+  <g stroke="#7dd3fc" stroke-width="1.5">
+    <line x1="112" y1="80" x2="112" y2="400"/>
+    <line x1="144" y1="80" x2="144" y2="400"/>
+    <line x1="176" y1="80" x2="176" y2="400"/>
+    <line x1="208" y1="80" x2="208" y2="400"/>
+    <line x1="240" y1="80" x2="240" y2="400"/>
+    <line x1="272" y1="80" x2="272" y2="400"/>
+    <line x1="304" y1="80" x2="304" y2="400"/>
+    <line x1="336" y1="80" x2="336" y2="400"/>
+    <line x1="368" y1="80" x2="368" y2="400"/>
+    <line x1="80" y1="112" x2="400" y2="112"/>
+    <line x1="80" y1="144" x2="400" y2="144"/>
+    <line x1="80" y1="176" x2="400" y2="176"/>
+    <line x1="80" y1="208" x2="400" y2="208"/>
+    <line x1="80" y1="240" x2="400" y2="240"/>
+    <line x1="80" y1="272" x2="400" y2="272"/>
+    <line x1="80" y1="304" x2="400" y2="304"/>
+    <line x1="80" y1="336" x2="400" y2="336"/>
+    <line x1="80" y1="368" x2="400" y2="368"/>
+  </g>
+
+  <rect x="80" y="80" width="32" height="320" fill="#bae6fd" stroke="#0284c7" stroke-width="3"/>
+  <rect x="112" y="80" width="32" height="32" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+
+  <text x="250" y="430" class="label"></text>
+  <text x="96" y="56" class="sm" fill="#0284c7">1 列 ＝ 0.1（10 分の 1）</text>
+  <text x="122" y="120" class="sm" fill="#0369a1">1 ます＝0.01</text>
+  <text x="410" y="368" class="sm" fill="#0369a1">全体 ＝ 1</text>
+
+  <text x="430" y="64" class="sm" fill="#b45309">0.1 × 0.1 ＝ 0.01</text>
+
+  <text x="568" y="88" class="heading">小数のかけ算</text>
+  <text x="568" y="128" class="formp">0.1 ＝ 1 の 10 分の 1</text>
+  <text x="568" y="154" class="formp">0.01 ＝ 1 の 100 分の 1</text>
+  <text x="568" y="180" class="formp">位は ×10・÷10 で 1 桁ずれる</text>
+  <line x1="568" y1="198" x2="772" y2="198" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="228" class="note">0.1×0.1 ＝ 0.01（診断）</text>
+  <text x="568" y="254" class="note">0.3＋0.7 ＝ 1.0</text>
+  <text x="568" y="280" class="note">0.4 ÷ 10 ＝ 0.04</text>
+  <text x="568" y="314" class="note">→ 分数（1/10・1/4）への布石</text>
+</svg>

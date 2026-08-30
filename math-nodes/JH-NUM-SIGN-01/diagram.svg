@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <!-- layout v3 2026-08-30: widen panel, split long lines -->
+  <title id="title">数直線 −4〜+4 と (−3)² と −3² の比較</title>
+  <desc id="desc">負の数は 0 の左側にあることと、カッコの有無で二乗の意味が変わることを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .tick { font-size: 18px; fill: #334155; text-anchor: middle; }
+    .cap { font-size: 17px; fill: #64748b; }
+    .panel-title { font-size: 20px; font-weight: 700; fill: #334155; }
+    .panel-formula { font-size: 14px; fill: #475569; }
+    .panel-note { font-size: 14px; fill: #475569; }
+    .panel-summary { font-size: 14px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="48" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <line x1="66" y1="240" x2="438" y2="240" stroke="#94a3b8" stroke-width="4"/>
+  <polygon points="438,232 452,240 438,248" fill="#94a3b8"/>
+  <polygon points="78,232 64,240 78,248" fill="#94a3b8"/>
+
+  <line x1="250" y1="222" x2="250" y2="258" stroke="#334155" stroke-width="4"/>
+
+  <g stroke="#cbd5e1" stroke-width="2">
+    <line x1="82"  y1="228" x2="82"  y2="252"/>
+    <line x1="124" y1="228" x2="124" y2="252"/>
+    <line x1="166" y1="228" x2="166" y2="252"/>
+    <line x1="208" y1="228" x2="208" y2="252"/>
+    <line x1="292" y1="228" x2="292" y2="252"/>
+    <line x1="334" y1="228" x2="334" y2="252"/>
+    <line x1="376" y1="228" x2="376" y2="252"/>
+    <line x1="418" y1="228" x2="418" y2="252"/>
+  </g>
+
+  <text x="82"  y="216" class="tick" fill="#ef4444">−4</text>
+  <text x="124" y="216" class="tick" fill="#ef4444">−3</text>
+  <text x="166" y="216" class="tick" fill="#ef4444">−2</text>
+  <text x="208" y="216" class="tick" fill="#ef4444">−1</text>
+  <text x="250" y="216" class="tick" fill="#334155">0</text>
+  <text x="292" y="216" class="tick" fill="#0369a1">1</text>
+  <text x="334" y="216" class="tick" fill="#0369a1">2</text>
+  <text x="376" y="216" class="tick" fill="#0369a1">3</text>
+  <text x="418" y="216" class="tick" fill="#0369a1">4</text>
+
+  <text x="82"  y="288" class="cap" fill="#ef4444">負の数</text>
+  <text x="418" y="288" class="cap" fill="#0369a1">正の数</text>
+  <text x="250" y="318" class="cap" text-anchor="middle">← 小さい　　　　大きい →</text>
+  <text x="250" y="348" class="cap" text-anchor="middle" fill="#475569">0 の左が負、右が正</text>
+
+  <text x="568" y="88" class="panel-title">カッコの役割</text>
+  <text x="568" y="118" class="panel-formula">(−3)² = (−3)×(−3)</text>
+  <text x="568" y="138" class="panel-formula">　　　　= +9</text>
+  <text x="568" y="168" class="panel-formula">−3² = −(3×3)</text>
+  <text x="568" y="188" class="panel-formula">　　　= −9</text>
+  <line x1="568" y1="208" x2="820" y2="208" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="236" class="panel-note">カッコがあれば中をまとめて処理</text>
+  <text x="568" y="258" class="panel-note">カッコがなければ、べき乗を先に</text>
+  <text x="568" y="280" class="panel-note">してから符号を考える</text>
+  <text x="568" y="312" class="panel-summary">(−x)² = x²</text>
+  <text x="568" y="334" class="panel-summary">−x² = −(x²)</text>
+</svg>

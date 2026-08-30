@@ -1,0 +1,23 @@
+﻿# math-nodes structural audit
+ontology_nodes: 46
+directories: 46
+approved: 1 | draft: 45
+
+## STRAY ROOT FILES
+  - root lesson.md
+  - root diagram.svg
+
+## ISSUES (must fix)
+  (none)
+
+## WARNINGS (review)
+
+### HS1-TRIG-DEF-01 (status=approved, lines=265, svg=True)
+  [WARN] ontology diagnostic_query not found in body
+
+## SUMMARY
+  nodes_with_issues: 0/46
+  nodes_with_warnings: 1/46
+  median_lines: 223
+
+[ok] wrote G:\繝槭う繝峨Λ繧､繝暴Projects\Teaching-materials\math-nodes\_audit\structure_report.json

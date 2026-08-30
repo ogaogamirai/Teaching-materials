@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" role="img" aria-labelledby="title desc">
+  <title id="title">ド・モアブル：z ³ の回転（30°・60°・90°）</title>
+  <desc id="desc">z=cos30°+isin30°を単位円に取り、z²・z³の位置が60°・90°になることを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 19px; }
+    .tick { font-size: 13px; fill: #94a3b8; }
+    .sm { font-size: 15px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="820" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="252" height="312" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <line x1="110" y1="250" x2="480" y2="250" stroke="#94a3b8" stroke-width="4"/>
+  <line x1="250" y1="60" x2="250" y2="390" stroke="#94a3b8" stroke-width="4"/>
+
+  <circle cx="250" cy="250" r="130" fill="none" stroke="#64748b" stroke-width="3"/>
+
+  <line x1="250" y1="250" x2="362.6" y2="185" stroke="#38bdf8" stroke-width="5"/>
+  <line x1="250" y1="250" x2="315" y2="137.4" stroke="#10b981" stroke-width="5"/>
+  <line x1="250" y1="250" x2="250" y2="120" stroke="#ef4444" stroke-width="5"/>
+
+  <path d="M 262.0 250.0 A 12 12 0 0 0 260.4 244.0" fill="none" stroke="#475569" stroke-width="2"/>
+  <path d="M 278.0 250.0 A 28 28 0 0 0 274.2 236.0" fill="none" stroke="#38bdf8" stroke-width="2"/>
+  <path d="M 282.9 231.0 A 38 38 0 0 1 269.0 217.1" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="5 4"/>
+
+  <circle cx="362.6" cy="185" r="6" fill="#0ea5e9"/>
+  <circle cx="315" cy="137.4" r="6" fill="#10b981"/>
+  <circle cx="250" cy="120" r="6" fill="#ef4444"/>
+
+  <text x="372" y="180" class="label" fill="#0369a1">z（30°）</text>
+  <text x="328" y="128" class="label" fill="#047857">z²（60°）</text>
+  <text x="258" y="106" class="label" fill="#b45309">z³（90°）</text>
+  <text x="238" y="272" class="tick">O</text>
+  <text x="292" y="244" class="sm" fill="#475569">×z 1 回＝30°</text>
+  <text x="300" y="212" class="sm" fill="#475569">×z 2 回＝60°</text>
+  <text x="264" y="228" class="sm" fill="#475569"></text>
+
+  <text x="568" y="88" class="heading">ド・モアブル</text>
+  <text x="568" y="124" class="formp">(cosθ＋isinθ)ⁿ</text>
+  <text x="568" y="148" class="formp">＝ cos nθ＋isin nθ</text>
+  <line x1="568" y1="162" x2="772" y2="162" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="174" class="note">回転 n 回 ＝ 角 n 倍</text>
+  <text x="568" y="200" class="note">（帰納法で証明）</text>
+  <text x="568" y="232" class="formp">診断：はい（cos3θ＋isin3θ）</text>
+  <text x="568" y="262" class="note">3 倍角はこの定理の実部虚部</text>
+  <text x="568" y="288" class="note">zⁿ＝1 の解は正 n 角形</text>
+  <text x="568" y="318" class="note">→ オイラーの公式へ</text>
+</svg>

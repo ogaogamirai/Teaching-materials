@@ -1,0 +1,74 @@
+<!-- layout v4 2026-08-30: widen panel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">y = (3/4)x + 2 の直線と傾きの図示</title>
+  <desc id="desc">直線の傾きが縦の増加量3を横の増加量4で割った3/4になることを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .tick { font-size: 16px; fill: #94a3b8; text-anchor: middle; }
+    .label { font-size: 20px; }
+    .sm { font-size: 18px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formula { font-size: 16px; fill: #475569; }
+    .note { font-size: 16px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="46" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <g stroke="#e2e8f0" stroke-width="1.5">
+    <line x1="286" y1="44" x2="286" y2="300"/>
+    <line x1="322" y1="44" x2="322" y2="300"/>
+    <line x1="358" y1="44" x2="358" y2="300"/>
+    <line x1="394" y1="44" x2="394" y2="300"/>
+    <line x1="430" y1="44" x2="430" y2="300"/>
+    <line x1="214" y1="168" x2="466" y2="168"/>
+    <line x1="214" y1="132" x2="466" y2="132"/>
+    <line x1="214" y1="204" x2="466" y2="204"/>
+    <line x1="214" y1="276" x2="466" y2="276"/>
+  </g>
+
+  <line x1="200" y1="240" x2="480" y2="240" stroke="#94a3b8" stroke-width="4"/>
+  <line x1="250" y1="44" x2="250" y2="304" stroke="#94a3b8" stroke-width="4"/>
+
+  <line x1="214" y1="195" x2="466" y2="6" stroke="#b45309" stroke-width="5" stroke-linecap="round"/>
+
+  <line x1="250" y1="168" x2="394" y2="168" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+  <line x1="394" y1="168" x2="394" y2="60" stroke="#10b981" stroke-width="6" stroke-linecap="round"/>
+
+  <circle cx="250" cy="168" r="7" fill="#0ea5e9"/>
+  <circle cx="394" cy="60" r="7" fill="#eab308"/>
+
+  <text x="250" y="258" class="tick" fill="#64748b">0</text>
+  <text x="286" y="258" class="tick">1</text>
+  <text x="322" y="258" class="tick">2</text>
+  <text x="358" y="258" class="tick">3</text>
+  <text x="394" y="258" class="tick">4</text>
+  <text x="430" y="258" class="tick">5</text>
+  <text x="274" y="172" class="tick" fill="#94a3b8" text-anchor="start">1</text>
+  <text x="274" y="136" class="tick" fill="#94a3b8" text-anchor="start">2</text>
+  <text x="274" y="100" class="tick" fill="#94a3b8" text-anchor="start">3</text>
+  <text x="274" y="64" class="tick" fill="#94a3b8" text-anchor="start">4</text>
+
+  <text x="472" y="228" class="sm" fill="#334155">x</text>
+  <text x="266" y="56" class="sm" fill="#334155">y</text>
+
+  <text x="306" y="196" class="label" fill="#0369a1">横 4</text>
+  <text x="408" y="126" class="label" fill="#047857">縦 3</text>
+  <text x="216" y="214" class="sm" fill="#b45309">(0, 2) 切片</text>
+  <text x="400" y="46" class="label" fill="#b45309">(4, 5)</text>
+  <text x="398" y="90" class="sm" fill="#b45309">y = (3/4)x + 2</text>
+
+  <text x="568" y="90" class="heading">傾きと切片</text>
+  <text x="568" y="130" class="formula">傾き a = Δy/Δx = 縦 ÷ 横</text>
+  <text x="568" y="158" class="formula">　　　= 3 ÷ 4 = 3/4</text>
+  <text x="568" y="194" class="formula">切片 b = x = 0 のときの y</text>
+  <text x="568" y="220" class="formula">ここでは b = 2</text>
+  <line x1="568" y1="240" x2="824" y2="240" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="270" class="note">ゴルフの三角をどこに置いても</text>
+  <text x="568" y="294" class="note">同じ形（傾きが一定）＝直線</text>
+  <text x="568" y="322" class="note">この「縦 ÷ 横」がのちに</text>
+  <text x="568" y="344" class="note">三角比の tan θ になる</text>
+</svg>

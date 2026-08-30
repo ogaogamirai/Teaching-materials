@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" role="img" aria-labelledby="title desc">
+  <title id="title">指数の定義域の拡張はしご</title>
+  <desc id="desc">自然数→整数(0・負)→有理数(分数・n乗根)→実数と、指数の定義が広がる様子を示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; rx: 12; }
+    .head { font-size: 15px; font-weight: 700; fill: #334155; }
+    .form { font-size: 15px; fill: #475569; }
+    .sub { font-size: 13px; fill: #94a3b8; }
+    .arrow { stroke: #94a3b8; stroke-width: 2.5; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="820" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="252" height="312" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <rect x="52" y="46" width="440" height="58" rx="12" class="box"/>
+  <text x="74" y="70" class="head">自然数の指数（出発点）</text>
+  <text x="74" y="92" class="form">a^m × a^n ＝ a^(m+n)　…この法則が基準</text>
+
+  <line x1="272" y1="104" x2="272" y2="126" class="arrow"/>
+  <polygon points="264,126 272,136 280,126" fill="#94a3b8"/>
+  <text x="286" y="130" class="sub">0 乗・負を「法則の範囲」で埋める</text>
+
+  <rect x="52" y="138" width="440" height="58" rx="12" class="box"/>
+  <text x="74" y="162" class="head">整数の指数（0・負）</text>
+  <text x="74" y="184" class="form">a⁰ ＝ 1　・　a^(−n) ＝ 1 / a^n</text>
+
+  <line x1="272" y1="196" x2="272" y2="218" class="arrow"/>
+  <polygon points="264,218 272,228 280,218" fill="#94a3b8"/>
+  <text x="286" y="222" class="sub">n 乗根で埋める</text>
+
+  <rect x="52" y="230" width="440" height="58" rx="12" class="box"/>
+  <text x="74" y="254" class="head">有理数の指数（分数）</text>
+  <text x="74" y="276" class="form">a^(1/n) ＝ n乗根(a)　・　a^(m/n) ＝ n乗根(a^m)</text>
+
+  <line x1="272" y1="288" x2="272" y2="310" class="arrow"/>
+  <polygon points="264,310 272,320 280,310" fill="#94a3b8"/>
+  <text x="286" y="314" class="sub">連続で埋める（極限）</text>
+
+  <rect x="52" y="322" width="440" height="42" rx="12" class="box"/>
+  <text x="74" y="349" class="form">実数の指数 → y ＝ a^x（指数関数）へ</text>
+
+  <text x="568" y="88" class="heading">指数法則の拡張</text>
+  <text x="568" y="128" class="formp">a⁰ ＝ 1　a⁻ⁿ ＝ 1/a^n</text>
+  <text x="568" y="154" class="formp">a^(m/n) ＝ n√(a^m)</text>
+  <line x1="568" y1="172" x2="772" y2="172" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="202" class="note">基準は a^(p+q)＝a^p・a^q</text>
+  <text x="568" y="228" class="note">底 a ＞ 0 に限る（負の底の罠）</text>
+  <text x="568" y="260" class="formp">診断：2⁻³＝1/8</text>
+  <text x="568" y="290" class="note">実数指数 → 指数関数・e の道</text>
+</svg>

@@ -1,0 +1,283 @@
+{
+  "browser": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+  "total": 46,
+  "ok": 46,
+  "nodes": [
+    {
+      "node": "ELEM-CIRCLE-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\ELEM-CIRCLE-01.png"
+    },
+    {
+      "node": "ELEM-NUM-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\ELEM-NUM-01.png"
+    },
+    {
+      "node": "ELEM-RATIO-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\ELEM-RATIO-01.png"
+    },
+    {
+      "node": "EULER-CONVERGENCE-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\EULER-CONVERGENCE-01.png"
+    },
+    {
+      "node": "HS1-TRIG-ANGLECONV-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS1-TRIG-ANGLECONV-01.png"
+    },
+    {
+      "node": "HS1-TRIG-AREA-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS1-TRIG-AREA-01.png"
+    },
+    {
+      "node": "HS1-TRIG-COSINELAW-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS1-TRIG-COSINELAW-01.png"
+    },
+    {
+      "node": "HS1-TRIG-DEF-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS1-TRIG-DEF-01.png"
+    },
+    {
+      "node": "HS1-TRIG-IDENTITY-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS1-TRIG-IDENTITY-01.png"
+    },
+    {
+      "node": "HS1-TRIG-SINELAW-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS1-TRIG-SINELAW-01.png"
+    },
+    {
+      "node": "HS1-TRIG-UNITCIRCLE-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS1-TRIG-UNITCIRCLE-01.png"
+    },
+    {
+      "node": "HS2-CALC-DIFF-POLY-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS2-CALC-DIFF-POLY-01.png"
+    },
+    {
+      "node": "HS2-COMPLEX-NUM-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS2-COMPLEX-NUM-01.png"
+    },
+    {
+      "node": "HS2-EXP-FUNC-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS2-EXP-FUNC-01.png"
+    },
+    {
+      "node": "HS2-EXP-LOG-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS2-EXP-LOG-01.png"
+    },
+    {
+      "node": "HS2-TRIG-ADDITION-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS2-TRIG-ADDITION-01.png"
+    },
+    {
+      "node": "HS2-TRIG-DOUBLE-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS2-TRIG-DOUBLE-01.png"
+    },
+    {
+      "node": "HS2-TRIG-GENERALANGLE-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS2-TRIG-GENERALANGLE-01.png"
+    },
+    {
+      "node": "HS2-TRIG-GRAPH-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS2-TRIG-GRAPH-01.png"
+    },
+    {
+      "node": "HS2-TRIG-HALF-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS2-TRIG-HALF-01.png"
+    },
+    {
+      "node": "HS2-TRIG-PRODSUM-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS2-TRIG-PRODSUM-01.png"
+    },
+    {
+      "node": "HS2-TRIG-RADIAN-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS2-TRIG-RADIAN-01.png"
+    },
+    {
+      "node": "HS2-TRIG-SYNTHESIS-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS2-TRIG-SYNTHESIS-01.png"
+    },
+    {
+      "node": "HS2-TRIG-TRIPLE-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS2-TRIG-TRIPLE-01.png"
+    },
+    {
+      "node": "HS3-CALC-DIFF-TRIG-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS3-CALC-DIFF-TRIG-01.png"
+    },
+    {
+      "node": "HS3-CALC-E-DEF-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS3-CALC-E-DEF-01.png"
+    },
+    {
+      "node": "HS3-CALC-HIGHER-DIFF-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS3-CALC-HIGHER-DIFF-01.png"
+    },
+    {
+      "node": "HS3-CALC-LIMIT-TRIG-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS3-CALC-LIMIT-TRIG-01.png"
+    },
+    {
+      "node": "HS3-COMPLEX-DEMOIVRE-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS3-COMPLEX-DEMOIVRE-01.png"
+    },
+    {
+      "node": "HS3-COMPLEX-PLANE-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\HS3-COMPLEX-PLANE-01.png"
+    },
+    {
+      "node": "JH-ALG-EXPR-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\JH-ALG-EXPR-01.png"
+    },
+    {
+      "node": "JH-ALG-QUADRATIC-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\JH-ALG-QUADRATIC-01.png"
+    },
+    {
+      "node": "JH-COORD-DISTANCE-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\JH-COORD-DISTANCE-01.png"
+    },
+    {
+      "node": "JH-COORD-PLANE-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\JH-COORD-PLANE-01.png"
+    },
+    {
+      "node": "JH-FUNC-LINEAR-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\JH-FUNC-LINEAR-01.png"
+    },
+    {
+      "node": "JH-GEO-CIRCLE-ANGLE-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\JH-GEO-CIRCLE-ANGLE-01.png"
+    },
+    {
+      "node": "JH-GEO-CIRCLE-INCIRCUM-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\JH-GEO-CIRCLE-INCIRCUM-01.png"
+    },
+    {
+      "node": "JH-GEO-PARALLEL-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\JH-GEO-PARALLEL-01.png"
+    },
+    {
+      "node": "JH-GEO-PYTHAGORAS-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\JH-GEO-PYTHAGORAS-01.png"
+    },
+    {
+      "node": "JH-GEO-ROTATION-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\JH-GEO-ROTATION-01.png"
+    },
+    {
+      "node": "JH-GEO-SIMILAR-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\JH-GEO-SIMILAR-01.png"
+    },
+    {
+      "node": "JH-GEO-TRI-BASIC-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\JH-GEO-TRI-BASIC-01.png"
+    },
+    {
+      "node": "JH-GEO-TRI-CONG-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\JH-GEO-TRI-CONG-01.png"
+    },
+    {
+      "node": "JH-NUM-SIGN-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\JH-NUM-SIGN-01.png"
+    },
+    {
+      "node": "JH-NUM-SQRT-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\JH-NUM-SQRT-01.png"
+    },
+    {
+      "node": "UNIV-CALC-TAYLOR-01",
+      "ok": true,
+      "msg": "ok",
+      "png": "G:\\\u30de\u30a4\u30c9\u30e9\u30a4\u30d6\\Projects\\Teaching-materials\\math-nodes\\_audit\\svg_png\\UNIV-CALC-TAYLOR-01.png"
+    }
+  ]
+}

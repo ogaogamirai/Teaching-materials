@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" role="img" aria-labelledby="title desc">
+  <title id="title">複素数平面：z=1+i と iz=−1+i（90° 回転）</title>
+  <desc id="desc">実軸・虚軸にz=1+i(45°・√2)を描き、iを掛けた点が90°回った(135°)位置に来ることを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 20px; fill: #334155; }
+    .tick { font-size: 14px; fill: #94a3b8; }
+    .sm { font-size: 15px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="820" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="252" height="312" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <line x1="90" y1="250" x2="470" y2="250" stroke="#94a3b8" stroke-width="4"/>
+  <line x1="250" y1="60" x2="250" y2="390" stroke="#94a3b8" stroke-width="4"/>
+
+  <line x1="250" y1="250" x2="370" y2="130" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+  <line x1="250" y1="250" x2="130" y2="130" stroke="#0ea5e9" stroke-width="5" stroke-linecap="round"/>
+
+  <path d="M 268 250 A 18 18 0 0 0 262.7 237.3" fill="none" stroke="#475569" stroke-width="3"/>
+  <path d="M 370 132 A 120 120 0 0 0 250 130" fill="none" stroke="#f59e0b" stroke-width="3" stroke-dasharray="7 5"/>
+  <path d="M 248 130 A 120 120 0 0 0 130 132" fill="none" stroke="#0ea5e9" stroke-width="3" stroke-dasharray="7 5"/>
+
+  <circle cx="370" cy="130" r="7" fill="#eab308"/>
+  <circle cx="130" cy="130" r="7" fill="#ef4444"/>
+
+  <text x="378" y="122" class="label" fill="#b45309">z = 1+i</text>
+  <text x="52" y="112" class="label" fill="#0369a1">iz = −1+i</text>
+  <text x="238" y="272" class="tick">0</text>
+  <text x="446" y="236" class="tick" fill="#64748b">実軸（a）</text>
+  <text x="262" y="92" class="tick" fill="#64748b">虚軸（b）</text>
+  <text x="300" y="236" class="sm">θ=45°</text>
+  <text x="330" y="180" class="sm" fill="#b45309">r=√2</text>
+  <text x="148" y="94" class="sm" fill="#0369a1">90°（i×）</text>
+
+  <text x="568" y="88" class="heading">複素数平面</text>
+  <text x="568" y="126" class="formp">z ＝ r(cosθ + i sinθ)</text>
+  <text x="568" y="152" class="formp">r ＝ √(a²+b²)・θ ＝ arg z</text>
+  <text x="568" y="178" class="formp">積 ＝ 長さは掛け・角は足す</text>
+  <line x1="568" y1="196" x2="772" y2="196" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="226" class="note">加法定理から「角の和」が出る</text>
+  <text x="568" y="252" class="note">i× → 90°・(−1)× → 180°</text>
+  <text x="568" y="284" class="formp">診断：90°（i を掛ける）</text>
+  <text x="568" y="314" class="note">ド・モアブル・オイラーへ続く</text>
+</svg>

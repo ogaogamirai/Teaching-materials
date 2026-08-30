@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" role="img" aria-labelledby="title desc">
+  <title id="title">座標平面上の 2 点 P(1,2) と Q(4,6) の距離</title>
+  <desc id="desc">横の差3・縦の差4の直角三角形を作り、斜辺PQの距離が5になることを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 20px; }
+    .tick { font-size: 15px; fill: #94a3b8; }
+    .sm { font-size: 16px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formula { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="820" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="252" height="312" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <line x1="90" y1="330" x2="460" y2="330" stroke="#94a3b8" stroke-width="4"/>
+  <line x1="210" y1="80" x2="210" y2="386" stroke="#94a3b8" stroke-width="4"/>
+
+  <g stroke="#e2e8f0" stroke-width="1.5">
+    <line x1="250" y1="80" x2="250" y2="386"/>
+    <line x1="290" y1="80" x2="290" y2="386"/>
+    <line x1="330" y1="80" x2="330" y2="386"/>
+    <line x1="370" y1="80" x2="370" y2="386"/>
+    <line x1="410" y1="80" x2="410" y2="386"/>
+    <line x1="90" y1="290" x2="460" y2="290"/>
+    <line x1="90" y1="250" x2="460" y2="250"/>
+    <line x1="90" y1="210" x2="460" y2="210"/>
+    <line x1="90" y1="170" x2="460" y2="170"/>
+    <line x1="90" y1="130" x2="460" y2="130"/>
+    <line x1="90" y1="90" x2="460" y2="90"/>
+  </g>
+
+  <text x="250" y="348" class="tick">1</text>
+  <text x="290" y="348" class="tick">2</text>
+  <text x="330" y="348" class="tick">3</text>
+  <text x="370" y="348" class="tick">4</text>
+  <text x="410" y="348" class="tick">5</text>
+  <text x="188" y="254" class="tick">2</text>
+  <text x="188" y="214" class="tick">3</text>
+  <text x="188" y="174" class="tick">4</text>
+  <text x="188" y="134" class="tick">5</text>
+  <text x="188" y="94" class="tick">6</text>
+  <text x="246" y="322" class="tick" fill="#334155">O</text>
+  <text x="448" y="318" class="sm" fill="#94a3b8">x</text>
+  <text x="220" y="94" class="sm" fill="#94a3b8">y</text>
+
+  <line x1="250" y1="250" x2="370" y2="250" stroke="#38bdf8" stroke-width="7" stroke-linecap="round"/>
+  <line x1="370" y1="250" x2="370" y2="90" stroke="#10b981" stroke-width="7" stroke-linecap="round"/>
+  <line x1="250" y1="250" x2="370" y2="90" stroke="#f59e0b" stroke-width="7" stroke-linecap="round"/>
+
+  <path d="M 356 250 L 356 236 L 370 236" fill="none" stroke="#334155" stroke-width="3"/>
+
+  <circle cx="250" cy="250" r="6" fill="#0ea5e9"/>
+  <circle cx="370" cy="90" r="6" fill="#ef4444"/>
+  <circle cx="370" cy="250" r="6" fill="#eab308"/>
+
+  <text x="212" y="228" class="label" fill="#0369a1">P(1, 2)</text>
+  <text x="378" y="84" class="label" fill="#b45309">Q(4, 6)</text>
+  <text x="378" y="276" class="label" fill="#b45309">R(4, 2)</text>
+  <text x="298" y="240" class="sm" fill="#0369a1">dx = 3</text>
+  <text x="380" y="160" class="sm" fill="#047857">dy = 4</text>
+  <text x="284" y="146" class="sm" fill="#b45309">d = 5</text>
+
+  <text x="568" y="88" class="heading">座標上の距離</text>
+  <text x="568" y="128" class="formula">dx = x₂−x₁、dy = y₂−y₁</text>
+  <text x="568" y="160" class="formula">d = √( dx² + dy² )</text>
+  <line x1="568" y1="180" x2="772" y2="180" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="208" class="note">直角三角形の斜辺が距離</text>
+  <text x="568" y="234" class="note">差が負でも 2 乗で安全</text>
+  <text x="568" y="266" class="formula">診断：(1,2)と(4,6) → 5</text>
+  <text x="568" y="296" class="note">3-4-5 がそのまま乗っている</text>
+  <text x="568" y="326" class="note">加法定理の距離 2 計測の道具へ</text>
+</svg>

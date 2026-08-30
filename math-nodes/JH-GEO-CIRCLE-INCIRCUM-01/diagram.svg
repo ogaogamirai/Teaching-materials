@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" role="img" aria-labelledby="title desc">
+  <title id="title">三角形の内接円（内心）と外接円（外心）</title>
+  <desc id="desc">角の二等分線の交点Iが内心(内接円・r)、垂直二等分線の交点Oが外心(外接円・R)であることを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 21px; fill: #334155; }
+    .sm { font-size: 16px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formula { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="820" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="252" height="312" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <circle cx="250" cy="256.9" r="136.9" fill="none" stroke="#94a3b8" stroke-width="3" stroke-dasharray="9 6"/>
+  <circle cx="250" cy="233.5" r="66.5" fill="none" stroke="#10b981" stroke-width="4"/>
+
+  <line x1="120" y1="300" x2="250" y2="233.5" stroke="#f59e0b" stroke-width="3" stroke-dasharray="6 4"/>
+  <line x1="380" y1="300" x2="250" y2="233.5" stroke="#f59e0b" stroke-width="3" stroke-dasharray="6 4"/>
+  <line x1="250" y1="104" x2="250" y2="300" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="6 4"/>
+  <line x1="315" y1="210" x2="245" y2="258" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="6 4"/>
+
+  <line x1="120" y1="300" x2="380" y2="300" stroke="#38bdf8" stroke-width="7" stroke-linecap="round"/>
+  <line x1="380" y1="300" x2="250" y2="120" stroke="#f59e0b" stroke-width="7" stroke-linecap="round"/>
+  <line x1="250" y1="120" x2="120" y2="300" stroke="#10b981" stroke-width="7" stroke-linecap="round"/>
+
+  <circle cx="250" cy="120" r="6" fill="#0ea5e9"/>
+  <circle cx="120" cy="300" r="6" fill="#ef4444"/>
+  <circle cx="380" cy="300" r="6" fill="#eab308"/>
+  <circle cx="250" cy="233.5" r="6" fill="#10b981"/>
+  <circle cx="250" cy="256.9" r="6" fill="#64748b"/>
+
+  <text x="244" y="104" class="label">A</text>
+  <text x="94" y="322" class="label">B</text>
+  <text x="388" y="322" class="label">C</text>
+  <text x="262" y="212" class="sm" fill="#047857">I（内心）</text>
+  <text x="262" y="284" class="sm" fill="#64748b">O（外心）</text>
+  <text x="120" y="150" class="sm" fill="#94a3b8">R（外接円）</text>
+  <text x="300" y="326" class="sm" fill="#047857">r（内接円）</text>
+
+  <text x="568" y="88" class="heading">内接円と外接円</text>
+  <text x="568" y="128" class="formula">内心＝角の二等分線の交点</text>
+  <text x="568" y="150" class="formula">　（3 辺から等距離）→ r</text>
+  <text x="568" y="182" class="formula">外心＝垂直二等分線の交点</text>
+  <text x="568" y="204" class="formula">　（3 頂点から等距離）→ R</text>
+  <line x1="568" y1="224" x2="772" y2="224" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="252" class="note">3-4-5：r = 1、R = 5/2</text>
+  <text x="568" y="278" class="note">直角三角形は外心＝斜辺の中点</text>
+  <text x="568" y="312" class="note">正弦定理の 2R・面積公式の r に</text>
+  <text x="568" y="338" class="note">この 2 円が入る</text>
+</svg>

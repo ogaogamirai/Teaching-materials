@@ -1,0 +1,59 @@
+{
+  "sha_counts": {
+    "9DC454574BCF4823CFB4BE0A2433FD33EB675FE49352156645CA4D9F058EAD8C": [
+      "ELEM-CIRCLE-01",
+      "ELEM-NUM-01",
+      "ELEM-RATIO-01",
+      "EULER-CONVERGENCE-01",
+      "HS2-CALC-DIFF-POLY-01",
+      "HS2-COMPLEX-NUM-01",
+      "HS2-EXP-FUNC-01",
+      "HS2-EXP-LOG-01",
+      "HS2-TRIG-DOUBLE-01",
+      "HS2-TRIG-HALF-01",
+      "HS2-TRIG-PRODSUM-01",
+      "HS2-TRIG-RADIAN-01",
+      "HS2-TRIG-SYNTHESIS-01",
+      "HS2-TRIG-TRIPLE-01",
+      "HS3-CALC-DIFF-TRIG-01",
+      "HS3-CALC-E-DEF-01",
+      "HS3-CALC-HIGHER-DIFF-01",
+      "HS3-CALC-LIMIT-TRIG-01",
+      "HS3-COMPLEX-DEMOIVRE-01",
+      "HS3-COMPLEX-PLANE-01",
+      "JH-ALG-EXPR-01",
+      "JH-ALG-QUADRATIC-01",
+      "JH-COORD-DISTANCE-01",
+      "JH-GEO-CIRCLE-ANGLE-01",
+      "JH-GEO-CIRCLE-INCIRCUM-01",
+      "JH-GEO-PARALLEL-01",
+      "JH-GEO-PYTHAGORAS-01",
+      "JH-GEO-ROTATION-01",
+      "JH-GEO-TRI-BASIC-01",
+      "JH-GEO-TRI-CONG-01",
+      "JH-NUM-SQRT-01",
+      "UNIV-CALC-TAYLOR-01"
+    ],
+    "69C0E3248F787A49FF80AE4417847B5148E532595BF58F1407126C778123185B": [
+      "HS1-TRIG-ANGLECONV-01",
+      "HS1-TRIG-AREA-01",
+      "HS1-TRIG-COSINELAW-01",
+      "HS1-TRIG-DEF-01",
+      "HS1-TRIG-IDENTITY-01",
+      "HS1-TRIG-SINELAW-01",
+      "HS1-TRIG-UNITCIRCLE-01",
+      "HS2-TRIG-ADDITION-01",
+      "HS2-TRIG-GENERALANGLE-01",
+      "HS2-TRIG-GRAPH-01",
+      "JH-COORD-PLANE-01",
+      "JH-FUNC-LINEAR-01",
+      "JH-GEO-SIMILAR-01",
+      "JH-NUM-SIGN-01"
+    ]
+  },
+  "prereq_issues": [
+    "ELEM-NUM-01: prerequisite_nodes references unknown []",
+    "JH-GEO-TRI-BASIC-01: prerequisite_nodes references unknown []"
+  ],
+  "section_order_issues": []
+}

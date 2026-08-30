@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" role="img" aria-labelledby="title desc">
+  <title id="title">座標平面と点 P(−3, 2)、4 象限の符号</title>
+  <desc id="desc">x軸・y軸で分けられた4象限と、点P(−3,2)の位置を補助線で示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .tick { font-size: 17px; fill: #94a3b8; }
+    .quad { font-size: 19px; fill: #cbd5e1; }
+    .label { font-size: 20px; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formula { font-size: 16px; fill: #475569; }
+    .note { font-size: 16px; fill: #475569; }
+  </style>
+
+  <rect width="820" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="556" y="52" width="240" height="296" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <g stroke="#e2e8f0" stroke-width="1.5">
+    <line x1="210" y1="50" x2="210" y2="370"/>
+    <line x1="170" y1="50" x2="170" y2="370"/>
+    <line x1="130" y1="50" x2="130" y2="370"/>
+    <line x1="290" y1="50" x2="290" y2="370"/>
+    <line x1="330" y1="50" x2="330" y2="370"/>
+    <line x1="370" y1="50" x2="370" y2="370"/>
+    <line x1="410" y1="50" x2="410" y2="370"/>
+    <line x1="90" y1="170" x2="410" y2="170"/>
+    <line x1="90" y1="130" x2="410" y2="130"/>
+    <line x1="90" y1="290" x2="410" y2="290"/>
+    <line x1="90" y1="330" x2="410" y2="330"/>
+  </g>
+
+  <line x1="82" y1="210" x2="418" y2="210" stroke="#94a3b8" stroke-width="4"/>
+  <line x1="250" y1="42" x2="250" y2="378" stroke="#94a3b8" stroke-width="4"/>
+
+  <text x="286" y="204" class="tick" fill="#64748b">x</text>
+  <text x="262" y="66" class="tick" fill="#64748b">y</text>
+  <text x="264" y="232" class="tick" fill="#64748b">O</text>
+
+  <line x1="130" y1="210" x2="130" y2="130" stroke="#38bdf8" stroke-width="4" stroke-dasharray="7 5"/>
+  <line x1="250" y1="130" x2="130" y2="130" stroke="#10b981" stroke-width="4" stroke-dasharray="7 5"/>
+  <circle cx="130" cy="130" r="7" fill="#0ea5e9"/>
+
+  <text x="96" y="118" class="label" fill="#0369a1">P(−3, 2)</text>
+  <text x="130" y="244" class="tick" fill="#64748b" text-anchor="middle">−3</text>
+  <text x="242" y="124" class="tick" fill="#64748b" text-anchor="end">2</text>
+
+  <text x="330" y="90" class="quad">I</text>
+  <text x="100" y="90" class="quad">II</text>
+  <text x="100" y="330" class="quad">III</text>
+  <text x="330" y="330" class="quad">IV</text>
+
+  <text x="576" y="92" class="heading">象限の符号</text>
+  <text x="576" y="128" class="formula">第 I ： ( + , + )　右上</text>
+  <text x="576" y="156" class="formula">第 II： ( − , + )　左上</text>
+  <text x="576" y="184" class="formula">第 III： ( − , − )　左下</text>
+  <text x="576" y="212" class="formula">第 IV： ( + , − )　右下</text>
+  <line x1="576" y1="230" x2="772" y2="230" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="576" y="258" class="note">横は x（右が正・左が負）</text>
+  <text x="576" y="282" class="note">縦は y（上が正・下が負）</text>
+  <text x="576" y="310" class="note">原点と軸上の点は</text>
+  <text x="576" y="334" class="note">どの象限にも属さない</text>
+</svg>

@@ -1,0 +1,44 @@
+<!-- layout v4 2026-08-30: widen panel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">文字式の約束と等式の天秤</title>
+  <desc id="desc">掛け算の省略などの文字式の約束と、等式を天秤として見る考え方を示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .form { font-size: 16px; fill: #475569; }
+    .head { font-size: 15px; font-weight: 700; fill: #334155; }
+    .tag { font-size: 14px; fill: #94a3b8; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <rect x="46" y="46" width="452" height="88" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="66" y="72" class="head">文字式の書き方の約束</text>
+  <text x="66" y="100" class="form">2 × x ＝ 2x　・　x ÷ 3 ＝ x/3　・　1x ＝ x</text>
+  <text x="66" y="122" class="form">数字は前・文字は後　　−1x ＝ −x</text>
+
+  <rect x="46" y="154" width="452" height="88" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="66" y="180" class="head">同類項の整理（同文字・同数字だけ）</text>
+  <text x="66" y="208" class="form">2x + 3x ＝ 5x　・　x と y は別物（そのまま）</text>
+
+  <rect x="46" y="262" width="452" height="96" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="66" y="288" class="head">等式は天秤：両辺に同じ操作をしても釣り合う</text>
+  <text x="66" y="314" class="form">　2x + 3y = 6</text>
+  <text x="66" y="338" class="form">→ y ＝ 2 − (2/3)x　（移項：+2x が右へ −2x で）</text>
+
+  <text x="568" y="88" class="heading">文字と式</text>
+  <text x="568" y="126" class="formp">2 × x ＝ 2x（× の省略）</text>
+  <text x="568" y="152" class="formp">同類項だけまとまる（2x+3x＝5x）</text>
+  <line x1="568" y1="170" x2="824" y2="170" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="198" class="note">天秤：両辺に同じ操作 OK</text>
+  <text x="568" y="224" class="note">移項は「符号を変えて移動」</text>
+  <text x="568" y="256" class="formp">診断：2x + 3y = 6</text>
+  <text x="568" y="280" class="formp">→ y ＝ 2 − (2/3)x</text>
+  <text x="568" y="312" class="note">y = ax + b（一次関数）の土台</text>
+</svg>

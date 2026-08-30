@@ -1,0 +1,54 @@
+<!-- layout v4 2026-08-30: widen panel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">3 倍角の導出フロー（加法定理→2 倍角→整理）</title>
+  <desc id="desc">sin(2α+α)とcos(2α+α)を加法定理・2倍角代入・恒等式で整理して3倍角を得る流れを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; rx: 12; }
+    .head { font-size: 15px; font-weight: 700; fill: #334155; }
+    .form { font-size: 16px; fill: #475569; }
+    .sub { font-size: 13px; fill: #94a3b8; }
+    .arrow { stroke: #94a3b8; stroke-width: 2.5; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <rect x="60" y="46" width="420" height="64" rx="12" class="box"/>
+  <text x="84" y="74" class="head">第 1 手：加法定理で開く</text>
+  <text x="84" y="96" class="form">sin(2α+α)・cos(2α+α) を和の形へ</text>
+
+  <line x1="270" y1="110" x2="270" y2="134" class="arrow"/>
+  <polygon points="262,134 270,144 278,134" fill="#94a3b8"/>
+  <text x="284" y="132" class="sub">2 倍角を代入</text>
+
+  <rect x="60" y="146" width="420" height="64" rx="12" class="box"/>
+  <text x="84" y="174" class="head">第 2 手：sin2α・cos2α を α だけで書く</text>
+  <text x="84" y="196" class="form">(2sc)cosα、(c²−s²)sinα、…</text>
+
+  <line x1="270" y1="210" x2="270" y2="234" class="arrow"/>
+  <polygon points="262,234 270,244 278,234" fill="#94a3b8"/>
+  <text x="284" y="232" class="sub">sin²+cos²=1 で整理</text>
+
+  <rect x="60" y="246" width="420" height="92" rx="12" class="box"/>
+  <text x="84" y="274" class="head">第 3 手：3 倍角の公式</text>
+  <text x="84" y="298" class="form">sin 3α = 3 sinα − 4 sin³α</text>
+  <text x="84" y="322" class="form">cos 3α = 4 cos³α − 3 cosα</text>
+
+  <text x="568" y="88" class="heading">3 倍角の公式</text>
+  <text x="568" y="126" class="formp">sin 3α ＝ 3 sinα − 4 sin³α</text>
+  <text x="568" y="152" class="formp">cos 3α ＝ 4 cos³α − 3 cosα</text>
+  <line x1="568" y1="170" x2="824" y2="170" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="198" class="note">加法定理＋2 倍角の合成</text>
+  <text x="568" y="224" class="note">sin 3α ≠ 3 sinα　（−4sin³α！）</text>
+  <text x="568" y="250" class="note">cos 側は符号が反対の順に注意</text>
+  <text x="568" y="284" class="formp">診断：sin(2α+α) を展開 → 3 倍角</text>
+  <text x="568" y="314" class="note">純粋な「n 倍の開き方」の型</text>
+  <text x="568" y="340" class="note">→ ド・モアブルへ続く</text>
+</svg>

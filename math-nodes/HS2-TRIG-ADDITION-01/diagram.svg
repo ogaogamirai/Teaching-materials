@@ -1,0 +1,54 @@
+<!-- layout v4 2026-08-30: widen panel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">単位円上の 2 点 P と Q による加法定理の証明図</title>
+  <desc id="desc">角αの点Pと角βの点Qをとり、線分PQの距離を2通りで計算することを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 20px; }
+    .small { font-size: 17px; fill: #475569; }
+    .heading { font-size: 23px; font-weight: 700; fill: #334155; }
+    .formula { font-size: 15px; fill: #475569; }
+    .note { font-size: 16px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="556" y="46" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <line x1="96" y1="210" x2="404" y2="210" stroke="#94a3b8" stroke-width="3"/>
+  <line x1="250" y1="62" x2="250" y2="358" stroke="#94a3b8" stroke-width="3"/>
+
+  <circle cx="250" cy="210" r="140" fill="none" stroke="#64748b" stroke-width="3"/>
+
+  <line x1="250" y1="210" x2="286.2" y2="74.8" stroke="#f59e0b" stroke-width="6" stroke-linecap="round"/>
+  <line x1="250" y1="210" x2="371.2" y2="140" stroke="#f59e0b" stroke-width="6" stroke-linecap="round"/>
+  <line x1="286.2" y1="74.8" x2="371.2" y2="140" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+
+  <path d="M 274.0 210.0 A 24 24 0 0 0 256.2 186.8" fill="none" stroke="#334155" stroke-width="3"/>
+  <path d="M 259.3 175.2 A 36 36 0 0 1 281.2 192.0" fill="none" stroke="#10b981" stroke-width="3"/>
+
+  <circle cx="286.2" cy="74.8" r="7" fill="#0ea5e9"/>
+  <circle cx="371.2" cy="140" r="7" fill="#eab308"/>
+
+  <text x="298" y="60" class="label" fill="#b45309">P(cos α, sin α)</text>
+  <text x="382" y="130" class="small" fill="#b45309">Q(cos β, sin β)</text>
+  <text x="390" y="158" class="small" fill="#b45309">β (30°)</text>
+  <text x="300" y="200" class="small" fill="#334155">α (75°)</text>
+  <text x="222" y="168" class="small" fill="#047857">∠POQ = α−β</text>
+  <text x="238" y="292" class="small">O 半径1</text>
+  <text x="318" y="176" class="small" fill="#ef4444">PQ</text>
+
+  <text x="576" y="90" class="heading">加法定理（4 本）</text>
+  <text x="576" y="124" class="formula">sin(α±β) =</text>
+  <text x="576" y="146" class="formula">＝ sinα cosβ ± cosα sinβ</text>
+  <text x="576" y="176" class="formula">cos(α±β) =</text>
+  <text x="576" y="198" class="formula">＝ cosα cosβ ∓ sinα sinβ</text>
+  <line x1="576" y1="216" x2="824" y2="216" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="576" y="246" class="note">証明の要：距離を 2 通りで測る</text>
+  <text x="576" y="272" class="note">座標の差 ……… 余弦定理</text>
+  <text x="576" y="298" class="note">あとは 1 本目が残りを生む</text>
+  <text x="576" y="324" class="note">→ 2 倍角・3 倍角・合成</text>
+  <text x="576" y="350" class="note">この母公式がすべての元</text>
+</svg>

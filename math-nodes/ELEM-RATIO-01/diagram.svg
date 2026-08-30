@@ -1,0 +1,41 @@
+<!-- layout v4 2026-08-30: widen panel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">ピザ 4 等分の 3 切れ（3/4 = 0.75）</title>
+  <desc id="desc">円を4等分し3切れを着色、分数3/4・小数0.75・比3:4が同じ値であることを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 20px; fill: #334155; }
+    .sm { font-size: 16px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <g>
+    <path d="M 210 250 L 350 250 A 140 140 0 0 0 210 110 Z" fill="#fca5a5" stroke="#b91c1c" stroke-width="3"/>
+    <path d="M 210 250 L 210 110 A 140 140 0 0 0 70 250 Z" fill="#fca5a5" stroke="#b91c1c" stroke-width="3"/>
+    <path d="M 210 250 L 70 250 A 140 140 0 0 0 210 390 Z" fill="#fca5a5" stroke="#b91c1c" stroke-width="3"/>
+    <path d="M 210 250 L 210 390 A 140 140 0 0 0 350 250 Z" fill="#fff1f2" stroke="#b91c1c" stroke-width="3"/>
+  </g>
+
+  <text x="238" y="180" class="sm" fill="#7f1d1d">3 切れ＝3/4</text>
+  <text x="284" y="368" class="sm" fill="#b91c1c"></text>
+  <text x="52" y="176" class="sm" fill="#9f1239"></text>
+  <text x="238" y="362" class="sm" fill="#9f1239"></text>
+  <text x="240" y="392" class="label" fill="#334155">3/4 ＝ 0.75 ＝ 3 : 4</text>
+
+  <text x="568" y="88" class="heading">分数と比・割合</text>
+  <text x="568" y="128" class="formp">3/4 ＝ 3 ÷ 4 ＝ 0.75</text>
+  <text x="568" y="154" class="formp">比 3 : 4 も同じ値</text>
+  <line x1="568" y1="172" x2="824" y2="172" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="202" class="note">足し算：分母をそろえる</text>
+  <text x="568" y="228" class="note">掛け算：上下同士・割り算：逆数</text>
+  <text x="568" y="260" class="formp">診断：はい（0.75）</text>
+  <text x="568" y="290" class="note">相似比・扇形の割合の言語</text>
+</svg>

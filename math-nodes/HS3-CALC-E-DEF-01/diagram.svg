@@ -1,0 +1,50 @@
+<!-- layout v4 2026-08-30: widen panel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">(1+1/n)^n の極限と e</title>
+  <desc id="desc">nを増やすと(1+1/n)^nが2.71828…に近づく様子を数直線上に示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .tick { font-size: 14px; fill: #94a3b8; }
+    .sm { font-size: 16px; fill: #475569; }
+    .label { font-size: 19px; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <line x1="80" y1="210" x2="500" y2="210" stroke="#94a3b8" stroke-width="4"/>
+
+  <line x1="140" y1="196" x2="140" y2="224" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="470" y1="196" x2="470" y2="224" stroke="#94a3b8" stroke-width="2"/>
+
+  <text x="120" y="242" class="tick">2.0</text>
+  <text x="444" y="242" class="tick">2.75</text>
+
+  <circle cx="140" cy="210" r="7" fill="#0ea5e9"/>
+  <circle cx="236" cy="210" r="7" fill="#10b981"/>
+  <circle cx="336" cy="210" r="7" fill="#10b981"/>
+  <circle cx="452" cy="210" r="7" fill="#ef4444"/>
+
+  <text x="128" y="86" class="label" fill="#0369a1">n=1 → 2.000</text>
+  <text x="196" y="130" class="label" fill="#047857">n=10 → 2.594</text>
+  <text x="282" y="96" class="label" fill="#047857">n=100 → 2.705</text>
+  <text x="292" y="278" class="label" fill="#b45309">n→∞ → 2.71828…（e）</text>
+
+  <text x="80" y="300" class="sm" fill="#475569">極限値 e = lim (1+1/n)^n</text>
+
+  <text x="568" y="88" class="heading">ネイピア数 e</text>
+  <text x="568" y="128" class="formp">e ＝ lim(1+1/n)^n ≈ 2.71828…</text>
+  <line x1="568" y1="146" x2="824" y2="146" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="176" class="note">(a^x)' ＝ a^x・L(a)</text>
+  <text x="568" y="202" class="note">L(a) ＝ 1 になる底が e</text>
+  <text x="568" y="228" class="note">→ (e^x)' ＝ e^x（微分不変）</text>
+  <text x="568" y="260" class="formp">診断：はい（何回でも e^x）</text>
+  <text x="568" y="290" class="note">複利・崩壊・増殖の標準底</text>
+  <text x="568" y="318" class="note">オイラー・テイラーへ続く</text>
+</svg>

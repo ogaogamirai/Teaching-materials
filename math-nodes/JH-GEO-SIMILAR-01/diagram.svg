@@ -1,0 +1,61 @@
+<!-- layout v4 2026-08-30: widen panel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">3-4-5 の直角三角形と 2 倍の 6-8-10 の相似</title>
+  <desc id="desc">全ての辺が同じ倍率で伸びると、角θが同じで比の値も変わらないことを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 20px; }
+    .side { font-size: 20px; fill: #334155; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formula { font-size: 16px; fill: #475569; }
+    .note { font-size: 16px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="46" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <line x1="130" y1="300" x2="226" y2="300" stroke="#38bdf8" stroke-width="7" stroke-linecap="round"/>
+  <line x1="226" y1="300" x2="226" y2="228" stroke="#10b981" stroke-width="7" stroke-linecap="round"/>
+  <line x1="130" y1="300" x2="226" y2="228" stroke="#f59e0b" stroke-width="7" stroke-linecap="round"/>
+
+  <line x1="256" y1="300" x2="448" y2="300" stroke="#38bdf8" stroke-width="7" stroke-linecap="round"/>
+  <line x1="448" y1="300" x2="448" y2="156" stroke="#10b981" stroke-width="7" stroke-linecap="round"/>
+  <line x1="256" y1="300" x2="448" y2="156" stroke="#f59e0b" stroke-width="7" stroke-linecap="round"/>
+
+  <path d="M 212 300 L 212 288 L 224 288" fill="none" stroke="#334155" stroke-width="4"/>
+  <path d="M 434 300 L 434 288 L 446 288" fill="none" stroke="#334155" stroke-width="4"/>
+
+  <path d="M 148 300 A 18 18 0 0 0 144.4 289.2" fill="none" stroke="#334155" stroke-width="4"/>
+  <path d="M 292 300 A 36 36 0 0 0 284.8 278.4" fill="none" stroke="#334155" stroke-width="4"/>
+
+  <text x="468" y="228" class="side">6</text>
+  <text x="100" y="270" class="side">3</text>
+  <text x="166" y="234" class="side">5</text>
+  <text x="164" y="334" class="side">4</text>
+  <text x="316" y="252" class="side">10</text>
+  <text x="338" y="334" class="side">8</text>
+  <text x="140" y="292" class="label" fill="#334155">θ</text>
+  <text x="266" y="286" class="label" fill="#334155">θ</text>
+
+  <text x="140" y="196" class="label" fill="#475569">3-4-5</text>
+  <text x="322" y="118" class="label" fill="#475569">6-8-10</text>
+
+  <!-- ×2: label above, arrow below (no overlap) -->
+  <text x="241" y="246" class="label" fill="#b45309" text-anchor="middle">×2</text>
+  <line x1="228" y1="272" x2="250" y2="272" stroke="#b45309" stroke-width="3" stroke-dasharray="6 4"/>
+  <polygon points="250,266 260,272 250,278" fill="#b45309"/>
+
+  <text x="568" y="90" class="heading">同じ角 θ なら比は一定</text>
+  <text x="568" y="128" class="formula">縦/斜辺：3/5 ＝ 6/10 ＝ 0.6</text>
+  <text x="568" y="156" class="formula">縦/横　：3/4 ＝ 6/8 ＝ 0.75</text>
+  <line x1="568" y1="178" x2="824" y2="178" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="208" class="note">相似比 1 ： 2（全ての辺が 2 倍）</text>
+  <text x="568" y="234" class="note">でも角 θ は変わらない</text>
+  <text x="568" y="264" class="note">k 倍しても比は約分で消えて、</text>
+  <text x="568" y="290" class="note">角だけが比を決める</text>
+  <text x="568" y="322" class="note">→ これが sin・cos・tan の土台</text>
+  <text x="568" y="348" class="note">「θ の関数としての比」への出発点</text>
+</svg>

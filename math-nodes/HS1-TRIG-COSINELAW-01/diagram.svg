@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" role="img" aria-labelledby="title desc">
+  <title id="title">余弦定理の導出：垂線で三角形を 2 つに分ける</title>
+  <desc id="desc">頂点Aから底辺BCに垂線を引き、左右の直角三角形に分けて三平方の定理を適用する図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 21px; fill: #334155; }
+    .side { font-size: 21px; fill: #334155; }
+    .sm { font-size: 17px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formula { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="820" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="42" width="256" height="316" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <line x1="100" y1="300" x2="420" y2="300" stroke="#38bdf8" stroke-width="7" stroke-linecap="round"/>
+  <line x1="210" y1="100" x2="420" y2="300" stroke="#f59e0b" stroke-width="7" stroke-linecap="round"/>
+  <line x1="210" y1="100" x2="100" y2="300" stroke="#10b981" stroke-width="7" stroke-linecap="round"/>
+  <line x1="210" y1="100" x2="210" y2="300" stroke="#64748b" stroke-width="3" stroke-dasharray="7 5"/>
+
+  <path d="M 120.0 300.0 A 20 20 0 0 0 109.6 282.5" fill="none" stroke="#334155" stroke-width="3"/>
+  <path d="M 400.0 300.0 A 20 20 0 0 1 405.5 286.2" fill="none" stroke="#334155" stroke-width="3"/>
+
+  <text x="216" y="88" class="label">A</text>
+  <text x="76" y="324" class="label">B</text>
+  <text x="432" y="324" class="label">C</text>
+  <text x="252" y="330" class="side" fill="#0369a1">a</text>
+  <text x="336" y="196" class="side" fill="#b45309">b</text>
+  <text x="128" y="192" class="side" fill="#047857">c</text>
+  <text x="218" y="238" class="sm">AH = c sinB</text>
+  <text x="98" y="356" class="sm" fill="#64748b">BH = c cosB</text>
+  <text x="280" y="356" class="sm" fill="#64748b">CH = a − c cosB</text>
+
+  <text x="560" y="84" class="heading">余弦定理</text>
+  <text x="560" y="122" class="formula">a² = b² + c² − 2bc cos A</text>
+  <text x="560" y="150" class="formula">（2 辺と夾角 → 残り 1 辺）</text>
+  <line x1="560" y1="168" x2="772" y2="168" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="560" y="196" class="note">導出は垂線で 2 分割</text>
+  <text x="560" y="220" class="note">△ACH に三平方の定理</text>
+  <text x="560" y="246" class="note">＋ sin²B + cos²B = 1</text>
+  <text x="560" y="276" class="formula">b² = a² + c² − 2ac cosB</text>
+  <line x1="560" y1="294" x2="772" y2="294" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="560" y="320" class="note">A = 90° → cosA = 0</text>
+  <text x="560" y="342" class="note">→ a² = b² + c²（三平方）</text>
+</svg>

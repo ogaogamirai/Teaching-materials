@@ -1,0 +1,47 @@
+<!-- layout v4 2026-08-30: widen panel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">e^(iθ) は単位円を回る（オイラーの公式）</title>
+  <desc id="desc">複素数平面上で e^(iθ) が θ と共に単位円を回り、θ=π/2でi・θ=πで−1に達することを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 20px; fill: #334155; }
+    .sm { font-size: 15px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <line x1="90" y1="210" x2="490" y2="210" stroke="#94a3b8" stroke-width="4"/>
+  <line x1="250" y1="60" x2="250" y2="370" stroke="#94a3b8" stroke-width="4"/>
+
+  <circle cx="250" cy="210" r="130" fill="none" stroke="#64748b" stroke-width="3"/>
+
+  <line x1="250" y1="210" x2="371" y2="154" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+
+  <path d="M 266 210 A 16 16 0 0 0 261 200" fill="none" stroke="#475569" stroke-width="3"/>
+
+  <circle cx="371" cy="154" r="7" fill="#ef4444"/>
+  <circle cx="250" cy="80" r="6" fill="#0ea5e9"/>
+  <circle cx="120" cy="210" r="6" fill="#64748b"/>
+
+  <text x="382" y="148" class="label" fill="#b45309">e^(iθ)（点）</text>
+  <text x="258" y="66" class="sm" fill="#0369a1">θ=π/2 → i</text>
+  <text x="66" y="204" class="sm" fill="#64748b">θ=π → −1</text>
+  <text x="296" y="284" class="sm" fill="#475569">半径 1（θ=0 から回転）</text>
+
+  <text x="568" y="88" class="heading">オイラーの公式</text>
+  <text x="568" y="128" class="formp">e^iθ ＝ cosθ + i sinθ</text>
+  <line x1="568" y1="146" x2="824" y2="146" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="176" class="note">マクローリン展開 → i の周期で仕分け</text>
+  <text x="568" y="202" class="note">実部 cosθ・虚部 sinθ</text>
+  <text x="568" y="228" class="note">ド・モアブルと指数法則は同じ顔</text>
+  <text x="568" y="260" class="formp">等式：e^iπ ＋ 1 ＝ 0</text>
+  <text x="568" y="290" class="note">e・i・π・1・0 → 5 定数が 1 式</text>
+  <text x="568" y="318" class="note">物理・電気・波の数学の門</text>
+</svg>

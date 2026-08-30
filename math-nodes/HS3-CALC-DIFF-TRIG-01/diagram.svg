@@ -1,0 +1,66 @@
+﻿<!-- layout v4 2026-08-30: widen panel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">y=sin x と y=cos x の重ね描き（微分の対応）</title>
+  <desc id="desc">sinの傾きがcosの値と一致することを、2つの波の重ね描きと対応点で示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 19px; }
+    .tick { font-size: 14px; fill: #94a3b8; }
+    .sm { font-size: 15px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <line x1="80" y1="210" x2="500" y2="210" stroke="#94a3b8" stroke-width="3"/>
+  <line x1="225" y1="60" x2="225" y2="360" stroke="#94a3b8" stroke-width="3"/>
+
+  <line x1="80" y1="120" x2="500" y2="120" stroke="#e2e8f0" stroke-width="2"/>
+  <line x1="80" y1="300" x2="500" y2="300" stroke="#e2e8f0" stroke-width="2"/>
+
+  <polyline fill="none" stroke="#0ea5e9" stroke-width="4" stroke-linejoin="round"
+    points="80,210 85.8,202.2 91.7,194.4 97.5,186.7 103.3,179.2 109.2,172 115,165 120.8,158.4 126.7,152.1 132.5,146.4 138.3,141.1 144.2,136.3 150,132.1 155.8,128.4 161.7,125.4 167.5,123.1 173.3,121.4 179.2,120.3 185,120 190.8,120.3 196.7,121.4 202.5,123.1 208.3,125.4 214.2,128.4 220,132.1 225.8,136.3 231.7,141.1 237.5,146.4 243.3,152.1 249.2,158.4 255,165 260.8,172 266.7,179.2 272.5,186.7 278.3,194.4 284.2,202.2 290,210 295.8,217.8 301.7,225.6 307.5,233.3 313.3,240.8 319.2,248 325,255 330.8,261.6 336.7,267.9 342.5,273.6 348.3,278.9 354.2,283.7 360,287.9 365.8,291.6 371.7,294.6 377.5,296.9 383.3,298.6 389.2,299.7 395,300 400.8,299.7 406.7,298.6 412.5,296.9 418.3,294.6 424.2,291.6 430,287.9 435.8,283.7 441.7,278.9 447.5,273.6 453.3,267.9 459.2,261.6 465,255 470.8,248 476.7,240.8 482.5,233.3 488.3,225.6 494.2,217.8 500,210"/>
+
+  <polyline fill="none" stroke="#10b981" stroke-width="4" stroke-linejoin="round"
+    points="80,120 85.8,120.3 91.7,121.4 97.5,123.1 103.3,125.4 109.2,128.4 115,132.1 120.8,136.3 126.7,141.1 132.5,146.4 138.3,152.1 144.2,158.4 150,165 155.8,172 161.7,179.2 167.5,186.7 173.3,194.4 179.2,202.2 185,210 190.8,217.8 196.7,225.6 202.5,233.3 208.3,240.8 214.2,248 220,255 225.8,261.6 231.7,267.9 237.5,273.6 243.3,278.9 249.2,283.7 255,287.9 260.8,291.6 266.7,294.6 272.5,296.9 278.3,298.6 284.2,299.7 290,300 295.8,299.7 301.7,298.6 307.5,296.9 313.3,294.6 319.2,291.6 325,287.9 330.8,283.7 336.7,278.9 342.5,273.6 348.3,267.9 354.2,261.6 360,255 365.8,248 371.7,240.8 377.5,233.3 383.3,225.6 389.2,217.8 395,210 400.8,202.2 406.7,194.4 412.5,186.7 418.3,179.2 424.2,172 430,165 435.8,158.4 441.7,152.1 447.5,146.4 453.3,141.1 459.2,136.3 465,132.1 470.8,128.4 476.7,125.4 482.5,123.1 488.3,121.4 494.2,120.3 500,120"/>
+
+  <!-- 対応点：x=0（傾き1 ＝ cos の高さ） -->
+  <line x1="80" y1="120" x2="80" y2="210" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <circle cx="80" cy="210" r="5" fill="#0ea5e9"/>
+  <circle cx="80" cy="120" r="5" fill="#10b981"/>
+
+  <!-- 対応点：x=π/2（sin のピーク → 傾き 0） -->
+  <line x1="185" y1="120" x2="185" y2="210" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <circle cx="185" cy="120" r="5" fill="#0ea5e9"/>
+  <circle cx="185" cy="210" r="5" fill="#10b981"/>
+
+  <text x="90" y="106" class="tick">1</text>
+  <text x="90" y="316" class="tick">−1</text>
+  <text x="208" y="228" class="tick">0</text>
+  <text x="166" y="100" class="tick" fill="#94a3b8"></text>
+  <text x="256" y="356" class="tick">π/2</text>
+  <text x="330" y="356" class="tick">π</text>
+  <text x="398" y="356" class="tick">3π/2</text>
+  <text x="470" y="356" class="tick">2π</text>
+
+  <text x="112" y="96" class="label" fill="#0369a1">y = sin x</text>
+  <text x="420" y="106" class="label" fill="#047857">y = cos x（傾き）</text>
+  <text x="92" y="168" class="sm" fill="#475569">傾き＝1（cos の高さ）</text>
+  <text x="196" y="168" class="sm" fill="#475569">ピーク→傾き 0</text>
+
+  <text x="568" y="88" class="heading">三角関数の導関数</text>
+  <text x="568" y="128" class="formp">(sin x)' ＝ cos x</text>
+  <text x="568" y="154" class="formp">(cos x)' ＝ − sin x</text>
+  <line x1="568" y1="172" x2="824" y2="172" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="202" class="note">定義 → 加法定理 → 極限(sinh/h=1)</text>
+  <text x="568" y="228" class="note">＋補助極限（cosh−1)/h ＝ 0</text>
+  <text x="568" y="260" class="formp">診断：(sin x)' ＝ cos x</text>
+  <text x="568" y="290" class="note">sin の傾きは cos の高さ</text>
+  <text x="568" y="318" class="note">cos 側は −sin（90° 遅れ）</text>
+</svg>

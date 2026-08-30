@@ -1,0 +1,67 @@
+<!-- layout v4 2026-08-30: widen panel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">y=2^x と y=(1/2)^x のグラフ</title>
+  <desc id="desc">単調増加と単調減少の指数関数グラフが、どちらも(0,1)を通りx軸と交わらないことを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .tick { font-size: 13px; fill: #94a3b8; }
+    .label { font-size: 19px; }
+    .sm { font-size: 15px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <line x1="90" y1="330" x2="470" y2="330" stroke="#94a3b8" stroke-width="3"/>
+  <line x1="270" y1="60" x2="270" y2="380" stroke="#94a3b8" stroke-width="3"/>
+
+  <g stroke="#e8eef5" stroke-width="1.5">
+    <line x1="90" y1="250" x2="470" y2="250"/>
+    <line x1="90" y1="170" x2="470" y2="170"/>
+    <line x1="90" y1="90" x2="470" y2="90"/>
+    <line x1="150" y1="60" x2="150" y2="380"/>
+    <line x1="210" y1="60" x2="210" y2="380"/>
+    <line x1="330" y1="60" x2="330" y2="380"/>
+    <line x1="390" y1="60" x2="390" y2="380"/>
+    <line x1="450" y1="60" x2="450" y2="380"/>
+  </g>
+
+  <text x="126" y="348" class="tick">−2</text>
+  <text x="186" y="348" class="tick">−1</text>
+  <text x="254" y="348" class="tick">0</text>
+  <text x="310" y="348" class="tick">1</text>
+  <text x="370" y="348" class="tick">2</text>
+  <text x="430" y="348" class="tick">3</text>
+  <text x="256" y="254" class="tick">1</text>
+  <text x="256" y="174" class="tick">2</text>
+  <text x="256" y="94" class="tick">3</text>
+
+  <polyline fill="none" stroke="#0ea5e9" stroke-width="4" stroke-linejoin="round"
+    points="150,310 156,308.6 162,307 168,305.4 174,303.6 180,301.7 186,299.7 192,297.5 198,295.2 204,292.7 210,290 216,287.1 222,284.1 228,280.8 234,277.2 240,273.4 246,269.4 252,265 258,260.4 264,255.4 270,250 276,244.3 282,238.1 288,231.5 294,224.4 300,216.9 306,208.7 312,200 318,190.7 324,180.7 330,170 336,158.5 342,146.2 348,133 354,118.9 360,103.7 366,87.5 372,70.1"/>
+
+  <polyline fill="none" stroke="#10b981" stroke-width="4" stroke-linejoin="round"
+    points="168,70.1 174,87.5 180,103.7 186,118.9 192,133 198,146.2 204,158.5 210,170 216,180.7 222,190.7 228,200 234,208.7 240,216.9 246,224.4 252,231.5 258,238.1 264,244.3 270,250 276,255.4 282,260.4 288,265 294,269.4 300,273.4 306,277.2 312,280.8 318,284.1 324,287.1 330,290 336,292.7 342,295.2 348,297.5 354,299.7 360,301.7 366,303.6 372,305.4 378,307 384,308.6 390,310 396,311.3 402,312.6 408,313.8 414,314.8 420,315.9 426,316.8 432,317.7 438,318.5 444,319.3 450,320"/>
+
+  <circle cx="270" cy="250" r="7" fill="#ef4444"/>
+  <text x="262" y="240" class="label" fill="#ef4444">(0, 1)</text>
+  <text x="360" y="78" class="label" fill="#0369a1">y = 2^x</text>
+  <text x="100" y="88" class="label" fill="#047857">y = (1/2)^x</text>
+  <text x="420" y="318" class="sm" fill="#667085"></text>
+  <text x="160" y="224" class="sm" fill="#667085"></text>
+
+  <text x="568" y="88" class="heading">指数関数</text>
+  <text x="568" y="128" class="formp">y = a^x（a＞0, a≠1）</text>
+  <text x="568" y="154" class="formp">定点 (0, 1)・値域 y＞0</text>
+  <text x="568" y="180" class="formp">a＞1 増加／0＜a＜1 減少</text>
+  <line x1="568" y1="198" x2="824" y2="198" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="228" class="note">a^x ＞ 0 （常に正）</text>
+  <text x="568" y="254" class="note">→ x 軸と交わらない</text>
+  <text x="568" y="286" class="formp">診断：交わらない（答・いいえ）</text>
+  <text x="568" y="316" class="note">複利・崩壊・増殖のモデル</text>
+</svg>

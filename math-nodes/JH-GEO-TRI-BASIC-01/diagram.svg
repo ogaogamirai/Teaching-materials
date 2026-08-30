@@ -1,0 +1,61 @@
+<!-- layout v4 2026-08-30: widen panel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">三角形の基本：底辺・高さと平行四辺形の半分</title>
+  <desc id="desc">底辺BCと高さAHを示し、同じ三角形をもう1個回して平行四辺形を作る様子を示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 21px; fill: #334155; }
+    .sm { font-size: 17px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formula { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <polygon points="110,300 300,300 265,160" fill="#ffffff" stroke="none"/>
+  <line x1="110" y1="300" x2="300" y2="300" stroke="#38bdf8" stroke-width="7" stroke-linecap="round"/>
+  <line x1="300" y1="300" x2="265" y2="160" stroke="#f59e0b" stroke-width="7" stroke-linecap="round"/>
+  <line x1="110" y1="300" x2="265" y2="160" stroke="#10b981" stroke-width="7" stroke-linecap="round"/>
+  <line x1="265" y1="160" x2="265" y2="300" stroke="#ef4444" stroke-width="3" stroke-dasharray="7 5"/>
+
+  <path d="M 250 300 L 250 285 L 265 285" fill="none" stroke="#334155" stroke-width="3"/>
+
+  <circle cx="110" cy="300" r="6" fill="#0ea5e9"/>
+  <circle cx="300" cy="300" r="6" fill="#eab308"/>
+  <circle cx="265" cy="160" r="6" fill="#ef4444"/>
+
+  <text x="88" y="322" class="label">B</text>
+  <text x="306" y="322" class="label">C</text>
+  <text x="262" y="148" class="label">A</text>
+  <text x="274" y="238" class="sm" fill="#64748b">H</text>
+  <text x="186" y="330" class="sm" fill="#0369a1">底辺 BC</text>
+  <text x="282" y="178" class="sm" fill="#ef4444">高さ h</text>
+  <text x="282" y="196" class="sm" fill="#64748b">（＝AH）</text>
+
+  <polygon points="360,300 480,300 445,160 325,160" fill="#e0f2fe" stroke="none"/>
+  <line x1="360" y1="300" x2="480" y2="300" stroke="#7dd3fc" stroke-width="5"/>
+  <line x1="480" y1="300" x2="445" y2="160" stroke="#fdba74" stroke-width="5"/>
+  <line x1="445" y1="160" x2="325" y2="160" stroke="#6ee7b7" stroke-width="5"/>
+  <line x1="325" y1="160" x2="360" y2="300" stroke="#fda4af" stroke-width="5"/>
+  <line x1="445" y1="160" x2="445" y2="300" stroke="#ef4444" stroke-width="3" stroke-dasharray="7 5"/>
+
+  <text x="340" y="70" class="sm" fill="#334155">もう 1 個を 180° 回す</text>
+  <text x="356" y="340" class="sm" fill="#0369a1">底辺 × 高さ（平行四辺形）</text>
+  <text x="356" y="362" class="sm" fill="#334155">→ 三角形は半分</text>
+
+  <text x="568" y="88" class="heading">三角形の基本</text>
+  <text x="568" y="128" class="formula">頂点 A・B・C、辺 3 本、角 3 つ</text>
+  <text x="568" y="154" class="formula">辺 AB の対角は ∠C</text>
+  <line x1="568" y1="174" x2="824" y2="174" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="204" class="note">底辺を 1 本選ぶと、</text>
+  <text x="568" y="226" class="note">高さ（垂線の長さ）は 1 つ</text>
+  <text x="568" y="252" class="note">鈍角では底辺の延長に高さの足が来る</text>
+  <text x="568" y="284" class="formula">面積 ＝ 底辺 × 高さ ÷ 2</text>
+  <text x="568" y="314" class="note">平行四辺形の半分がその理由</text>
+  <text x="568" y="344" class="note">対辺・対角＝三角比の語彙</text>
+</svg>

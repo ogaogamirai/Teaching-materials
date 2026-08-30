@@ -1,0 +1,41 @@
+<!-- layout v4 2026-08-30: widen panel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">半径 r の円と円周 2πr</title>
+  <desc id="desc">半径r・直径2r・円周2πr を同じ図で示す</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 21px; fill: #334155; }
+    .sm { font-size: 16px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <circle cx="250" cy="200" r="130" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="4"/>
+
+  <line x1="250" y1="200" x2="380" y2="200" stroke="#f59e0b" stroke-width="6" stroke-linecap="round"/>
+  <line x1="120" y1="200" x2="380" y2="200" stroke="#94a3b8" stroke-width="3" stroke-dasharray="0"/>
+
+  <circle cx="250" cy="200" r="7" fill="#ef4444"/>
+
+  <text x="390" y="196" class="label" fill="#b45309">r</text>
+  <text x="250" y="168" class="label" fill="#b45309">半径</text>
+  <text x="100" y="190" class="sm" fill="#64748b">直径 2r</text>
+  <text x="200" y="238" class="label" fill="#334155">円周 2πr</text>
+  <text x="150" y="356" class="sm" fill="#0ea5e9">π ＝ 円周 ÷ 直径（どの円でも同じ）</text>
+
+  <text x="568" y="88" class="heading">円と π</text>
+  <text x="568" y="128" class="formp">円周 ＝ 2πr　（π ≈ 3.14）</text>
+  <text x="568" y="154" class="formp">面積 ＝ πr²</text>
+  <line x1="568" y1="172" x2="824" y2="172" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="202" class="note">中心角に比例：弧長（90°→1/4）</text>
+  <text x="568" y="228" class="note">半径 5：円周 10π・面積 25π</text>
+  <text x="568" y="260" class="formp">診断：10π（約 31.4）</text>
+  <text x="568" y="290" class="note">→ 弧度法（arc と半径）へ</text>
+</svg>

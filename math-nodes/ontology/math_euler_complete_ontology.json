@@ -1,0 +1,558 @@
+﻿{
+  "title": "中高一貫〜オイラーの公式 完全統合数学オントロジー",
+  "total_nodes": 46,
+  "nodes": [
+    {
+      "id": "ELEM-NUM-01",
+      "name": "四則演算と小数の計算",
+      "stage": "小学校",
+      "category": "数と計算",
+      "concept": "整数の加減乗除、小数の計算と位取り。",
+      "prerequisites": [],
+      "diagnostic_query": "0.1 × 0.1 はいくつですか？（答: 0.01）"
+    },
+    {
+      "id": "ELEM-RATIO-01",
+      "name": "分数と比・割合",
+      "stage": "小学校",
+      "category": "数と割合",
+      "concept": "全体に対する部分の割合、分数の計算、比 A:B = A/B の値。",
+      "prerequisites": [
+        "ELEM-NUM-01"
+      ],
+      "diagnostic_query": "3/4 と 0.75 は同じ値ですか？"
+    },
+    {
+      "id": "ELEM-CIRCLE-01",
+      "name": "円周率 π と円の計量",
+      "stage": "小学校",
+      "category": "幾何基礎",
+      "concept": "円周 = 2πr、円の面積 = πr²、中心角と弧長の比例。",
+      "prerequisites": [
+        "ELEM-RATIO-01"
+      ],
+      "diagnostic_query": "半径5の円の円周の長さは？（答: 10π）"
+    },
+    {
+      "id": "JH-NUM-SIGN-01",
+      "name": "正負の数と符号の代数法則",
+      "stage": "中1",
+      "category": "代数基礎",
+      "concept": "負の数、数直線、負×負＝正、(-x)² = x²。",
+      "prerequisites": [
+        "ELEM-NUM-01"
+      ],
+      "diagnostic_query": "(-3)² と -3² の違いを説明できますか？"
+    },
+    {
+      "id": "JH-ALG-EXPR-01",
+      "name": "文字と式・等式変形",
+      "stage": "中1",
+      "category": "代数基礎",
+      "concept": "文字式の四則演算、分配法則、等式の変形（移項）。",
+      "prerequisites": [
+        "JH-NUM-SIGN-01"
+      ],
+      "diagnostic_query": "2x + 3y = 6 を y について解くと？"
+    },
+    {
+      "id": "JH-COORD-PLANE-01",
+      "name": "座標平面と原点 O",
+      "stage": "中1",
+      "category": "関数・幾何",
+      "concept": "x軸・y軸の直交平面、点 (x, y) の位置指定、象限の概念。",
+      "prerequisites": [
+        "JH-NUM-SIGN-01"
+      ],
+      "diagnostic_query": "第2象限にある点の x 座標と y 座標の符号は？（答: x<0, y>0）"
+    },
+    {
+      "id": "JH-GEO-ROTATION-01",
+      "name": "図形の回転移動・対称移動",
+      "stage": "中1",
+      "category": "幾何基礎",
+      "concept": "原点を中心とする図形や点の反時計回り回転移動。",
+      "prerequisites": [
+        "JH-COORD-PLANE-01",
+        "ELEM-CIRCLE-01"
+      ],
+      "diagnostic_query": "点(1,0)を原点中心に90°反時計回りに回転すると？（答: (0,1)）"
+    },
+    {
+      "id": "JH-FUNC-LINEAR-01",
+      "name": "一次関数と直線の傾き（変化の割合）",
+      "stage": "中2",
+      "category": "関数基礎",
+      "concept": "y = ax + b、傾き a = (yの増加量)/(xの増加量) = 縦/横。",
+      "prerequisites": [
+        "JH-ALG-EXPR-01",
+        "JH-COORD-PLANE-01"
+      ],
+      "diagnostic_query": "原点と点(4,3)を結ぶ直線の傾きは？（答: 3/4）"
+    },
+    {
+      "id": "JH-GEO-PARALLEL-01",
+      "name": "平行線・角・三角形の内角の和",
+      "stage": "中2",
+      "category": "幾何基礎",
+      "concept": "同位角・錯角の相等、三角形の内角の和 = 180°。",
+      "prerequisites": [
+        "JH-ALG-EXPR-01"
+      ],
+      "diagnostic_query": "直角三角形の鋭角の一方が30°のとき、他方は何度？（答: 60°）"
+    },
+    {
+      "id": "JH-GEO-TRI-CONG-01",
+      "name": "直角三角形の性質と合同",
+      "stage": "中2",
+      "category": "幾何基礎",
+      "concept": "直角三角形の斜辺と鋭角・他辺の関係、合同条件。",
+      "prerequisites": [
+        "JH-GEO-PARALLEL-01"
+      ],
+      "diagnostic_query": "斜辺と1つの鋭角が等しい2つの直角三角形は合同ですか？"
+    },
+    {
+      "id": "JH-NUM-SQRT-01",
+      "name": "平方根（ルート √）",
+      "stage": "中3",
+      "category": "数と式",
+      "concept": "x² = a の解としての √a、無理数の概念、根号の計算。",
+      "prerequisites": [
+        "JH-ALG-EXPR-01"
+      ],
+      "diagnostic_query": "√2 × √3 は？（答: √6）"
+    },
+    {
+      "id": "JH-ALG-QUADRATIC-01",
+      "name": "多項式の展開・因数分解・2次方程式",
+      "stage": "中3",
+      "category": "代数基礎",
+      "concept": "(a+b)² = a² + 2ab + b²、(a+b)(a-b) = a² - b²、2次方程式の解の公式。",
+      "prerequisites": [
+        "JH-ALG-EXPR-01",
+        "JH-NUM-SQRT-01"
+      ],
+      "diagnostic_query": "(x + 3)(x - 3) を展開すると？"
+    },
+    {
+      "id": "JH-GEO-SIMILAR-01",
+      "name": "図形の相似と比率の普遍性",
+      "stage": "中3",
+      "category": "幾何基礎",
+      "concept": "相似条件、角度が等しい三角形の対応する辺の比は一定。",
+      "prerequisites": [
+        "ELEM-RATIO-01",
+        "JH-GEO-TRI-CONG-01"
+      ],
+      "diagnostic_query": "角度が30°, 60°, 90° の直角三角形の辺の長さが2倍になっても、高さ/斜辺の比は変わりませんか？"
+    },
+    {
+      "id": "JH-GEO-PYTHAGORAS-01",
+      "name": "三平方の定理（ピタゴラスの定理）",
+      "stage": "中3",
+      "category": "幾何核心",
+      "concept": "直角三角形において a² + b² = c² が常に成立する。",
+      "prerequisites": [
+        "JH-GEO-SIMILAR-01",
+        "JH-ALG-QUADRATIC-01"
+      ],
+      "diagnostic_query": "直角三角形の直角を挟む2辺が 1 と 1 のとき、斜辺は？（答: √2）"
+    },
+    {
+      "id": "HS1-TRIG-DEF-01",
+      "name": "鋭角の三角比（sin, cos, tan の幾何的定義）",
+      "stage": "高1（数I）",
+      "category": "三角比基礎",
+      "concept": "直角三角形における sinθ = 縦/斜辺, cosθ = 横/斜辺, tanθ = 縦/横。",
+      "prerequisites": [
+        "JH-GEO-SIMILAR-01",
+        "JH-FUNC-LINEAR-01"
+      ],
+      "diagnostic_query": "45°の直角二等辺三角形で sin 45°, cos 45°, tan 45° の値は？"
+    },
+    {
+      "id": "HS1-TRIG-IDENTITY-01",
+      "name": "三角比の基本相互関係",
+      "stage": "高1（数I）",
+      "category": "三角比代数",
+      "concept": "sin²θ + cos²θ = 1, tanθ = sinθ/cosθ, 1 + tan²θ = 1/cos²θ。",
+      "prerequisites": [
+        "HS1-TRIG-DEF-01",
+        "JH-GEO-PYTHAGORAS-01"
+      ],
+      "diagnostic_query": "cosθ = 3/5 のとき sin²θ の値は？（答: 16/25）"
+    },
+    {
+      "id": "HS1-TRIG-UNITCIRCLE-01",
+      "name": "単位円による三角比の拡張（0°〜180°）",
+      "stage": "高1（数I）",
+      "category": "三角比幾何",
+      "concept": "半径1の円周上の座標 (x, y) = (cosθ, sinθ)。鈍角で cos が負になる必然性。",
+      "prerequisites": [
+        "HS1-TRIG-IDENTITY-01",
+        "JH-COORD-PLANE-01",
+        "JH-NUM-SIGN-01"
+      ],
+      "diagnostic_query": "cos 120° の値は？（答: -1/2）"
+    },
+    {
+      "id": "HS1-TRIG-ANGLECONV-01",
+      "name": "角の変換公式（余角・補角）",
+      "stage": "高1（数I）",
+      "category": "三角比幾何",
+      "concept": "sin(90°-θ)=cosθ, sin(180°-θ)=sinθ, cos(180°-θ)=-cosθ の単位円対称性。",
+      "prerequisites": [
+        "HS1-TRIG-UNITCIRCLE-01"
+      ],
+      "diagnostic_query": "sin(180° - 30°) は sin 30° と等しいですか？"
+    },
+    {
+      "id": "HS1-TRIG-SINELAW-01",
+      "name": "正弦定理",
+      "stage": "高1（数I）",
+      "category": "三角形計量",
+      "concept": "a/sinA = b/sinB = c/sinC = 2R（外接円の半径 R との関係）。",
+      "prerequisites": [
+        "HS1-TRIG-UNITCIRCLE-01"
+      ],
+      "diagnostic_query": "A=30°, a=5 のとき外接円の半径 R は？（答: 5）"
+    },
+    {
+      "id": "HS1-TRIG-COSINELAW-01",
+      "name": "余弦定理",
+      "stage": "高1（数I）",
+      "category": "三角形計量",
+      "concept": "a² = b² + c² - 2bc cosA（三平方の定理の一般三角形への拡張）。",
+      "prerequisites": [
+        "HS1-TRIG-IDENTITY-01",
+        "JH-GEO-PYTHAGORAS-01",
+        "HS1-TRIG-ANGLECONV-01"
+      ],
+      "diagnostic_query": "b=3, c=4, A=90° のとき余弦定理から a² はいくつになりますか？（答: 25）"
+    },
+    {
+      "id": "HS1-TRIG-AREA-01",
+      "name": "三角形の面積・内接円の半径・ヘロンの公式",
+      "stage": "高1（数I）",
+      "category": "三角形計量",
+      "concept": "S = 1/2 bc sinA, S = 1/2 r(a+b+c), ヘロンの公式。",
+      "prerequisites": [
+        "HS1-TRIG-SINELAW-01",
+        "HS1-TRIG-COSINELAW-01"
+      ],
+      "diagnostic_query": "2辺が4と5で挟む角が30°の三角形の面積は？（答: 5）"
+    },
+    {
+      "id": "HS2-EXP-LOG-01",
+      "name": "指数法則の拡張（実数指数・有理数指数）",
+      "stage": "高2（数II）",
+      "category": "代数・指数",
+      "concept": "a^(p+q) = a^p a^q, a^0 = 1, a^(-n) = 1/a^n, a^(1/n) = n√a。",
+      "prerequisites": [
+        "JH-ALG-EXPR-01",
+        "JH-NUM-SQRT-01"
+      ],
+      "diagnostic_query": "2^(-3) はいくつですか？（答: 1/8）"
+    },
+    {
+      "id": "HS2-EXP-FUNC-01",
+      "name": "指数関数 y = a^x のグラフと連続性",
+      "stage": "高2（数II）",
+      "category": "関数・指数",
+      "concept": "単調増加・単調減少、あらゆる実数 x に対する a^x の定義。",
+      "prerequisites": [
+        "HS2-EXP-LOG-01",
+        "JH-COORD-PLANE-01"
+      ],
+      "diagnostic_query": "y = 2^x のグラフは x軸と交わりますか？"
+    },
+    {
+      "id": "HS2-CALC-DIFF-POLY-01",
+      "name": "多項式の微分法と極限基礎",
+      "stage": "高2（数II）",
+      "category": "微積分基礎",
+      "concept": "平均変化率、極限 lim_{h→0}、導関数 f'(x) = lim_{h→0} [f(x+h)-f(x)]/h、(x^n)' = n x^(n-1)。",
+      "prerequisites": [
+        "JH-FUNC-LINEAR-01",
+        "JH-ALG-QUADRATIC-01"
+      ],
+      "diagnostic_query": "f(x) = x³ の導関数 f'(x) は？（答: 3x²）"
+    },
+    {
+      "id": "HS2-COMPLEX-NUM-01",
+      "name": "複素数と虚数単位 i の導入",
+      "stage": "高2（数II）",
+      "category": "数と式",
+      "concept": "i² = -1、複素数 z = a + bi、共役複素数、複素数の四則演算。",
+      "prerequisites": [
+        "JH-ALG-QUADRATIC-01",
+        "JH-NUM-SIGN-01"
+      ],
+      "diagnostic_query": "i³ と i⁴ の値はそれぞれ何ですか？（答: -i, 1）"
+    },
+    {
+      "id": "HS2-TRIG-RADIAN-01",
+      "name": "弧度法（ラジアン rad）と扇形の計量",
+      "stage": "高2（数II）",
+      "category": "三角関数基礎",
+      "concept": "半径1の弧長による角の定義（180° = π rad）、l = rθ, S = 1/2 r²θ = 1/2 rl。",
+      "prerequisites": [
+        "ELEM-CIRCLE-01",
+        "HS1-TRIG-UNITCIRCLE-01"
+      ],
+      "diagnostic_query": "90° をラジアンで表すと？（答: π/2）"
+    },
+    {
+      "id": "HS2-TRIG-GENERALANGLE-01",
+      "name": "一般角と単位円の完全拡張（実数全体への拡張）",
+      "stage": "高2（数II）",
+      "category": "三角関数基礎",
+      "concept": "始線（x軸正）からの反時計回り回転角、360°超・負の角、単位円上の点 P(cosθ, sinθ)。",
+      "prerequisites": [
+        "HS2-TRIG-RADIAN-01",
+        "JH-GEO-ROTATION-01",
+        "HS1-TRIG-UNITCIRCLE-01"
+      ],
+      "diagnostic_query": "cos(-π/3) の値は？（答: 1/2）"
+    },
+    {
+      "id": "HS2-TRIG-GRAPH-01",
+      "name": "三角関数のグラフ（振幅・周期・位相）",
+      "stage": "高2（数II）",
+      "category": "三角関数グラフ",
+      "concept": "y = A sin(kθ - α) における振幅 A、周期 T = 2π/k、位相差 α/k。",
+      "prerequisites": [
+        "HS2-TRIG-GENERALANGLE-01",
+        "HS1-TRIG-AREA-01"
+      ],
+      "diagnostic_query": "y = sin 2θ の周期はいくつですか？（答: π）"
+    },
+    {
+      "id": "HS2-TRIG-ADDITION-01",
+      "name": "加法定理（The Mother Formula）",
+      "stage": "高2（数II）",
+      "category": "三角関数代数",
+      "concept": "sin(α±β) = sinα cosβ ± cosα sinβ, cos(α±β) = cosα cosβ ∓ sinα sinβ, tan(α±β)。",
+      "prerequisites": [
+        "HS1-TRIG-COSINELAW-01",
+        "HS2-TRIG-GENERALANGLE-01",
+        "HS1-TRIG-IDENTITY-01"
+      ],
+      "diagnostic_query": "cos(α + β) の加法定理の展開式は？"
+    },
+    {
+      "id": "HS2-TRIG-DOUBLE-01",
+      "name": "2倍角の公式",
+      "stage": "高2（数II）",
+      "category": "派生公式",
+      "concept": "sin 2α = 2 sinα cosα, cos 2α = cos²α - sin²α = 2cos²α - 1 = 1 - 2sin²α。",
+      "prerequisites": [
+        "HS2-TRIG-ADDITION-01"
+      ],
+      "diagnostic_query": "加法定理で β = α と置くと何が導かれますか？"
+    },
+    {
+      "id": "HS2-TRIG-HALF-01",
+      "name": "半角の公式（次数下げ）",
+      "stage": "高2（数II）",
+      "category": "派生公式",
+      "concept": "sin²(θ/2) = (1 - cosθ)/2, cos²(θ/2) = (1 + cosθ)/2。",
+      "prerequisites": [
+        "HS2-TRIG-DOUBLE-01"
+      ],
+      "diagnostic_query": "cos 2α = 1 - 2sin²α から sin²α = ? を導けますか？"
+    },
+    {
+      "id": "HS2-TRIG-TRIPLE-01",
+      "name": "3倍角の公式",
+      "stage": "高2（数II）",
+      "category": "派生公式",
+      "concept": "sin 3α = 3 sinα - 4 sin³α, cos 3α = 4 cos³α - 3 cosα。",
+      "prerequisites": [
+        "HS2-TRIG-DOUBLE-01",
+        "HS2-TRIG-ADDITION-01"
+      ],
+      "diagnostic_query": "sin(2α + α) を展開して 3倍角の公式を作れますか？"
+    },
+    {
+      "id": "HS2-TRIG-SYNTHESIS-01",
+      "name": "三角関数の合成（線形結合・波の合体）",
+      "stage": "高2（数II）",
+      "category": "派生公式・応用",
+      "concept": "a sinθ + b cosθ = √(a²+b²) sin(θ + α) [加法定理の逆利用]。",
+      "prerequisites": [
+        "HS2-TRIG-ADDITION-01",
+        "JH-GEO-PYTHAGORAS-01",
+        "HS2-TRIG-GRAPH-01"
+      ],
+      "diagnostic_query": "sinθ + cosθ を r sin(θ+α) の形に合成すると？（答: √2 sin(θ + π/4)）"
+    },
+    {
+      "id": "HS2-TRIG-PRODSUM-01",
+      "name": "積和・和積の公式（波の干渉とうなり）",
+      "stage": "高2（数II）",
+      "category": "派生公式",
+      "concept": "加法定理の加減による積⇄和の相互変換。",
+      "prerequisites": [
+        "HS2-TRIG-ADDITION-01",
+        "HS2-TRIG-HALF-01"
+      ],
+      "diagnostic_query": "2 sinα cosβ は加法定理の和でどう表されますか？"
+    },
+    {
+      "id": "HS3-CALC-LIMIT-TRIG-01",
+      "name": "三角関数の極限 lim_{θ→0} (sinθ/θ) = 1",
+      "stage": "高3（数III）",
+      "category": "極限解析",
+      "concept": "単位円のはさみうちの原理による sinθ < θ < tanθ の極限証明。",
+      "prerequisites": [
+        "HS2-TRIG-RADIAN-01",
+        "HS2-TRIG-GENERALANGLE-01"
+      ],
+      "diagnostic_query": "lim_{θ→0} (sin 3θ / θ) の極限値は？（答: 3）"
+    },
+    {
+      "id": "HS3-CALC-DIFF-TRIG-01",
+      "name": "三角関数の導関数 (sin x)' = cos x, (cos x)' = -sin x",
+      "stage": "高3（数III）",
+      "category": "微積分解析",
+      "concept": "微分の定義と加法定理・極限公式による三角関数の微分導出。",
+      "prerequisites": [
+        "HS3-CALC-LIMIT-TRIG-01",
+        "HS2-TRIG-ADDITION-01",
+        "HS2-CALC-DIFF-POLY-01"
+      ],
+      "diagnostic_query": "sin x を微分すると何になりますか？（答: cos x）"
+    },
+    {
+      "id": "HS3-CALC-E-DEF-01",
+      "name": "自然対数の底（ネイピア数 e）の定義と指数関数の微分",
+      "stage": "高3（数III）",
+      "category": "微積分解析",
+      "concept": "e = lim_{n→∞} (1 + 1/n)ⁿ ≒ 2.71828...、(e^x)' = e^x（微分しても不変の関数）。",
+      "prerequisites": [
+        "HS2-EXP-FUNC-01",
+        "HS2-CALC-DIFF-POLY-01"
+      ],
+      "diagnostic_query": "e^x を何回微分しても e^x のままですか？（答: はい）"
+    },
+    {
+      "id": "HS3-COMPLEX-PLANE-01",
+      "name": "複素数平面と極形式",
+      "stage": "高3（数C/III）",
+      "category": "幾何代数",
+      "concept": "ガウス平面上の点 z = x + iy = r(cosθ + i sinθ)、積＝回転拡大。",
+      "prerequisites": [
+        "HS2-COMPLEX-NUM-01",
+        "HS2-TRIG-GENERALANGLE-01",
+        "HS2-TRIG-ADDITION-01",
+        "HS2-TRIG-SYNTHESIS-01"
+      ],
+      "diagnostic_query": "複素数 z に i を掛けると、複素数平面上で何度回転しますか？（答: 90°）"
+    },
+    {
+      "id": "HS3-COMPLEX-DEMOIVRE-01",
+      "name": "ド・モアブルの定理 (De Moivre's Theorem)",
+      "stage": "高3（数C/III）",
+      "category": "幾何代数",
+      "concept": "(cosθ + i sinθ)^n = cos(nθ) + i sin(nθ)。（加法定理・2倍角・3倍角のn倍拡張）",
+      "prerequisites": [
+        "HS3-COMPLEX-PLANE-01",
+        "HS2-TRIG-TRIPLE-01",
+        "HS2-TRIG-PRODSUM-01"
+      ],
+      "diagnostic_query": "(cosθ + i sinθ)³ を展開すると cos 3θ + i sin 3θ になりますか？"
+    },
+    {
+      "id": "HS3-CALC-HIGHER-DIFF-01",
+      "name": "高階導関数 f^(n)(x) とライプニッツの公式",
+      "stage": "高3（数III）",
+      "category": "微積分解析",
+      "concept": "2階微分 f''(x)、n階微分 f^(n)(x) の規則性。",
+      "prerequisites": [
+        "HS3-CALC-DIFF-TRIG-01",
+        "HS3-CALC-E-DEF-01"
+      ],
+      "diagnostic_query": "sin x の4階微分 f''''(x) は何に戻りますか？（答: sin x）"
+    },
+    {
+      "id": "UNIV-CALC-TAYLOR-01",
+      "name": "テイラー展開・マクローリン展開（多項式級数近似）",
+      "stage": "大学教養/高3発展",
+      "category": "無限級数解析",
+      "concept": "滑らかな関数 f(x) = Σ [f^(n)(0) / n!] x^n。e^x, cos x, sin x の多項式無限和展開。",
+      "prerequisites": [
+        "HS3-CALC-HIGHER-DIFF-01"
+      ],
+      "formulas": [
+        "e^x = 1 + x + x²/2! + x³/3! + x⁴/4! + ...",
+        "cos x = 1 - x²/2! + x⁴/4! - x⁶/6! + ...",
+        "sin x = x - x³/3! + x⁵/5! - x⁷/7! + ..."
+      ],
+      "diagnostic_query": "e^x のマクローリン展開の各項の係数はどうして 1/n! になるのですか？"
+    },
+    {
+      "id": "EULER-CONVERGENCE-01",
+      "name": "オイラーの公式 e^(iθ) = cosθ + i sinθ（人類最高の至宝）",
+      "stage": "大学教養/高3発展",
+      "category": "大合流核心",
+      "concept": "e^(ix) のマクローリン展開に i²=-1, i³=-i, i⁴=1 を代入し、実部(cos x)と虚部(sin x)に分離して完全一致を証明。",
+      "prerequisites": [
+        "UNIV-CALC-TAYLOR-01",
+        "HS3-COMPLEX-DEMOIVRE-01",
+        "HS2-COMPLEX-NUM-01"
+      ],
+      "formulas": [
+        "e^(iθ) = cosθ + i sinθ",
+        "e^(iπ) + 1 = 0 (オイラーの等式)"
+      ],
+      "significance": "指数関数と三角関数が複素数を通じて完全に同一の実体であることが証明された人類数学史上最大の金字塔。"
+    },
+    {
+      "id": "JH-GEO-TRI-BASIC-01",
+      "name": "三角形の基本（頂点・辺・角・高さ）",
+      "stage": "中1",
+      "category": "幾何基礎",
+      "concept": "三角形の頂点・辺・角の数え方、∠A の記法、底辺・高さ・垂線の感覚、面積 = 底辺 × 高さ ÷ 2。",
+      "prerequisites": [],
+      "diagnostic_query": "三角形の底辺と高さを指し、面積が底辺×高さ÷2 になる理由を言えますか？"
+    },
+    {
+      "id": "JH-GEO-CIRCLE-ANGLE-01",
+      "name": "円周角の定理（弧と角）",
+      "stage": "中3",
+      "category": "幾何基礎",
+      "concept": "弧と中心角、円周角 = 中心角の半分、同じ弧の円周角は等しい、直径に対する円周角は 90°。",
+      "prerequisites": [
+        "ELEM-CIRCLE-01",
+        "JH-GEO-PARALLEL-01"
+      ],
+      "diagnostic_query": "直径に対する円周角は何度ですか？（答: 90°）"
+    },
+    {
+      "id": "JH-GEO-CIRCLE-INCIRCUM-01",
+      "name": "内接円と外接円（内心・外心）",
+      "stage": "中3/高1発展",
+      "category": "幾何基礎",
+      "concept": "三角形に内接する円と外接する円。内角の二等分線の交点（内心・内接円の半径 r）、垂直二等分線の交点（外心・半径 R）。",
+      "prerequisites": [
+        "JH-GEO-CIRCLE-ANGLE-01",
+        "JH-GEO-TRI-BASIC-01"
+      ],
+      "diagnostic_query": "三角形の 3 つの角の二等分線はどこで交わりますか？（答: 内接円の中心・内心）"
+    },
+    {
+      "id": "JH-COORD-DISTANCE-01",
+      "name": "座標平面上の距離",
+      "stage": "中3",
+      "category": "関数・幾何",
+      "concept": "2 点 (x1, y1), (x2, y2) の距離 √((x1-x2)² + (y1-y2)²)。三平方の定理の座標版。",
+      "prerequisites": [
+        "JH-GEO-PYTHAGORAS-01",
+        "JH-COORD-PLANE-01"
+      ],
+      "diagnostic_query": "2 点 (1,2) と (4,6) の距離は？（答: 5）"
+    }
+  ]
+}

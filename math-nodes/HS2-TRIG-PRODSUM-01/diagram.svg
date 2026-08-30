@@ -1,0 +1,56 @@
+<!-- layout v4 2026-08-30: widen panel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">加法定理から積和・和積への変換フロー</title>
+  <desc id="desc">加法定理の±2式の加減で積和が、変数読み替えで和積が導かれる流れを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; rx: 12; }
+    .head { font-size: 15px; font-weight: 700; fill: #334155; }
+    .form { font-size: 15px; fill: #475569; }
+    .sub { font-size: 13px; fill: #94a3b8; }
+    .arrow { stroke: #94a3b8; stroke-width: 2.5; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <rect x="52" y="46" width="430" height="58" rx="12" class="box"/>
+  <text x="74" y="70" class="head">加法定理（± の 2 式ずつ）</text>
+  <text x="74" y="92" class="form">sin(α±β)・cos(α±β) の 4 式</text>
+
+  <line x1="267" y1="104" x2="267" y2="126" class="arrow"/>
+  <polygon points="259,126 267,136 275,126" fill="#94a3b8"/>
+  <text x="280" y="128" class="sub">2 式を足す・引く</text>
+
+  <rect x="52" y="138" width="430" height="78" rx="12" class="box"/>
+  <text x="74" y="162" class="head">積和の公式（積 → 和）</text>
+  <text x="74" y="184" class="form">sinα cosβ・cosα sinβ</text>
+  <text x="74" y="204" class="form">cosα cosβ・sinα sinβ</text>
+
+  <line x1="267" y1="216" x2="267" y2="238" class="arrow"/>
+  <polygon points="259,238 267,248 275,238" fill="#94a3b8"/>
+  <text x="280" y="240" class="sub">α=(x+y)/2・β=(x−y)/2 と読み替え</text>
+
+  <rect x="52" y="250" width="430" height="88" rx="12" class="box"/>
+  <text x="74" y="274" class="head">和積の公式（和 → 積）</text>
+  <text x="74" y="296" class="form">sin x ± sin y　cos x ± cos y</text>
+  <text x="74" y="320" class="form">→ うなり：2sin(平均)・cos(半分差)</text>
+
+  <text x="568" y="88" class="heading">積和・和積</text>
+  <text x="568" y="122" class="note">加法定理の加減こそが根源</text>
+  <text x="568" y="148" class="formp">積和：sinα cosβ</text>
+  <text x="568" y="170" class="formp">＝ 1/2{sin(α+β)+sin(α−β)}</text>
+  <text x="568" y="196" class="formp">和積：sin x + sin y</text>
+  <text x="568" y="218" class="formp">＝ 2sin(平均)cos(半分差)</text>
+  <line x1="568" y1="238" x2="824" y2="238" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="266" class="note">公式 8 本に見えるが、変換は 1 つ</text>
+  <text x="568" y="292" class="note">積分・干渉・複素平面へ広がる</text>
+  <text x="568" y="322" class="formp">診断：2sinα cosβ</text>
+  <text x="568" y="344" class="formp">＝ sin(α+β)+sin(α−β)</text>
+</svg>

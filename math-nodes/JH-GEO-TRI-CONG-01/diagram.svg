@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" role="img" aria-labelledby="title desc">
+  <title id="title">斜辺と鋭角が等しい直角三角形は合同</title>
+  <desc id="desc">斜辺5・鋭角30°の直角三角形が、残り角60°の一致によりピッタリ重なることを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 18px; fill: #334155; }
+    .sm { font-size: 15px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="820" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="252" height="312" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <line x1="120" y1="300" x2="280" y2="300" stroke="#38bdf8" stroke-width="7" stroke-linecap="round"/>
+  <line x1="280" y1="300" x2="280" y2="218" stroke="#10b981" stroke-width="7" stroke-linecap="round"/>
+  <line x1="120" y1="300" x2="280" y2="218" stroke="#f59e0b" stroke-width="7" stroke-linecap="round"/>
+
+  <path d="M 264 300 L 264 284 L 280 284" fill="none" stroke="#334155" stroke-width="3"/>
+  <path d="M 138.0 300.0 A 18 18 0 0 0 136.0 291.8" fill="none" stroke="#ef4444" stroke-width="3"/>
+
+  <text x="104" y="322" class="label">A</text>
+  <text x="286" y="322" class="label">B</text>
+  <text x="286" y="208" class="label">C</text>
+  <text x="150" y="294" class="sm" fill="#ef4444">30°</text>
+  <text x="268" y="258" class="sm" fill="#334155">60°</text>
+  <text x="180" y="330" class="sm" fill="#0369a1">斜辺 5</text>
+
+  <line x1="330" y1="300" x2="490" y2="300" stroke="#38bdf8" stroke-width="7" stroke-linecap="round"/>
+  <line x1="490" y1="300" x2="490" y2="165" stroke="#10b981" stroke-width="7" stroke-linecap="round"/>
+  <line x1="330" y1="300" x2="490" y2="165" stroke="#f59e0b" stroke-width="7" stroke-linecap="round"/>
+
+  <path d="M 474 300 L 474 284 L 490 284" fill="none" stroke="#334155" stroke-width="3"/>
+  <path d="M 348.0 300.0 A 18 18 0 0 0 343.8 288.4" fill="none" stroke="#ef4444" stroke-width="3"/>
+
+  <text x="314" y="322" class="label">A′</text>
+  <text x="496" y="322" class="label">B′</text>
+  <text x="496" y="152" class="label">C′</text>
+  <text x="360" y="294" class="sm" fill="#ef4444">30°</text>
+  <text x="478" y="240" class="sm" fill="#334155">60°</text>
+  <text x="390" y="330" class="sm" fill="#0369a1">斜辺 5</text>
+
+  <text x="300" y="206" class="sm" fill="#475569">← 対応 </text>
+  <text x="300" y="352" class="sm" fill="#475569">合同する（残り角が一致）→</text>
+
+  <text x="568" y="88" class="heading">直角三角形の合同</text>
+  <text x="568" y="128" class="formp">①斜辺と 1 つの鋭角</text>
+  <text x="568" y="154" class="formp">②斜辺と他の 1 辺</text>
+  <line x1="568" y1="172" x2="772" y2="172" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="202" class="note">余角：鋭角の和は 90° 固定</text>
+  <text x="568" y="228" class="note">→ 残りの角が自動で決まる</text>
+  <text x="568" y="260" class="formp">診断：YES（合同）</text>
+  <text x="568" y="290" class="note">角度→辺の比が固定＝三角比の種</text>
+  <text x="568" y="318" class="note">三平方・単位円への土台</text>
+</svg>

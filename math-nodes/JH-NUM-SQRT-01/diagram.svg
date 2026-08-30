@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" role="img" aria-labelledby="title desc">
+  <title id="title">面積 2 の正方形の一辺＝√2</title>
+  <desc id="desc">一辺1と一辺2の中間にある面積2の正方形の一辺が√2であることを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .side { font-size: 18px; fill: #334155; }
+    .sm { font-size: 16px; fill: #475569; }
+    .head { font-size: 15px; font-weight: 700; fill: #334155; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="820" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="252" height="312" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <rect x="70" y="90" width="100" height="100" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="4"/>
+  <text x="74" y="80" class="head">面積 1</text>
+  <text x="100" y="150" class="side" text-anchor="middle" fill="#0369a1">1</text>
+
+  <rect x="250" y="62" width="200" height="200" fill="#dcfce7" stroke="#10b981" stroke-width="4"/>
+  <text x="340" y="52" class="head">面積 4</text>
+  <text x="350" y="174" class="side" text-anchor="middle" fill="#047857">2</text>
+
+  <rect x="215" y="100" width="130" height="130" fill="#fef3c7" stroke="#f59e0b" stroke-width="5" transform="rotate(-10 280 165)"/>
+  <text x="108" y="60" class="head">面積 2（ど真ん中）</text>
+  <text x="252" y="178" class="sm" fill="#b45309" transform="rotate(-10 280 165)">一辺が √2</text>
+
+  <text x="84" y="242" class="sm">1² ＝ 1</text>
+  <text x="252" y="242" class="sm" fill="#b45309">(√2)² ＝ 2</text>
+  <text x="452" y="242" class="sm">2² ＝ 4</text>
+
+  <text x="568" y="88" class="heading">平方根</text>
+  <text x="568" y="128" class="formp">x² ＝ a の解は ±√a</text>
+  <text x="568" y="154" class="formp">√a × √b ＝ √(ab)</text>
+  <text x="568" y="180" class="formp">√a 同士だけ加減できる</text>
+  <line x1="568" y1="198" x2="772" y2="198" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="228" class="note">√18 ＝ 3√2（完全平方で整理）</text>
+  <text x="568" y="254" class="note">√2 ≒ 1.414…（無理数）</text>
+  <text x="568" y="288" class="formp">診断：√2 × √3 ＝ √6</text>
+  <text x="568" y="318" class="note">三平方の定理の斜辺に直結</text>
+</svg>

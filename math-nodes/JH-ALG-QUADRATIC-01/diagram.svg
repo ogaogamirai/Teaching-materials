@@ -1,0 +1,50 @@
+<!-- layout v4 2026-08-30: widen panel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">(a+b)² の正方形 4 分割</title>
+  <desc id="desc">一辺(a+b)の正方形をa²・2ab・b²に4分割し、展開公式が面積として成立することを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .cell { font-size: 20px; fill: #334155; text-anchor: middle; }
+    .sm { font-size: 16px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <rect x="110" y="90" width="180" height="180" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="4"/>
+  <rect x="290" y="90" width="130" height="180" fill="#bae6fd" stroke="#0284c7" stroke-width="4"/>
+  <rect x="110" y="270" width="180" height="130" fill="#bae6fd" stroke="#0284c7" stroke-width="4"/>
+  <rect x="290" y="270" width="130" height="130" fill="#dcfce7" stroke="#10b981" stroke-width="4"/>
+
+  <text x="200" y="188" class="cell">a²</text>
+  <text x="355" y="172" class="cell">ab</text>
+  <text x="200" y="342" class="cell">ab</text>
+  <text x="355" y="348" class="cell">b²</text>
+
+  <text x="94" y="78" class="sm" fill="#0369a1">a</text>
+  <text x="352" y="78" class="sm" fill="#0369a1">b</text>
+  <text x="98" y="428" class="sm" fill="#0369a1"></text>
+  <text x="94" y="348" class="sm" fill="#334155">a</text>
+  <text x="330" y="428" class="sm" fill="#334155"></text>
+
+  <text x="230" y="56" class="sm" fill="#334155">a ＋ b（縦横とも）</text>
+  <text x="178" y="394" class="sm" fill="#b45309">(a+b)² ＝ a² + 2ab + b²</text>
+
+  <text x="568" y="88" class="heading">展開・因数分解</text>
+  <text x="568" y="112" class="heading">2 次方程式</text>
+  <text x="568" y="126" class="formp">(a+b)² ＝ a² + 2ab + b²</text>
+  <text x="568" y="152" class="formp">(a+b)(a−b) ＝ a² − b²</text>
+  <text x="568" y="178" class="formp">(x+a)(x+b) ＝ x²+(a+b)x+ab</text>
+  <line x1="568" y1="196" x2="824" y2="196" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="226" class="note">因数分解は逆読み（和→積）</text>
+  <text x="568" y="252" class="note">積＝0 → どちらか 0 が解</text>
+  <text x="568" y="284" class="formp">診断：(x+3)(x−3) ＝ x² − 9</text>
+  <text x="568" y="314" class="note">判別 D ＝ b² − 4ac</text>
+  <text x="568" y="340" class="note">D&lt;0 → 複素数の世界へ</text>
+</svg>

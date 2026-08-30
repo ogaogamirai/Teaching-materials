@@ -1,0 +1,51 @@
+<!-- layout v4 2026-08-30: widen panel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" role="img" aria-labelledby="title desc">
+  <title id="title">合成の仕組み：点(a,b)と動径R</title>
+  <desc id="desc">点(1,1)の動径R=√2と角α=π/4を示し、合成のRとαが直角三角形から出ることを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .label { font-size: 20px; }
+    .tick { font-size: 14px; fill: #94a3b8; }
+    .sm { font-size: 16px; fill: #475569; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="860" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="292" height="336" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <line x1="120" y1="290" x2="440" y2="290" stroke="#94a3b8" stroke-width="4"/>
+  <line x1="250" y1="70" x2="250" y2="380" stroke="#94a3b8" stroke-width="4"/>
+
+  <line x1="250" y1="290" x2="370" y2="290" stroke="#38bdf8" stroke-width="7" stroke-linecap="round"/>
+  <line x1="370" y1="290" x2="370" y2="170" stroke="#10b981" stroke-width="7" stroke-linecap="round"/>
+  <line x1="250" y1="290" x2="370" y2="170" stroke="#f59e0b" stroke-width="7" stroke-linecap="round"/>
+
+  <path d="M 356 290 L 356 276 L 370 276" fill="none" stroke="#334155" stroke-width="3"/>
+  <path d="M 278.0 290.0 A 28 28 0 0 0 269.8 270.2" fill="none" stroke="#334155" stroke-width="3"/>
+
+  <circle cx="370" cy="170" r="7" fill="#ef4444"/>
+
+  <text x="378" y="164" class="label" fill="#b45309">(a, b) ＝ (1, 1)</text>
+  <text x="258" y="316" class="tick" fill="#64748b">O</text>
+  <text x="398" y="304" class="sm" fill="#0369a1">a = 1（sin 係数）</text>
+  <text x="378" y="214" class="sm" fill="#047857">b = 1（cos 係数）</text>
+  <text x="298" y="204" class="sm" fill="#b45309">R = √2</text>
+  <text x="264" y="248" class="sm" fill="#334155">α = π/4</text>
+
+  <text x="568" y="88" class="heading">合成の公式</text>
+  <text x="568" y="126" class="formp">a sinθ + b cosθ</text>
+  <text x="568" y="150" class="formp">＝ √(a²+b²) sin(θ+α)</text>
+  <text x="568" y="180" class="formp">R ＝ √(a²+b²)</text>
+  <text x="568" y="204" class="formp">α ＝ 点(a,b)の動径の角</text>
+  <line x1="568" y1="222" x2="824" y2="222" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="250" class="note">加法定理の逆利用</text>
+  <text x="568" y="276" class="note">α は象限を見て選ぶ（tan だけ不可）</text>
+  <text x="568" y="306" class="formp">診断：sinθ + cosθ</text>
+  <text x="568" y="330" class="formp">→ √2 sin(θ + π/4)</text>
+  <text x="568" y="354" class="note">最大値 R がすぐ読める</text>
+</svg>

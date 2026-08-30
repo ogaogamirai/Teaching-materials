@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" role="img" aria-labelledby="title desc">
+  <title id="title">2 倍角から半角（次数下げ）への変換フロー</title>
+  <desc id="desc">2倍角公式をsin²・cos²について解き、α=θ/2と読み替えて半角公式を得る流れを示す図</desc>
+  <style>
+    text {
+      font-family: "BIZ UDPGothic", "Yu Gothic UI", "Noto Sans JP", "Meiryo", sans-serif;
+      font-weight: 500;
+    }
+    .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; rx: 12; }
+    .head { font-size: 15px; font-weight: 700; fill: #334155; }
+    .form { font-size: 16px; fill: #475569; }
+    .sub { font-size: 13px; fill: #94a3b8; }
+    .arrow { stroke: #94a3b8; stroke-width: 2.5; }
+    .heading { font-size: 22px; font-weight: 700; fill: #334155; }
+    .formp { font-size: 15px; fill: #475569; }
+    .note { font-size: 15px; fill: #475569; }
+  </style>
+
+  <rect width="820" height="400" rx="18" fill="#f8fafc"/>
+  <rect x="548" y="44" width="252" height="312" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+
+  <rect x="60" y="46" width="420" height="70" rx="12" class="box"/>
+  <text x="84" y="76" class="head">2 倍角の公式（前ノードの成果）</text>
+  <text x="84" y="100" class="form">cos 2α = 1 − 2sin²α　＝ 2cos²α − 1</text>
+
+  <line x1="270" y1="116" x2="270" y2="140" class="arrow"/>
+  <polygon points="262,140 270,150 278,140" fill="#94a3b8"/>
+  <text x="284" y="134" class="sub">sin²α・cos²α について解く</text>
+
+  <rect x="60" y="152" width="420" height="96" rx="12" class="box"/>
+  <text x="84" y="182" class="head">半角の公式</text>
+  <text x="84" y="206" class="form">sin²(θ/2) = ( 1 − cosθ ) / 2</text>
+  <text x="84" y="232" class="form">cos²(θ/2) = ( 1 + cosθ ) / 2</text>
+
+  <rect x="60" y="272" width="420" height="66" rx="12" class="box"/>
+  <text x="84" y="300" class="head">tan²（比で）</text>
+  <text x="84" y="324" class="form">tan²(θ/2) = ( 1 − cosθ ) / ( 1 + cosθ )</text>
+
+  <text x="568" y="88" class="heading">半角の公式</text>
+  <text x="568" y="128" class="formp">sin²(θ/2) ＝ (1 − cosθ)/2</text>
+  <text x="568" y="154" class="formp">cos²(θ/2) ＝ (1 + cosθ)/2</text>
+  <line x1="568" y1="174" x2="772" y2="174" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="568" y="204" class="note">2 倍角を「解く」だけで出る</text>
+  <text x="568" y="230" class="note">cos の分母：sin² は 1−cos</text>
+  <text x="568" y="254" class="note">cos² は 1＋cos の形</text>
+  <text x="568" y="288" class="formp">診断：sin²α = (1−cos2α)/2</text>
+  <text x="568" y="318" class="note">√ を取る ± は象限で決まる</text>
+  <text x="568" y="344" class="note">積分（次数下げ）の入口</text>
+</svg>
