@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>圏論（Category Theory）直感と構造の探求ガイド</title>
+  <!-- Google Fonts: M PLUS Rounded 1c -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <!-- KaTeX CSS & JS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <!-- Mermaid JS -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false},
+          {left: '\\[', right: '\\]', display: true},
+          {left: '\\(', right: '\\)', display: false}
+        ],
+        throwOnError: false
+      });
+
+      // 🌟 スクロール連動：現在読んでいる章をセレクトボックスに反映
+      const sections = document.querySelectorAll('section[id]');
+      const select = document.getElementById('chapter-select');
+      window.addEventListener('scroll', () => {
+        let currentId = '';
+        const scrollPos = window.scrollY + 120;
+        sections.forEach(sec => {
+          if (sec.offsetTop <= scrollPos) {
+            currentId = '#' + sec.id;
+          }
+        });
+        if (select && currentId && select.value !== currentId) {
+          select.value = currentId;
+        }
+      });
+    });
+  </script>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --accent: #0284c7;
+      --accent-hover: #0369a1;
+      --accent-soft: #f0f9ff;
+      --accent-glow: rgba(2, 132, 199, 0.08);
+      --border: #e2e8f0;
+      --line: #cbd5e1;
+      --code-bg: #f1f5f9;
+      --highlight-grad: linear-gradient(135deg, #f0f9ff 0%, #faf5ff 100%);
+      --highlight-border: #bae6fd;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "M PLUS Rounded 1c", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Yu Gothic UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      padding-bottom: 4rem;
+    }
+
+    /* 🌟 上部固定ナビゲーションバー (Sticky Top Nav) */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    }
+    .sticky-nav-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+    }
+    .nav-brand {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #0f172a;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+    }
+    .nav-select-wrapper {
+      flex: 1;
+      max-width: 420px;
+    }
+    .nav-select-wrapper select {
+      width: 100%;
+      padding: 0.45rem 0.8rem;
+      font-size: 0.9rem;
+      color: var(--text);
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .nav-select-wrapper select:focus, .nav-select-wrapper select:hover {
+      border-color: var(--accent);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .nav-btn-outline {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.88rem;
+      text-decoration: none;
+      padding: 0.4rem 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #ffffff;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .nav-btn-outline:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .nav-btn-primary {
+      background: var(--accent);
+      color: #ffffff !important;
+      font-weight: 600;
+      font-size: 0.88rem;
+      text-decoration: none;
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+      transition: all 0.2s;
+    }
+    .nav-btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 1rem 1rem 2rem;
+    }
+    header {
+      text-align: center;
+      padding: 2.5rem 1rem 2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+    h1 {
+      font-size: 2.2rem;
+      color: #0f172a;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.02em;
+    }
+    .subtitle {
+      color: var(--accent);
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+    .nav-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    .nav-box h3 { margin-bottom: 0.8rem; color: #0f172a; }
+    .nav-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.8rem; }
+    .nav-list a {
+      color: #334155;
+      text-decoration: none;
+      padding: 0.6rem 0.9rem;
+      background: #f8fafc;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      display: block;
+      font-size: 0.92rem;
+      transition: all 0.2s;
+    }
+    .nav-list a:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+    }
+    section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2.2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      scroll-margin-top: 4.8rem;
+    }
+    h2 {
+      font-size: 1.55rem;
+      color: #0369a1;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    h3 {
+      font-size: 1.22rem;
+      color: #0f172a;
+      margin: 1.8rem 0 0.8rem;
+    }
+    h4 {
+      font-size: 1.05rem;
+      color: #334155;
+      margin: 1rem 0 0.5rem;
+    }
+    p, ul, ol { margin-bottom: 1.2rem; }
+    ul, ol { padding-left: 1.5rem; }
+    li { margin-bottom: 0.4rem; }
+    blockquote {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-soft);
+      padding: 1rem 1.2rem;
+      margin: 1.2rem 0;
+      border-radius: 0 8px 8px 0;
+      color: #1e293b;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+      background: #ffffff;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.75rem 1rem;
+      text-align: left;
+    }
+    th {
+      background: var(--accent-soft);
+      color: #0369a1;
+      font-weight: 700;
+    }
+    .mermaid {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      margin: 1.5rem 0;
+      display: flex;
+      justify-content: center;
+    }
+    .highlight-card {
+      background: var(--highlight-grad);
+      border: 1px solid var(--highlight-border);
+      border-radius: 10px;
+      padding: 1.3rem;
+      margin: 1.3rem 0;
+      color: var(--text);
+    }
+    .math-block {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.2rem;
+      margin: 1.2rem 0;
+      overflow-x: auto;
+      color: #0f172a;
+    }
+    .step-box {
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      background: #ffffff;
+      border-radius: 0 8px 8px 0;
+      padding: 1.2rem;
+      margin: 1.2rem 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    /* 🌟 ポップアップ・ツールチップ機能 */
+    .term-pop {
+      position: relative;
+      display: inline-block;
+      cursor: help;
+      border-bottom: 1.5px dotted var(--accent);
+      color: #0284c7;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .term-pop:hover {
+      color: #0369a1;
+      background: var(--accent-soft);
+      border-radius: 4px;
+    }
+    .term-pop .pop-card {
+      visibility: hidden;
+      opacity: 0;
+      width: 270px;
+      background-color: #ffffff;
+      color: #1e293b;
+      text-align: left;
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      border: 1.5px solid var(--accent);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+      font-size: 0.86rem;
+      line-height: 1.55;
+      position: absolute;
+      z-index: 1000;
+      bottom: 135%;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: opacity 0.25s, visibility 0.25s, transform 0.25s;
+      pointer-events: none;
+    }
+    .term-pop:hover .pop-card {
+      visibility: visible;
+      opacity: 1;
+      transform: translateX(-50%) translateY(-4px);
+    }
+    .term-pop .pop-card::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -6px;
+      border-width: 6px;
+      border-style: solid;
+      border-color: var(--accent) transparent transparent transparent;
+    }
+    .pop-title {
+      font-weight: bold;
+      color: #0284c7;
+      margin-bottom: 0.3rem;
+      display: block;
+      border-bottom: 1px solid #e0f2fe;
+      padding-bottom: 0.2rem;
+    }
+  </style>
+</head>
+<body id="top">
+  <!-- 🌟 上部固定ナビゲーションバー -->
+  <nav class="sticky-nav" aria-label="読書ナビゲーション">
+    <div class="sticky-nav-inner">
+      <a href="#top" class="nav-brand">📚 圏論探求ガイド</a>
+      <div class="nav-select-wrapper">
+        <select id="chapter-select" onchange="if(this.value) location.hash = this.value;">
+          <option value="">📑 章を選択してジャンプ...</option>
+          <option value="#ch0">序章：なぜ圏論なのか？</option>
+          <option value="#glossary">📖 超重要用語集</option>
+          <option value="#linear-algebra">📐 【前提知識】5分でわかる線形代数</option>
+          <option value="#ch1">第1章：圏の定義と2つの絶対ルール</option>
+          <option value="#ch1b">★特別コラム：トロピカル代数と3駅モデル</option>
+          <option value="#ch1c">🌐 【特別解説】巨大ネットワーク収束理論</option>
+          <option value="#ch2">第2章：周辺から本質を炙り出す（普遍性・米田）</option>
+          <option value="#ch3">第3章：世界と世界を繋ぐ翻訳機（関手・自然変換）</option>
+          <option value="#ch4">第4章：フロンティアと実践応用</option>
+        </select>
+      </div>
+      <div class="nav-actions">
+        <a href="#toc" class="nav-btn-outline">目次一覧</a>
+        <a href="tool/index.html" class="nav-btn-primary">🧰 実践ツール ➔</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <header>
+      <h1>圏論（Category Theory）</h1>
+      <div class="subtitle">直感と構造の探求ガイド — 「中身」から「関係性」へ</div>
+      <div style="margin-top: 1.2rem;">
+        <a href="tool/index.html" style="display: inline-flex; align-items: center; gap: 0.5rem; background: linear-gradient(135deg, #0284c7, #2563eb); color: #fff; text-decoration: none; padding: 0.7rem 1.4rem; border-radius: 30px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3); transition: transform 0.2s;">
+          <span>🧰 実践ツール：半環カートリッジ実験室で遊ぶ ➔</span>
+        </a>
+      </div>
+    </header>
+
+    <div class="nav-box" id="toc">
+      <h3>📑 目次・章一覧</h3>
+      <ul class="nav-list">
+        <li><a href="#ch0">序章：なぜ圏論なのか？</a></li>
+        <li><a href="#glossary">📖 超重要用語集（環・半環・関手等）</a></li>
+        <li><a href="#linear-algebra">📐 【前提知識】5分でわかる線形代数とべき乗</a></li>
+        <li><a href="#ch1">第1章：圏の定義と2つの絶対ルール</a></li>
+        <li><a href="#ch1b">★特別コラム：トロピカル代数と3駅モデル</a></li>
+        <li><a href="#ch1c">🌐 【特別解説】巨大ネットワークが数回で収束する魔法</a></li>
+        <li><a href="#ch2">第2章：周辺から本質を炙り出す</a></li>
+        <li><a href="#ch3">第3章：世界と世界を繋ぐ翻訳機</a></li>
+        <li><a href="#ch4">第4章：フロンティアと実践応用</a></li>
+      </ul>
+    </div>
+
+    <!-- 序章 -->
+    <section id="ch0">
+      <h2>序章：なぜ圏論なのか？ — パラダイムシフトと動機</h2>
+      <h3>1. 「中身（要素）」から「関係性（矢印）」への転換</h3>
+      <p>従来の科学や数学は「要素還元主義」に基づき、対象を最小単位に分解して中身を分析してきました。一方、圏論では中身をブラックボックスのまま保ち、<strong>「外の世界とどう繋がっているか（<span class="term-pop">矢印/射<span class="pop-card"><span class="pop-title">射 (Morphism)</span>対象同士を繋ぐ矢印・変換・関係性</span></span>）」</strong>に注目します。</p>
+
+      <div class="highlight-card">
+        <strong>💡 ルールと自由度の背反を超える：</strong><br>
+        中身の性質を細かく縛るのではなく、「矢印が矛盾なく繋がる作法（<span class="term-pop">結合律<span class="pop-card"><span class="pop-title">結合律 (Associativity)</span>どの順序でまとめても合成結果が一致する公理</span></span>と<span class="term-pop">恒等射<span class="pop-card"><span class="pop-title">恒等射 (Identity)</span>何もしないで自分に戻る基準の矢印</span></span>）」という極限の最小ルールだけを設けることで、数学・計算機・言語・物理・社会など全領域を包括する広大な自由度を獲得しています。
+      </div>
+
+      <h3>2. 人類が培ってきた「周辺から炙り出す」アナロジー</h3>
+      <p>未知の対象を直接壊さず、周辺のルールによって間接的に正体を特定する知恵の系譜：</p>
+      <ul>
+        <li><strong>文字と式（代数）:</strong> わからない数を $x$ と置き、等式変形によって正体を炙り出す。</li>
+        <li><strong>三角関数（測量）:</strong> 手の届かない星の高さを、離れた場所からの角度と比（関係性）で特定する。</li>
+        <li><strong>圏論（メタ言語）:</strong> 対象 $X$ の中身を暴かず、外部と出入りする矢印の総体で $X$ を一意に同定する（<span class="term-pop">米田の補題<span class="pop-card"><span class="pop-title">米田の補題 (Yoneda Lemma)</span>外部との関係性（矢印の総体）を見れば、中身を見なくてもその正体が完全に特定できる大定理</span></span>）。</li>
+      </ul>
+
+      <div class="highlight-card" style="background: rgba(56, 189, 248, 0.05); border-left: 4px solid var(--accent);">
+        <strong>💡 友達に話したくなる！3行まとめカード</strong>
+        <ul style="margin-top: 0.4rem; padding-left: 1.2rem;">
+          <li>圏論は、中身を分解せず「外とどう繋がるか（矢印）」を見る！</li>
+          <li>中身を縛らず「繋ぎ方のマナー」だけを守るから何にでも使える</li>
+          <li>文字式 $x$ のように、周辺の関係性から中身の正体を炙り出す！</li>
+        </ul>
+      </div>
+
+      <div class="step-box" style="border-left-color: #f59e0b;">
+        <strong>❓ ちょっと考えてみよう！ミニチェック</strong><br>
+        <strong>Q.</strong> あなたが「新しいスマホアプリ」を作るとします。圏論的な視点では、次のうちどちらを真っ先に考えますか？<br>
+        ① アプリ内部のプログラム言語の細かい文法（中身）<br>
+        ② ユーザーが画面をタップしたら、どんな画面に切り替わるか（矢印・関係性）<br>
+        <div style="margin-top: 0.4rem; color: #38bdf8;">➔ 正解は <strong>②</strong>！「入力に対して何が出力されるか（矢印）」さえ決まれば、中身の実装はあとから自由に変えられるからです。</div>
+      </div>
+    </section>
+
+    <!-- 超重要用語集 -->
+    <section id="glossary">
+      <h2>📖 超重要用語集 — これだけは押さえたい概念図鑑</h2>
+      <p>専門用語は難しく見せるための壁ではなく、思考を短縮するための便利な「ショートカット・キー」です。日常のたとえ話でスッと掴みましょう！</p>
+
+      <h3>🏛️ 代数（Algebra）の言葉たち — 「計算ルールのゲーム盤」</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 25%;">用語</th>
+            <th style="width: 40%;">一言で言うと（定義）</th>
+            <th style="width: 35%;">身近な例・直感</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>半環<br>(Semiring)</strong></td>
+            <td><strong>足し算と掛け算はあるが、「引き算（元に戻す）」はできなくてもいい世界。</strong></td>
+            <td><strong>トロピカル数学</strong>（$\min$ の取り消しはできない）、自然数（$0, 1, 2 \dots$）</td>
+          </tr>
+          <tr>
+            <td><strong>環<br>(Ring)</strong></td>
+            <td><strong>足し算・掛け算に加えて、「引き算（マイナス）」も自由にできる世界。</strong></td>
+            <td><strong>整数全体の集まり $\mathbb{Z}$</strong>（マイナス計算はできるが割り算はできない）</td>
+          </tr>
+          <tr>
+            <td><strong>体<br>(Field)</strong></td>
+            <td><strong>足す・引く・掛ける・割る（四則演算）がすべて自由にできる完全無欠の世界。</strong></td>
+            <td><strong>実数 $\mathbb{R}$、有理数（分数）$\mathbb{Q}$</strong>（学校で習う通常の算数・数学）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>🌌 圏論（Category Theory）の言葉たち — 「関係性のメタ言語」</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 25%;">用語</th>
+            <th style="width: 40%;">一言で言うと（定義）</th>
+            <th style="width: 35%;">身近な例・直感</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>射<br>(Morphism / Arrow)</strong></td>
+            <td><strong>対象と対象を繋ぐ「矢印（関係性・変換・関数・道のり）」。</strong></td>
+            <td>プログラムの関数、電車の路線、原因と結果の矢印</td>
+          </tr>
+          <tr>
+            <td><strong>射の合成<br>(Composition)</strong></td>
+            <td><strong>矢印 $A \to B$ と $B \to C$ を繋いで、直通の矢印 $A \to C$ にすること。</strong></td>
+            <td>乗り継ぎ電車の直通ルート（$g \circ f$）</td>
+          </tr>
+          <tr>
+            <td><strong>可換図式<br>(Commutative Diagram)</strong></td>
+            <td><strong>どのルートを通って目的地に行っても、結果が完全に同じになることを表す図。</strong></td>
+            <td>「東京→名古屋→大阪」と「東京→長野→大阪」が同じ結果になること</td>
+          </tr>
+          <tr>
+            <td><strong>関手<br>(Functor)</strong></td>
+            <td><strong>ある世界（圏）の構造を壊さずに、別の世界へと丸ごと移転する「翻訳機」。</strong></td>
+            <td>歴史の対立構造を現代の組織トラブルへ構造移転するアナロジー</td>
+          </tr>
+          <tr>
+            <td><strong>自然変換<br>(Natural Transformation)</strong></td>
+            <td><strong>翻訳機（関手F）と翻訳機（関手G）の間をスムーズに切り替える橋渡し。</strong></td>
+            <td>どのタイミングで翻訳方式を切り替えても結果が狂わない変換</td>
+          </tr>
+          <tr>
+            <td><strong>普遍性<br>(Universal Property)</strong></td>
+            <td><strong>中身を決めずに「周囲との関係性の中で一番バランスが取れた位置」として1つに決める性質。</strong></td>
+            <td>積（$A \times B$）や余積を唯一無二の仲介役として指定する</td>
+          </tr>
+          <tr>
+            <td><strong>米田の補題<br>(Yoneda Lemma)</strong></td>
+            <td><strong>「外部から出入りする矢印（関係性）の総体を見れば、そのものの正体が完全にわかる」大定理。</strong></td>
+            <td>「私とは何か？」を他者とのコミュニケーション全体から完全に特定する</td>
+          </tr>
+          <tr>
+            <td><strong>豊穣圏<br>(Enriched Category)</strong></td>
+            <td><strong>矢印（射）の上に、単なる線ではなく「所要時間や確率」などのデータが乗った圏。</strong></td>
+            <td>駅間に所要時間が乗っている「Cost豊穣圏」（トロピカル代数の舞台）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>🔣 特殊記号・演算子の「読み方と意味」早見表</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 15%;">記号</th>
+            <th style="width: 25%;">日本語の読み方</th>
+            <th style="width: 25%;">英語・通称</th>
+            <th style="width: 35%;">意味・役割</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>$\cong$</strong></td>
+            <td><strong>どうけい</strong></td>
+            <td>Isomorphic（アイソモーフィック）</td>
+            <td><strong>「同型（実質的に全く同じ）」</strong>。構造が1対1で完全に一致。</td>
+          </tr>
+          <tr>
+            <td><strong>$\oplus$</strong></td>
+            <td><strong>ちょくわ / 丸プラス</strong></td>
+            <td>Direct sum / Oplus</td>
+            <td><strong>トロピカル加法</strong>（$\min$ を取って最短を選ぶ操作）。</td>
+          </tr>
+          <tr>
+            <td><strong>$\otimes$</strong></td>
+            <td><strong>テンソルせき / 丸カケル</strong></td>
+            <td>Tensor product / Otimes</td>
+            <td><strong>トロピカル乗法</strong>（$+$ で所要時間を足し合わせる操作）。</td>
+          </tr>
+          <tr>
+            <td><strong>$\odot$</strong></td>
+            <td><strong>オードット / 丸ドット</strong></td>
+            <td>Odot / Circle dot</td>
+            <td><strong>トロピカル行列積</strong>（表同士を $\oplus, \otimes$ で掛ける操作）。</td>
+          </tr>
+          <tr>
+            <td><strong>$\circ$</strong></td>
+            <td><strong>ごうせい / サークル / マル</strong></td>
+            <td>Compose / Circle</td>
+            <td><strong>射の合成</strong>（$g \circ f$ は「$f$ をやってから $g$ をやる」直通ルート）。</td>
+          </tr>
+          <tr>
+            <td><strong>$\mathrm{Hom}(A, B)$</strong></td>
+            <td><strong>ホム</strong></td>
+            <td>Hom-set</td>
+            <td><strong>対象 $A$ から $B$ へのすべての矢印（射）の集まり</strong>。</td>
+          </tr>
+          <tr>
+            <td><strong>$\mathrm{id}_A$</strong></td>
+            <td><strong>アイディー / アイデンティティ</strong></td>
+            <td>Identity</td>
+            <td>対象 $A$ の<strong>恒等射</strong>（何もしないで自分に戻る矢印）。</td>
+          </tr>
+          <tr>
+            <td><strong>$\Rightarrow$</strong></td>
+            <td><strong>ダブルアロー / 二重矢印</strong></td>
+            <td>Natural Transformation</td>
+            <td>関手と関手を結ぶ<strong>自然変換の矢印</strong>。</td>
+          </tr>
+          <tr>
+            <td><strong>$\infty$</strong></td>
+            <td><strong>むげんだい / インフィニティ</strong></td>
+            <td>Infinity</td>
+            <td>トロピカル代数では<strong>「直通なし（到達不能）」</strong>を表す。</td>
+          </tr>
+          <tr>
+            <td><strong>$\pi_1, \pi_2$</strong></td>
+            <td><strong>パイ・ワン、パイ・ツー</strong></td>
+            <td>Projection（プロジェクション）</td>
+            <td>積 $A \times B$ から元の要素を取り出す<strong>射影射</strong>。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-card" style="background: rgba(56, 189, 248, 0.05); border-left: 4px solid var(--accent);">
+        <strong>💡 友達に話したくなる！3行まとめカード</strong>
+        <ul style="margin-top: 0.4rem; padding-left: 1.2rem;">
+          <li>半環・環・体は、使える計算（引き算・割り算）の自由度の違い！</li>
+          <li>圏論の言葉は「射（矢印）」「関手（翻訳機）」「米田（手鏡）」！</li>
+          <li>難解な数式記号は、読み方さえ分かればただの便利なショートカット！</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 【前提知識】5分でわかる線形代数とべき乗 -->
+    <section id="linear-algebra">
+      <h2>📐 【前提知識】5分でわかる線形代数 — 行列の掛け算と「べき乗」がひらく未来</h2>
+      <p>「行列」は無味乾燥な計算ドリルではなく、世界の関係性を一望し、未来をシミュレーションする「タイムマシン」です。</p>
+
+      <h3>1. 行列とは何か？ — 点と点の「関係性マップ」</h3>
+      <p>行列 $\begin{pmatrix} a & b \\ c & d \end{pmatrix}$ の本質は、<strong>「誰と誰が、どんな関係で繋がっているかを整理した表（マップ）」</strong>です。</p>
+      <div class="math-block">
+        $$M = \begin{pmatrix} 2 & 1 & 0 \\ 0 & 3 & 1 \\ 0 & 0 & 0 \end{pmatrix}$$
+      </div>
+      <ul>
+        <li><strong>1行目（A発）:</strong> A→A: 2本, $\quad$ A→B: 1本, $\quad$ A→C: 0本（直通なし）</li>
+        <li><strong>2行目（B発）:</strong> B→A: 0本, $\quad$ B→B: 3本, $\quad$ B→C: 1本</li>
+        <li><strong>3行目（C発）:</strong> どこへも行けない（すべて 0）</li>
+      </ul>
+
+      <h3>2. 行列の掛け算（行 $\times$ 列）の具体的な手計算ステップ</h3>
+      <p>「横（行）と縦（列）を掛けて足す」というルールの本当の意味は、<strong>「1回乗り換えて（2ステップで）行くルートの総数を調べる」</strong>ということです！</p>
+      
+      <div class="step-box">
+        <h4>🔍 「AからCへ 2ステップで行くルート数（1行3列目）」の手計算</h4>
+        <p>左の行列の <strong>1行目 $[2, 1, 0]$</strong> と、右の行列の <strong>3列目 $\begin{pmatrix} 0 \\ 1 \\ 0 \end{pmatrix}$</strong> を指でなぞって掛け合わせます：</p>
+        <div class="math-block">
+          $$\begin{aligned}
+          \text{【1行3列目】} &= (2 \times 0) + (1 \times 1) + (0 \times 0) \\
+          &= 0 + 1 + 0 = \mathbf{1 \text{ 本}}
+          \end{aligned}$$
+        </div>
+        <p>AからBへ行って、BからCへ行くルート（$1 \times 1 = 1$ 本）が自動的に洗い出されました！</p>
+      </div>
+
+      <div class="step-box">
+        <h4>🧮 9マスすべての手計算結果（全貌）</h4>
+        <div class="math-block">
+          $$M^2 = \begin{pmatrix} 2 & 1 & 0 \\ 0 & 3 & 1 \\ 0 & 0 & 0 \end{pmatrix} \begin{pmatrix} 2 & 1 & 0 \\ 0 & 3 & 1 \\ 0 & 0 & 0 \end{pmatrix} = \begin{pmatrix} 4 & 5 & \mathbf{1} \\ 0 & 9 & \mathbf{3} \\ 0 & 0 & 0 \end{pmatrix}$$
+        </div>
+        <p>直通が 0 本だった A $\to$ C に、<strong>2ステップで「1本」のルートが開通</strong>しました！</p>
+      </div>
+
+      <h3>3. 行列のべき乗（$M^k$） — 未来を計算するタイムマシン</h3>
+      <p>行列を自分自身と掛け合わせる操作（<strong>べき乗</strong>）を行うと、指数 $k$ はそのまま<strong>「進んだ時間（ステップ数）」</strong>を表します。</p>
+      <ul>
+        <li><strong>$M^1$（1乗）:</strong> 1ステップ（直通・1日後・1回の接触）</li>
+        <li><strong>$M^2$（2乗）:</strong> 2ステップ（1回乗り換え・2日後・友達の友達）</li>
+        <li><strong>$M^3$（3乗）:</strong> 3ステップ（2回乗り換え・3日後・3世代先）</li>
+        <li><strong>$M^k$（$k$乗）:</strong> $k$ ステップ後の世界（$k$ 日後の未来）</li>
+      </ul>
+
+      <h3>4. 繰り返し自乗法 — 1000日後が「たった10回」で求まる魔法</h3>
+      <div class="math-block">
+        $$M \xrightarrow{\times M} M^2 \xrightarrow{\times M^2} M^4 \xrightarrow{\times M^4} M^8 \dots \xrightarrow{\times M^{512}} M^{1024}$$
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>ステップ数</th>
+            <th>掛け算の回数</th>
+            <th>わかる未来の範囲</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>$M^2$</td>
+            <td>1回</td>
+            <td>最大 2 回乗り換え</td>
+          </tr>
+          <tr>
+            <td>$M^4$</td>
+            <td>2回</td>
+            <td>最大 4 回乗り換え</td>
+          </tr>
+          <tr>
+            <td>$M^8$</td>
+            <td>3回</td>
+            <td>最大 8 回乗り換え</td>
+          </tr>
+          <tr>
+            <td>$M^{1024}$</td>
+            <td><strong>たった10回！</strong></td>
+            <td><strong>最大 1024 回乗り換えの超巨大路線網</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>5. 無限回のべき乗（$M^\infty$）の正体 — 問答無用で「数字が止まったら」そこがゴール！</h3>
+      <p>「無限回掛ける（$M^\infty$）」と聞くと難しそうですが、現実の最適化やネットワークでは、<strong>「掛け算を繰り返して、表の数字がピタッと変わらなくなった（収束した）瞬間」が、そのまま『無限回掛けた行列（$M^\infty$）』になります！</strong></p>
+
+      <div class="highlight-card">
+        <strong>💡 止まった瞬間に起きる魔法（不動点の原理）：</strong><br>
+        もし $k$ 回掛けた表（$M^k$）と、$k+1$ 回掛けた表（$M^{k+1}$）が完全一致したら、そこから先は $M^{k+2} = M^{k+1} \odot M = M^k \odot M = M^k$ となり、<strong>未来永劫1ミリも数字が変わらなくなります（$M^\infty = M^k$）</strong>。
+      </div>
+
+      <p>駅が $N$ 個ある路線図なら、最大でも $N-1$ 回以内で絶対に数字が停止するため、<strong>たった数回の計算で「全宇宙の最短ルート（無限乗 $M^\infty$）」に到達</strong>します（クリーネ閉包 $M^*$）。</p>
+
+      <h3>6. 世界を動かす $M^\infty$：Google PageRank と 経済予測</h3>
+      <ul>
+        <li><strong>Google PageRank:</strong> リンク行列 $M$ を何度もべき乗し、数値が落ち着いた定常状態（$M^\infty$）で最重要ページを検索1位にする。</li>
+        <li><strong>レオンチェフ産業連関モデル（経済予測）:</strong> 直接効果 $M$、1次波及 $M^2$、2次波及 $M^3 \dots$ の無限の波及効果の総和 $I + M + M^2 + M^3 \dots = (I - M)^{-1}$ によって、国全体のGDPや減税効果を正確に予測する。</li>
+      </ul>
+
+      <div class="highlight-card" style="background: rgba(56, 189, 248, 0.05); border-left: 4px solid var(--accent);">
+        <strong>💡 友達に話したくなる！3行まとめカード</strong>
+        <ul style="margin-top: 0.4rem; padding-left: 1.2rem;">
+          <li>行列は「関係性マップ」、掛け算は「1歩進む（乗り換える）」！</li>
+          <li>べき乗（$M^k$）は、$k$ ステップ後の未来を計算するタイムマシン！</li>
+          <li>数字が変わらなくなったら収束（$M^\infty$）！Googleや経済も動かす！</li>
+        </ul>
+      </div>
+
+      <div class="step-box" style="border-left-color: #f59e0b;">
+        <strong>❓ ちょっと考えてみよう！ミニチェック</strong><br>
+        <strong>Q.</strong> 5つの駅が一本道（A ➔ B ➔ C ➔ D ➔ E）で繋がっている路線図があります。全駅間の最短時間を求めるには、最大で何乗（$M^k$）まで計算すれば確実に収束（$M^\infty$）するでしょうか？<br>
+        ① 2乗（$M^2$）<br>
+        ② 4乗（$M^4$）<br>
+        ③ 100乗（$M^{100}$）<br>
+        <div style="margin-top: 0.4rem; color: #38bdf8;">➔ 正解は <strong>② 4乗（$M^4$）</strong>！駅が $N=5$ 個あるので、端から端への移動は最大でも $N-1 = 4$ 回の乗り換えで済みます。これ以上掛けても数字は変わりません！</div>
+      </div>
+    </section>
+
+    <!-- 第1章 -->
+    <section id="ch1">
+      <h2>第1章：圏の定義と2つの絶対ルール</h2>
+      <h3>1. 圏の4つの構成要素</h3>
+      <div class="mermaid">
+graph LR
+    A["対象 A"] -- "射 f" --> B["対象 B"]
+    B -- "射 g" --> C["対象 C"]
+    A -. "合成 g ∘ f" .-> C
+    A -->|"id_A"| A
+    B -->|"id_B"| B
+    C -->|"id_C"| C
+      </div>
+      <ul>
+        <li><strong>対象（Objects）:</strong> 点、型、状態、概念（中身は何でもよい）。</li>
+        <li><strong>射（Morphisms / Arrows）:</strong> 矢印 $f: A \to B$。変換、関数、道、関係性。</li>
+        <li><strong>合成（Composition）:</strong> $f: A \to B$ と $g: B \to C$ を直通で結ぶ $g \circ f: A \to C$。</li>
+        <li><strong>恒等射（Identity）:</strong> 何もしないで自分に戻る矢印 $\mathrm{id}_A: A \to A$。</li>
+      <div class="highlight-card" style="background: rgba(56, 189, 248, 0.05); border-left: 4px solid var(--accent);">
+        <strong>💡 友達に話したくなる！3行まとめカード</strong>
+        <ul style="margin-top: 0.4rem; padding-left: 1.2rem;">
+          <li>圏は「点（対象）」と「矢印（射）」でできたシンプルな世界！</li>
+          <li>ルールは2つだけ！「結合律（どこで区切っても同じ）」と「単位元律（何もしないを挟んでも不変）」！</li>
+          <li>可換図式は「どの道を通ってもゴールが一致する地図」のこと！</li>
+        </ul>
+      </div>
+
+      <div class="step-box" style="border-left-color: #f59e0b;">
+        <strong>❓ ちょっと考えてみよう！ミニチェック</strong><br>
+        <strong>Q.</strong> ゲームで「木の棒」➔「木の剣」➔「鉄の剣」➔「炎の剣」と進化させるとき、進化のまとめ順序によらず結果が同じになる性質を何と呼ぶ？<br>
+        ① 単位元律　② 結合律　③ 可換図式<br>
+        <div style="margin-top: 0.4rem; color: #38bdf8;">➔ 正解は <strong>② 結合律</strong>！途中の区切り方によらず全体が一本道に繋がる大原則です。</div>
+      </div>
+    </section>
+
+    <!-- ★特別コラム：トロピカル代数 -->
+    <section id="ch1b">
+      <h2>★特別コラム：トロピカル代数と最短経路行列計算 — 3駅モデルで掴む具体例</h2>
+      <p>「足す・掛ける」という言葉の罠を外し、<strong>「選ぶ（$\min$）」</strong>と<strong>「繋ぐ（$+$）」</strong>という機能で捉え直すことで、全駅間の最短乗り換えルートが一瞬で求まります。</p>
+
+      <h3>1. 通常代数 vs トロピカル代数（<span class="term-pop">Min-Plus半環<span class="pop-card"><span class="pop-title">半環 (Semiring)</span>足し算と掛け算はあるが、引き算（取り消し）は不要な代数系</span></span>）対比表</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>概念・役割</th>
+            <th>通常の代数</th>
+            <th>トロピカル代数</th>
+            <th>実際の計算</th>
+            <th>乗り換えでの直感イメージ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>加法（まとめる・選ぶ）</strong></td>
+            <td>$a + b$</td>
+            <td><strong><span class="term-pop">$a \oplus b$<span class="pop-card"><span class="pop-title">$\oplus$ (トロピカル加法)</span>読み: ちょくわ / 丸プラス。最短の min を選ぶ操作</span></span></strong></td>
+            <td>$\min(a, b)$</td>
+            <td>複数のルートから<strong>最短時間を選ぶ</strong></td>
+          </tr>
+          <tr>
+            <td><strong>乗法（つなぐ・連続）</strong></td>
+            <td>$a \times b$</td>
+            <td><strong><span class="term-pop">$a \otimes b$<span class="pop-card"><span class="pop-title">$\otimes$ (トロピカル乗法)</span>読み: テンソル積 / 丸カケル。時間を足す (+) 操作</span></span></strong></td>
+            <td>$a + b$</td>
+            <td>電車を乗り継いで<strong>時間を足し合わせる</strong></td>
+          </tr>
+          <tr>
+            <td><strong>加法単位元（不変の選択）</strong></td>
+            <td>$0$ ($a + 0 = a$)</td>
+            <td><strong>$\infty$</strong> ($a \oplus \infty = a$)</td>
+            <td>$\min(a, \infty) = a$</td>
+            <td>「直通なし（$\infty$）」と比較しても最短は変わらない</td>
+          </tr>
+          <tr>
+            <td><strong>乗法単位元（滞在ゼロ）</strong></td>
+            <td>$1$ ($a \times 1 = a$)</td>
+            <td><strong>$0$</strong> ($a \otimes 0 = a$)</td>
+            <td>$a + 0 = a$</td>
+            <td>「その場で0分滞在」して乗り継いでも時間は同じ</td>
+          </tr>
+          <tr>
+            <td><strong>ゼロ元（吸収元）</strong></td>
+            <td>$0$ ($a \times 0 = 0$)</td>
+            <td><strong>$\infty$</strong> ($a \otimes \infty = \infty$)</td>
+            <td>$a + \infty = \infty$</td>
+            <td>1区間でも不通（$\infty$）なら全体も到達不能（$\infty$）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>2. 3駅モデルの設定と初期時間表（隣接行列 $M$）</h3>
+      <div class="mermaid">
+graph LR
+    A["駅 A"] -- "3分" --> B["駅 B"]
+    B -- "4分" --> C["駅 C"]
+    A -. "直通なし (∞分)" .-> C
+      </div>
+      <p>1区間（直通）で行ける時間を表にした**隣接行列 $M$**：</p>
+      <div class="math-block">
+        $$M = \begin{pmatrix} 0 & 3 & \infty \\ \infty & 0 & 4 \\ \infty & \infty & 0 \end{pmatrix}$$
+      </div>
+
+      <div class="step-box">
+        <h3>【ステップ 1】まず「駅Aから駅Cへの最短時間」を1本求める</h3>
+        <p>AからCへ行くには、経由地（A, B, C）に応じて3つの選択肢があります：</p>
+        <ul>
+          <li><strong>A経由:</strong> $d_{AA} + d_{AC} = 0 + \infty = \infty$ 分</li>
+          <li><strong>B経由:</strong> $d_{AB} + d_{BC} = 3 + 4 = 7$ 分</li>
+          <li><strong>C経由:</strong> $d_{AC} + d_{CC} = \infty + 0 = \infty$ 分</li>
+        </ul>
+        <p><strong>トロピカル代数と通常の演算子の併記による厳密計算：</strong></p>
+        <div class="math-block">
+          $$\begin{aligned}
+          \text{A} \to \text{C の最短時間} &= (d_{AA} \otimes d_{AC}) \;\boldsymbol{\oplus}\; (d_{AB} \otimes d_{BC}) \;\boldsymbol{\oplus}\; (d_{AC} \otimes d_{CC}) \\
+          &= \min\Bigl( (d_{AA} + d_{AC}), \; (d_{AB} + d_{BC}), \; (d_{AC} + d_{CC}) \Bigr) \\
+          &= \min\Bigl( (0 + \infty), \; (3 + 4), \; (\infty + 0) \Bigr) \\
+          &= \min\Bigl( \infty, \; \mathbf{7}, \; \infty \Bigr) \\
+          &= \mathbf{7 \text{分}}
+          \end{aligned}$$
+        </div>
+      </div>
+
+      <div class="step-box">
+        <h3>【ステップ 2】全駅間の最短時間を「<span class="term-pop">トロピカル行列積<span class="pop-card"><span class="pop-title">$\odot$ (トロピカル行列積)</span>読み: オードット / 丸ドット。全駅間の最短乗り継ぎを一括算出する行列計算</span></span>」で一網打尽にする！</h3>
+        <p>上の計算を行列の全9マスに対して一括で行うのが、トロピカル行列積 $M \odot M = M^2$ です。</p>
+        <div class="math-block">
+          $$M^2 = M \odot M = \begin{pmatrix} 0 & 3 & \infty \\ \infty & 0 & 4 \\ \infty & \infty & 0 \end{pmatrix} \odot \begin{pmatrix} 0 & 3 & \infty \\ \infty & 0 & 4 \\ \infty & \infty & 0 \end{pmatrix} = \begin{pmatrix} 0 & 3 & \mathbf{7} \\ \infty & 0 & 4 \\ \infty & \infty & 0 \end{pmatrix}$$
+        </div>
+        <ul>
+          <li><strong>1行目（A発）:</strong> A→A: $0$分, $\quad$ A→B: $3$分, $\quad$ A→C: $\mathbf{7}$分 ★</li>
+          <li><strong>2行目（B発）:</strong> B→A: $\infty$分, $\quad$ B→B: $0$分, $\quad$ B→C: $4$分</li>
+          <li><strong>3行目（C発）:</strong> C→A: $\infty$分, $\quad$ C→B: $\infty$分, $\quad$ C→C: $0$分</li>
+        </ul>
+        <p>直通がなかったはずの A $\to$ C に、<strong>最短乗り換え時間「7分」が自動算出</strong>されました！</p>
+      </div>
+
+      <div class="highlight-card">
+        <strong>べき乗の威力：</strong> 駅数が増えても、$M^2 \to M^4 \to M^8 \dots$ とべき乗を繰り返すだけで、超巨大な路線網の全ペア最短ルートが爆速で求まります（ワーシャル・フロイド法と同等の代数的解法）。
+      </div>
+
+      <h3>3. <span class="term-pop">半環カートリッジ<span class="pop-card"><span class="pop-title">半環 (Semiring)</span>足し算と掛け算のルールを差し替えるだけで多種多様な問題を解くフレームワーク</span></span>の大統一</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>解きたい問題</th>
+            <th>「選ぶ（加法 $\oplus$）」</th>
+            <th>「繋ぐ（乗法 $\otimes$）」</th>
+            <th>求まるもの</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>最短時間（トロピカル）</strong></td>
+            <td>$\min$</td>
+            <td>$+$</td>
+            <td><strong>最速乗り換えルート</strong></td>
+          </tr>
+          <tr>
+            <td><strong>通信信頼性</strong></td>
+            <td>$\max$</td>
+            <td>$\times$</td>
+            <td><strong>最も途切れない高品質ルート</strong></td>
+          </tr>
+          <tr>
+            <td><strong>最大流量（配管）</strong></td>
+            <td>$\max$</td>
+            <td>$\min$</td>
+            <td><strong>一番太いボトルネック容量</strong></td>
+          </tr>
+          <tr>
+            <td><strong>到達判定（論理）</strong></td>
+            <td>$\text{OR}$</td>
+            <td>$\text{AND}$</td>
+            <td><strong>目的地へ行けるか（Yes/No）</strong></td>
+          </tr>
+          <tr>
+            <td><strong>経路パターン数</strong></td>
+            <td>$+$</td>
+            <td>$\times$</td>
+            <td><strong>行けるルートの総数（通常の算数）</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-card" style="background: rgba(56, 189, 248, 0.05); border-left: 4px solid var(--accent);">
+        <strong>💡 友達に話したくなる！3行まとめカード</strong>
+        <ul style="margin-top: 0.4rem; padding-left: 1.2rem;">
+          <li>加法 $\oplus$ は「最短を選ぶ ($\min$)」、乗法 $\otimes$ は「時間を足す ($+$)」！</li>
+          <li>行列を1回掛ける（$M^2$）だけで、全駅の乗換最短ルートが一撃で求まる！</li>
+          <li>ルールの組み合わせを変えるだけで、通信や配管、論理も一括解決！</li>
+        </ul>
+      </div>
+
+      <div class="step-box" style="border-left-color: #f59e0b;">
+        <strong>❓ ちょっと考えてみよう！ミニチェック</strong><br>
+        <strong>Q.</strong> トロピカル代数において、足し算の単位元（足しても結果が変わらない数）が $0$ ではなく $\infty$ である理由は？<br>
+        <div style="margin-top: 0.4rem; color: #38bdf8;">➔ 「直通なし（$\infty$ 分）」と比較しても最短ルートの所要時間は $\min(a, \infty) = a$ で全く変わらないからです！</div>
+      </div>
+    </section>
+
+    <!-- 🌐 【特別解説】巨大ネットワークが数回で収束する魔法 -->
+    <section id="ch1c">
+      <h2>🌐 【特別解説】巨大ネットワークが「たった数回」で収束する魔法 — グラフの直径、スモールワールド、そして $\log_2 D$ の奇跡</h2>
+      <p>「駅やコンピュータが何億個あっても、なぜたった数回のべき乗で全宇宙の最短ルート（$M^\infty$）が確定するのか？」その厳密な数学的根拠と現実のネットワーク構造を丁寧に解き明かします。</p>
+
+      <h3>1. 理論的根拠 ①：なぜ最大でも「$N - 1$ 回」で絶対に止まるのか？（鳩ノ巣原理）</h3>
+      <p>数学の基本原理である「**鳩ノ巣原理（5羽の鳩を4つの巣に入れると、必ず1つの巣には2羽以上入る）**」によって厳密に証明されます。</p>
+      
+      <div class="step-box">
+        <strong>💡 鳩ノ巣原理による証明的直感：</strong>
+        <ol style="margin-top: 0.4rem; padding-left: 1.2rem;">
+          <li>駅が $N = 4$ 個（A, B, C, D）あるとします。</li>
+          <li>もし「4回乗り換えるルート（線路を4本通る）」を選ぶと、通過する駅の数は <strong>出発駅 ＋ 4回の移動 ＝ 合計 5 つ</strong> になります。</li>
+          <li>4種類しか駅がないのに5つの駅を訪問しているため、鳩ノ巣原理により<strong>「必ずどこかの駅を2回以上重複して訪問（寄り道ループが発生）」</strong>しています（例：$\text{A} \to \mathbf{B} \to \text{C} \to \mathbf{B} \to \text{D}$）。</li>
+          <li>無駄な寄り道を取り除けば、必ず <strong>3本以下の線路（$N-1$ ステップ以下）</strong> で目的地に到達できます。</li>
+        </ol>
+      </div>
+      <p>最短ルートに無駄なループは絶対に現れないため、<strong>最長でも $N-1$ 回の乗り換えですべての最短ルートが出尽くし、数字がピタッと停止します（$M^\infty = M^{N-1}$）</strong>。</p>
+
+      <h3>2. 理論的根拠 ②：収束回数を決める真の支配者「グラフの直径（Diameter $D$）」</h3>
+      <p>実際の収束回数は、ノード数 $N$ ではなく、<strong>「最も離れた2駅間の最小乗り換え回数（直径 $D$）」に完全に一致</strong>します。</p>
+      <div class="highlight-card">
+        <strong>スター型路線図の例：</strong><br>
+        中心に巨大なターミナル駅（ハブ）があれば、駅が 100 個あっても全員が「2回乗り換え」で行き来できるため（直径 $D=2$）、<strong>たった2回のべき乗（$M^2$）で全 $101 \times 101 = 10,201$ マスが一撃で完全収束</strong>します！
+      </div>
+
+      <h3>3. 現実世界の奇跡：80億人でも「たった6回」で届くスモールワールド現象</h3>
+      <p>1967年のミルグラムの実験で、アメリカの見知らぬ住人同士が平均わずか 5.5 人（約6ステップ）の知人関係で手紙を届けられた「六次の隔たり」。これは中学数学の「**掛け算の繰り返し（指数の爆発的拡大）**」で論理的に説明できます。</p>
+
+      <div class="step-box">
+        <strong>🧮 1人が平均50人の知人を持つ世界の拡大スピード：</strong>
+        <ul style="margin-top: 0.4rem; padding-left: 1.2rem;">
+          <li><strong>1ステップ（直接の友人）:</strong> 50 人</li>
+          <li><strong>2ステップ（友人の友人）:</strong> $50 \times 50 = 2,500$ 人</li>
+          <li><strong>3ステップ:</strong> $2,500 \times 50 = 125,000$ 人（12.5万人）</li>
+          <li><strong>4ステップ:</strong> $125,000 \times 50 = 6,250,000$ 人（625万人）</li>
+          <li><strong>5ステップ:</strong> $6,250,000 \times 50 = 312,500,000$ 人（3.1億人 ➔ 米国の全人口）</li>
+          <li><strong>6ステップ:</strong> $312,500,000 \times 50 = \mathbf{15,625,000,000 \text{ 人}} \quad \text{（156億人！）}$</li>
+        </ul>
+      </div>
+      <p>少数の広域ハブが存在することで、<strong>地球全体の人間関係やインターネットの直径は実質的に $D \approx 6 \sim 20$ 前後に収まってしまう</strong>のです。</p>
+
+      <h3>4. 繰り返し自乗法との合体：掛け算は「$\log_2 D$ 回」という神速へ</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>ネットワークの規模</th>
+            <th>直径 $D$</th>
+            <th>必要な掛け算の回数（$\lceil \log_2 D \rceil$）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>小規模路線図（4駅モデル）</strong></td>
+            <td>$D = 3$</td>
+            <td><strong>たった 2 回</strong> ($M^4$)</td>
+          </tr>
+          <tr>
+            <td><strong>全世界の航空路・友達関係（80億人）</strong></td>
+            <td>$D \approx 6 \sim 8$</td>
+            <td><strong>たった 3 回</strong> ($M^8$)</td>
+          </tr>
+          <tr>
+            <td><strong>超巨大インターネット・Web空間</strong></td>
+            <td>$D \approx 30$</td>
+            <td><strong>たった 5 回</strong> ($M^{32}$)</td>
+          </tr>
+          <tr>
+            <td><strong>1000 回乗り継ぐ広大な宇宙交通網</strong></td>
+            <td>$D = 1000$</td>
+            <td><strong>たった 10 回</strong> ($M^{1024}$)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-card" style="background: rgba(56, 189, 248, 0.05); border-left: 4px solid var(--accent);">
+        <strong>💡 友達に話したくなる！3行まとめカード</strong>
+        <ul style="margin-top: 0.4rem; padding-left: 1.2rem;">
+          <li>鳩ノ巣原理により、最短ルートに寄り道はなく最大 $N-1$ 回で終了！</li>
+          <li>収束回数は「直径 $D$」で決まり、80億人でも指数爆発で約6回！</li>
+          <li>繰り返し自乗法を使えば、地球規模の最適化もたった数回の計算で解ける！</li>
+        </ul>
+      </div>
+
+      <div class="step-box" style="border-left-color: #f59e0b;">
+        <strong>❓ ちょっと考えてみよう！ミニチェック</strong><br>
+        <strong>Q.</strong> 1人が平均50人の知人を持つ世界で、3ステップ先（友人の友人の友人）には理論上最大でおよそ何人の人が繋がる？<br>
+        ① 約 150 人（$50 \times 3$）　② 約 12 万 5 千人（$50 \times 50 \times 50$）　③ 約 80 億人<br>
+        <div style="margin-top: 0.4rem; color: #38bdf8;">➔ 正解は <strong>② 約 12 万 5 千人</strong>！ステップごとに掛け算される（指数の爆発）ため、足し算とは桁違いの猛スピードで拡大します。これがスモールワールドの数学的根拠です！</div>
+      </div>
+    </section>
+
+    <!-- 第2章 -->
+    <section id="ch2">
+      <h2>第2章：周辺から本質を炙り出す — <span class="term-pop">普遍性<span class="pop-card"><span class="pop-title">普遍性 (Universal Property)</span>中身を決めず周囲との関係性から対象を唯一無二に決定する性質</span></span>と<span class="term-pop">米田の補題<span class="pop-card"><span class="pop-title">米田の補題 (Yoneda Lemma)</span>外部との矢印の総体が対象そのものを決定するという定理</span></span></h2>
+      
+      <h3>1. 普遍性（Universal Property）とは？ — 「何がわかれば、何がわかるのか？」</h3>
+      <p>「普遍性」とは、<strong>『余計なものが一切なく、みんなの要望を迷わず一撃でまとめられる“唯一の理想的なポジション”』</strong>のことです。</p>
+
+      <div class="step-box" style="border-left-color: #38bdf8;">
+        <strong>💡 普遍性が教えてくれる「何がわかれば何がわかるのか」の因果関係：</strong>
+        <ol style="margin-top: 0.4rem; padding-left: 1.2rem;">
+          <li><strong>【入力（わかっていること）】:</strong> 「ハンバーグ $A$」が欲しいという要望 $f$ と、「ジュース $B$」が欲しいという要望 $g$ がある。</li>
+          <li><strong>【仲介役（普遍性を持つセット $P$）を通すと…】:</strong> どんな複雑なお客さん $X$ からも、「このセット $P$ を頼めば一発解決！」という注文ルート $!u$ が <strong>迷いなく、ただ1通り</strong> に決まる。</li>
+          <li><strong>【結論（何がわかるのか？）】:</strong> 中身の容器が紙袋だろうと何だろうと関係ない！この仲介役 $P$ こそが、世界でただ1つの「積（$A \times B$）」の本質であると確定する！</li>
+        </ol>
+      </div>
+      
+      <div class="mermaid">
+graph TD
+    X["客の要望 X (ハンバーグとジュース)"] -- "f" --> A["主食 A (ハンバーグ)"]
+    X -- "g" --> B["ドリンク B (ジュース)"]
+    X -. "★ 唯一の注文決定 !u" .-> P["【理想のランチセット P】<br>(A × B)"]
+    P -- "主食を取る π_1" --> A
+    P -- "ドリンクを取る π_2" --> B
+      </div>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>理論の言葉・記号</th>
+            <th>ファミレスの具体例</th>
+            <th>役割・直感の意味</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>対象 $A, B$</strong></td>
+            <td>ハンバーグ、ジュース</td>
+            <td>単体のメニュー（構成要素）</td>
+          </tr>
+          <tr>
+            <td><strong>積対象 $P = A \times B$</strong></td>
+            <td><strong>ランチセット</strong></td>
+            <td>2つをセットにした新しい対象</td>
+          </tr>
+          <tr>
+            <td><strong>射影射 $\pi_1, \pi_2$</strong></td>
+            <td>「セットから主食/ドリンクを取り出す」</td>
+            <td>セットから要素を過不足なく取り出す矢印</td>
+          </tr>
+          <tr>
+            <td><strong>一意な仲介射 $!u: X \to P$</strong></td>
+            <td><strong>「ランチセット1つ注文！」</strong></td>
+            <td>客の希望をセット注文へ一撃で変換する唯一の道</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>2. 中学数学での身近な普遍性：最大公約数（GCD）</h3>
+      <p>12 と 18 の公約数（1, 2, 3, 6）の中で、<strong>「他のすべての公約数から割り切れる（矢印が集まる）頂点」</strong>こそが最大公約数の「6」です。これも位置関係（普遍性）だけで 6 という数字の本質が定まる典型例です。</p>
+
+      <div class="mermaid">
+graph TD
+    C["任意の公約数 (1, 2, 3)"] --> A["12 を割り切る"]
+    C --> B["18 を割り切る"]
+    C -. "★ 必ず 6 を割り切れる (!u)" .-> GCD["【最大公約数 6】<br>(普遍性を持つ頂点)"]
+    GCD --> A
+    GCD --> B
+      </div>
+
+      <h3>3. 米田の補題（Yoneda Lemma）：関係性の総体が実存を決める</h3>
+      <p>「ある対象 $X$ の中身を覗かなくても、あらゆる外部対象から $X$ への矢印の集まり $\mathrm{Hom}(-, X)$ をすべて調べれば、$X$ そのものの正体を 100% 完全に特定したことになる」</p>
+      
+      <div class="mermaid">
+graph LR
+    A["友人 A (学校)"] -- "「数学が得意」 f_A" --> X["【未知の対象 X (私)】<br>(中身はブラックボックス)"]
+    B["家族 B (家庭)"] -- "「早起きが苦手」 f_B" --> X
+    C["先生 C (塾)"] -- "「集中力が高い」 f_C" --> X
+      </div>
+
+      <div class="math-block">
+        $$X \cong Y \iff \mathrm{Hom}(-, X) \cong \mathrm{Hom}(-, Y)$$
+      </div>
+      
+      <p><strong>カプセル化と実存の記述：</strong> プログラムの内部実装を隠蔽してもAPI（呼び出せる関数の全体）が同じなら同一部品として動くように、人間やAIの自己同一性も「他者や世界と交わす対話・応答・関係性の総体」として完全に記述できます。</p>
+
+      <div class="highlight-card" style="background: rgba(56, 189, 248, 0.05); border-left: 4px solid var(--accent);">
+        <strong>💡 友達に話したくなる！3行まとめカード</strong>
+        <ul style="margin-top: 0.4rem; padding-left: 1.2rem;">
+          <li>普遍性は「どんな注文も迷わず一撃で通せるランチセットの位置」！</li>
+          <li>最大公約数（GCD）も、すべての公約数をまとめる普遍性の例！</li>
+          <li>米田の補題は「周りからの手紙の全部＝その人の正体そのもの」！</li>
+        </ul>
+      </div>
+
+      <div class="step-box" style="border-left-color: #f59e0b;">
+        <strong>❓ ちょっと考えてみよう！ミニチェック</strong><br>
+        <strong>Q.</strong> 「ハンバーグとジュース」が欲しいお客さんに対して、「ハンバーグ＋ジュース＋高級メロン（1万円）」というセットは、なぜ積の普遍性を満たさない？<br>
+        <div style="margin-top: 0.4rem; color: #38bdf8;">➔ 余計なものが混ざっていると、無駄な注文ルートが生まれてしまい「ただ1つの仲介役」になれないからです。過不足ゼロの理想バランスこそが普遍性の条件です！</div>
+      </div>
+    </section>
+
+    <!-- 第3章 -->
+    <section id="ch3">
+      <h2>第3章：世界と世界を繋ぐ翻訳機 — <span class="term-pop">関手<span class="pop-card"><span class="pop-title">関手 (Functor)</span>圏と圏の間で構造を保ったまま写す翻訳機</span></span>と<span class="term-pop">自然変換<span class="pop-card"><span class="pop-title">自然変換 (Natural Transformation)</span>関手と関手を繋ぐ歪みのない橋渡し</span></span></h2>
+      
+      <h3>1. 関手（Functor）：構造を保つ「自動翻訳機」</h3>
+      <p>圏 $\mathbf{C}$（日本語の世界）から別の圏 $\mathbf{D}$（英語の世界）へ、繋がり方のルール（合成と恒等射）を崩さずに丸ごと翻訳する機構です。</p>
+      
+      <div class="mermaid">
+graph LR
+    subgraph subC["圏 C (日本語の世界)"]
+        A["単語 A (朝)"] -- "射 f (時間経過)" --> B["単語 B (昼)"]
+    end
+    subgraph subD["圏 D (英語の世界)"]
+        FA["単語 F(A) (Morning)"] -- "射 F(f) (Time passes)" --> FB["単語 F(B) (Noon)"]
+    end
+    A -. "関手 F" .-> FA
+    B -. "関手 F" .-> FB
+      </div>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>関手の数学的公理</th>
+            <th>日常（翻訳）の具体例</th>
+            <th>破綻すると何が起きるか？</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>合成を保つ<br>$F(g \circ f) = F(g) \circ F(f)$</strong></td>
+            <td><strong>「朝 $\to$ 昼 $\to$ 夜」の繋がりが、英語でも「Morning $\to$ Noon $\to$ Night」と一本道で繋がる！</strong></td>
+            <td>話の順番や因果関係がバラバラに崩壊する</td>
+          </tr>
+          <tr>
+            <td><strong>恒等射を保つ<br>$F(\mathrm{id}_A) = \mathrm{id}_{F(A)}$</strong></td>
+            <td>日本語で「その場で待機」は、英語でも「Stay（何もしない）」に対応する</td>
+            <td>待機していただけなのに勝手に別の状態へ動いてしまう</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>2. 自然変換（Natural Transformation）：翻訳機同士の変換アダプター</h3>
+      <p>関手（旧辞書）$F$ と関手（新辞書）$G$ の間の橋渡し。どのタイミングで新辞書に切り替えても文章の意味が破綻しないこと（可換性 $\alpha_B \circ F(f) = G(f) \circ \alpha_A$）を保証します。</p>
+
+      <div class="mermaid">
+graph TD
+    A["対象 A (挨拶)"] -- "旧辞書 F(A)" --> FA["F(A) (Hello)"]
+    A -- "新辞書 G(A)" --> GA["G(A) (Good day)"]
+    FA -- "自然変換 α_A" --> GA
+    B["対象 B (返答)"] -- "旧辞書 F(B)" --> FB["F(B) (Thanks)"]
+    B -- "新辞書 G(B)" --> GB["G(B) (Thank you)"]
+    FB -- "自然変換 α_B" --> GB
+    FA -- "旧文脈 F(f)" --> FB
+    GA -- "新文脈 G(f)" --> GB
+      </div>
+
+      <div class="highlight-card" style="background: rgba(56, 189, 248, 0.05); border-left: 4px solid var(--accent);">
+        <strong>💡 友達に話したくなる！3行まとめカード</strong>
+        <ul style="margin-top: 0.4rem; padding-left: 1.2rem;">
+          <li>関手は、繋がり方のルールを保ったまま世界を移す「自動翻訳機」！</li>
+          <li>自然変換は、翻訳機同士を歪みなく切り替える「変換アダプター」！</li>
+          <li>プログラミングの map や型変換も、すべて関手と自然変換！</li>
+        </ul>
+      </div>
+
+      <div class="step-box" style="border-left-color: #f59e0b;">
+        <strong>❓ ちょっと考えてみよう！ミニチェック</strong><br>
+        <strong>Q.</strong> 単品の数値を2倍にする関数を、リスト `[1, 2, 3]` に一括適用して `[2, 4, 6]` に変換するプログラミングの `map` は、圏論の言葉で何に相当する？<br>
+        <div style="margin-top: 0.4rem; color: #38bdf8;">➔ 正解は <strong>関手（Functor）</strong>！単品の世界の繋がりを壊さず、リストの世界へとそのまま持ち上げる代表例です。</div>
+      </div>
+    </section>
+
+    <!-- 第4章 -->
+    <section id="ch4">
+      <h2>第4章：フロンティアと実践応用 — ツールで体感する半環カートリッジと未来の科学</h2>
+
+      <div class="highlight-card" style="border: 2px solid #38bdf8; background: rgba(56, 189, 248, 0.08);">
+        <h3 style="margin-top: 0; color: #38bdf8;">🧰 実践ツール：半環カートリッジ実験室で遊ぼう！</h3>
+        <p>路線図は1つのまま、「最速」「最安」「最楽」「確実」のボタンを切り替えるだけで、全く同じ行列計算プログラムが瞬時に4つの最適ルートを弾き出すインタラクティブ実験室です。</p>
+        <a href="tool/index.html" style="display: inline-block; background: #0284c7; color: #fff; text-decoration: none; padding: 0.5rem 1.2rem; border-radius: 6px; font-weight: bold; font-size: 0.9rem;">
+          🚀 実践ツールを開いて体験する ➔
+        </a>
+      </div>
+
+      <h3>1. 💹 経済予測・サプライチェーン・金融への絶大な応用</h3>
+      <p>行列のべき乗と収束（$M^\infty$）は、現代社会のあらゆる予測エンジンの基盤です。</p>
+
+      <div class="step-box">
+        <h4>🚗 ① レオンチェフの産業連関モデル（自動車と鉄鋼の 2産業手計算）</h4>
+        <p>「自動車に100億円の新規需要が発生したとき、国全体でいくらの生産波及が起きるか？」</p>
+        <div class="math-block">
+          $$M = \begin{pmatrix} 0.2 & 0.1 \\ 0.4 & 0.3 \end{pmatrix} \quad \begin{matrix} \text{(自動車 A)} \\ \text{(鉄鋼 S)} \end{matrix}$$
+        </div>
+        <ul>
+          <li><strong>直接効果 ($M^1$):</strong> $M \begin{pmatrix} 100 \\ 0 \end{pmatrix} = \begin{pmatrix} 20\text{億円} \\ 40\text{億円} \end{pmatrix}$（自動車自身に20億、鉄鋼に40億の生産が発生！）</li>
+          <li><strong>1次波及 ($M^2$):</strong> $M \begin{pmatrix} 20 \\ 40 \end{pmatrix} = \begin{pmatrix} 8\text{億円} \\ 20\text{億円} \end{pmatrix}$</li>
+          <li><strong>波及の総和（無限等比級数）:</strong> $(I - M)^{-1} = I + M + M^2 + M^3 \dots$</li>
+        </ul>
+        <p>高校数学の $1 + r + r^2 \dots = \frac{1}{1-r}$ と同じ原理で、<strong>一発の逆行列 $(I - M)^{-1}$ の計算で国全体の総波及効果が完全算出</strong>されます！</p>
+      </div>
+
+      <div class="step-box">
+        <h4>🏭 ② サプライチェーンの「供給停止ドミノ」予測（トロピカル $(\min, +)$）</h4>
+        <p>「部品メーカー P（在庫2日分） $\to$ 下請け S（在庫3日分） $\to$ 完成車工場 A」のネットワーク：</p>
+        <div class="math-block">
+          $$\text{P から A への停止波及日数} = \min(0 + \infty, \; 2 + 3, \; \infty + 0) = \mathbf{5 \text{ 日後}}$$
+        </div>
+        <p><strong>部品工場 P が火災で止まったら、ちょうど 5 日後に完成車工場 A が部品切れで停止する</strong>という最速波及ルートが瞬時に判明します。</p>
+      </div>
+
+      <div class="step-box">
+        <h4>💱 ③ 為替の「三角裁定取引（ノーリスク利益）」の自動検知（乗法 $(\max, \times)$）</h4>
+        <p>「円 $\xrightarrow{0.007}$ ドル $\xrightarrow{0.95}$ ユーロ $\xrightarrow{155}$ 円」のループを掛け算すると：</p>
+        <div class="math-block">
+          $$0.007 \times 0.95 \times 155 = \mathbf{1.03075}$$
+        </div>
+        <p>1 万円を両替して一周させるだけで、<strong>ノーリスクで 10,307 円（+307円）に増える市場の歪み（アービトラージ）</strong>を行列計算が自動検知します！</p>
+      </div>
+
+      <h3>2. 複雑ネットワーク科学 × 圏論（高次相互作用のモデル化）</h3>
+      <p>メタ言語としての圏論（関手によるアナロジー抽出）と、高速計算エンジンとしての複雑ネットワーク科学が融合し、巨大な因果関係を「**マクロノード（Super Node）**」へとスッキリ折りたたんで本質を炙り出します。</p>
+
+      <h3>3. 量子圏論（DisCoCat）と意味・実存の創発</h3>
+      <div class="mermaid">
+graph LR
+    subgraph subVec["1. ベクトル空間 (単語)"]
+        W1["単語 A"]
+        W2["単語 B"]
+    end
+    subgraph subCat["2. 圏論 (文法・関係)"]
+        Arrow["射 (文法合成)"]
+    end
+    subgraph subQ["3. 量子圏論 (意味の創発)"]
+        Entangle["量子もつれ・位相干渉<br>(文脈による意味の収束)"]
+    end
+    W1 --> Arrow
+    W2 --> Arrow
+    Arrow --> Entangle
+      </div>
+      <p>単語を固定ベクトルとしてだけでなく、量子重ね合わせ・位相干渉・文脈による収束として扱うことで、動的で豊かな対話と意味の創発を捉えます。</p>
+
+      <h3>4. 知識表現・AetherDB への応用</h3>
+      <p>知見の等価性判定、安全な聖域境界ゲート、推論経路の来歴（Provenance）追跡など、次世代AIアーキテクチャの根幹を支える基盤として活用されます。</p>
+
+      <div class="highlight-card" style="background: rgba(56, 189, 248, 0.05); border-left: 4px solid var(--accent);">
+        <strong>💡 友達に話したくなる！3行まとめカード</strong>
+        <ul style="margin-top: 0.4rem; padding-left: 1.2rem;">
+          <li>レオンチェフ経済予測も為替裁定も、すべて行列のべき乗の応用！</li>
+          <li>圏論とネットワーク科学が合体し、巨大な複雑システムを解剖！</li>
+          <li>量子圏論や次世代AI記憶など、現代科学の最前線を牽引する！</li>
+        </ul>
+      </div>
+
+      <div class="step-box" style="border-left-color: #f59e0b;">
+        <strong>❓ ちょっと考えてみよう！ミニチェック</strong><br>
+        <strong>Q.</strong> 自動車の増産による無限の波及効果の合計が $(I - M)^{-1}$ という1つの逆行列で求まる理由は？<br>
+        <div style="margin-top: 0.4rem; color: #38bdf8;">➔ 行列のべき乗の無限合計 $I + M + M^2 + M^3 \dots$ が、高校数学の無限等比級数と同じように $(I - M)^{-1}$ に綺麗に収束するからです！</div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

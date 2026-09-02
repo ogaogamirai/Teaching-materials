@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>圏論・半環カートリッジ実験室 — マルチ条件ルート最適化ツール</title>
+  <!-- Google Fonts: M PLUS Rounded 1c -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <!-- KaTeX CSS & JS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-sub: #f1f5f9;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --accent: #0284c7;
+      --accent-soft: #f0f9ff;
+      --accent-glow: rgba(2, 132, 199, 0.08);
+      --border: #e2e8f0;
+      --active-node: #d97706;
+      --highlight-path: #059669;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "M PLUS Rounded 1c", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Yu Gothic UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 1.5rem 1rem;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    h1 {
+      font-size: 1.8rem;
+      color: #0f172a;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--accent);
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 0.8rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.4rem 0.9rem;
+      background: var(--accent-soft);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .back-link:hover {
+      border-color: var(--accent);
+      background: #e0f2fe;
+    }
+
+    /* カートリッジ選択バー */
+    .cartridge-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    .section-title {
+      font-size: 0.9rem;
+      color: #0f172a;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .cartridge-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.8rem;
+    }
+    .cart-btn {
+      background: #f8fafc;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+      color: var(--text);
+    }
+    .cart-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .cart-btn.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      box-shadow: 0 0 12px rgba(2, 132, 199, 0.2);
+    }
+    .cart-name {
+      font-weight: bold;
+      font-size: 1rem;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.3rem;
+    }
+    .cart-math {
+      font-size: 0.82rem;
+      color: var(--accent);
+      font-family: monospace;
+      font-weight: 600;
+    }
+    .cart-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* メイン操作エリア (2カラム) */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 850px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    /* 路線マップ */
+    .map-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    .station-controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      align-items: center;
+      background: var(--card-sub);
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .station-controls select {
+      background: #ffffff;
+      color: var(--text);
+      border: 1px solid var(--accent);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      outline: none;
+    }
+    .svg-container {
+      flex: 1;
+      min-height: 280px;
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 計算結果・解説 */
+    .result-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    .result-box {
+      background: linear-gradient(135deg, #ecfdf5 0%, #f0f9ff 100%);
+      border: 1.5px solid #a7f3d0;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .result-value {
+      font-size: 1.45rem;
+      font-weight: bold;
+      color: #047857;
+      margin: 0.3rem 0;
+    }
+    .path-display {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .calc-steps {
+      flex: 1;
+      background: var(--card-sub);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.9rem;
+      font-size: 0.85rem;
+      overflow-y: auto;
+      max-height: 220px;
+      color: #334155;
+    }
+    .step-item {
+      margin-bottom: 0.6rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px dashed var(--line);
+    }
+    .step-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+    /* 行列ビューア */
+    .matrix-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    .matrix-display-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 0.8rem;
+    }
+    .matrix-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      text-align: center;
+    }
+    .matrix-box h4 {
+      font-size: 0.85rem;
+      color: #0369a1;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+    .matrix-table {
+      margin: 0 auto;
+      border-collapse: collapse;
+      font-family: monospace;
+      font-size: 0.85rem;
+      background: #ffffff;
+    }
+    .matrix-table td, .matrix-table th {
+      padding: 0.35rem 0.6rem;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .matrix-table th {
+      color: var(--text-muted);
+      background: #f1f5f9;
+    }
+    .cell-highlight {
+      background: #d1fae5 !important;
+      color: #065f46 !important;
+      font-weight: bold;
+    }
+    .cell-updated {
+      background: #fef3c7 !important;
+      color: #92400e !important;
+      font-weight: bold;
+      border: 1px solid #f59e0b !important;
+    }
+    .diff-badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 12px;
+      font-weight: bold;
+    }
+    .diff-badge.updated {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #f59e0b;
+    }
+    .diff-badge.converged {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #10b981;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🧰 圏論・半環カートリッジ実験室</h1>
+      <div class="subtitle">同じ路線図でも「ルール盤（半環）」を変えるだけで、最適ルートが一瞬で切り替わる魔法を体験！</div>
+      <a href="../index.html" class="back-link">← 圏論学習教材トップへ戻る</a>
+    </header>
+
+    <!-- 半環カートリッジ選択 -->
+    <div class="cartridge-section">
+      <div class="section-title">🕹️ ステップ 1: 目的（半環カートリッジ）を選んで差し替える</div>
+      <div class="cartridge-grid">
+        <button class="cart-btn active" onclick="setCartridge('speed')">
+          <div class="cart-name">⚡ ① 最速モード</div>
+          <div class="cart-math">半環: (min, +) [トロピカル]</div>
+          <div class="cart-desc">所要時間を最小化する最速ルート</div>
+        </button>
+        <button class="cart-btn" onclick="setCartridge('cost')">
+          <div class="cart-name">💰 ② 最安モード</div>
+          <div class="cart-math">半環: (min, +) [運賃半環]</div>
+          <div class="cart-desc">交通費を最小化するお財布優先ルート</div>
+        </button>
+        <button class="cart-btn" onclick="setCartridge('transfer')">
+          <div class="cart-name">💺 ③ 最楽モード</div>
+          <div class="cart-math">半環: (min, +) [乗換半環]</div>
+          <div class="cart-desc">乗り換え回数を最小化する座って行けるルート</div>
+        </button>
+        <button class="cart-btn" onclick="setCartridge('reliable')">
+          <div class="cart-name">🛡️ ④ 確実モード</div>
+          <div class="cart-math">半環: (max, ×) [確率半環]</div>
+          <div class="cart-desc">遅延せず定時で着く確率を最大化</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- メイン操作 -->
+    <div class="main-grid">
+      <!-- 路線図マップ -->
+      <div class="map-card">
+        <div class="station-controls">
+          <div>
+            <label style="font-size: 0.8rem; color: var(--text-muted); display: block;">出発地:</label>
+            <select id="startStation" onchange="updateAll()">
+              <option value="A" selected>🏡 自宅 (A)</option>
+              <option value="B">🌸 桜駅 (B)</option>
+              <option value="C">🌲 緑駅 (C)</option>
+              <option value="D">⚓ 港駅 (D)</option>
+            </select>
+          </div>
+          <div style="font-size: 1.2rem; color: var(--accent);">➔</div>
+          <div>
+            <label style="font-size: 0.8rem; color: var(--text-muted); display: block;">目的地:</label>
+            <select id="endStation" onchange="updateAll()">
+              <option value="A">🏡 自宅 (A)</option>
+              <option value="B">🌸 桜駅 (B)</option>
+              <option value="C">🌲 緑駅 (C)</option>
+              <option value="D" selected>🏫 学校 (D)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="svg-container">
+          <svg id="routeSvg" viewBox="0 0 450 250"></svg>
+        </div>
+      </div>
+
+      <!-- 計算結果と圏論ステップ -->
+      <div class="result-card">
+        <div class="section-title">📊 ステップ 2: 圏論・半環による最適解</div>
+        <div class="result-box">
+          <div style="font-size: 0.8rem; color: var(--text-muted);" id="resultMetricLabel">最適所要時間:</div>
+          <div class="result-value" id="resultValue">--</div>
+          <div class="path-display" id="pathDisplay">ルート: --</div>
+        </div>
+
+        <div class="section-title" style="margin-top: 0.5rem;">🧮 ステップ 3: 圏論の計算根拠（射の合成）</div>
+        <div class="calc-steps" id="calcSteps">
+          <!-- 計算プロセスが動的に入る -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 行列ビューア -->
+    <div class="matrix-section">
+      <div class="section-title">📐 ステップ 4: 行列のべき乗と「何回で収束したか」の完全可視化</div>
+      
+      <!-- 収束アナウンスバナー -->
+      <div id="convergenceBanner" style="background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 8px; padding: 0.9rem 1.2rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
+        <div>
+          <div style="font-weight: bold; color: #065f46; font-size: 1.05rem;" id="convergenceTitle">🎉 収束判定：計算中...</div>
+          <div style="font-size: 0.88rem; color: #1e293b; margin-top: 0.2rem; line-height: 1.5;" id="convergenceDesc">--</div>
+        </div>
+        <div style="background: #059669; color: #ffffff; font-weight: bold; padding: 0.45rem 0.9rem; border-radius: 20px; font-size: 0.85rem; white-space: nowrap;" id="convergenceBadge">
+          収束ステップ: --
+        </div>
+      </div>
+
+      <p style="font-size: 0.88rem; color: #334155; margin-bottom: 0.8rem;">
+        カートリッジのルール（<span id="matrixRuleSummary" style="color: #0284c7; font-weight: bold;">加法 ⊕: min, 乗法 ⊗: +</span>）に従って $M \to M^2 \to M^3 \to M^4$ と掛けていきます。<strong style="color: #d97706;">前回と値が変わったマスはオレンジ色</strong>で光り、<strong style="color: #059669;">変化が 0 になった瞬間に『無限乗 M^∞』が確定</strong>します！
+      </p>
+
+      <div class="matrix-display-container" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+        <div class="matrix-box" id="boxM1">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <h4 style="margin: 0;">M¹ （1区間直通）</h4>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">初期マップ</span>
+          </div>
+          <table class="matrix-table" id="matrixM"></table>
+        </div>
+
+        <div class="matrix-box" id="boxM2">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <h4 style="margin: 0;">M² ＝ M ⊙ M</h4>
+            <span class="diff-badge" id="diffBadgeM2" style="font-size: 0.75rem;">--</span>
+          </div>
+          <table class="matrix-table" id="matrixM2"></table>
+        </div>
+
+        <div class="matrix-box" id="boxM3">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <h4 style="margin: 0;">M³ ＝ M² ⊙ M</h4>
+            <span class="diff-badge" id="diffBadgeM3" style="font-size: 0.75rem;">--</span>
+          </div>
+          <table class="matrix-table" id="matrixM3"></table>
+        </div>
+
+        <div class="matrix-box" id="boxM4">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <h4 style="margin: 0;">M⁴ ＝ M³ ⊙ M</h4>
+            <span class="diff-badge" id="diffBadgeM4" style="font-size: 0.75rem;">--</span>
+          </div>
+          <table class="matrix-table" id="matrixM4"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 4駅モデルの定義 (A: 自宅, B: 桜駅, C: 緑駅, D: 学校)
+    const stations = [
+      { id: 'A', name: '自宅', x: 60, y: 125 },
+      { id: 'B', name: '桜駅', x: 225, y: 50 },
+      { id: 'C', name: '緑駅', x: 225, y: 200 },
+      { id: 'D', name: '学校', x: 390, y: 125 }
+    ];
+
+    // 各路線のデータ (時間, 運賃, 乗換回数, 定時確率)
+    const edges = [
+      { u: 'A', v: 'B', name: '急行A線', speed: 10, cost: 300, transfer: 1, reliable: 0.95 },
+      { u: 'A', v: 'C', name: '普通C線', speed: 25, cost: 150, transfer: 1, reliable: 0.99 },
+      { u: 'B', v: 'D', name: '特急B線', speed: 8,  cost: 500, transfer: 1, reliable: 0.80 },
+      { u: 'C', v: 'D', name: 'バスD線', speed: 15, cost: 200, transfer: 1, reliable: 0.90 },
+      { u: 'B', v: 'C', name: '連絡路',   speed: 5,  cost: 100, transfer: 1, reliable: 0.98 }
+    ];
+
+    let currentCartridge = 'speed';
+
+    const cartridgeConfig = {
+      speed: {
+        name: '最速モード',
+        attr: 'speed',
+        addOp: (a, b) => Math.min(a, b),
+        mulOp: (a, b) => a + b,
+        addSymbol: 'min',
+        mulSymbol: '+',
+        zeroAdd: Infinity,
+        zeroMul: 0,
+        unit: '分',
+        format: v => v === Infinity ? '∞' : `${v}分`,
+        isBetter: (a, b) => a < b
+      },
+      cost: {
+        name: '最安モード',
+        attr: 'cost',
+        addOp: (a, b) => Math.min(a, b),
+        mulOp: (a, b) => a + b,
+        addSymbol: 'min',
+        mulSymbol: '+',
+        zeroAdd: Infinity,
+        zeroMul: 0,
+        unit: '円',
+        format: v => v === Infinity ? '∞' : `${v}円`,
+        isBetter: (a, b) => a < b
+      },
+      transfer: {
+        name: '最楽モード',
+        attr: 'transfer',
+        addOp: (a, b) => Math.min(a, b),
+        mulOp: (a, b) => a + b,
+        addSymbol: 'min',
+        mulSymbol: '+',
+        zeroAdd: Infinity,
+        zeroMul: 0,
+        unit: '回乗換',
+        format: v => v === Infinity ? '∞' : `${v}回`,
+        isBetter: (a, b) => a < b
+      },
+      reliable: {
+        name: '確実モード',
+        attr: 'reliable',
+        addOp: (a, b) => Math.max(a, b),
+        mulOp: (a, b) => a * b,
+        addSymbol: 'max',
+        mulSymbol: '×',
+        zeroAdd: 0,
+        zeroMul: 1,
+        unit: '%',
+        format: v => v === 0 ? '0%' : `${(v * 100).toFixed(1)}%`,
+        isBetter: (a, b) => a > b
+      }
+    };
+
+    function setCartridge(type) {
+      currentCartridge = type;
+      document.querySelectorAll('.cart-btn').forEach(b => b.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      updateAll();
+    }
+
+    function buildAdjacencyMatrix(config) {
+      const n = stations.length;
+      const M = Array.from({ length: n }, () => Array(n).fill(config.zeroAdd));
+
+      for (let i = 0; i < n; i++) {
+        M[i][i] = config.zeroMul; // 自己ループ
+      }
+
+      edges.forEach(e => {
+        const uIdx = stations.findIndex(s => s.id === e.u);
+        const vIdx = stations.findIndex(s => s.id === e.v);
+        const val = e[config.attr];
+        M[uIdx][vIdx] = val;
+        M[vIdx][uIdx] = val; // 双方向
+      });
+
+      return M;
+    }
+
+    function multiplyMatrix(A, B, config) {
+      const n = stations.length;
+      const C = Array.from({ length: n }, () => Array(n).fill(config.zeroAdd));
+
+      for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+          let acc = config.zeroAdd;
+          for (let k = 0; k < n; k++) {
+            if (A[i][k] !== config.zeroAdd && B[k][j] !== config.zeroAdd) {
+              const term = config.mulOp(A[i][k], B[k][j]);
+              acc = config.addOp(acc, term);
+            }
+          }
+          C[i][j] = acc;
+        }
+      }
+      return C;
+    }
+
+    function findBestPath(startId, endId, config) {
+      // 全探索でパスと値を算出
+      const allPaths = [
+        ['A', 'B', 'D'],
+        ['A', 'C', 'D'],
+        ['A', 'B', 'C', 'D'],
+        ['A', 'C', 'B', 'D'],
+        ['A', 'B'],
+        ['A', 'C'],
+        ['B', 'D'],
+        ['C', 'D'],
+        ['B', 'C']
+      ];
+
+      const validPaths = [];
+      allPaths.forEach(path => {
+        if (path[0] === startId && path[path.length - 1] === endId) {
+          let score = config.zeroMul;
+          let possible = true;
+          for (let i = 0; i < path.length - 1; i++) {
+            const edge = edges.find(e => (e.u === path[i] && e.v === path[i+1]) || (e.v === path[i] && e.u === path[i+1]));
+            if (edge) {
+              score = config.mulOp(score, edge[config.attr]);
+            } else {
+              possible = false;
+              break;
+            }
+          }
+          if (possible) {
+            validPaths.push({ path, score });
+          }
+        }
+      });
+
+      if (startId === endId) {
+        return { best: { path: [startId], score: config.zeroMul }, all: [{ path: [startId], score: config.zeroMul }] };
+      }
+
+      if (validPaths.length === 0) return null;
+
+      validPaths.sort((a, b) => config.isBetter(a.score, b.score) ? -1 : 1);
+      return { best: validPaths[0], all: validPaths };
+    }
+
+    function renderSvg(bestPath) {
+      const svg = document.getElementById('routeSvg');
+      svg.innerHTML = '';
+
+      const activeEdges = new Set();
+      if (bestPath && bestPath.path) {
+        for (let i = 0; i < bestPath.path.length - 1; i++) {
+          const u = bestPath.path[i];
+          const v = bestPath.path[i+1];
+          activeEdges.add(`${u}-${v}`);
+          activeEdges.add(`${v}-${u}`);
+        }
+      }
+
+      // エッジ描画
+      edges.forEach(e => {
+        const uSt = stations.find(s => s.id === e.u);
+        const vSt = stations.find(s => s.id === e.v);
+        const isHighlight = activeEdges.has(`${e.u}-${e.v}`);
+
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', uSt.x);
+        line.setAttribute('y1', uSt.y);
+        line.setAttribute('x2', vSt.x);
+        line.setAttribute('y2', vSt.y);
+        line.setAttribute('stroke', isHighlight ? '#059669' : '#cbd5e1');
+        line.setAttribute('stroke-width', isHighlight ? '5' : '2.5');
+        if (isHighlight) {
+          line.setAttribute('stroke-dasharray', '8,4');
+          const anim = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+          anim.setAttribute('attributeName', 'stroke-dashoffset');
+          anim.setAttribute('from', '24');
+          anim.setAttribute('to', '0');
+          anim.setAttribute('dur', '1s');
+          anim.setAttribute('repeatCount', 'indefinite');
+          line.appendChild(anim);
+        }
+        svg.appendChild(line);
+
+        // エッジラベル
+        const midX = (uSt.x + vSt.x) / 2;
+        const midY = (uSt.y + vSt.y) / 2 + (e.u === 'B' && e.v === 'C' ? 0 : -8);
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', midX);
+        text.setAttribute('y', midY);
+        text.setAttribute('fill', isHighlight ? '#047857' : '#334155');
+        text.setAttribute('font-size', '11.5');
+        text.setAttribute('font-weight', '700');
+        text.setAttribute('text-anchor', 'middle');
+        const cfg = cartridgeConfig[currentCartridge];
+        text.textContent = `${e.name} (${cfg.format(e[cfg.attr])})`;
+        svg.appendChild(text);
+      });
+
+      // ノード描画
+      const startId = document.getElementById('startStation').value;
+      const endId = document.getElementById('endStation').value;
+
+      stations.forEach(s => {
+        const isStart = s.id === startId;
+        const isEnd = s.id === endId;
+        const inPath = bestPath && bestPath.path.includes(s.id);
+
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', s.x);
+        circle.setAttribute('cy', s.y);
+        circle.setAttribute('r', isStart || isEnd ? '16' : '12');
+        circle.setAttribute('fill', isStart ? '#d97706' : isEnd ? '#059669' : inPath ? '#0284c7' : '#64748b');
+        circle.setAttribute('stroke', '#ffffff');
+        circle.setAttribute('stroke-width', '2.5');
+        g.appendChild(circle);
+
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', s.x);
+        text.setAttribute('y', s.y + (s.y > 150 ? 28 : -20));
+        text.setAttribute('fill', '#0f172a');
+        text.setAttribute('font-size', '13');
+        text.setAttribute('font-weight', 'bold');
+        text.setAttribute('text-anchor', 'middle');
+        text.textContent = `${s.name} (${s.id})`;
+        g.appendChild(text);
+
+        svg.appendChild(g);
+      });
+    }
+
+    function renderMatrix(tableId, M, prevM, config, startIdx, endIdx) {
+      const table = document.getElementById(tableId);
+      table.innerHTML = '';
+
+      const thead = document.createElement('thead');
+      const trH = document.createElement('tr');
+      trH.innerHTML = '<th>発＼着</th>' + stations.map(s => `<th>${s.id}</th>`).join('');
+      thead.appendChild(trH);
+      table.appendChild(thead);
+
+      let diffCount = 0;
+      const tbody = document.createElement('tbody');
+      M.forEach((row, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<th>${stations[i].id}</th>` + row.map((val, j) => {
+          const isTarget = (i === startIdx && j === endIdx);
+          const isUpdated = prevM && (val !== prevM[i][j]);
+          if (isUpdated) diffCount++;
+
+          let cls = '';
+          if (isTarget) cls = 'cell-highlight';
+          else if (isUpdated) cls = 'cell-updated';
+
+          return `<td class="${cls}" title="${isUpdated ? '前ステップから更新されました！' : ''}">${config.format(val)}</td>`;
+        }).join('');
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      return diffCount;
+    }
+
+    function updateAll() {
+      const config = cartridgeConfig[currentCartridge];
+      const startId = document.getElementById('startStation').value;
+      const endId = document.getElementById('endStation').value;
+      const startIdx = stations.findIndex(s => s.id === startId);
+      const endIdx = stations.findIndex(s => s.id === endId);
+
+      // 行列の段階的べき乗計算 (M1 -> M2 -> M3 -> M4)
+      const M1 = buildAdjacencyMatrix(config);
+      const M2 = multiplyMatrix(M1, M1, config);
+      const M3 = multiplyMatrix(M2, M1, config);
+      const M4 = multiplyMatrix(M3, M1, config);
+
+      document.getElementById('matrixRuleSummary').textContent =
+        `加法 ⊕: ${config.addSymbol} (選ぶ), 乗法 ⊗: ${config.mulSymbol} (繋ぐ), 単位元: (${config.format(config.zeroAdd)}, ${config.format(config.zeroMul)})`;
+
+      // 各ステップの描画と差分カウント
+      renderMatrix('matrixM', M1, null, config, startIdx, endIdx);
+      const diff2 = renderMatrix('matrixM2', M2, M1, config, startIdx, endIdx);
+      const diff3 = renderMatrix('matrixM3', M3, M2, config, startIdx, endIdx);
+      const diff4 = renderMatrix('matrixM4', M4, M3, config, startIdx, endIdx);
+
+      // バッジ表示
+      const badge2 = document.getElementById('diffBadgeM2');
+      badge2.textContent = diff2 > 0 ? `🔥 ${diff2}マス更新` : '✅ 変化ゼロ (収束)';
+      badge2.className = `diff-badge ${diff2 > 0 ? 'updated' : 'converged'}`;
+
+      const badge3 = document.getElementById('diffBadgeM3');
+      badge3.textContent = diff3 > 0 ? `🔥 ${diff3}マス更新` : '✅ 変化ゼロ (収束)';
+      badge3.className = `diff-badge ${diff3 > 0 ? 'updated' : 'converged'}`;
+
+      const badge4 = document.getElementById('diffBadgeM4');
+      badge4.textContent = diff4 > 0 ? `🔥 ${diff4}マス更新` : '✅ 変化ゼロ (収束)';
+      badge4.className = `diff-badge ${diff4 > 0 ? 'updated' : 'converged'}`;
+
+      // 収束ステップの判定
+      let convStep = 4;
+      if (diff2 === 0) convStep = 2;
+      else if (diff3 === 0) convStep = 3;
+      else if (diff4 === 0) convStep = 4;
+
+      const convTitle = document.getElementById('convergenceTitle');
+      const convDesc = document.getElementById('convergenceDesc');
+      const convBadge = document.getElementById('convergenceBadge');
+
+      convTitle.innerHTML = `🎉 【収束完了！】たった第 ${convStep === 2 ? '2' : convStep === 3 ? '3' : '4'} 乗（M${convStep === 2 ? '²' : convStep === 3 ? '³' : '⁴'}）で全マス完全一致！`;
+      convDesc.innerHTML = `M${convStep === 2 ? '²' : convStep === 3 ? '³' : '⁴'} の段階で前ステップからの更新差分が 0 になりました。これ以降は何千回・無限回掛け算を繰り返しても値は1ミリも変わりません（<strong>M^∞ ＝ M${convStep === 2 ? '²' : convStep === 3 ? '³' : '⁴'}</strong> 確定！）。`;
+      convBadge.textContent = `収束達成: M${convStep === 2 ? '²' : convStep === 3 ? '³' : '⁴'} ＝ M^∞`;
+
+      // 最適ルート検索
+      const result = findBestPath(startId, endId, config);
+
+      if (result && result.best) {
+        document.getElementById('resultMetricLabel').textContent = `最適${config.name.replace('モード', '')}値:`;
+        document.getElementById('resultValue').textContent = config.format(result.best.score);
+        document.getElementById('pathDisplay').textContent = `ルート: ${result.best.path.map(id => stations.find(s => s.id === id).name).join(' ➔ ')}`;
+
+        renderSvg(result.best);
+
+        // 計算根拠のステップ解説
+        const stepsContainer = document.getElementById('calcSteps');
+        stepsContainer.innerHTML = '';
+
+        result.all.forEach((p, idx) => {
+          const div = document.createElement('div');
+          div.className = 'step-item';
+          const isWinner = idx === 0;
+          const routeStr = p.path.join(' ➔ ');
+          div.innerHTML = `
+            <div style="color: #0f172a; font-weight: 700; margin-bottom: 0.15rem;">${isWinner ? '🏆 【採用ルート】' : '・【比較ルート】'} ${routeStr}</div>
+            <div style="color: ${isWinner ? '#047857' : '#475569'}; font-family: monospace; font-weight: ${isWinner ? '700' : '600'}; font-size: 0.88rem;">
+              スコア: ${config.format(p.score)} ${isWinner ? '（半環演算 ⊕ で選ばれました）' : ''}
+            </div>
+          `;
+          stepsContainer.appendChild(div);
+        });
+      } else {
+        document.getElementById('resultValue').textContent = '到達不能 (∞)';
+        document.getElementById('pathDisplay').textContent = 'ルートなし';
+        renderSvg(null);
+      }
+    }
+
+    // 初期化
+    window.onload = () => {
+      updateAll();
+    };
+  </script>
+</body>
+</html>

@@ -12,6 +12,7 @@
 | [math-combinatorics-tool](./math-combinatorics-tool/) | 組合せツール（HTML） |
 | [path-to-structure](./path-to-structure/) | 組合せ探索　道から構造へ（最短路→ZDD、Dual-View HTML） |
 | [system-dynamics](./system-dynamics/) | SD×TOC 教材（統合 HTML・Pages） |
+| [category-theory](./category-theory/) | 圏論（Category Theory）直感と構造の探求ガイド（統合 HTML・原稿） |
 
 ## フーリエ教材（すぐ見る）
 
@@ -32,3 +33,24 @@
 1. **学習用一冊（ブラウザ）:** [modern-cryptography（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/modern-cryptography/)
 2. **量子計算の操作盤:** [quantum_basics.html（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/modern-cryptography/models/quantum_basics.html)
 3. **原稿・設計:** [`modern-cryptography/`](./modern-cryptography/)
+
+---
+
+## 🛠️ 教材品質検査ツール（Universal Material Validator）
+
+教材のMarkdown太字・KaTeX数式・Mermaid図表・目次リンクの破綻を全自動で検査するツールです：
+
+```bash
+# 全教材または特定教材を検査
+python tools/verify_material.py category-theory
+python tools/verify_material.py modern-cryptography
+python tools/verify_material.py .
+```
+
+### 主な検査項目（Checks）
+- **[L1] Markdown太字×括弧境界**: `**「...」**` のようなパーサー破綻記法を検出。
+- **[L2] KaTeX数式構文**: 生の `<` 不等号（`\lt` 推奨）や未ラップ日本語を検出。
+- **[L3] Mermaid構文**: `subgraph` に日本語が直書きされてレンダリングエラーになる問題を検出。
+- **[L4] 内部アンカーリンク**: 目次やリンクの `href="#..."` が実在する `id` を指しているか検証。
+- **[L5] ツールチップ整合性**: `.term-pop` と `.pop-card` のペアが一致しているか検証。
+
