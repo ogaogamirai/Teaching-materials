@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>圏論・半環カートリッジ実験室 — マルチ条件ルート最適化ツール</title>
-  <!-- Google Fonts: M PLUS Rounded 1c -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/reading.css">
   <!-- KaTeX CSS & JS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
@@ -27,7 +27,6 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: "M PLUS Rounded 1c", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Yu Gothic UI", sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
@@ -306,6 +305,139 @@
       color: #065f46;
       border: 1px solid #10b981;
     }
+    .explain-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.88rem;
+    }
+    .explain-box h3 { font-size: 0.92rem; margin-bottom: 0.45rem; color: #0f172a; }
+    .explain-box p { color: #334155; margin-bottom: 0.45rem; }
+    .op-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin: 0.5rem 0;
+    }
+    .op-table th, .op-table td {
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.55rem;
+      text-align: left;
+    }
+    .op-table th { background: #f1f5f9; }
+    .op-table code { font-family: ui-monospace, monospace; font-size: 0.8rem; }
+    .dual-formula {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin: 0.5rem 0;
+      font-size: 0.82rem;
+    }
+    @media (max-width: 650px) { .dual-formula { grid-template-columns: 1fr; } }
+    .dual-formula > div {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.5rem 0.65rem;
+    }
+    .dual-formula .label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+    }
+    .numeric-matrix-panel {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px dashed var(--border);
+    }
+    .numeric-matrix-panel > p {
+      font-size: 0.86rem;
+      color: #475569;
+      margin-bottom: 0.75rem;
+    }
+    .numeric-matrix-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 700px) { .numeric-matrix-grid { grid-template-columns: 1fr; } }
+    .numeric-matrix-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.65rem 0.75rem;
+    }
+    .numeric-matrix-box h4 {
+      font-size: 0.8rem;
+      color: #0369a1;
+      margin: 0 0 0.45rem;
+      font-weight: 700;
+    }
+    .numeric-matrix-box .matrix-table { font-size: 0.8rem; }
+    .walkthrough-box {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 0.75rem 0.9rem;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: #334155;
+    }
+    .walkthrough-box strong { color: #0f172a; }
+    .walkthrough-box code {
+      font-family: ui-monospace, monospace;
+      font-size: 0.78rem;
+      background: #fef3c7;
+      padding: 0.1rem 0.25rem;
+      border-radius: 3px;
+    }
+    .formula-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.25rem;
+    }
+    .formula-panel h3 {
+      font-size: 0.92rem;
+      margin-bottom: 0.6rem;
+      color: #0f172a;
+    }
+    .katex-block {
+      overflow-x: auto;
+      padding: 0.5rem 0;
+      font-size: 1.05rem;
+    }
+    .edge-table-wrap {
+      overflow-x: auto;
+      margin-top: 0.5rem;
+    }
+    .edge-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    .edge-table th, .edge-table td {
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.5rem;
+      text-align: center;
+    }
+    .edge-table th { background: #f1f5f9; }
+    .cell-explain {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: #334155;
+      line-height: 1.55;
+    }
+    .cell-explain code { font-family: ui-monospace, monospace; font-size: 0.82rem; }
   </style>
 </head>
 <body>
@@ -314,33 +446,89 @@
       <h1>🧰 圏論・半環カートリッジ実験室</h1>
       <div class="subtitle">同じ路線図でも「ルール盤（半環）」を変えるだけで、最適ルートが一瞬で切り替わる魔法を体験！</div>
       <a href="../index.html" class="back-link">← 圏論学習教材トップへ戻る</a>
+      <a href="applications-lab.html" class="back-link" style="margin-left:0.5rem">💱 応用実験室（裁定・波及・ドミノ）</a>
     </header>
+
+    <div class="explain-box" id="introExplain">
+      <h3>このツールで体験すること</h3>
+      <p>
+        <strong>同じ4駅の路線図</strong>に対して、半環カートリッジ（⊕ と ⊗ の意味）だけを差し替えます。
+        辺の重みから行列 <code>M</code> を作り、<strong>同じ <code>M ⊙ M</code> コード</strong>で最適ルートを求めます。
+      </p>
+      <p id="introCartridgeLine">現在: <strong>最速モード</strong> — 加法 <code>a ⊕ b = min(a,b)</code>、乗法 <code>a ⊗ b = a+b</code></p>
+    </div>
 
     <!-- 半環カートリッジ選択 -->
     <div class="cartridge-section">
       <div class="section-title">🕹️ ステップ 1: 目的（半環カートリッジ）を選んで差し替える</div>
       <div class="cartridge-grid">
-        <button class="cart-btn active" onclick="setCartridge('speed')">
+        <button class="cart-btn active" onclick="setCartridge('speed', this)">
           <div class="cart-name">⚡ ① 最速モード</div>
           <div class="cart-math">半環: (min, +) [トロピカル]</div>
           <div class="cart-desc">所要時間を最小化する最速ルート</div>
         </button>
-        <button class="cart-btn" onclick="setCartridge('cost')">
+        <button class="cart-btn" onclick="setCartridge('cost', this)">
           <div class="cart-name">💰 ② 最安モード</div>
           <div class="cart-math">半環: (min, +) [運賃半環]</div>
           <div class="cart-desc">交通費を最小化するお財布優先ルート</div>
         </button>
-        <button class="cart-btn" onclick="setCartridge('transfer')">
+        <button class="cart-btn" onclick="setCartridge('transfer', this)">
           <div class="cart-name">💺 ③ 最楽モード</div>
           <div class="cart-math">半環: (min, +) [乗換半環]</div>
           <div class="cart-desc">乗り換え回数を最小化する座って行けるルート</div>
         </button>
-        <button class="cart-btn" onclick="setCartridge('reliable')">
+        <button class="cart-btn" onclick="setCartridge('reliable', this)">
           <div class="cart-name">🛡️ ④ 確実モード</div>
           <div class="cart-math">半環: (max, ×) [確率半環]</div>
           <div class="cart-desc">遅延せず定時で着く確率を最大化</div>
         </button>
       </div>
+    </div>
+
+    <!-- 半環の式 -->
+    <div class="formula-panel" id="formulaPanel">
+      <h3>📐 半環での行列積（カートリッジが決める ⊕ と ⊗）</h3>
+      <div class="dual-formula">
+        <div>
+          <div class="label">半環（圏論・教材の記法）</div>
+          <div class="katex-block" id="katexSemiring"></div>
+        </div>
+        <div>
+          <div class="label">いつもの演算（このモードの中身）</div>
+          <div class="katex-block" id="katexPlain"></div>
+        </div>
+      </div>
+      <div class="katex-block" id="katexPath" style="margin-top:0.35rem"></div>
+
+      <div class="numeric-matrix-panel" id="numericMatrixPanel">
+        <p>📊 <strong>この4駅・現在のカートリッジ</strong>での具体数値（カートリッジを変えると表も更新されます）。行＝出発、列＝到着。</p>
+        <div class="numeric-matrix-grid">
+          <div class="numeric-matrix-box">
+            <h4>M¹（1ホップ・辺の重み）</h4>
+            <div id="numericM1"></div>
+          </div>
+          <div class="numeric-matrix-box">
+            <h4>M² ＝ M¹ ⊙ M¹（2ホップ・半環積）</h4>
+            <div id="numericM2"></div>
+          </div>
+        </div>
+        <div class="walkthrough-box" id="numericWalkthrough"></div>
+      </div>
+    </div>
+
+    <!-- 辺の重み → M -->
+    <div class="formula-panel">
+      <h3>🗺️ ステップ 2: 路線図の辺 → 半環行列 M（1ホップ）</h3>
+      <p style="font-size:0.86rem;color:#475569;margin-bottom:0.5rem">
+        カートリッジが選んだ属性を辺の重みにします。直通がない区間は加法単位元 <code id="zeroAddLabel">∞</code>（到達不能）。
+        自分自身は乗法単位元 <code id="zeroMulLabel">0</code>。
+      </p>
+      <div class="edge-table-wrap">
+        <table class="edge-table" id="edgeWeightTable"></table>
+      </div>
+      <p style="font-size:0.82rem;color:var(--text-muted);margin-top:0.6rem">
+        下の <strong>M¹</strong> はこの表の数値を並べたものです。カートリッジを変えると<strong>表も M も変わります</strong>が、掛け算のプログラムは同じです。
+      </p>
     </div>
 
     <!-- メイン操作 -->
@@ -376,14 +564,14 @@
 
       <!-- 計算結果と圏論ステップ -->
       <div class="result-card">
-        <div class="section-title">📊 ステップ 2: 圏論・半環による最適解</div>
+        <div class="section-title">📊 ステップ 3: 最適ルート（M の答えと一致）</div>
         <div class="result-box">
           <div style="font-size: 0.8rem; color: var(--text-muted);" id="resultMetricLabel">最適所要時間:</div>
           <div class="result-value" id="resultValue">--</div>
           <div class="path-display" id="pathDisplay">ルート: --</div>
         </div>
 
-        <div class="section-title" style="margin-top: 0.5rem;">🧮 ステップ 3: 圏論の計算根拠（射の合成）</div>
+        <div class="section-title" style="margin-top: 0.5rem;">🧮 ルート比較（⊕ で最良を選ぶ）</div>
         <div class="calc-steps" id="calcSteps">
           <!-- 計算プロセスが動的に入る -->
         </div>
@@ -392,7 +580,7 @@
 
     <!-- 行列ビューア -->
     <div class="matrix-section">
-      <div class="section-title">📐 ステップ 4: 行列のべき乗と「何回で収束したか」の完全可視化</div>
+      <div class="section-title">📐 ステップ 4: 半環行列のべき乗 M¹ → M² → M³ → M⁴</div>
       
       <!-- 収束アナウンスバナー -->
       <div id="convergenceBanner" style="background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 8px; padding: 0.9rem 1.2rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
@@ -405,14 +593,19 @@
         </div>
       </div>
 
-      <p style="font-size: 0.88rem; color: #334155; margin-bottom: 0.8rem;">
-        カートリッジのルール（<span id="matrixRuleSummary" style="color: #0284c7; font-weight: bold;">加法 ⊕: min, 乗法 ⊗: +</span>）に従って $M \to M^2 \to M^3 \to M^4$ と掛けていきます。<strong style="color: #d97706;">前回と値が変わったマスはオレンジ色</strong>で光り、<strong style="color: #059669;">変化が 0 になった瞬間に『無限乗 M^∞』が確定</strong>します！
+      <p style="font-size: 0.88rem; color: #334155; margin-bottom: 0.8rem;" id="matrixIntroText">
+        半環積 <code>C = A ⊙ B</code> の各マスは
+        <code>C[i,j] = ⊕ₖ ( A[i,k] ⊗ B[k,j] )</code> で計算します。
+        <strong style="color: #d97706;">オレンジ</strong>は前の乗から値が変わったマス、
+        <strong style="color: #059669;">緑</strong>は出発→目的地の答えのマスです。
       </p>
+
+      <div class="cell-explain" id="cellExplain"></div>
 
       <div class="matrix-display-container" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
         <div class="matrix-box" id="boxM1">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-            <h4 style="margin: 0;">M¹ （1区間直通）</h4>
+            <h4 style="margin: 0;">M¹ （辺の重み・1区間）</h4>
             <span style="font-size: 0.75rem; color: var(--text-muted);">初期マップ</span>
           </div>
           <table class="matrix-table" id="matrixM"></table>
@@ -469,6 +662,10 @@
       speed: {
         name: '最速モード',
         attr: 'speed',
+        weightLabel: '所要時間（分）',
+        plainAdd: '\\min(a,b)',
+        plainMul: 'a + b',
+        plainMatrixLatex: '\\min_{k}\\bigl( A_{ik} + B_{kj} \\bigr)',
         addOp: (a, b) => Math.min(a, b),
         mulOp: (a, b) => a + b,
         addSymbol: 'min',
@@ -482,6 +679,10 @@
       cost: {
         name: '最安モード',
         attr: 'cost',
+        weightLabel: '運賃（円）',
+        plainAdd: '\\min(a,b)',
+        plainMul: 'a + b',
+        plainMatrixLatex: '\\min_{k}\\bigl( A_{ik} + B_{kj} \\bigr)',
         addOp: (a, b) => Math.min(a, b),
         mulOp: (a, b) => a + b,
         addSymbol: 'min',
@@ -495,6 +696,10 @@
       transfer: {
         name: '最楽モード',
         attr: 'transfer',
+        weightLabel: '乗換回数',
+        plainAdd: '\\min(a,b)',
+        plainMul: 'a + b',
+        plainMatrixLatex: '\\min_{k}\\bigl( A_{ik} + B_{kj} \\bigr)',
         addOp: (a, b) => Math.min(a, b),
         mulOp: (a, b) => a + b,
         addSymbol: 'min',
@@ -508,6 +713,10 @@
       reliable: {
         name: '確実モード',
         attr: 'reliable',
+        weightLabel: '定時確率',
+        plainAdd: '\\max(a,b)',
+        plainMul: 'a \\times b',
+        plainMatrixLatex: '\\max_{k}\\bigl( A_{ik} \\cdot B_{kj} \\bigr)',
         addOp: (a, b) => Math.max(a, b),
         mulOp: (a, b) => a * b,
         addSymbol: 'max',
@@ -520,11 +729,126 @@
       }
     };
 
-    function setCartridge(type) {
+    function setCartridge(type, btn) {
       currentCartridge = type;
       document.querySelectorAll('.cart-btn').forEach(b => b.classList.remove('active'));
-      event.currentTarget.classList.add('active');
+      if (btn) btn.classList.add('active');
       updateAll();
+    }
+
+    function formatMatrixCell(config, v) {
+      if (v === config.zeroAdd) return config.zeroAdd === Infinity ? '∞' : '0';
+      if (config.attr === 'reliable') return v.toFixed(2);
+      return String(v);
+    }
+
+    function matrixToHtml(M, config, highlightI, highlightJ) {
+      let html = '<table class="matrix-table"><thead><tr><th></th>';
+      stations.forEach(s => { html += `<th>${s.id}</th>`; });
+      html += '</tr></thead><tbody>';
+      M.forEach((row, i) => {
+        html += `<tr><th>${stations[i].id}</th>`;
+        row.forEach((val, j) => {
+          const cls = (i === highlightI && j === highlightJ) ? 'cell-highlight' : '';
+          html += `<td class="${cls}">${formatMatrixCell(config, val)}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      return html;
+    }
+
+    function mulDisplay(config, a, b) {
+      const fa = formatMatrixCell(config, a);
+      const fb = formatMatrixCell(config, b);
+      if (config.mulSymbol === '+') return `${fa} + ${fb}`;
+      return `${fa} × ${fb}`;
+    }
+
+    function renderNumericMatrixPanel(config, M1, M2, startIdx, endIdx, startId, endId) {
+      document.getElementById('numericM1').innerHTML = matrixToHtml(M1, config, startIdx, endIdx);
+      document.getElementById('numericM2').innerHTML = matrixToHtml(M2, config, startIdx, endIdx);
+
+      const i = startIdx, j = endIdx;
+      const terms = [];
+      const plainTerms = [];
+      for (let k = 0; k < stations.length; k++) {
+        const a = M1[i][k], b = M1[k][j];
+        const kid = stations[k].id;
+        const skipped = (a === config.zeroAdd || b === config.zeroAdd);
+        const t = skipped ? null : config.mulOp(a, b);
+        terms.push(
+          `<tr><td>${kid} 経由</td>` +
+          `<td><code>M¹[${startId}${kid}] ⊗ M¹[${kid}${endId}]</code></td>` +
+          `<td>${skipped ? '（片方が ⊕ の単位元）' : mulDisplay(config, a, b) + ' = <strong>' + formatMatrixCell(config, t) + '</strong>'}</td></tr>`
+        );
+        if (!skipped) plainTerms.push(formatMatrixCell(config, t));
+      }
+
+      const result = M2[i][j];
+      const pickWord = config.addSymbol === 'min' ? '最小' : '最大';
+      const walk = document.getElementById('numericWalkthrough');
+      walk.innerHTML =
+        `<strong>手計算例: M²[${startId}→${endId}]（${config.weightLabel}）</strong><br>` +
+        `<code>M²[${startId}${endId}] = ⊕ₖ ( M¹[${startId}k] ⊗ M¹[k${endId}] )</code>` +
+        ` ＝ <code>${config.addSymbol}( ${plainTerms.join(', ')} )</code>` +
+        ` ＝ <strong>${config.format(result)}</strong>（${pickWord}を取る）<br>` +
+        `<table class="op-table" style="margin-top:0.5rem"><thead><tr><th>途中駅 k</th><th>式</th><th>値</th></tr></thead><tbody>` +
+        terms.join('') + '</tbody></table>';
+    }
+
+    function renderKatex(config, startId, endId, M2, bestScore) {
+      if (!window.katex) return;
+      const s = startId, e = endId;
+      const ans = M2 ? config.format(M2[stations.findIndex(x => x.id === s)][stations.findIndex(x => x.id === e)]) : '—';
+
+      katex.render(
+        `C_{ij} = \\bigoplus_{k} \\big( A_{ik} \\otimes B_{kj} \\big)`,
+        document.getElementById('katexSemiring')
+      );
+      katex.render(
+        `C_{ij} = ${config.plainMatrixLatex}`,
+        document.getElementById('katexPlain')
+      );
+      const pathLatex = bestScore != null
+        ? `M^2_{${s}${e}} = ${ans} \\quad\\Leftrightarrow\\quad \\text{最適ルートのスコア } ${config.format(bestScore)}`
+        : `M^\\infty_{${s}${e}} \\text{ が出発→目的地の最適値（} \\oplus \\text{で選ばれた経路）}`;
+      katex.render(pathLatex, document.getElementById('katexPath'));
+    }
+
+    function renderEdgeTable(config) {
+      const table = document.getElementById('edgeWeightTable');
+      let html = `<thead><tr><th>路線</th><th>区間</th><th>${config.weightLabel}</th></tr></thead><tbody>`;
+      edges.forEach(e => {
+        html += `<tr><td>${e.name}</td><td>${e.u} ↔ ${e.v}</td><td><strong>${config.format(e[config.attr])}</strong></td></tr>`;
+      });
+      html += '</tbody>';
+      table.innerHTML = html;
+      document.getElementById('zeroAddLabel').textContent = config.format(config.zeroAdd);
+      document.getElementById('zeroMulLabel').textContent = config.format(config.zeroMul);
+      document.getElementById('introCartridgeLine').innerHTML =
+        `現在: <strong>${config.name}</strong> — ` +
+        `加法 <code>a ⊕ b = ${config.addSymbol}(a,b)</code>、乗法 <code>a ⊗ b = ${config.mulSymbol === '+' ? 'a+b' : 'a×b'}</code>（辺の重み: ${config.weightLabel}）`;
+    }
+
+    function explainMatrixCell(config, M1, M2, startIdx, endIdx, startId, endId) {
+      const el = document.getElementById('cellExplain');
+      const i = startIdx, j = endIdx;
+      const terms = [];
+      const plainTerms = [];
+      for (let k = 0; k < stations.length; k++) {
+        const a = M1[i][k], b = M1[k][j];
+        if (a === config.zeroAdd || b === config.zeroAdd) continue;
+        const t = config.mulOp(a, b);
+        terms.push(`M_{${stations[i].id}${stations[k].id}} ⊗ M_{${stations[k].id}${stations[j].id}} = ${config.format(a)} ⊗ ${config.format(b)}`);
+        plainTerms.push(`${config.format(t)}`);
+      }
+      const result = M2[i][j];
+      el.innerHTML =
+        `<strong>例: M²[${startId}→${endId}] の1マスがどう計算されるか</strong><br>` +
+        `半環: <code>M²[i,j] = ⊕ₖ ( M[i,k] ⊗ M[k,j] )</code><br>` +
+        `いつもの式: <code>${config.addSymbol}( ${plainTerms.join(', ')} )</code><br>` +
+        `中間駅 k を ${terms.length} 通り試し、${config.addSymbol === 'min' ? '最小' : '最大'}を取る → 答え <strong>${config.format(result)}</strong>（緑のマス）`;
     }
 
     function buildAdjacencyMatrix(config) {
@@ -740,8 +1064,9 @@
       const M3 = multiplyMatrix(M2, M1, config);
       const M4 = multiplyMatrix(M3, M1, config);
 
-      document.getElementById('matrixRuleSummary').textContent =
-        `加法 ⊕: ${config.addSymbol} (選ぶ), 乗法 ⊗: ${config.mulSymbol} (繋ぐ), 単位元: (${config.format(config.zeroAdd)}, ${config.format(config.zeroMul)})`;
+      renderEdgeTable(config);
+      explainMatrixCell(config, M1, M2, startIdx, endIdx, startId, endId);
+      renderNumericMatrixPanel(config, M1, M2, startIdx, endIdx, startId, endId);
 
       // 各ステップの描画と差分カウント
       renderMatrix('matrixM', M1, null, config, startIdx, endIdx);
@@ -778,6 +1103,7 @@
 
       // 最適ルート検索
       const result = findBestPath(startId, endId, config);
+      renderKatex(config, startId, endId, M2, result?.best?.score);
 
       if (result && result.best) {
         document.getElementById('resultMetricLabel').textContent = `最適${config.name.replace('モード', '')}値:`;
@@ -795,10 +1121,29 @@
           div.className = 'step-item';
           const isWinner = idx === 0;
           const routeStr = p.path.join(' ➔ ');
+          const edgeVals = [];
+          const semiringChain = [];
+          for (let i = 0; i < p.path.length - 1; i++) {
+            const edge = edges.find(e =>
+              (e.u === p.path[i] && e.v === p.path[i + 1]) || (e.v === p.path[i] && e.u === p.path[i + 1])
+            );
+            if (edge) {
+              const v = edge[config.attr];
+              edgeVals.push(config.format(v));
+              semiringChain.push(config.format(v));
+            }
+          }
+          const plainChain = edgeVals.length
+            ? (config.mulSymbol === '+'
+              ? edgeVals.join(' + ')
+              : edgeVals.join(' × '))
+            : config.format(config.zeroMul);
           div.innerHTML = `
             <div style="color: #0f172a; font-weight: 700; margin-bottom: 0.15rem;">${isWinner ? '🏆 【採用ルート】' : '・【比較ルート】'} ${routeStr}</div>
-            <div style="color: ${isWinner ? '#047857' : '#475569'}; font-family: monospace; font-weight: ${isWinner ? '700' : '600'}; font-size: 0.88rem;">
-              スコア: ${config.format(p.score)} ${isWinner ? '（半環演算 ⊕ で選ばれました）' : ''}
+            <div style="color: ${isWinner ? '#047857' : '#475569'}; font-size: 0.84rem; line-height: 1.5;">
+              半環: ${semiringChain.join(' ⊗ ')} → <strong>${config.format(p.score)}</strong><br>
+              いつもの式: ${plainChain} → <strong>${config.format(p.score)}</strong>
+              ${isWinner ? '（⊕ で他ルートより優れた値）' : ''}
             </div>
           `;
           stepsContainer.appendChild(div);
@@ -813,6 +1158,8 @@
     // 初期化
     window.onload = () => {
       updateAll();
+      // KaTeX が defer 読み込みのため少し待って再描画
+      setTimeout(updateAll, 100);
     };
   </script>
 </body>

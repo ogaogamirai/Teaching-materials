@@ -35,7 +35,7 @@ python tools/verify_material.py category-theory --json
 
 | レベル | カテゴリ | 検査内容と理由 |
 | :---: | :--- | :--- |
-| **L1** | **太字×括弧境界**<br>`L1-BoldBracket` | `**「テキスト」**` や `（**テキスト**）` のように全角括弧とアスタリスクが隣接すると、Markdownパーサーで太字にならず記号がそのまま漏れる問題を検出。<br>➔ `「**テキスト**」` 形式への修正を促します。 |
+| **L1** | **太字レンダリング**<br>`L1-BoldBracket` / `L1-HtmlRawBold` / `L1-BoldSpaceOpen` | `**「テキスト」**` のように括弧がアスタリスクの内側にあるパターン、HTML内に未変換の `**...**`、`** 語 **` のような区切り内スペースを検出。<br>➔ Markdown は `「**テキスト**」`、HTML は `<strong>テキスト</strong>` に修正。 |
 | **L2** | **KaTeX 数式構文**<br>`L2-MathSyntax` | 空の数式ブロック、数式内の生の `<`（`\lt` 推奨）、`\text{}` でラップされていない日本語文字（KaTeXでのレンダリング破綻原因）を検出。 |
 | **L3** | **Mermaid 構文**<br>`L3-MermaidSubgraph` | Mermaid v10 で構文エラーになる `subgraph 日本語名` の直書きを検出。<br>➔ `subgraph id["ラベル"]` 形式への修正を促します。 |
 | **L4** | **内部アンカーリンク**<br>`L4-BrokenAnchor` | 目次や本文中の `href="#..."` が、HTML内に実在する `id` を正しく指しているか検証（目次ジャンプの破損を防止）。 |

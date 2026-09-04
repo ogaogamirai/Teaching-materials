@@ -11,7 +11,7 @@ Usage:
   python tools/verify_material.py G:\マイドライブ\Projects\Teaching-materials\category-theory
 
 Checks:
-  [L1] Markdown太字×括弧・記号境界 (Bold bracket leak)
+  [L1] Markdown太字×括弧・記号境界 / HTML内未変換 ** / 太字内スペース (Bold bracket leak)
   [L2] KaTeX 数式構文・不等号・日本語ラップ (Math syntax & KaTeX compile)
   [L3] Mermaid ダイアグラム構文・ID命名規則 (Mermaid subgraph format)
   [L4] 内部アンカーリンク・目次整合性 (Internal anchors & TOC link resolution)
@@ -84,8 +84,34 @@ class MaterialValidator:
         bad_bold_outside = re.compile(r'\*\*([「『【（].*?[」』】）])\*\*')
         # **text**（補足）のような全角括弧直前の閉じアスタリスク（一部パーサーで漏れる）
         bad_adjacent = re.compile(r'\*\*[^*\n]+\*\*（')
+        # HTML 内に Markdown 太字が残存（ブラウザでは ** がそのまま表示される）
+        html_raw_bold = re.compile(r'\*\*[^*\n]+\*\*')
+        bold_pair = re.compile(r'\*\*([^*\n]+?)\*\*')
 
+        in_script_or_style = False
         for i, line in enumerate(lines, 1):
+            stripped = line.strip().lower()
+            if "<script" in stripped:
+                in_script_or_style = True
+            if in_script_or_style:
+                if "</script>" in stripped:
+                    in_script_or_style = False
+                continue
+            if "<style" in stripped:
+                in_script_or_style = True
+            if in_script_or_style and "</style>" in stripped:
+                in_script_or_style = False
+                continue
+
+            if file.suffix == ".html":
+                m_html = html_raw_bold.search(line)
+                if m_html:
+                    self.issues.append(Issue(
+                        "ERROR", file.name, i, "L1-HtmlRawBold",
+                        "HTML内に Markdown 太字記法 **...** が残っています。<strong>...</strong> に置き換えてください。",
+                        m_html.group(0)
+                    ))
+
             m = bad_bold_outside.search(line)
             if m:
                 self.issues.append(Issue(
@@ -100,6 +126,22 @@ class MaterialValidator:
                     "太字直後に全角括弧（）が隣接しています。",
                     m2.group(0)
                 ))
+
+            if file.suffix == ".md":
+                for bp in bold_pair.finditer(line):
+                    inner = bp.group(1)
+                    if inner[:1].isspace():
+                        self.issues.append(Issue(
+                            "ERROR", file.name, i, "L1-BoldSpaceOpen",
+                            "太字開始 ** の直後に余分なスペースがあります（太字として認識されません）。",
+                            bp.group(0)
+                        ))
+                    elif inner[-1:].isspace():
+                        self.issues.append(Issue(
+                            "ERROR", file.name, i, "L1-BoldSpaceClose",
+                            "太字終了 ** の直前に余分なスペースがあります（太字として認識されません）。",
+                            bp.group(0)
+                        ))
 
     # -------------------------------------------------------------------------
     # L2: 数式 KaTeX 構文チェック

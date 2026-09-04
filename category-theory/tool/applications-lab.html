@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>圏論・半環 応用実験室 — 裁定・波及・停止ドミノ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/reading.css">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --accent: #0284c7;
+      --accent-soft: #f0f9ff;
+      --border: #e2e8f0;
+      --ok: #059669;
+      --warn: #d97706;
+      --bad: #dc2626;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 1.25rem 1rem 2.5rem;
+    }
+    .container { max-width: 920px; margin: 0 auto; }
+    header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    h1 { font-size: 1.65rem; margin-bottom: 0.35rem; }
+    .subtitle { color: var(--accent); font-weight: 700; font-size: 0.92rem; }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 0.85rem;
+    }
+    .nav-links a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 0.35rem 0.75rem;
+      background: var(--accent-soft);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 1rem;
+    }
+    .tab-btn {
+      border: 2px solid var(--border);
+      background: #fff;
+      border-radius: 8px;
+      padding: 0.55rem 0.9rem;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+    .tab-btn.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .panel {
+      display: none;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+    }
+    .panel.active { display: block; }
+    .panel h2 { font-size: 1.15rem; margin-bottom: 0.35rem; }
+    .lead { color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem; }
+    .semiring-badge {
+      display: inline-block;
+      background: #fef3c7;
+      color: #92400e;
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      margin-bottom: 0.75rem;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } }
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      color: #334155;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 0.45rem 0.55rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+    .field { margin-bottom: 0.65rem; }
+    .result-box {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      background: #f8fafc;
+    }
+    .result-box.win {
+      border-color: var(--ok);
+      background: #ecfdf5;
+    }
+    .result-box.alert {
+      border-color: var(--warn);
+      background: #fffbeb;
+    }
+    .big-num {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--ok);
+      margin: 0.25rem 0;
+    }
+    .steps {
+      margin-top: 0.75rem;
+      font-size: 0.88rem;
+      font-family: ui-monospace, monospace;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem;
+      white-space: pre-wrap;
+    }
+    svg.diagram {
+      width: 100%;
+      max-width: 420px;
+      height: auto;
+      display: block;
+      margin: 0.5rem auto 1rem;
+    }
+    table.matrix {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+    table.matrix th, table.matrix td {
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.5rem;
+      text-align: center;
+    }
+    table.matrix th { background: #f1f5f9; }
+    .explain-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.88rem;
+    }
+    .explain-box h3 {
+      font-size: 0.92rem;
+      color: #0f172a;
+      margin-bottom: 0.45rem;
+    }
+    .explain-box p { margin-bottom: 0.5rem; color: #334155; }
+    .explain-box p:last-child { margin-bottom: 0; }
+    .why-box {
+      background: var(--accent-soft);
+      border-left: 4px solid var(--accent);
+      padding: 0.65rem 0.85rem;
+      margin-top: 0.65rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.86rem;
+      color: #1e3a5f;
+    }
+    .op-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin: 0.5rem 0 0.25rem;
+    }
+    .op-table th, .op-table td {
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.55rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    .op-table th { background: #f1f5f9; font-weight: 700; }
+    .op-table code {
+      font-family: ui-monospace, monospace;
+      font-size: 0.8rem;
+      background: #fff;
+      padding: 0.05rem 0.25rem;
+      border-radius: 3px;
+    }
+    .dual-formula {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      font-size: 0.82rem;
+    }
+    @media (max-width: 600px) { .dual-formula { grid-template-columns: 1fr; } }
+    .dual-formula > div {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.5rem 0.65rem;
+    }
+    .dual-formula .label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.2rem;
+    }
+    .steps .dual { color: #475569; margin-top: 0.35rem; }
+    .footer-note {
+      margin-top: 1.5rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.7;
+    }
+    .footer-note a { color: var(--accent); font-weight: 700; text-decoration: none; }
+    .footer-note a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>圏論・半環 応用実験室</h1>
+      <p class="subtitle">同じ「グラフ＋行列のべき乗」— <strong>半環（⊕, ⊗）</strong>を差し替えるだけで、別の現実問題が解ける</p>
+      <div class="nav-links">
+        <a href="index.html">← ルート最適化ツール</a>
+        <a href="../index.html">教材トップ</a>
+        <a href="../chapters/04_applications_and_frontiers.md">第4章</a>
+      </div>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="arb">💱 為替三角裁定</button>
+      <button class="tab-btn" data-tab="leo">💹 レオンチェフ波及</button>
+      <button class="tab-btn" data-tab="scm">🛡️ 供給停止ドミノ</button>
+    </div>
+
+    <!-- Tab 1: Arbitrage -->
+    <section class="panel active" id="panel-arb">
+      <h2>為替の三角裁定 — (max, ×) 半環</h2>
+      <p class="lead">3通貨を一周したとき、元本が増えるかどうか。レートを<strong>掛け合わせるだけ</strong>で判定できます（教材第4章 §2③）。</p>
+      <span class="semiring-badge">半環: 加法 ⊕ = max　乗法 ⊗ = ×</span>
+
+      <div class="explain-box">
+        <h3>半環の演算と、いつもの式の対応</h3>
+        <table class="op-table">
+          <thead><tr><th>半環の言い方</th><th>いつもの演算</th><th>ここでの意味</th></tr></thead>
+          <tbody>
+            <tr><td><code>a ⊕ b</code></td><td><code>max(a, b)</code></td><td>複数の経路から<strong>より利益が大きい方</strong>を選ぶ</td></tr>
+            <tr><td><code>a ⊗ b</code></td><td><code>a × b</code></td><td>両替を続ける＝レートを<strong>連続して掛ける</strong></td></tr>
+            <tr><td><code>0⊕</code>（加法単位元）</td><td><code>0</code></td><td>max の「何も足さない」側（利確ゼロ）</td></tr>
+            <tr><td><code>1⊗</code>（乗法単位元）</td><td><code>1</code></td><td>× の「掛けない」側（レート 1:1）</td></tr>
+          </tbody>
+        </table>
+        <div class="dual-formula">
+          <div><div class="label">半環で書く（一周倍率）</div><code>r₁ ⊗ r₂ ⊗ r₃ &gt; 1⊗</code></div>
+          <div><div class="label">いつもの式</div><code>r₁ × r₂ × r₃ &gt; 1</code></div>
+        </div>
+        <div class="why-box">
+          <strong>なぜ半環が効くか：</strong>為替ネットワークは「ノード＋矢印」という<strong>同じ骨格</strong>です。
+          演算を (max, ×) に選ぶと「最も儲かる両替ルート」問題になり、
+          <strong>行列のべき乗アルゴリズムをそのまま</strong>裁定検出に使えます。
+          問題ごとに別プログラムを書く必要がなく、<strong>カートリッジ差し替え</strong>で済むのが半環の力です。
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <div class="field">
+            <label>円 → ドル（1円あたり何ドル）</label>
+            <input type="number" id="rateJpyUsd" step="0.0001" value="0.007">
+          </div>
+          <div class="field">
+            <label>ドル → ユーロ（1ドルあたり何ユーロ）</label>
+            <input type="number" id="rateUsdEur" step="0.01" value="0.95">
+          </div>
+          <div class="field">
+            <label>ユーロ → 円（1ユーロあたり何円）</label>
+            <input type="number" id="rateEurJpy" step="0.1" value="155">
+          </div>
+          <div class="field">
+            <label>出発金額（円）</label>
+            <input type="number" id="startJpy" step="1000" value="10000">
+          </div>
+        </div>
+        <div>
+          <svg class="diagram" viewBox="0 0 340 210" id="arbSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+      </div>
+
+      <div class="result-box" id="arbResult">
+        <div>一周ループ倍率（円→ドル→ユーロ→円）</div>
+        <div class="big-num" id="arbMultiplier">—</div>
+        <div id="arbVerdict">—</div>
+        <div class="steps" id="arbSteps"></div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Leontief -->
+    <section class="panel" id="panel-leo">
+      <h2>レオンチェフ産業連関 — (+, ×) 半環（いつもの算数）</h2>
+      <p class="lead">自動車に100億円の新規需要が出たとき、鉄鋼を経て<strong>国全体の生産</strong>がどれだけ増えるか。教材第4章 §2①。</p>
+      <span class="semiring-badge">半環: 加法 ⊕ = +　乗法 ⊗ = ×　（学校で習う演算そのもの）</span>
+
+      <div class="explain-box">
+        <h3>半環の演算と、いつもの式の対応</h3>
+        <table class="op-table">
+          <thead><tr><th>半環の言い方</th><th>いつもの演算</th><th>ここでの意味</th></tr></thead>
+          <tbody>
+            <tr><td><code>a ⊕ b</code></td><td><code>a + b</code></td><td>複数経路・複数回の波及効果を<strong>合計</strong>する</td></tr>
+            <tr><td><code>a ⊗ b</code></td><td><code>a × b</code></td><td>産業連鎖＝投入係数を<strong>連続して掛ける</strong></td></tr>
+            <tr><td><code>M<sup>k</sup> ⊗ f</code></td><td><code>M<sup>k</sup> · f</code></td><td>k 次の間接波及（行列×ベクトル）</td></tr>
+            <tr><td><code>(I ⊖ M)<sup>−1</sup> ⊗ f</code></td><td><code>(I − M)<sup>−1</sup> · f</code></td><td>直接＋1次＋2次＋… の<strong>無限和</strong>を一発で</td></tr>
+          </tbody>
+        </table>
+        <div class="dual-formula">
+          <div><div class="label">半環（無限級数）</div><code>f ⊕ (M⊗f) ⊕ (M²⊗f) ⊕ …</code></div>
+          <div><div class="label">いつもの式</div><code>f + M·f + M²·f + … = (I−M)⁻¹·f</code></div>
+        </div>
+        <div class="why-box">
+          <strong>なぜ半環の枠で見るか：</strong>(+, ×) は「いつもの算数」ですが、それ自体が半環です。
+          ここでの本質は、産業連関を<strong>グラフ＋行列</strong>に落とし、
+          「波及 = 行列のべき乗」という<strong>共通アルゴリズム</strong>に載せること。
+          最短路（min, +）や裁定（max, ×）と<strong>同じ骨格</strong>で経済予測ができる、という統一感が半環の価値です。
+        </div>
+      </div>
+
+      <p style="font-size:0.88rem;margin-bottom:0.75rem;">投入係数行列 <code>M</code>（行＝作る側、列＝材料として消費する側）</p>
+      <table class="matrix">
+        <thead><tr><th></th><th>自動車 A</th><th>鉄鋼 S</th></tr></thead>
+        <tbody>
+          <tr>
+            <th>自動車 A</th>
+            <td><input type="number" id="mAA" step="0.01" value="0.2" style="width:4.5rem"></td>
+            <td><input type="number" id="mAS" step="0.01" value="0.1" style="width:4.5rem"></td>
+          </tr>
+          <tr>
+            <th>鉄鋼 S</th>
+            <td><input type="number" id="mSA" step="0.01" value="0.4" style="width:4.5rem"></td>
+            <td><input type="number" id="mSS" step="0.01" value="0.3" style="width:4.5rem"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="grid-2" style="margin-top:1rem">
+        <div class="field">
+          <label>最終需要：自動車（億円）</label>
+          <input type="number" id="demandA" step="1" value="100">
+        </div>
+        <div class="field">
+          <label>最終需要：鉄鋼（億円）</label>
+          <input type="number" id="demandS" step="1" value="0">
+        </div>
+      </div>
+
+      <div class="result-box" id="leoResult">
+        <div>総生産インパクト（億円）</div>
+        <div class="big-num" id="leoTotal">—</div>
+        <div id="leoBreakdown">—</div>
+        <div class="steps" id="leoSteps"></div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Supply chain -->
+    <section class="panel" id="panel-scm">
+      <h2>サプライチェーン停止ドミノ — (min, +) トロピカル半環</h2>
+      <p class="lead">部品メーカー P が止まったら、在庫が尽きて<strong>何日後に</strong>完成車工場 A が止まるか。教材第4章 §2②。</p>
+      <span class="semiring-badge">半環: 加法 ⊕ = min　乗法 ⊗ = +　（トロピカル代数）</span>
+
+      <div class="explain-box">
+        <h3>半環の演算と、いつもの式の対応</h3>
+        <table class="op-table">
+          <thead><tr><th>半環の言い方</th><th>いつもの演算</th><th>ここでの意味</th></tr></thead>
+          <tbody>
+            <tr><td><code>a ⊕ b</code></td><td><code>min(a, b)</code></td><td>複数ルートから<strong>より早く（日数が少ない方）</strong>を選ぶ</td></tr>
+            <tr><td><code>a ⊗ b</code></td><td><code>a + b</code></td><td>工程を続ける＝在庫日数を<strong>足し合わせる</strong></td></tr>
+            <tr><td><code>0⊕</code>（加法単位元）</td><td><code>∞</code></td><td>min の「比較しない」側（到達不能）</td></tr>
+            <tr><td><code>0⊗</code>（乗法単位元）</td><td><code>0</code></td><td>+ の「足さない」側（その場で0日）</td></tr>
+          </tbody>
+        </table>
+        <div class="dual-formula">
+          <div><div class="label">半環（2ホップ）</div><code>(M ⊙ M)[P,A] = ⊕<sub>k</sub> (M[P,k] ⊗ M[k,A])</code></div>
+          <div><div class="label">いつもの式</div><code>min(M[P,P]+M[P,A], M[P,S]+M[S,A], …)</code></div>
+        </div>
+        <div class="why-box">
+          <strong>なぜ半環が効くか：</strong>「停止が伝わるまで何日？」は、電車の乗り換えで
+          <strong>「最短何分？」</strong>と同型です。足す・掛けるの意味が逆転する（min と +）だけで、
+          ルート最適化ツールと<strong>同じ行列べき乗コード</strong>が使えます。
+          サプライチェーンの危機管理を、最短路問題として一瞬で計算できるのがトロピカル半環の効き目です。
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <div class="field">
+            <label>P → S の在庫（日）</label>
+            <input type="number" id="stockPS" step="1" value="2" min="0">
+          </div>
+          <div class="field">
+            <label>S → A の在庫（日）</label>
+            <input type="number" id="stockSA" step="1" value="3" min="0">
+          </div>
+        </div>
+        <div>
+          <svg class="diagram" viewBox="0 0 320 130" id="scmSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+      </div>
+
+      <div class="result-box win" id="scmResult">
+        <div>P 停止から A ライン停止まで</div>
+        <div class="big-num" id="scmDays">—</div>
+        <div class="steps" id="scmSteps"></div>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      <strong>半環のまとめ：</strong>グラフ（矢印のつながり）は同じ。変えるのは「2つの演算 ⊕ と ⊗」だけ。
+      (min,+)＝最短路、(+,×)＝経済波及、(max,×)＝裁定 — 問題の意味は違うが、<strong>行列べき乗の骨格は共通</strong>。
+      圏論はこの「構造を保った翻訳」を関手で扱う。詳しくは
+      <a href="index.html">半環カートリッジ実験室</a> と教材第4章。
+    </p>
+  </div>
+
+  <script>
+    // --- Tabs ---
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    function bind(ids, fn) {
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', fn);
+      });
+      fn();
+    }
+
+    // --- Tab 1: Arbitrage (max, ×) ---
+    function drawArbSvg(jpyUsd, usdEur, eurJpy) {
+      const svg = document.getElementById('arbSvg');
+      const nodes = [
+        { id: 'JPY', sub: '円', x: 55, y: 155 },
+        { id: 'USD', sub: 'ドル', x: 170, y: 42 },
+        { id: 'EUR', sub: 'ユーロ', x: 285, y: 155 },
+      ];
+      const edges = [
+        { a: 'JPY', b: 'USD', t: jpyUsd.toFixed(4), lx: 98, ly: 86 },
+        { a: 'USD', b: 'EUR', t: usdEur.toFixed(2), lx: 242, ly: 86 },
+        { a: 'EUR', b: 'JPY', t: eurJpy.toFixed(0), lx: 170, ly: 128 },
+      ];
+      let html = '';
+      edges.forEach(e => {
+        const A = nodes.find(n => n.id === e.a);
+        const B = nodes.find(n => n.id === e.b);
+        html += `<line x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}" stroke="#0284c7" stroke-width="3"/>`;
+        html += `<rect x="${e.lx - 22}" y="${e.ly - 11}" width="44" height="16" rx="4" fill="#ffffff" opacity="0.92"/>`;
+        html += `<text x="${e.lx}" y="${e.ly}" fill="#0369a1" font-size="11" font-weight="700" text-anchor="middle" dominant-baseline="middle">${e.t}</text>`;
+      });
+      nodes.forEach(n => {
+        html += `<circle cx="${n.x}" cy="${n.y}" r="28" fill="#0284c7" stroke="#fff" stroke-width="2"/>`;
+        html += `<text x="${n.x}" y="${n.y - 5}" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">${n.id}</text>`;
+        html += `<text x="${n.x}" y="${n.y + 9}" fill="#e0f2fe" font-size="9" font-weight="700" text-anchor="middle">${n.sub}</text>`;
+      });
+      svg.innerHTML = html;
+    }
+
+    function updateArb() {
+      const r1 = parseFloat(document.getElementById('rateJpyUsd').value) || 0;
+      const r2 = parseFloat(document.getElementById('rateUsdEur').value) || 0;
+      const r3 = parseFloat(document.getElementById('rateEurJpy').value) || 0;
+      const start = parseFloat(document.getElementById('startJpy').value) || 0;
+      const mult = r1 * r2 * r3;
+      const end = start * mult;
+      const profit = end - start;
+      const pct = (mult - 1) * 100;
+
+      drawArbSvg(r1, r2, r3);
+
+      const box = document.getElementById('arbResult');
+      const multEl = document.getElementById('arbMultiplier');
+      const verdict = document.getElementById('arbVerdict');
+      multEl.textContent = mult.toFixed(5) + ' 倍';
+      multEl.style.color = mult > 1 ? '#059669' : mult < 1 ? '#dc2626' : '#64748b';
+
+      if (mult > 1.0001) {
+        box.className = 'result-box win';
+        verdict.innerHTML = `🎉 <strong>裁定機会あり！</strong> ${start.toLocaleString()} 円 → 一周後 <strong>${Math.round(end).toLocaleString()} 円</strong>（+${Math.round(profit).toLocaleString()} 円 / +${pct.toFixed(2)}%）`;
+      } else if (mult < 0.9999) {
+        box.className = 'result-box alert';
+        verdict.innerHTML = `一周すると減ります（理論上は逆方向に裁定）。損失率 ${pct.toFixed(2)}%`;
+      } else {
+        box.className = 'result-box';
+        verdict.textContent = '均衡付近（一周してもほぼ同額）';
+      }
+
+      document.getElementById('arbSteps').textContent =
+        `【いつもの式】 一周倍率 = r₁ × r₂ × r₃ = ${r1} × ${r2} × ${r3} = ${mult.toFixed(5)}\n` +
+        `【半環】       r₁ ⊗ r₂ ⊗ r₃  （⊗ = ×、一周の連続両替）\n\n` +
+        `両替の手順（⊗ を左から適用）:\n` +
+        `  ${start.toLocaleString()} 円\n` +
+        `  → ドル: ${(start * r1).toFixed(2)} USD   （× ${r1}）\n` +
+        `  → ユーロ: ${(start * r1 * r2).toFixed(4)} EUR （× ${r2}）\n` +
+        `  → 円: ${end.toFixed(2)} 円         （× ${r3}）\n\n` +
+        `裁定判定: r₁⊗r₂⊗r₃ ${mult > 1 ? '>' : mult < 1 ? '<' : '='} 1⊗  ⟺  ${mult.toFixed(5)} ${mult > 1 ? '>' : mult < 1 ? '<' : '='} 1`;
+    }
+
+    bind(['rateJpyUsd', 'rateUsdEur', 'rateEurJpy', 'startJpy'], updateArb);
+
+    // --- Tab 2: Leontief ---
+    function inv2(M) {
+      const [[a, b], [c, d]] = M;
+      const det = a * d - b * c;
+      if (Math.abs(det) < 1e-9) return null;
+      return [[d / det, -b / det], [-c / det, a / det]];
+    }
+
+    function matVec(M, v) {
+      return [
+        M[0][0] * v[0] + M[0][1] * v[1],
+        M[1][0] * v[0] + M[1][1] * v[1],
+      ];
+    }
+
+    function updateLeo() {
+      const M = [
+        [parseFloat(document.getElementById('mAA').value) || 0, parseFloat(document.getElementById('mAS').value) || 0],
+        [parseFloat(document.getElementById('mSA').value) || 0, parseFloat(document.getElementById('mSS').value) || 0],
+      ];
+      const f = [
+        parseFloat(document.getElementById('demandA').value) || 0,
+        parseFloat(document.getElementById('demandS').value) || 0,
+      ];
+
+      const I = [[1, 0], [0, 1]];
+      const ImM = [[1 - M[0][0], -M[0][1]], [-M[1][0], 1 - M[1][1]]];
+      const inv = inv2(ImM);
+
+      let steps =
+        `最終需要 f = [${f[0]}, ${f[1]}] 億円\n\n` +
+        `【半環の読み】 Mᵏ ⊗ f  ＝  いつもの Mᵏ · f（k 次間接波及）\n` +
+        `【無限和】     f ⊕ M⊗f ⊕ M²⊗f ⊕ …  ＝  (I−M)⁻¹·f\n\n`;
+      let sum = [0, 0];
+      let term = [...f];
+      steps += `直接効果  M⁰·f = [${term[0].toFixed(1)}, ${term[1].toFixed(1)}]  （⊕ の第0項）\n`;
+      sum = [sum[0] + term[0], sum[1] + term[1]];
+
+      let Mk = [[1, 0], [0, 1]];
+      for (let k = 1; k <= 4; k++) {
+        Mk = [
+          [Mk[0][0] * M[0][0] + Mk[0][1] * M[1][0], Mk[0][0] * M[0][1] + Mk[0][1] * M[1][1]],
+          [Mk[1][0] * M[0][0] + Mk[1][1] * M[1][0], Mk[1][0] * M[0][1] + Mk[1][1] * M[1][1]],
+        ];
+        term = matVec(Mk, f);
+        steps += `${k}次波及  M^${k}·f = [${term[0].toFixed(1)}, ${term[1].toFixed(1)}]  （⊕ の第${k}項）\n`;
+        sum = [sum[0] + term[0], sum[1] + term[1]];
+      }
+
+      const box = document.getElementById('leoResult');
+      if (!inv) {
+        document.getElementById('leoTotal').textContent = '計算不能';
+        document.getElementById('leoBreakdown').textContent = 'det(I−M)≈0 — 投入係数が大きすぎます';
+        document.getElementById('leoSteps').textContent = steps;
+        box.className = 'result-box alert';
+        return;
+      }
+
+      const total = [
+        inv[0][0] * f[0] + inv[0][1] * f[1],
+        inv[1][0] * f[0] + inv[1][1] * f[1],
+      ];
+      const grand = total[0] + total[1];
+
+      document.getElementById('leoTotal').textContent = grand.toFixed(1) + ' 億円';
+      document.getElementById('leoBreakdown').innerHTML =
+        `内訳 — 自動車: <strong>${total[0].toFixed(1)}</strong> 億円、鉄鋼: <strong>${total[1].toFixed(1)}</strong> 億円`;
+      steps +=
+        `\n【いつもの式】 (I−M)⁻¹·f = [${total[0].toFixed(1)}, ${total[1].toFixed(1)}] 億円\n` +
+        `【半環】       f ⊕ M⊗f ⊕ M²⊗f ⊕ … の和（⊕=+, ⊗=×）`;
+      document.getElementById('leoSteps').textContent = steps;
+      box.className = 'result-box win';
+    }
+
+    bind(['mAA', 'mAS', 'mSA', 'mSS', 'demandA', 'demandS'], updateLeo);
+
+    // --- Tab 3: Supply chain tropical (min, +) ---
+    function drawScmSvg(ps, sa) {
+      const svg = document.getElementById('scmSvg');
+      const nodes = [
+        { id: 'P', sub: '部品', x: 48, y: 58 },
+        { id: 'S', sub: '下請', x: 160, y: 58 },
+        { id: 'A', sub: '完成車', x: 272, y: 58 },
+      ];
+      let html = '';
+      html += `<line x1="76" y1="58" x2="132" y2="58" stroke="#059669" stroke-width="4"/>`;
+      html += `<rect x="88" y="30" width="32" height="16" rx="4" fill="#fff" opacity="0.92"/>`;
+      html += `<text x="104" y="38" fill="#047857" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="middle">${ps}日</text>`;
+      html += `<line x1="188" y1="58" x2="244" y2="58" stroke="#059669" stroke-width="4"/>`;
+      html += `<rect x="200" y="30" width="32" height="16" rx="4" fill="#fff" opacity="0.92"/>`;
+      html += `<text x="216" y="38" fill="#047857" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="middle">${sa}日</text>`;
+      nodes.forEach(n => {
+        html += `<circle cx="${n.x}" cy="${n.y}" r="26" fill="#059669" stroke="#fff" stroke-width="2"/>`;
+        html += `<text x="${n.x}" y="${n.y - 4}" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">${n.id}</text>`;
+        html += `<text x="${n.x}" y="${n.y + 10}" fill="#ecfdf5" font-size="8" font-weight="700" text-anchor="middle">${n.sub}</text>`;
+      });
+      svg.innerHTML = html;
+    }
+
+    function tropicalMul2(ps, sa) {
+      const INF = Infinity;
+      // P, S, A indices 0,1,2
+      const M = [
+        [0, ps, INF],
+        [INF, 0, sa],
+        [INF, INF, 0],
+      ];
+      const minPlus = (a, b) => a + b;
+      const minOp = (a, b) => Math.min(a, b);
+      const M2 = [[INF, INF, INF], [INF, INF, INF], [INF, INF, INF]];
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          let acc = INF;
+          for (let k = 0; k < 3; k++) {
+            if (M[i][k] !== INF && M[k][j] !== INF) {
+              acc = minOp(acc, minPlus(M[i][k], M[k][j]));
+            }
+          }
+          M2[i][j] = acc;
+        }
+      }
+      return { M, M2, days: M2[0][2] };
+    }
+
+    function updateScm() {
+      const ps = parseFloat(document.getElementById('stockPS').value) || 0;
+      const sa = parseFloat(document.getElementById('stockSA').value) || 0;
+      drawScmSvg(ps, sa);
+      const { M2, days } = tropicalMul2(ps, sa);
+      document.getElementById('scmDays').textContent = days + ' 日後';
+      document.getElementById('scmSteps').textContent =
+        `【1ホップ】在庫日数（辺の重み）\n` +
+        `  P→S = ${ps} 日,  S→A = ${sa} 日,  P→A = ∞（直通なし）\n\n` +
+        `【半環】 (M ⊙ M)[P,A] = ⊕ₖ ( M[P,k] ⊗ M[k,A] )\n` +
+        `【いつもの式】 min( M[P,P]+M[P,A], M[P,S]+M[S,A], M[P,A]+M[A,A] )\n` +
+        `            = min( 0+∞, ${ps}+${sa}, ∞+0 )\n` +
+        `            = min( ∞, ${ps + sa}, ∞ ) = ${days}\n\n` +
+        `意味: P が停止してから、在庫が尽きて A が止まるまで最短 ${days} 日\n` +
+        `（⊕=min で「最も早い経路」、⊗=+ で「日数をつなぐ」）`;
+    }
+
+    bind(['stockPS', 'stockSA'], updateScm);
+  </script>
+</body>
+</html>

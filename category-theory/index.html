@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>圏論（Category Theory）直感と構造の探求ガイド</title>
-  <!-- Google Fonts: M PLUS Rounded 1c -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/reading.css">
   <!-- KaTeX CSS & JS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
@@ -63,7 +63,6 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      font-family: "M PLUS Rounded 1c", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Yu Gothic UI", sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.8;
@@ -425,12 +424,33 @@
         <li><strong>圏論（メタ言語）:</strong> 対象 $X$ の中身を暴かず、外部と出入りする矢印の総体で $X$ を一意に同定する（<span class="term-pop">米田の補題<span class="pop-card"><span class="pop-title">米田の補題 (Yoneda Lemma)</span>外部との関係性（矢印の総体）を見れば、中身を見なくてもその正体が完全に特定できる大定理</span></span>）。</li>
       </ul>
 
+      <h3>3. 計算機科学との相性 — 広い世界と、現実への実装のしやすさ</h3>
+      <p>圏論は難解な純数学というイメージを持たれがちですが、<strong>計算機科学（プログラム・アルゴリズムの設計）</strong>とは非常に相性が良い分野です。</p>
+      <table>
+        <thead><tr><th>圏論の言葉</th><th>計算機科学でのイメージ</th></tr></thead>
+        <tbody>
+          <tr><td><strong>射（矢印）</strong></td><td>データを変換する処理・関数（入力→出力）</td></tr>
+          <tr><td><strong>射の合成</strong></td><td>処理を順につなぐパイプライン</td></tr>
+          <tr><td><strong>関手</strong></td><td>構造を保った翻訳（例：リストの <code>map</code>）</td></tr>
+          <tr><td><strong>半環・骨組み</strong></td><td>ルール盤（カートリッジ）を差し替えて同じ計算で別問題を解く</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight-card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+        <strong>この教材が強調する「二つの魅力」</strong>
+        <ul style="margin:0.5rem 0 0;padding-left:1.2rem;">
+          <li><strong>広い世界（メタ言語）</strong> … 数学・言語・経済・AIなど、関係性の構造を共通の言葉で語れる</li>
+          <li><strong>現実への実装のしやすさ</strong> … 行列の掛け算・べき乗という同じ骨組みに、時間・お金・本数を差し替えるだけ。<a href="tool/index.html">実験ツール</a>で動かせ、逆行列なしでも順に足して答えに近づける</li>
+        </ul>
+        <p class="note" style="margin:0.75rem 0 0;">圏論を学ぶ価値は定理の暗記だけではない。<strong>広い抽象を歩きながら、計算・ツール・設計に落とし込める</strong> — この両立が現代の圏論（とくに計算機科学との接点）の大きな魅力です。</p>
+      </div>
+
       <div class="highlight-card" style="background: rgba(56, 189, 248, 0.05); border-left: 4px solid var(--accent);">
         <strong>💡 友達に話したくなる！3行まとめカード</strong>
         <ul style="margin-top: 0.4rem; padding-left: 1.2rem;">
           <li>圏論は、中身を分解せず「外とどう繋がるか（矢印）」を見る！</li>
           <li>中身を縛らず「繋ぎ方のマナー」だけを守るから何にでも使える</li>
           <li>文字式 $x$ のように、周辺の関係性から中身の正体を炙り出す！</li>
+          <li>計算機科学と相性◎ — 広い抽象と、ツールで動かせる具体性の両方</li>
         </ul>
       </div>
 
@@ -475,6 +495,12 @@
           </tr>
         </tbody>
       </table>
+
+      <div class="highlight-card" style="background: #fffbeb; border-left: 4px solid #f59e0b;">
+        <strong>🕹️ 「半環カートリッジ」比喩の実態</strong>
+        <p style="margin:0.5rem 0;font-size:0.9rem;">やっていることは <strong>2ステップ</strong>：（①）路線図から行列 $M$ を作る →（②）<strong>同じ行×列の形</strong>で $M \odot M$ を計算する。カートリッジは <strong>⊕（まとめる）</strong> と <strong>⊗（つなぐ）</strong> の意味を差し替える。</p>
+        <p class="note" style="margin:0;">通常の積: $C_{ij}=\sum_k A_{ik}B_{kj}$　／　半環積: $C_{ij}=\bigoplus_k (A_{ik}\otimes B_{kj})$。<strong>手順の骨組みは同じ</strong>だが、掛ける段でも ⊕⊗ を使う（「$M$ を作ったあとは普通の積」ではない）。<a href="tool/index.html">実験ツール</a>で同じコード・別カートリッジを体験できる。</p>
+      </div>
 
       <h3>🌌 圏論（Category Theory）の言葉たち — 「関係性のメタ言語」</h3>
       <table>
@@ -619,106 +645,397 @@
       <p>「行列」は無味乾燥な計算ドリルではなく、世界の関係性を一望し、未来をシミュレーションする「タイムマシン」です。</p>
 
       <h3>1. 行列とは何か？ — 点と点の「関係性マップ」</h3>
-      <p>行列 $\begin{pmatrix} a & b \\ c & d \end{pmatrix}$ の本質は、<strong>「誰と誰が、どんな関係で繋がっているかを整理した表（マップ）」</strong>です。</p>
+      <p>行列 $\begin{pmatrix} a & b \\ c & d \end{pmatrix}$ の本質は、<strong>「誰と誰が、どんな関係で繋がっているかを整理した表（マップ）」</strong>です。以下は<strong>物流センター</strong>の具体例です。</p>
+
+      <div class="highlight-card" style="background: #fffbeb; border-left: 4px solid #f59e0b;">
+        <strong>📏 この例の数字は何か？</strong><br>
+        本章の $M$ に入る数字はすべて<strong>「経路の本数」</strong>（単位: 本）。<strong>時間（分）でも距離（km）でもありません。</strong><br>
+        「系統」「便」「ルート」は本章ではすべて<strong>「経路 ○本」</strong>に統一します。<br>
+        <span class="note">※ <a href="tool/index.html">半環カートリッジ実験室</a> では同じ形の行列に<strong>時間・運賃</strong>を入れる別モデルです。</span>
+      </div>
+
+      <h4>🏭 設定：倉庫 → 工場 → 出荷場</h4>
+      <table>
+        <thead><tr><th>拠点</th><th>現実のイメージ</th></tr></thead>
+        <tbody>
+          <tr><td><strong>A</strong> 仕分け倉庫</td><td>荷物を仕分けする物流倉庫</td></tr>
+          <tr><td><strong>B</strong> 製造工場</td><td>部品を組み立てる工場</td></tr>
+          <tr><td><strong>C</strong> 出荷場</td><td>トラック積み込み後は追跡終了（終端）</td></tr>
+        </tbody>
+      </table>
+      <p class="note" style="margin-top:0.5rem;"><strong>1ステップ</strong> = 今日1回だけ選ぶ搬送・工程（何分かかるかは本章では問わない）</p>
+
+      <h4>🗺️ 搬送マップ</h4>
+      <div class="mermaid">
+graph LR
+    A["📦 A 仕分け倉庫"]
+    B["🏭 B 製造工場"]
+    C["🚚 C 出荷場"]
+    A -->|"② 1本"| B
+    A -->|"① 2本"| A
+    B -->|"④ 1本"| C
+    B -->|"③ 3本"| B
+      </div>
+      <pre style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:0.75rem 1rem;overflow-x:auto;margin:0.75rem 0;">① 倉庫内経路 2本（東コンベア1周 / 西コンベア1周）→ A着
+② 倉庫→工場 1本（昼便トラック）→ B着
+③ 工場内経路 3本（ライン1/2/3 の局内1周）→ B着
+④ 工場→出荷 1本（出荷トラック）→ C着</pre>
+
+      <h4>各マスの意味（数字＝本数）</h4>
+      <table>
+        <thead><tr><th>番号</th><th>マス</th><th>本数</th><th>数えているもの</th></tr></thead>
+        <tbody>
+          <tr><td>①</td><td>A→A</td><td><strong>2本</strong></td><td>倉庫内で完結する搬送が2通り（東ループ・西ループ）</td></tr>
+          <tr><td>②</td><td>A→B</td><td><strong>1本</strong></td><td>倉庫→工場のトラック便が1通り</td></tr>
+          <tr><td>③</td><td>B→B</td><td><strong>3本</strong></td><td>工場内で完結する工程が3通り（ライン1・2・3）</td></tr>
+          <tr><td>④</td><td>B→C</td><td><strong>1本</strong></td><td>工場→出荷場の出荷便が1通り</td></tr>
+        </tbody>
+      </table>
+
+      <h4>📋 図 → 行列 $M$</h4>
+      <table>
+        <thead>
+          <tr><th></th><th>着 A</th><th>着 B</th><th>着 C</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>発 A</th><td>2本</td><td>1本</td><td>0本</td></tr>
+          <tr><th>発 B</th><td>0本</td><td>3本</td><td>1本</td></tr>
+          <tr><th>発 C</th><td>0本</td><td>0本</td><td>0本</td></tr>
+        </tbody>
+      </table>
       <div class="math-block">
         $$M = \begin{pmatrix} 2 & 1 & 0 \\ 0 & 3 & 1 \\ 0 & 0 & 0 \end{pmatrix}$$
       </div>
-      <ul>
-        <li><strong>1行目（A発）:</strong> A→A: 2本, $\quad$ A→B: 1本, $\quad$ A→C: 0本（直通なし）</li>
-        <li><strong>2行目（B発）:</strong> B→A: 0本, $\quad$ B→B: 3本, $\quad$ B→C: 1本</li>
-        <li><strong>3行目（C発）:</strong> どこへも行けない（すべて 0）</li>
-      </ul>
+      <div class="highlight-card" style="background: rgba(56, 189, 248, 0.05); border-left: 4px solid var(--accent);">
+        <strong>ポイント:</strong> 本章はマス＝<strong>本数</strong>。時間・運賃版は <a href="tool/index.html">半環カートリッジ実験室</a>。
+      </div>
+
+      <h4>🎯 なぜ「経路の本数」を数えるのか？（意識的に選んだ問い）</h4>
+      <p>現場でよく聞くのは「<strong>何分・いくら</strong>」です。本数だけを数えるのは日常の第一目的ではありません。でも<strong>経路数が答えになる問い</strong>はあり、行列の掛け算を学ぶには<strong>いちばん素直な問い</strong>として本章では本数を選びます。</p>
+      <table>
+        <thead><tr><th>知りたいこと</th><th>経路数が効く場面</th></tr></thead>
+        <tbody>
+          <tr><td><strong>届くか？</strong></td><td>$M$ で A→C＝0本 → 不可。$M^2$ で1本 → <strong>2ステップ以内なら届く</strong></td></tr>
+          <tr><td><strong>冗長性</strong></td><td>A→A＝2本 → 1本止まってももう1本で回せる余地</td></tr>
+          <tr><td><strong>負荷分散</strong></td><td>B→B＝3本 → 3系統に荷を分けられる</td></tr>
+          <tr><td><strong>確率</strong></td><td>経路をランダム選択するとき、本数が組合せの母数になる</td></tr>
+          <tr><td><strong>設計比較</strong></td><td>設備を増設したら $M$ のどのマスが何本増えるか</td></tr>
+        </tbody>
+      </table>
+      <p class="note">§3 以降は「円」の産業連関へ。問いは変わるが、掛け算の形は同じ。</p>
+
+      <h4>⚡ 行列の有効性：1ステップなら不要、複数ステップで力を発する</h4>
+      <p><strong>1ステップ</strong>の本数は図を数えれば足ります。行列 $M$ は整理用で、必須ではありません。<strong>2ステップ以上</strong>は経由の組み合わせが増えるので、<strong>$M^k$ で全ペアを一括</strong>求めるのが掛け算の有効性です。</p>
+      <table>
+        <thead><tr><th></th><th>1ステップ</th><th>複数ステップ（$k$ 段）</th></tr></thead>
+        <tbody>
+          <tr><td><strong>素朴に数える</strong></td><td>図の矢印を数える</td><td>組み合わせ爆発、手では破綻</td></tr>
+          <tr><td><strong>行列で求める</strong></td><td>$M$ に書く（整理用）</td><td><strong>$M^k$ で全ペア一括</strong></td></tr>
+        </tbody>
+      </table>
 
       <h3>2. 行列の掛け算（行 $\times$ 列）の具体的な手計算ステップ</h3>
-      <p>「横（行）と縦（列）を掛けて足す」というルールの本当の意味は、<strong>「1回乗り換えて（2ステップで）行くルートの総数を調べる」</strong>ということです！</p>
-      
+
+      <div class="highlight-card" style="background: #fffbeb; border-left: 4px solid #f59e0b;">
+        <strong>この節で何を求めるか？（意識的に選んだ問い）</strong><br>
+        出発 $X$ から到着 $Y$ へ、<strong>ちょうど 2 回</strong>搬送したとき、<strong>区別できる経路は何本か？</strong><br>
+        <span class="note">本数は万能ではないが、「届くか・何通りあるか」には答えになる。<strong>1ステップは図で足りるが、複数ステップこそ $M^2$ などの掛け算が効く</strong> — ここではその手順を身につける。</span>
+      </div>
+
+      <table style="margin-top:0.75rem;">
+        <thead><tr><th>この節でわかること</th><th>例（A→C）</th></tr></thead>
+        <tbody>
+          <tr><td><strong>2ステップ以内に届くか</strong></td><td>$M$＝0本（不可）→ $M^2$＝1本（届く）</td></tr>
+          <tr><td><strong>何通りの道があるか</strong></td><td>B経由 $1\times1=1$ 本</td></tr>
+          <tr><td><strong>§3 への土台</strong></td><td>同じ掛け算の形を「円」の波及に使う</td></tr>
+        </tbody>
+      </table>
+
+      <table style="margin-top:0.75rem;">
+        <thead><tr><th>言葉</th><th>意味</th><th>単位</th><th>例</th></tr></thead>
+        <tbody>
+          <tr><td><strong>ステップ</strong></td><td>荷物が<strong>何回</strong>搬送・工程を踏むか</td><td>回</td><td>「2ステップ」＝連続2回の選択</td></tr>
+          <tr><td><strong>本</strong></td><td>その回数で行ける<strong>経路の種類数</strong>（答え）</td><td>本</td><td>「1本」＝1通り、「3本」＝3通り</td></tr>
+        </tbody>
+      </table>
+      <p class="note"><strong>ステップと本は別物。</strong> ステップ＝条件（何回で行くか）、本＝答え（何通りあるか）。$M$ は1ステップの表、$M \times M = M^2$ は2ステップの表。</p>
+
+      <h4>📐 行列の掛け算の型：$A \times B = C$ の1マスはどう決まる？</h4>
+      <p>$C$ の <strong>$(i,j)$ マス</strong> ＝ 左の $A$ の <strong>$i$ 行目</strong> と、右の $B$ の <strong>$j$ 列目</strong> を、同じ番号 $k$ どうしで掛けて<strong>全部足す</strong>。</p>
+      <div class="math-block">
+        $$C(i,j) = A(i,1)\,B(1,j) + A(i,2)\,B(2,j) + \cdots + A(i,n)\,B(n,j)$$
+      </div>
+
       <div class="step-box">
-        <h4>🔍 「AからCへ 2ステップで行くルート数（1行3列目）」の手計算</h4>
-        <p>左の行列の <strong>1行目 $[2, 1, 0]$</strong> と、右の行列の <strong>3列目 $\begin{pmatrix} 0 \\ 1 \\ 0 \end{pmatrix}$</strong> を指でなぞって掛け合わせます：</p>
+        <h4 style="margin-top:0;">図：$C(1,1)$ のイメージ（$3\times3$）</h4>
+        <pre style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:0.75rem 1rem;line-height:1.55;overflow-x:auto;margin:0.5rem 0;">        ← B の 1列目（縦）→
+           (1,1)  (2,1)  (3,1)
+             │      │      │
+A の 1行目 → (1,1)×(1,1) + (1,2)×(2,1) + (1,3)×(3,1) ＝ C(1,1)</pre>
+        <p class="note" style="margin-bottom:0.5rem;"><strong>例:</strong> $C(1,1) = A(1,1)B(1,1) + A(1,2)B(2,1) + A(1,3)B(3,1)$</p>
+      </div>
+
+      <div class="step-box">
+        <h4 style="margin-top:0;">図：$C(1,3)$ のイメージ（A→C・2ステップ）</h4>
+        <p class="note" style="margin:0 0 0.5rem;">左 $A$ の<strong style="color:#0369a1;">1行目（青）</strong>と、右 $B$ の<strong style="color:#b45309;">3列目（橙）</strong>をなぞって足す → $C$ の $(1,3)$ マス</p>
+        <div style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:center;margin:0.5rem 0;">
+          <div>
+            <div style="font-weight:600;margin-bottom:0.25rem;">$A$（1行目＝青）</div>
+            <table style="border-collapse:collapse;text-align:center;">
+              <tr><td style="border:1px solid #cbd5e1;padding:4px 8px;background:#e0f2fe;">2</td><td style="border:1px solid #cbd5e1;padding:4px 8px;background:#e0f2fe;">1</td><td style="border:1px solid #cbd5e1;padding:4px 8px;background:#e0f2fe;">0</td></tr>
+              <tr><td style="border:1px solid #cbd5e1;padding:4px 8px;">0</td><td style="border:1px solid #cbd5e1;padding:4px 8px;">3</td><td style="border:1px solid #cbd5e1;padding:4px 8px;">1</td></tr>
+              <tr><td style="border:1px solid #cbd5e1;padding:4px 8px;">0</td><td style="border:1px solid #cbd5e1;padding:4px 8px;">0</td><td style="border:1px solid #cbd5e1;padding:4px 8px;">0</td></tr>
+            </table>
+          </div>
+          <div style="font-size:1.2rem;color:#64748b;">×</div>
+          <div>
+            <div style="font-weight:600;margin-bottom:0.25rem;">$B$（3列目＝橙）</div>
+            <table style="border-collapse:collapse;text-align:center;">
+              <tr><td style="border:1px solid #cbd5e1;padding:4px 8px;">2</td><td style="border:1px solid #cbd5e1;padding:4px 8px;">1</td><td style="border:1px solid #cbd5e1;padding:4px 8px;background:#ffedd5;">0</td></tr>
+              <tr><td style="border:1px solid #cbd5e1;padding:4px 8px;">0</td><td style="border:1px solid #cbd5e1;padding:4px 8px;">3</td><td style="border:1px solid #cbd5e1;padding:4px 8px;background:#ffedd5;">1</td></tr>
+              <tr><td style="border:1px solid #cbd5e1;padding:4px 8px;">0</td><td style="border:1px solid #cbd5e1;padding:4px 8px;">0</td><td style="border:1px solid #cbd5e1;padding:4px 8px;background:#ffedd5;">0</td></tr>
+            </table>
+          </div>
+          <div style="font-size:1.2rem;color:#64748b;">＝</div>
+          <div>
+            <div style="font-weight:600;margin-bottom:0.25rem;">$C$ の $(1,3)$</div>
+            <table style="border-collapse:collapse;text-align:center;">
+              <tr><td style="border:1px solid #cbd5e1;padding:4px 8px;">?</td><td style="border:1px solid #cbd5e1;padding:4px 8px;">?</td><td style="border:1px solid #cbd5e1;padding:4px 8px;background:#dcfce7;font-weight:700;">1</td></tr>
+              <tr><td style="border:1px solid #cbd5e1;padding:4px 8px;">?</td><td style="border:1px solid #cbd5e1;padding:4px 8px;">?</td><td style="border:1px solid #cbd5e1;padding:4px 8px;">?</td></tr>
+              <tr><td style="border:1px solid #cbd5e1;padding:4px 8px;">?</td><td style="border:1px solid #cbd5e1;padding:4px 8px;">?</td><td style="border:1px solid #cbd5e1;padding:4px 8px;">?</td></tr>
+            </table>
+          </div>
+        </div>
+        <p class="note" style="margin:0.5rem 0 0;">$2{\times}0 + 1{\times}1 + 0{\times}0 = \mathbf{1}$　（$k=2$ の項が B経由）</p>
+      </div>
+
+      <p><strong>すべてのマス</strong>に同じルール。「$C$ の $(i,j)$」↔「$A$ の $i$ 行」↔「$B$ の $j$ 列」。</p>
+      <table>
+        <thead><tr><th>$C$ のマス</th><th>$A$ の行</th><th>$B$ の列</th><th>計算式</th></tr></thead>
+        <tbody>
+          <tr><td>$(1,1)$</td><td>1行目</td><td>1列目</td><td>$A(1,1)B(1,1)+A(1,2)B(2,1)+A(1,3)B(3,1)$</td></tr>
+          <tr><td>$(1,2)$</td><td>1行目</td><td>2列目</td><td>$A(1,1)B(1,2)+A(1,2)B(2,2)+A(1,3)B(3,2)$</td></tr>
+          <tr><td>$(1,3)$</td><td>1行目</td><td>3列目</td><td>$A(1,1)B(1,3)+A(1,2)B(2,3)+A(1,3)B(3,3)$</td></tr>
+          <tr><td>$(2,1)$</td><td>2行目</td><td>1列目</td><td>$A(2,1)B(1,1)+A(2,2)B(2,1)+A(2,3)B(3,1)$</td></tr>
+          <tr><td>$(2,2)$</td><td>2行目</td><td>2列目</td><td>$A(2,1)B(1,2)+A(2,2)B(2,2)+A(2,3)B(3,2)$</td></tr>
+          <tr><td colspan="4" style="text-align:center;color:#64748b;">… $(3,3)$ も同様（3行目 × 3列目）</td></tr>
+        </tbody>
+      </table>
+      <pre style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:0.75rem 1rem;margin:0.75rem 0;">① C のマス (i,j) を決める → ② A の i 行目をなぞる → ③ B の j 列目をなぞる → ④ A(i,k)×B(k,j) を k について足す</pre>
+
+      <p><strong>$A=B=M$</strong>（§1 の搬送マップ）の具体例：</p>
+      <table>
+        <thead><tr><th>$C=M^2$</th><th>計算</th><th>結果</th><th>意味</th></tr></thead>
+        <tbody>
+          <tr><td>$(1,1)$</td><td>$2{\times}2+1{\times}0+0{\times}0$</td><td><strong>4</strong></td><td>A→A が2ステップで4本</td></tr>
+          <tr><td>$(1,3)$</td><td>$2{\times}0+1{\times}1+0{\times}0$</td><td><strong>1</strong></td><td>A→C が2ステップで1本</td></tr>
+          <tr><td>$(2,3)$</td><td>$0{\times}0+3{\times}1+1{\times}0$</td><td><strong>3</strong></td><td>B→C が2ステップで3本</td></tr>
+        </tbody>
+      </table>
+      <p class="note">$C(1,3)$ の $k=2$ の項 $A(1,2){\times}B(2,3)=1{\times}1$ が <strong>B経由</strong> — 途中番号 $k$ が経由拠点に対応。</p>
+
+      <h4>なぜ「掛けて、足す」のか？（経路の話）</h4>
+      <p>2ステップの経路は必ず<strong>途中の拠点</strong>を1つ通ります。A→C を<strong>ちょうど2ステップ</strong>で行く場合：</p>
+      <table>
+        <thead><tr><th>途中点</th><th>1歩目</th><th>2歩目</th><th>組み合わせ</th></tr></thead>
+        <tbody>
+          <tr><td><strong>A経由</strong></td><td>A→A が 2本</td><td>そのあと A→C は 0本</td><td>$2 \times 0 = 0$ 本</td></tr>
+          <tr><td><strong>B経由</strong></td><td>A→B が 1本</td><td>そのあと B→C が 1本</td><td>$1 \times 1 = \mathbf{1}$ 本</td></tr>
+          <tr><td><strong>C経由</strong></td><td>A→C は 0本</td><td>（1歩目に行けない）</td><td>$0 \times 0 = 0$ 本</td></tr>
+        </tbody>
+      </table>
+      <p>途中点ごとに「1歩目の本数 × 2歩目の本数」を掛け、全部足す。これが「行 × 列 を掛けて足す」の意味です。</p>
+
+      <div class="step-box">
+        <h4>🔍 手計算：A→C（$M^2$ の 1行3列目）</h4>
+        <p><strong>問い:</strong> 倉庫Aから出荷場Cへ、<strong>2ステップ</strong>で行ける経路は<strong>何本</strong>？</p>
         <div class="math-block">
           $$\begin{aligned}
           \text{【1行3列目】} &= (2 \times 0) + (1 \times 1) + (0 \times 0) \\
           &= 0 + 1 + 0 = \mathbf{1 \text{ 本}}
           \end{aligned}$$
         </div>
-        <p>AからBへ行って、BからCへ行くルート（$1 \times 1 = 1$ 本）が自動的に洗い出されました！</p>
+        <p>$M$ では A→C は <strong>0本</strong>（直行便なし）。でも <strong>2ステップ</strong>に広げると A→B→C が <strong>1本</strong>（② 昼便 → ④ 出荷便）。</p>
+        <pre style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:0.75rem 1rem;margin:0.5rem 0;">M¹ で A→C = 0本  … 1ステップでは届かない
+M² で A→C = 1本  … 2ステップなら B経由で1通り</pre>
+        <p class="note">この <strong>1本</strong> から「2段以内なら届く」「B経由に一本化」と読み取れる。経路数を数えた<strong>目的</strong>は、こうした判定に使うこと。</p>
       </div>
 
       <div class="step-box">
-        <h4>🧮 9マスすべての手計算結果（全貌）</h4>
+        <h4>🧮 9マスすべて：$M^2$ の全貌</h4>
+        <p>どのマスも「<strong>2ステップ</strong>の経路が<strong>何本</strong>か」です。</p>
         <div class="math-block">
           $$M^2 = \begin{pmatrix} 2 & 1 & 0 \\ 0 & 3 & 1 \\ 0 & 0 & 0 \end{pmatrix} \begin{pmatrix} 2 & 1 & 0 \\ 0 & 3 & 1 \\ 0 & 0 & 0 \end{pmatrix} = \begin{pmatrix} 4 & 5 & \mathbf{1} \\ 0 & 9 & \mathbf{3} \\ 0 & 0 & 0 \end{pmatrix}$$
         </div>
-        <p>直通が 0 本だった A $\to$ C に、<strong>2ステップで「1本」のルートが開通</strong>しました！</p>
+        <table>
+          <thead><tr><th>マス</th><th>問い</th><th>答え</th><th>イメージ</th></tr></thead>
+          <tbody>
+            <tr><td>A→A</td><td>2ステップでAに戻る？</td><td><strong>4本</strong></td><td>倉庫内2本 × また2本</td></tr>
+            <tr><td>A→C</td><td>2ステップでCへ？</td><td><strong>1本</strong></td><td>A→B→C</td></tr>
+            <tr><td>B→C</td><td>2ステップでCへ？</td><td><strong>3本</strong></td><td>工場内3本 × 出荷1本</td></tr>
+          </tbody>
+        </table>
+        <p class="note">$M$＝1ステップの本数、$M^2$＝2ステップの本数。ステップが1増えるごとに $M$ をもう1回掛けます。</p>
       </div>
 
-      <h3>3. 行列のべき乗（$M^k$） — 未来を計算するタイムマシン</h3>
-      <p>行列を自分自身と掛け合わせる操作（<strong>べき乗</strong>）を行うと、指数 $k$ はそのまま<strong>「進んだ時間（ステップ数）」</strong>を表します。</p>
-      <ul>
-        <li><strong>$M^1$（1乗）:</strong> 1ステップ（直通・1日後・1回の接触）</li>
-        <li><strong>$M^2$（2乗）:</strong> 2ステップ（1回乗り換え・2日後・友達の友達）</li>
-        <li><strong>$M^3$（3乗）:</strong> 3ステップ（2回乗り換え・3日後・3世代先）</li>
-        <li><strong>$M^k$（$k$乗）:</strong> $k$ ステップ後の世界（$k$ 日後の未来）</li>
-      </ul>
+      <h3>3. 行列のべき乗（$M^k$） — サプライチェーンの「波及」を段ごとに見る</h3>
+      <p>§2 は掛け算の<strong>手順</strong>用。ここからは<strong>各段に意味がある</strong>例 — <strong>産業連関（レオンチェフ）</strong>です。</p>
 
-      <h3>4. 繰り返し自乗法 — 1000日後が「たった10回」で求まる魔法</h3>
-      <div class="math-block">
-        $$M \xrightarrow{\times M} M^2 \xrightarrow{\times M^2} M^4 \xrightarrow{\times M^4} M^8 \dots \xrightarrow{\times M^{512}} M^{1024}$$
-      </div>
+      <h4>🏭 公共事業の発注が経済を動かす</h4>
+      <p>政府が<strong>工業品 1000円</strong>を発注。工場は農業・他工業から仕入れ、それもまた仕入れが連鎖する。</p>
+
+      <h4 style="margin-top:1rem;">行列 $M$ の読み方</h4>
+      <p><strong>列</strong>＝誰が100円分を<strong>生産する</strong>側　／　<strong>行</strong>＝どこから<strong>仕入れる</strong>側</p>
       <table>
-        <thead>
-          <tr>
-            <th>ステップ数</th>
-            <th>掛け算の回数</th>
-            <th>わかる未来の範囲</th>
-          </tr>
-        </thead>
+        <thead><tr><th></th><th>農が100円作る（列）</th><th>工が100円作る（列）</th></tr></thead>
         <tbody>
-          <tr>
-            <td>$M^2$</td>
-            <td>1回</td>
-            <td>最大 2 回乗り換え</td>
-          </tr>
-          <tr>
-            <td>$M^4$</td>
-            <td>2回</td>
-            <td>最大 4 回乗り換え</td>
-          </tr>
-          <tr>
-            <td>$M^8$</td>
-            <td>3回</td>
-            <td>最大 8 回乗り換え</td>
-          </tr>
-          <tr>
-            <td>$M^{1024}$</td>
-            <td><strong>たった10回！</strong></td>
-            <td><strong>最大 1024 回乗り換えの超巨大路線網</strong></td>
-          </tr>
+          <tr><th>農から仕入れ（行）</th><td><strong>30円</strong> → $0.3$</td><td><strong>20円</strong> → $0.2$</td></tr>
+          <tr><th>工から仕入れ（行）</th><td><strong>10円</strong> → $0.1$</td><td><strong>40円</strong> → $0.4$</td></tr>
+        </tbody>
+      </table>
+      <p class="note">$M_{\text{行},\text{列}}$ ＝ その<strong>列の部門</strong>が100円作るとき、<strong>行の部門</strong>から直接買う金額。計算用に100で割って係数に（例：20円→0.2）。</p>
+
+      <table style="margin-top:0.5rem;">
+        <thead><tr><th>マス</th><th>係数</th><th>意味（現場のイメージ）</th></tr></thead>
+        <tbody>
+          <tr><td>$(1,1)$</td><td>0.3</td><td>農100円作る → 種・肥料など<strong>農内</strong>仕入れ30円</td></tr>
+          <tr><td>$(2,1)$</td><td>0.1</td><td>農100円作る → <strong>工</strong>から農機など10円</td></tr>
+          <tr><td>$(1,2)$</td><td>0.2</td><td>工100円作る → <strong>農</strong>から原料20円</td></tr>
+          <tr><td>$(2,2)$</td><td>0.4</td><td>工100円作る → <strong>工内</strong>部品・中間品40円</td></tr>
         </tbody>
       </table>
 
-      <h3>5. 無限回のべき乗（$M^\infty$）の正体 — 問答無用で「数字が止まったら」そこがゴール！</h3>
-      <p>「無限回掛ける（$M^\infty$）」と聞くと難しそうですが、現実の最適化やネットワークでは、<strong>「掛け算を繰り返して、表の数字がピタッと変わらなくなった（収束した）瞬間」が、そのまま『無限回掛けた行列（$M^\infty$）』になります！</strong></p>
+      <div class="math-block">
+        $$M = \begin{pmatrix} 0.3 & 0.2 \\ 0.1 & 0.4 \end{pmatrix}, \quad \boldsymbol{d} = \begin{pmatrix} 0 \\ 1000 \end{pmatrix}$$
+      </div>
+      <p class="note"><strong>$\boldsymbol{d}$</strong>：上＝農への直接発注<strong>0</strong>、下＝工への直接発注<strong>1000</strong>（$M$ の外＝最終需要）。単位は <strong>円/円</strong>（§2 の「本数」とは別）。</p>
 
-      <div class="highlight-card">
-        <strong>💡 止まった瞬間に起きる魔法（不動点の原理）：</strong><br>
-        もし $k$ 回掛けた表（$M^k$）と、$k+1$ 回掛けた表（$M^{k+1}$）が完全一致したら、そこから先は $M^{k+2} = M^{k+1} \odot M = M^k \odot M = M^k$ となり、<strong>未来永劫1ミリも数字が変わらなくなります（$M^\infty = M^k$）</strong>。
+      <h4>$M\boldsymbol{d}$ の計算と意味</h4>
+      <div class="math-block">
+        $$M\boldsymbol{d} = \begin{pmatrix} 0.2 \times 1000 \\ 0.4 \times 1000 \end{pmatrix} = \begin{pmatrix} 200 \\ 400 \end{pmatrix}$$
+      </div>
+      <table>
+        <thead><tr><th>結果</th><th>効いたマス</th><th>読み方</th></tr></thead>
+        <tbody>
+          <tr><td>農 <strong>200円</strong></td><td>$M(1,2)=0.2$</td><td>工1000円作るため<strong>農原料200円</strong>を直接仕入れ</td></tr>
+          <tr><td>工 <strong>400円</strong></td><td>$M(2,2)=0.4$</td><td>工1000円作るため<strong>工内中間品400円</strong>を仕入れ</td></tr>
+        </tbody>
+      </table>
+
+      <h4>各段の波及</h4>
+      <table>
+        <thead><tr><th>式</th><th>段</th><th>意味</th><th>農業</th><th>工業</th></tr></thead>
+        <tbody>
+          <tr><td>$\boldsymbol{d}$</td><td>発注</td><td>政府の直接購入</td><td>0</td><td><strong>1000</strong></td></tr>
+          <tr><td>$M\boldsymbol{d}$</td><td><strong>1次</strong></td><td>直接の仕入れ</td><td><strong>200</strong></td><td><strong>400</strong></td></tr>
+          <tr><td>$M^2\boldsymbol{d}$</td><td><strong>2次</strong></td><td>サプライヤーの仕入れ</td><td><strong>140</strong></td><td><strong>180</strong></td></tr>
+          <tr><td>$M^3\boldsymbol{d}$</td><td><strong>3次</strong></td><td>さらに一段奥</td><td>78</td><td>86</td></tr>
+        </tbody>
+      </table>
+      <p><strong>$M^k\boldsymbol{d}$</strong> ＝ 発注から見た <strong>$k$ 段目のサプライチェーン</strong>で動く生産額。全部足すと 農<strong>500</strong>＋工<strong>1750</strong>＝<strong>2250円</strong>の総生産（§5–6）。</p>
+
+      <h3>4. 繰り返し自乗法 — 深いサプライチェーンを「たった10回」で追う</h3>
+      <p><strong>繰り返し自乗法</strong>＝結果を自分自身と掛けて $M \to M^2 \to M^4 \to M^8 \to \cdots$ と進める方法。$M^{50}$ を1回ずつ掛けなくてよい。</p>
+      <div class="math-block">
+        $$M \xrightarrow{\times M} M^2 \xrightarrow{\times M^2} M^4 \xrightarrow{\times M^4} M^8 \dots \xrightarrow{\times M^{512}} M^{1024}$$
+      </div>
+      <p>この例では $M^2 = \begin{pmatrix} 0.11 & 0.14 \\ 0.07 & 0.18 \end{pmatrix}$、$M^4 = M^2 \times M^2 = \begin{pmatrix} 0.022 & 0.041 \\ 0.020 & 0.042 \end{pmatrix}$（$M^4$ は<strong>2回の掛け算</strong>で得られる）。</p>
+      <table>
+        <thead><tr><th>べき乗</th><th>農</th><th>工</th><th>その段の合計</th></tr></thead>
+        <tbody>
+          <tr><td>$M\boldsymbol{d}$</td><td>200</td><td>400</td><td>600</td></tr>
+          <tr><td>$M^2\boldsymbol{d}$</td><td>140</td><td>180</td><td>320</td></tr>
+          <tr><td>$M^3\boldsymbol{d}$</td><td>78</td><td>86</td><td>164</td></tr>
+          <tr><td>$M^4\boldsymbol{d}$</td><td><strong>41</strong></td><td><strong>42</strong></td><td><strong>83</strong></td></tr>
+        </tbody>
+      </table>
+      <p class="note">段が進むと1段あたりの波及は小さくなる。$M^4\boldsymbol{d}$ はもう全体の数％程度。</p>
+
+      <h3>5. 「無限回べき乗」と総波及 — 行列の無限和と直接発注の比較</h3>
+      <p><strong>注意:</strong> $M^k$ <strong>単体</strong>はゼロに近づく。欲しいのは <strong>$I + M + M^2 + \cdots$</strong> という<strong>行列の無限和</strong>：</p>
+      <div class="math-block">
+        $$(I-M)^{-1} = I + M + M^2 + M^3 + \cdots$$
       </div>
 
-      <p>駅が $N$ 個ある路線図なら、最大でも $N-1$ 回以内で絶対に数字が停止するため、<strong>たった数回の計算で「全宇宙の最短ルート（無限乗 $M^\infty$）」に到達</strong>します（クリーネ閉包 $M^*$）。</p>
+      <h4>各次の行列 $M^k$（べき乗そのもの）</h4>
+      <div class="math-block" style="font-size:0.92rem;">
+        $$I=\begin{pmatrix}1&0\\0&1\end{pmatrix},\;
+        M=\begin{pmatrix}0.3&0.2\\0.1&0.4\end{pmatrix},\;
+        M^2=\begin{pmatrix}0.11&0.14\\0.07&0.18\end{pmatrix},\;
+        M^3=\begin{pmatrix}0.047&0.078\\0.039&0.086\end{pmatrix},\;
+        M^4=\begin{pmatrix}0.022&0.041\\0.020&0.042\end{pmatrix}$$
+      </div>
+      <p class="note">$M^k$ は段ごとに<strong>どのマスも小さく</strong>なる。だが<strong>足し合わせる</strong>と別の話。</p>
 
-      <h3>6. 世界を動かす $M^\infty$：Google PageRank と 経済予測</h3>
-      <ul>
-        <li><strong>Google PageRank:</strong> リンク行列 $M$ を何度もべき乗し、数値が落ち着いた定常状態（$M^\infty$）で最重要ページを検索1位にする。</li>
-        <li><strong>レオンチェフ産業連関モデル（経済予測）:</strong> 直接効果 $M$、1次波及 $M^2$、2次波及 $M^3 \dots$ の無限の波及効果の総和 $I + M + M^2 + M^3 \dots = (I - M)^{-1}$ によって、国全体のGDPや減税効果を正確に予測する。</li>
-      </ul>
+      <h4>部分和行列 $S_k = I + M + \cdots + M^k$ → $(I-M)^{-1}$ に収束</h4>
+      <table>
+        <thead><tr><th>何次まで</th><th>$S_k$</th></tr></thead>
+        <tbody>
+          <tr><td>$k=0$</td><td>$\begin{pmatrix} 1.000 & 0.000 \\ 0.000 & 1.000 \end{pmatrix}$</td></tr>
+          <tr><td>$k=1$</td><td>$\begin{pmatrix} 1.300 & 0.200 \\ 0.100 & 1.400 \end{pmatrix}$</td></tr>
+          <tr><td>$k=2$</td><td>$\begin{pmatrix} 1.410 & 0.340 \\ 0.170 & 1.580 \end{pmatrix}$</td></tr>
+          <tr><td>$k=3$</td><td>$\begin{pmatrix} 1.457 & 0.418 \\ 0.209 & 1.666 \end{pmatrix}$</td></tr>
+          <tr><td>$k=4$</td><td>$\begin{pmatrix} 1.479 & 0.459 \\ 0.229 & 1.708 \end{pmatrix}$</td></tr>
+          <tr><td>$k\to\infty$</td><td>$\begin{pmatrix} \mathbf{1.5} & \mathbf{0.5} \\ \mathbf{0.25} & \mathbf{1.75} \end{pmatrix} = (I-M)^{-1}$</td></tr>
+        </tbody>
+      </table>
+      <p class="note">例：右上マス $(1,2)$ は $0+0.2+0.14+0.078+0.041+\cdots \to \mathbf{0.5}$。マスごとに無限和が決まる。</p>
+
+      <h4>$S_k \boldsymbol{d}$ ＝ 発注1000円への累計波及（行列→ベクトル）</h4>
+      <table>
+        <thead><tr><th>$S_k$</th><th>$S_k\boldsymbol{d}$（農, 工）</th><th>合計</th><th>倍率</th></tr></thead>
+        <tbody>
+          <tr><td>$I$</td><td>(0, 1000)</td><td><strong>1000</strong></td><td>1.00倍</td></tr>
+          <tr><td>$I+M$</td><td>(200, 1400)</td><td><strong>1600</strong></td><td>1.60倍</td></tr>
+          <tr><td>$I+M+M^2$</td><td>(340, 1580)</td><td><strong>1920</strong></td><td>1.92倍</td></tr>
+          <tr><td>$S_3$</td><td>(418, 1666)</td><td><strong>2084</strong></td><td>2.08倍</td></tr>
+          <tr><td>$S_4$</td><td>(459, 1708)</td><td><strong>2167</strong></td><td>2.17倍</td></tr>
+          <tr><td>$(I-M)^{-1}$</td><td>(<strong>500</strong>, <strong>1750</strong>)</td><td><strong>2250</strong></td><td><strong>2.25倍</strong></td></tr>
+        </tbody>
+      </table>
+      <p>例：$S_2$ の農340円 ＝ 行列 $(1,2)$ マス <strong>0.34</strong> × 工発注1000。無限和行列 $(I-M)^{-1}$ に $\boldsymbol{d}$ を掛ければ<strong>一発で</strong>総波及。</p>
+
+      <div class="highlight-card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+        <strong>💡 この流れの大きなメリット（逆行列なしで「無限」に近づける）</strong>
+        <ul style="margin:0.5rem 0 0;padding-left:1.2rem;font-size:0.9rem;">
+          <li><strong>繰り返し自乗法</strong> … $M \to M^2 \to M^4$ と<strong>少ない回数</strong>で高次の $M^k$ を得る</li>
+          <li><strong>部分和を足す</strong> … $S_k = I+M+\cdots+M^k$ または $\boldsymbol{d}+M\boldsymbol{d}+\cdots$ を順に足す（$S_4$ で合計<strong>2167円</strong>＝真値の約96%）</li>
+          <li><strong>逆行列は不要</strong> … $(I-M)^{-1}$ は答え合わせ用。掛け算→二乗を繰り返す→足す、の3段で中学生が順に追える</li>
+        </ul>
+      </div>
+
+      <h3>6. 世界を動かす $M^\infty$ の実例</h3>
+      <table>
+        <thead><tr><th>例</th><th>各段 $M^k$</th><th>収束（総効果）</th></tr></thead>
+        <tbody>
+          <tr><td><strong>産業連関</strong>（§3）</td><td>$k$ 次波及額 $M^k\boldsymbol{d}$</td><td>総生産 $(I-M)^{-1}\boldsymbol{d}$</td></tr>
+          <tr><td><strong>PageRank</strong></td><td>$k$ クリック後の分布</td><td>定常状態 $M^\infty$</td></tr>
+          <tr><td><strong>最短経路</strong>（半環ツール）</td><td>$k$ 回乗換以内</td><td>$N-1$ 段で停止</td></tr>
+        </tbody>
+      </table>
+
+      <h3>7. まとめ：圏論・半環への架け橋</h3>
+      <p>線形代数で手に入れた「行列の掛け算とべき乗」の骨組みは、圏論・半環でも同じ形で使われます。<strong>変えるのはマスの中身と ⊕⊗ の意味だけ</strong>です。</p>
+      <table>
+        <thead>
+          <tr><th>マスの中身</th><th>半環の例</th><th>何を求めるか</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>経路の本数</strong>（§2）</td><td>$(+, \times)$</td><td>2ステップで何通り行けるか</td></tr>
+          <tr><td><strong>仕入れ・波及</strong>（§3）</td><td>$(+, \times)$</td><td>$k$ 次波及で何円動くか</td></tr>
+          <tr><td><strong>時間・距離</strong></td><td>$(\min, +)$ トロピカル</td><td><strong>最短</strong>時間の経路</td></tr>
+          <tr><td><strong>確率・信頼度</strong></td><td>$(\max, \times)$</td><td><strong>最大</strong>の到達確率</td></tr>
+          <tr><td><strong>お金</strong></td><td>$(\min, +)$</td><td><strong>最安</strong>ルート</td></tr>
+        </tbody>
+      </table>
+      <p class="note">本章は上段の「本数」だけ。時間・運賃は <a href="tool/index.html">半環カートリッジ実験室</a>。</p>
 
       <div class="highlight-card" style="background: rgba(56, 189, 248, 0.05); border-left: 4px solid var(--accent);">
         <strong>💡 友達に話したくなる！3行まとめカード</strong>
         <ul style="margin-top: 0.4rem; padding-left: 1.2rem;">
-          <li>行列は「関係性マップ」、掛け算は「1歩進む（乗り換える）」！</li>
-          <li>べき乗（$M^k$）は、$k$ ステップ後の未来を計算するタイムマシン！</li>
-          <li>数字が変わらなくなったら収束（$M^\infty$）！Googleや経済も動かす！</li>
+          <li>行列は「関係性マップ」、掛け算は「1段先の波及・経路」！</li>
+          <li>$M^k$ は $k$ 段目の効果（仕入れの連鎖・経路の本数）！</li>
+          <li>足し終われば収束！公共投資の波及も同じ骨組み！</li>
         </ul>
       </div>
 
@@ -757,6 +1074,11 @@ graph LR
           <li>ルールは2つだけ！「結合律（どこで区切っても同じ）」と「単位元律（何もしないを挟んでも不変）」！</li>
           <li>可換図式は「どの道を通ってもゴールが一致する地図」のこと！</li>
         </ul>
+      </div>
+
+      <div class="highlight-card" style="background: rgba(245, 158, 11, 0.08); border-left: 4px solid #f59e0b;">
+        <strong>第2章への橋（抽象度の梯子）</strong>
+        <p style="margin-top: 0.4rem; margin-bottom: 0;">第1章は主に <strong>段1〜2</strong>（グラフ＝圏の入り口）です。<a href="#ch2">第2章 §1</a> で <strong>段0〜4の地図</strong> を示し、普遍性・米田（<strong>段4</strong>）へ進みます。グラフのイメージはそのまま足場として使えます。</p>
       </div>
 
       <div class="step-box" style="border-left-color: #f59e0b;">
@@ -829,7 +1151,7 @@ graph LR
     B -- "4分" --> C["駅 C"]
     A -. "直通なし (∞分)" .-> C
       </div>
-      <p>1区間（直通）で行ける時間を表にした**隣接行列 $M$**：</p>
+      <p>1区間（直通）で行ける時間を表にした<strong>隣接行列 $M$</strong>：</p>
       <div class="math-block">
         $$M = \begin{pmatrix} 0 & 3 & \infty \\ \infty & 0 & 4 \\ \infty & \infty & 0 \end{pmatrix}$$
       </div>
@@ -938,7 +1260,7 @@ graph LR
       <p>「駅やコンピュータが何億個あっても、なぜたった数回のべき乗で全宇宙の最短ルート（$M^\infty$）が確定するのか？」その厳密な数学的根拠と現実のネットワーク構造を丁寧に解き明かします。</p>
 
       <h3>1. 理論的根拠 ①：なぜ最大でも「$N - 1$ 回」で絶対に止まるのか？（鳩ノ巣原理）</h3>
-      <p>数学の基本原理である「**鳩ノ巣原理（5羽の鳩を4つの巣に入れると、必ず1つの巣には2羽以上入る）**」によって厳密に証明されます。</p>
+      <p>数学の基本原理である「<strong>鳩ノ巣原理（5羽の鳩を4つの巣に入れると、必ず1つの巣には2羽以上入る）</strong>」によって厳密に証明されます。</p>
       
       <div class="step-box">
         <strong>💡 鳩ノ巣原理による証明的直感：</strong>
@@ -959,7 +1281,7 @@ graph LR
       </div>
 
       <h3>3. 現実世界の奇跡：80億人でも「たった6回」で届くスモールワールド現象</h3>
-      <p>1967年のミルグラムの実験で、アメリカの見知らぬ住人同士が平均わずか 5.5 人（約6ステップ）の知人関係で手紙を届けられた「六次の隔たり」。これは中学数学の「**掛け算の繰り返し（指数の爆発的拡大）**」で論理的に説明できます。</p>
+      <p>1967年のミルグラムの実験で、アメリカの見知らぬ住人同士が平均わずか 5.5 人（約6ステップ）の知人関係で手紙を届けられた「六次の隔たり」。これは中学数学の「<strong>掛け算の繰り返し（指数の爆発的拡大）</strong>」で論理的に説明できます。</p>
 
       <div class="step-box">
         <strong>🧮 1人が平均50人の知人を持つ世界の拡大スピード：</strong>
@@ -1027,8 +1349,113 @@ graph LR
     <!-- 第2章 -->
     <section id="ch2">
       <h2>第2章：周辺から本質を炙り出す — <span class="term-pop">普遍性<span class="pop-card"><span class="pop-title">普遍性 (Universal Property)</span>中身を決めず周囲との関係性から対象を唯一無二に決定する性質</span></span>と<span class="term-pop">米田の補題<span class="pop-card"><span class="pop-title">米田の補題 (Yoneda Lemma)</span>外部との矢印の総体が対象そのものを決定するという定理</span></span></h2>
-      
-      <h3>1. 普遍性（Universal Property）とは？ — 「何がわかれば、何がわかるのか？」</h3>
+      <p>第1章では駅・路線図など <strong>グラフ</strong> で圏に入りました。本章は抽象度を一段上げ、<strong>普遍性</strong> と <strong>米田の補題</strong> で「中身を見ずに本質を決める」考え方を扱います。まず <strong>抽象度の梯子</strong> で全体の地図を確認してください。</p>
+
+      <h3>1. 抽象度の梯子 — グラフから米田へ（第2章の地図）</h3>
+      <p>圏論がつかみにくいのは、<strong>同じ言葉（対象・射）で、だんだん中身の見え方が変わる</strong>ためです。</p>
+      <table style="width: 100%;">
+        <thead>
+          <tr><th>段</th><th>名前</th><th>何を扱うか</th><th>教材の主な場所</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>0</strong></td><td>具体</td><td>東京駅、単語、部門…</td><td>各章のたとえ</td></tr>
+          <tr><td><strong>1</strong></td><td>グラフ</td><td>ノード・エッジ・経路</td><td>第1章、00c、半環ツール</td></tr>
+          <tr><td><strong>2</strong></td><td>圏</td><td>対象・射・合成・恒等</td><td>第1章</td></tr>
+          <tr><td><strong>3</strong></td><td>関手・自然変換</td><td>圏どうしの写像</td><td>第3章、第4章 §2</td></tr>
+          <tr><td><strong>4</strong></td><td>普遍性・米田</td><td>中身を見ず周辺の矢印で決める</td><td><strong>本章 §2〜§5</strong></td></tr>
+        </tbody>
+      </table>
+      <pre style="margin: 0.6rem 0; line-height: 1.45; overflow-x: auto;">段0 具体 → 段1 グラフ → 段2 圏 → 段3 関手 → 段4 普遍性・米田</pre>
+      <p class="note">迷ったら <strong>段1（グラフ）に戻ってよい</strong>。段2以降は、同じ骨組みが別の中身にも使えることを示します。</p>
+
+      <div class="step-box">
+        <h4>段0〜1：具体とグラフ — 第1章の足場</h4>
+        <p>第1章の駅・路線、00c の物流・レオンチェフ、半環ツールの路線図は、すべて <strong>段1（グラフ）</strong> です。ノード・エッジ・行列という形で整理できます。</p>
+        <h4 style="margin-top: 0.75rem;">段2：圏 — グラフより広い「枠」</h4>
+        <p style="margin-top: 0.4rem;">段2ではノードを <strong>対象</strong>、エッジを <strong>射</strong> と呼び、合成・恒等を定め、<strong>結合律・単位元律</strong> も守ります。<strong>路線図のように描けなくても、次の6項目をすべて満たせば圏になる</strong>（B・C がそれ）。</p>
+        <table style="width: 100%; margin-top: 0.4rem;">
+          <thead><tr><th>例</th><th>対象</th><th>射</th><th>路線図のように描ける？</th><th>圏として？</th></tr></thead>
+          <tbody>
+            <tr><td>A. 路線図</td><td>駅</td><td>乗り継ぎ</td><td>✅</td><td>✅</td></tr>
+            <tr><td>B. 型</td><td><code>Int</code>, <code>String</code></td><td>関数</td><td>❌</td><td>✅</td></tr>
+            <tr><td>C. 証明</td><td>命題</td><td>証明のつなぎ</td><td>❌</td><td>✅</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top: 0.4rem;"><strong>圏＝グラフではない。</strong> グラフは圏の身近な例のひとつ。型や証明も同じ枠に入る。</p>
+
+        <div class="highlight-card" style="margin-top: 1rem;">
+          <strong>圏の定義 — 4つのパーツと2つのルール</strong>
+          <p style="margin: 0.5rem 0 0.75rem; font-size: 0.95rem;">「圏として ✅」＝次の <strong>6項目すべて</strong> を満たすこと（<a href="#ch1">第1章</a> §1〜§2 の要約）。定義そのものであり、おまけの条件ではない。</p>
+          <p style="margin: 0 0 0.4rem; font-weight: 600; color: #0369a1;">【構造】何があり、どう繋ぐか</p>
+          <table style="width: 100%; margin: 0.5rem 0 1rem; font-size: 0.92rem;">
+            <thead><tr><th>#</th><th>名前</th><th>路線図 A</th><th>型 B</th><th>証明 C</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td><strong>対象</strong></td><td>駅</td><td><code>Int</code>, <code>String</code>…</td><td>命題 $P$, $Q$…</td></tr>
+              <tr><td>2</td><td><strong>射</strong> $f:A\to B$</td><td>路線</td><td>関数</td><td>証明</td></tr>
+              <tr><td>3</td><td><strong>合成</strong> $g\circ f$</td><td>乗り継ぎの直通</td><td>関数のパイプライン</td><td>証明のつなぎ</td></tr>
+              <tr><td>4</td><td><strong>恒等射</strong> $\mathrm{id}_A$</td><td>0分待機</td><td>そのまま返す</td><td>自明な証明</td></tr>
+            </tbody>
+          </table>
+          <p style="margin: 0 0 0.4rem; font-weight: 600; color: #0369a1;">【公理】繋ぎ方が破綻していないか</p>
+          <table style="width: 100%; margin: 0.5rem 0 0.75rem; font-size: 0.92rem;">
+            <thead><tr><th>#</th><th>名前</th><th>何を保証するか</th></tr></thead>
+            <tbody>
+              <tr><td>5</td><td><strong>結合律</strong></td><td>3本の矢印をどこで区切っても同じ：$(h \circ g) \circ f = h \circ (g \circ f)$</td></tr>
+              <tr><td>6</td><td><strong>単位元律</strong></td><td>恒等射を挟んでも変わらない：$f \circ \mathrm{id}_A = f$、$\mathrm{id}_B \circ f = f$</td></tr>
+            </tbody>
+          </table>
+          <p class="note" style="margin: 0;">1〜4は部品の説明書、5〜6は動作テスト。B・C は描けないが6項目を満たすので圏である。</p>
+        </div>
+
+        <div class="step-box" style="margin-top: 1rem; border-left-color: #38bdf8;">
+          <strong>合成（Composition）とは — もう少し詳しく</strong>
+
+          <p style="margin: 0.75rem 0 0.4rem; font-weight: 600; color: #0369a1;">定義の言葉で：$g \circ f$ とは何か</p>
+          <p style="margin: 0 0 0.5rem;"><strong>$g \circ f$ は「旅」でも「経路」でもなく、$\mathrm{Hom}(A,C)$ の中の1本の射</strong>です。$f \in \mathrm{Hom}(A,B)$ と $g \in \mathrm{Hom}(B,C)$ が噛み合うとき、圏は合成のルール $\circ$ で <strong>必ず1つ</strong> の $g \circ f \in \mathrm{Hom}(A,C)$ を割り当てます。</p>
+          <pre style="margin: 0.5rem 0;">  Hom(A,B) に f 、Hom(B,C) に g
+        ↓  合成 ∘ で割り当て
+  Hom(A,C) に g∘f が【1本】入る</pre>
+          <p style="margin: 0 0 0.5rem;">例：$\mathrm{Hom}($東京$, $三島$)$ に「乗継 $g \circ f$」と「直通 $k$」が<strong>両方</strong>あってもよい。$g \circ f$ は「$f$ のあと $g$」に対応する<strong>名前付きの1本</strong>で、$k$ とは別の射。</p>
+          <p class="note" style="margin: 0 0 0.75rem;">鍵：$g \circ f$ は経路の自動発見ではなく、<strong>圏が $f,g$ から割り当てるデータ</strong>。関数の圏では $x \mapsto g(f(x))$、証明の圏では証明のつなぎ、と中身は圏ごとに決める。</p>
+
+          <p style="margin: 0.5rem 0;">#3 の具体例：</p>
+          <p style="margin: 0.5rem 0;"><strong>① いつ合成できるか:</strong> $f: A \to B$ と $g: B \to C$ のときだけ $g \circ f: A \to C$ が定義される。真ん中の $B$ が噛み合わないと合成できない。</p>
+          <pre style="margin: 0.5rem 0;">  A ──f──▶ B ──g──▶ C   ⇒   A ──g∘f──▶ C
+       先に f、次に g         1本の直通射</pre>
+          <p style="margin: 0.5rem 0;"><strong>② 記号の読み方:</strong> $g \circ f$ は <strong>先に $f$、次に $g$</strong>（関数の $g(f(x))$ と同じ順序）。</p>
+          <table style="width: 100%; margin: 0.5rem 0; font-size: 0.92rem;">
+            <thead><tr><th>世界</th><th>$f$</th><th>$g$</th><th>$g \circ f$ の中身</th></tr></thead>
+            <tbody>
+              <tr><td>路線図</td><td>東京→熱海</td><td>熱海→三島</td><td>乗り継ぎして三島へ行く旅全体</td></tr>
+              <tr><td>型</td><td><code>parse: String→Int</code></td><td><code>double: Int→Int</code></td><td>文字列→数→2倍のパイプライン</td></tr>
+              <tr><td>証明</td><td>$P$→$Q$ の証明</td><td>$Q$→$R$ の証明</td><td>$P$→$R$ の証明（2つをつなぐ）</td></tr>
+            </tbody>
+          </table>
+          <p style="margin: 0.5rem 0;"><strong>③ 注意:</strong> 一般に $g \circ f \neq f \circ g$（順番が逆なら別の射）。合成は必ず1本に決まり、恒等射・結合律・単位元律とセットで圏になる。</p>
+          <p class="note" style="margin: 0;">段1（グラフ）との違い: 経路をなぞるだけでなく、<strong>合成という操作</strong>が明示的に定義される。</p>
+        </div>
+
+        <div class="highlight-card" style="margin-top: 1rem; border-left: 4px solid #f59e0b;">
+          <strong>補足：#3 合成と #5 結合律 — よくある疑問</strong>
+          <p style="margin: 0.5rem 0 0.75rem;">「合成できるものもあるのに、なぜ結合律？」「辺は複数あるのが普通では？」—— <strong>#3 と #5 は別の問い</strong> です。</p>
+          <table style="width: 100%; margin: 0.5rem 0 0.75rem; font-size: 0.92rem;">
+            <thead><tr><th>問題</th><th>圏での答え</th></tr></thead>
+            <tbody>
+              <tr><td><strong>問い①</strong> $f:A\to B$, $g:B\to C$ のとき $g\circ f:A\to C$ はあるか</td><td><strong>#3 合成</strong> — 噛み合えば<strong>必ず1つ</strong>ある（現実より強い約束）</td></tr>
+              <tr><td><strong>問い②</strong> $f,g,h$ が鎖のとき、括弧の位置で結果は変わるか</td><td><strong>#5 結合律</strong> — $(h\circ g)\circ f = h\circ(g\circ f)$ で<strong>同じ1本</strong></td></tr>
+            </tbody>
+          </table>
+          <p style="margin: 0 0 0.5rem;"><strong>辺が複数</strong>（例：東京→熱海に新幹線と在来線）でも問題なし。結合律は「辺の本数」ではなく、<strong>選んだ $f,g,h$ の組で括弧を変えても同じか</strong> を問う。</p>
+          <p style="margin: 0 0 0.5rem;"><strong>圏 ≠ 現実そのもの。</strong> 合成できない例・括弧で意味が変わる例も現実にはある。圏は<strong>合成が1本に定まり、括弧に依存しない部分</strong>だけを切り出した枠。関数・証明・乗り継ぎは載せやすい；減算のように結合しない操作はそのままでは圏にしない。</p>
+          <p class="note" style="margin: 0;">6項目は現実の「発見」ではなく<strong>圏と呼ぶための定義</strong>。空想ではなく、うまく積める部分の共通言語。</p>
+        </div>
+        <h4 style="margin-top: 0.75rem;">段3：関手 — ノード表＋辺表（→ <a href="#ch3">第3章</a>）</h4>
+        <p>グラフ→行列、半環カートリッジ、日英翻訳、レオンチェフ — いずれも <strong>形を保って別表現へ写す</strong>操作。</p>
+        <h4 style="margin-top: 0.75rem;">段4：普遍性・米田 — 本章の主題</h4>
+        <p>段1〜3は関係を <strong>写す・計算する</strong>。段4は関係だけで <strong>同定する</strong>（中身を見ない）。</p>
+      </div>
+
+      <h3>2. 普遍性（Universal Property）とは？ — 「何がわかれば、何がわかるのか？」</h3>
       <p>「普遍性」とは、<strong>『余計なものが一切なく、みんなの要望を迷わず一撃でまとめられる“唯一の理想的なポジション”』</strong>のことです。</p>
 
       <div class="step-box" style="border-left-color: #38bdf8;">
@@ -1081,7 +1508,7 @@ graph TD
         </tbody>
       </table>
 
-      <h3>2. 中学数学での身近な普遍性：最大公約数（GCD）</h3>
+      <h3>3. 中学数学での身近な普遍性：最大公約数（GCD）</h3>
       <p>12 と 18 の公約数（1, 2, 3, 6）の中で、<strong>「他のすべての公約数から割り切れる（矢印が集まる）頂点」</strong>こそが最大公約数の「6」です。これも位置関係（普遍性）だけで 6 という数字の本質が定まる典型例です。</p>
 
       <div class="mermaid">
@@ -1093,7 +1520,7 @@ graph TD
     GCD --> B
       </div>
 
-      <h3>3. 米田の補題（Yoneda Lemma）：関係性の総体が実存を決める</h3>
+      <h3>4. 米田の補題（Yoneda Lemma）：関係性の総体が実存を決める</h3>
       <p>「ある対象 $X$ の中身を覗かなくても、あらゆる外部対象から $X$ への矢印の集まり $\mathrm{Hom}(-, X)$ をすべて調べれば、$X$ そのものの正体を 100% 完全に特定したことになる」</p>
       
       <div class="mermaid">
@@ -1112,6 +1539,7 @@ graph LR
       <div class="highlight-card" style="background: rgba(56, 189, 248, 0.05); border-left: 4px solid var(--accent);">
         <strong>💡 友達に話したくなる！3行まとめカード</strong>
         <ul style="margin-top: 0.4rem; padding-left: 1.2rem;">
+          <li>抽象度の梯子：グラフ(段1)→圏(段2)→関手(段3)→米田(段4)！</li>
           <li>普遍性は「どんな注文も迷わず一撃で通せるランチセットの位置」！</li>
           <li>最大公約数（GCD）も、すべての公約数をまとめる普遍性の例！</li>
           <li>米田の補題は「周りからの手紙の全部＝その人の正体そのもの」！</li>
@@ -1128,6 +1556,7 @@ graph LR
     <!-- 第3章 -->
     <section id="ch3">
       <h2>第3章：世界と世界を繋ぐ翻訳機 — <span class="term-pop">関手<span class="pop-card"><span class="pop-title">関手 (Functor)</span>圏と圏の間で構造を保ったまま写す翻訳機</span></span>と<span class="term-pop">自然変換<span class="pop-card"><span class="pop-title">自然変換 (Natural Transformation)</span>関手と関手を繋ぐ歪みのない橋渡し</span></span></h2>
+      <p><a href="#ch2">第2章 §1</a> の <strong>抽象度の梯子</strong> で <strong>段3（関手・自然変換）</strong> を位置づけました。本章はその具体版です。グラフのノード・エッジ対応表として読むと、データの形とつながります。</p>
       
       <h3>1. 関手（Functor）：構造を保つ「自動翻訳機」</h3>
       <p>圏 $\mathbf{C}$（日本語の世界）から別の圏 $\mathbf{D}$（英語の世界）へ、繋がり方のルール（合成と恒等射）を崩さずに丸ごと翻訳する機構です。</p>
@@ -1142,6 +1571,22 @@ graph LR
     end
     A -. "関手 F" .-> FA
     B -. "関手 F" .-> FB
+      </div>
+
+      <div class="step-box">
+        <h4>📖 図1の読み方（30秒）</h4>
+        <p>第1章まで見ていたのは<strong>圏の中の矢印（射）</strong>だけです。図1では<strong>世界をまたぐ矢印（関手）</strong>が加わります。</p>
+        <table style="width: 100%; margin-top: 0.5rem;">
+          <thead>
+            <tr><th>線の種類</th><th>意味</th><th>この図での例</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>箱の中の実線</strong></td><td>その世界の<strong>射</strong></td><td>朝→昼、Morning→Noon</td></tr>
+            <tr><td><strong>箱をまたぐ点線</strong></td><td><strong>関手</strong> $F$ による写像</td><td>朝↦Morning、$f$↦$F(f)$</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top: 0.6rem;"><strong>見る順番:</strong> (1) 左の箱で 朝→昼 の射 $f$ を確認 → (2) 右の箱で Morning→Noon の射 $F(f)$ を確認 → (3) 点線で左の世界が丸ごと右へ送られていることを確認。</p>
+        <p style="margin-top: 0.4rem;"><strong>一言:</strong> 関手は単語を1対1に訳すだけではなく、<strong>「朝→昼」という関係が英語でも Morning→Noon になる</strong>ことを保証する翻訳機です。</p>
       </div>
       
       <table>
@@ -1166,6 +1611,62 @@ graph LR
         </tbody>
       </table>
 
+      <div class="step-box">
+        <h4>🧮 恒等射のデータ表現 — 単位行列 $I$ そのもの</h4>
+        <p>恒等射 $\mathrm{id}_A$（待機・何もしない1ステップ）は、行列では <strong>単位行列 $I$</strong> と同じ役割です。$I \cdot M = M$、$M \cdot I = M$。</p>
+        <table style="width: 100%; margin-top: 0.5rem;">
+          <thead>
+            <tr><th>圏論</th><th>通常の行列</th><th>トロピカル $(\min,+)$</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>$\mathrm{id}_A$ … 合成の「1」</td><td>対角が $1$ の $I$</td><td>対角が $0$（$\min$ の単位元）</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top: 0.5rem;">レオンチェフの $(I-M)^{-1} = I + M + M^2 + \cdots$ の <strong>$I$</strong> も同型。「まず何も波及させない1項」＝合成の単位です。</p>
+        <pre style="margin: 0.5rem 0;">3駅モデル（A,B）の1ステップ行列イメージ:
+       着A  着B
+  発A [  1    1  ]  ← 対角の1は「待機」（恒等射）
+  発B [  0    1  ]</pre>
+      </div>
+
+      <div class="step-box">
+        <h4>🧮 関手のデータ表現 — コンピュータでは「2つの表」</h4>
+        <p>関手 $F$ は <strong>対象の写像表</strong> と <strong>射の写像表</strong> のペアです（スプレッドシート／JSON で管理するイメージ）。</p>
+        <p style="margin-top: 0.5rem;"><strong>表1：対象の写像</strong></p>
+        <table style="width: 100%;">
+          <thead><tr><th>日本語</th><th>$F$</th><th>英語</th></tr></thead>
+          <tbody>
+            <tr><td>朝</td><td>→</td><td>Morning</td></tr>
+            <tr><td>昼</td><td>→</td><td>Noon</td></tr>
+            <tr><td>夜</td><td>→</td><td>Night</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top: 0.5rem;"><strong>表2：射の写像（抜粋）</strong></p>
+        <table style="width: 100%;">
+          <thead><tr><th>圏Cの射</th><th>$F$</th><th>圏Dの射</th></tr></thead>
+          <tbody>
+            <tr><td>$\mathrm{id}_{朝}$（待機）</td><td>→</td><td>$\mathrm{id}_{Morning}$（Stay）</td></tr>
+            <tr><td>$f$：朝→昼</td><td>→</td><td>Morning→Noon</td></tr>
+            <tr><td>$g \circ f$：朝→夜</td><td>→</td><td>Morning→Night</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top: 0.5rem;"><strong>合成を保つチェック:</strong> 左で $g \circ f$、右で $F(g) \circ F(f)$ が表の最下行で一致 → 関手として合格。</p>
+        <p style="margin-top: 0.4rem;"><strong>教材との接続:</strong> 半環カートリッジ＝同じ路線図でマスの意味だけ差し替え / <code>map</code>＝関数をリスト世界へ一括適用 / グラフ→行列＝形を保って表に写す。</p>
+      </div>
+
+      <div class="highlight-card" style="margin-top: 1rem;">
+        <strong>補足：何を記録するか — 「すべての圏」ではない</strong>
+        <table style="width: 100%; margin-top: 0.5rem; font-size: 0.92rem;">
+          <thead><tr><th>持つもの</th><th>スコープ</th></tr></thead>
+          <tbody>
+            <tr><td>圏 $\mathbf{C}$</td><td>いまの問題用の世界<strong>1つ</strong></td></tr>
+            <tr><td>関手 $F$, $G$</td><td>ノード表＋辺表</td></tr>
+            <tr><td>自然変換 $\alpha$</td><td>$\mathbf{C}$ の対象ごとに<strong>1行</strong></td></tr>
+          </tbody>
+        </table>
+        <p style="margin: 0.5rem 0 0;">揃えやすさ：<strong>半環カートリッジ・行列</strong>（低）／<strong>日英翻訳</strong>（高）。関手は「何を揃えれば一貫するか」の枠。</p>
+      </div>
+
       <h3>2. 自然変換（Natural Transformation）：翻訳機同士の変換アダプター</h3>
       <p>関手（旧辞書）$F$ と関手（新辞書）$G$ の間の橋渡し。どのタイミングで新辞書に切り替えても文章の意味が破綻しないこと（可換性 $\alpha_B \circ F(f) = G(f) \circ \alpha_A$）を保証します。</p>
 
@@ -1180,6 +1681,89 @@ graph TD
     FA -- "旧文脈 F(f)" --> FB
     GA -- "新文脈 G(f)" --> GB
       </div>
+
+      <div class="step-box">
+        <h4>📖 図2の読み方（30秒）</h4>
+        <p>図2は <strong>2つの関手</strong>（旧辞書 $F$ と新辞書 $G$）と、それらをつなぐ <strong>自然変換</strong> $\alpha$ が同時に登場します。まず<strong>対象 A だけ</strong>に注目し、小さな四角形を追います。</p>
+        <pre style="margin: 0.5rem 0; line-height: 1.4; overflow-x: auto;">  F(A) ─── F(f) ───▶ F(B)     ← 旧辞書で会話を進める
+   │  α_A           │  α_B    ← 新旧表現を直すアダプター
+   ▼                ▼
+  G(A) ─── G(f) ───▶ G(B)     ← 新辞書で会話を進める</pre>
+        <table style="width: 100%; margin-top: 0.5rem;">
+          <thead>
+            <tr><th>矢印</th><th>読み方</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>A→F(A)、A→G(A)</td><td>同じ「挨拶」を旧・新辞書でそれぞれ訳す</td></tr>
+            <tr><td>$\alpha_A$、$\alpha_B$</td><td>旧訳から新訳へ直す<strong>アダプター</strong></td></tr>
+            <tr><td>$F(f)$、$G(f)$</td><td>挨拶から返答へ<strong>会話を1歩進める</strong>（旧版・新版）</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top: 0.6rem;"><strong>自然変換の条件:</strong> AからBへ行く経路が2通り — (ルート1) 先に $F(f)$ で進めてから $\alpha_B$ で直す / (ルート2) 先に $\alpha_A$ で直してから $G(f)$ で進める — <strong>どちらでも同じ答え</strong>になります。</p>
+        <p style="margin-top: 0.4rem;"><strong>一言:</strong> 自然変換は、2つの翻訳機の答えのズレを $\alpha$ で埋め、<strong>辞書をいつ切り替えても意味が狂わない</strong>橋です。</p>
+      </div>
+
+      <div class="step-box">
+        <h4>🧮 自然変換のデータ表現 — 言い換え表 $\alpha$</h4>
+        <p>自然変換は <strong>2つの関手 $F$（旧）と $G$（新）の答えを、対象ごとに言い換える表</strong>です。</p>
+        <table style="width: 100%; margin-top: 0.5rem;">
+          <thead><tr><th>対象</th><th>$F$（旧）</th><th>$\alpha$</th><th>$G$（新）</th></tr></thead>
+          <tbody>
+            <tr><td>挨拶 A</td><td>Hello</td><td>→</td><td>Good day</td></tr>
+            <tr><td>返答 B</td><td>Thanks</td><td>→</td><td>Thank you</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top: 0.6rem;"><strong>可換性チェック（2ルートが同じ答えか）:</strong></p>
+        <table style="width: 100%;">
+          <thead><tr><th>ルート</th><th>操作</th><th>結果</th></tr></thead>
+          <tbody>
+            <tr><td>ルート1</td><td>先に $F(f)$、後から $\alpha_B$</td><td>Thank you</td></tr>
+            <tr><td>ルート2</td><td>先に $\alpha_A$、後から $G(f)$</td><td>Thank you</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top: 0.4rem;">結果列が一致 → 辞書の切り替えタイミングに依存しない（DBマイグレーションで同じクエリ結果が出るイメージ）。</p>
+      </div>
+
+        <p style="margin-top: 0.4rem;">結果列が一致 → 辞書の切り替えタイミングに依存しない（DBマイグレーションで同じクエリ結果が出るイメージ）。</p>
+        <p class="note" style="margin: 0.5rem 0 0;">$\alpha$ は圏 $\mathbf{C}$ の対象ごとの表。すべての圏を列挙するものではない（上の補足）。</p>
+      </div>
+
+      <h3>3. プログラミングでの例 — 型と関数の世界</h3>
+      <p class="note" style="margin-bottom: 0.75rem;"><strong>注意:</strong> 言語間翻訳（Java↔Python）の話ではない。<strong>1つのプログラム内の「型」と「関数」</strong>を圏として見る話。</p>
+
+      <table style="width: 100%; margin-bottom: 1rem; font-size: 0.92rem;">
+        <thead><tr><th>圏論</th><th>プログラミング</th></tr></thead>
+        <tbody>
+          <tr><td>対象</td><td>型（<code>int</code>, <code>str</code> …）</td></tr>
+          <tr><td>射</td><td>関数（<code>int → str</code> など）</td></tr>
+          <tr><td>合成</td><td>関数のパイプライン</td></tr>
+        </tbody>
+      </table>
+
+      <div class="step-box" style="border-left-color: #38bdf8;">
+        <strong>例1：<code>map</code> ＝ 関手（リスト関手）</strong>
+        <pre style="margin: 0.5rem 0;">def double(x): return x * 2
+nums = [1, 2, 3]
+doubled = [double(x) for x in nums]   # [2, 4, 6]</pre>
+        <p style="margin: 0;">関手 $F$：型 <code>int</code> → <code>list[int]</code>。$F(\text{double})$：リスト版の2倍関数。<strong>単品の規則をリスト世界へ壊さず持ち上げる</strong>のが関手。</p>
+      </div>
+
+      <div class="step-box" style="margin-top: 0.75rem;">
+        <strong>例2：リスト ↔ 集合 ＝ 自然変換</strong>
+        <p style="margin: 0.5rem 0;">同じデータの2つの見方（$F$＝リスト、$G$＝集合）のあいだをつなぐアダプター $\alpha$。</p>
+        <pre style="margin: 0.5rem 0;">items = [1, 2, 2]
+as_set = set(items)    # {1, 2}</pre>
+        <p class="note" style="margin: 0;">可換性＝変換タイミングを変えても意味が狂わない（図2のルート1＝ルート2）。</p>
+      </div>
+
+      <table style="width: 100%; margin-top: 1rem; font-size: 0.92rem;">
+        <thead><tr><th></th><th>日英翻訳（§1）</th><th>プログラミング（§3）</th></tr></thead>
+        <tbody>
+          <tr><td>表を揃える</td><td>辞書を手作業</td><td><strong>型グラフは言語が持つ</strong></td></tr>
+          <tr><td>関手</td><td>英語への $F$</td><td><code>list</code> 化・<code>map</code></td></tr>
+          <tr><td>自然変換</td><td>旧辞書→新辞書の $\alpha$</td><td><code>list</code> ↔ <code>set</code></td></tr>
+        </tbody>
+      </table>
 
       <div class="highlight-card" style="background: rgba(56, 189, 248, 0.05); border-left: 4px solid var(--accent);">
         <strong>💡 友達に話したくなる！3行まとめカード</strong>
@@ -1244,10 +1828,48 @@ graph TD
         <p>1 万円を両替して一周させるだけで、<strong>ノーリスクで 10,307 円（+307円）に増える市場の歪み（アービトラージ）</strong>を行列計算が自動検知します！</p>
       </div>
 
-      <h3>2. 複雑ネットワーク科学 × 圏論（高次相互作用のモデル化）</h3>
-      <p>メタ言語としての圏論（関手によるアナロジー抽出）と、高速計算エンジンとしての複雑ネットワーク科学が融合し、巨大な因果関係を「**マクロノード（Super Node）**」へとスッキリ折りたたんで本質を炙り出します。</p>
+      <div class="highlight-card" style="background: rgba(56, 189, 248, 0.05); border-left: 4px solid var(--accent);">
+        <strong>🔗 第3章との接続 — 関手で読み直すと</strong>
+        <p style="margin-top: 0.4rem;">上の3例は、どれも<strong>同じネットワーク（矢印の繋がり）</strong>を、別の「意味の世界」へ送り出しています。</p>
+        <table style="width: 100%; margin-top: 0.5rem;">
+          <thead>
+            <tr><th>例</th><th>ネットワーク</th><th>関手が写す先</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>レオンチェフ</td><td>部門間の投入関係</td><td>需要 → 波及する生産額</td></tr>
+            <tr><td>供給停止</td><td>在庫・納期のつながり</td><td>停止が届く最短日数</td></tr>
+            <tr><td>為替裁定</td><td>通貨の両替レート</td><td>ループの積（利益の歪み）</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top: 0.5rem;">第3章の<strong>関手</strong>は「射の繋がり方を壊さず、別の世界へ持ち上げる翻訳機」。半環カートリッジの切り替えは、写像の先で使う<strong>足し算・掛け算のルール（$\oplus$ と $\otimes$）</strong>を差し替える操作 — 行列の形はそのまま、問いの意味だけを変える、関手の実用版と言えます。</p>
+      </div>
 
-      <h3>3. 量子圏論（DisCoCat）と意味・実存の創発</h3>
+      <h3>2. 複雑ネットワーク科学 × 圏論（高次相互作用のモデル化）</h3>
+      <p>メタ言語としての圏論（関手によるアナロジー抽出）と、高速計算エンジンとしての複雑ネットワーク科学が融合し、巨大な因果関係を「<strong>マクロノード（Super Node）</strong>」へとスッキリ折りたたんで本質を炙り出します。</p>
+
+      <h3>3. DisCoCat と言語の意味 — モノイダル圏で文を組み立てる</h3>
+      <p>言語処理の研究では、<strong>モノイダル圏</strong>を用いた <strong>DisCoCat</strong> という枠組みが注目されています。単語の意味（ベクトル）と文法（射の合成）を、同じ圏の言葉でつなぐのが本体です。</p>
+
+      <div class="step-box">
+        <h4>📐 モノイダル圏とは？（30秒概要）</h4>
+        <p>第1章の<strong>圏</strong>は、射を<strong>縦に</strong>つなぐ世界（$g \circ f$）です。<strong>モノイダル圏</strong>は、ここに「<strong>横に並べる</strong>」操作が加わった圏です。</p>
+        <table style="width: 100%; margin-top: 0.5rem;">
+          <thead>
+            <tr><th></th><th>通常の圏（第1章）</th><th>モノイダル圏</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>縦の操作</strong></td><td>射の合成 $\circ$ … 一本道にする</td><td>同じく射の合成 $\circ$ がある</td></tr>
+            <tr><td><strong>横の操作</strong></td><td>（なし）</td><td><strong>テンソル積</strong> $\otimes$ … 2つを並べて $A \otimes B$ にする</td></tr>
+            <tr><td><strong>たとえ（言語）</strong></td><td>「熱海を経由して三島へ」</td><td>「<strong>りんご</strong>」と「<strong>食べる</strong>」を<strong>並べて</strong>から、文法でつなぐ</td></tr>
+          </tbody>
+        </table>
+        <ul style="margin-top: 0.6rem; padding-left: 1.2rem;">
+          <li><strong>$\otimes$（テンソル積）:</strong> 2つの対象を「隣り合わせのかたまり」として扱う</li>
+          <li><strong>なぜ文に必要か:</strong> 文は複数の単語を<strong>並べたうえで</strong>文法どおりに合成される — 「並べる＋つなぐ」の両方を式で書ける</li>
+          <li><strong>DisCoCat:</strong> 単語にベクトルを置き、$\otimes$ で並べ、$\circ$ で文法合成 → 文全体の意味ベクトルが定まる</li>
+        </ul>
+      </div>
+
       <div class="mermaid">
 graph LR
     subgraph subVec["1. ベクトル空間 (単語)"]
@@ -1257,24 +1879,28 @@ graph LR
     subgraph subCat["2. 圏論 (文法・関係)"]
         Arrow["射 (文法合成)"]
     end
-    subgraph subQ["3. 量子圏論 (意味の創発)"]
-        Entangle["量子もつれ・位相干渉<br>(文脈による意味の収束)"]
+    subgraph subMean["3. 文の意味 (合成の結果)"]
+        Sentence["文全体の意味ベクトル"]
     end
     W1 --> Arrow
     W2 --> Arrow
-    Arrow --> Entangle
+    Arrow --> Sentence
       </div>
-      <p>単語を固定ベクトルとしてだけでなく、量子重ね合わせ・位相干渉・文脈による収束として扱うことで、動的で豊かな対話と意味の創発を捉えます。</p>
+      <ul style="margin-top: 0.5rem; padding-left: 1.2rem;">
+        <li><strong>ベクトル:</strong> 単語を数値ベクトルとして表す</li>
+        <li><strong>圏論:</strong> 文法を射の合成で組み立てる</li>
+        <li><strong>文の意味:</strong> 合成の結果として文全体の意味が定まる（古典的 DisCoCat の中心）</li>
+      </ul>
 
-      <h3>4. 知識表現・AetherDB への応用</h3>
-      <p>知見の等価性判定、安全な聖域境界ゲート、推論経路の来歴（Provenance）追跡など、次世代AIアーキテクチャの根幹を支える基盤として活用されます。</p>
+      <h3>4. 知識・知恵・記憶の構造化（AIアーキテクチャへの応用）</h3>
+      <p>知見の等価性判定、境界付き知識共有（アクセス制御ゲート）、推論経路の来歴（Provenance）追跡など、次世代AIアーキテクチャの根幹を支える基盤として活用されます。</p>
 
       <div class="highlight-card" style="background: rgba(56, 189, 248, 0.05); border-left: 4px solid var(--accent);">
         <strong>💡 友達に話したくなる！3行まとめカード</strong>
         <ul style="margin-top: 0.4rem; padding-left: 1.2rem;">
           <li>レオンチェフ経済予測も為替裁定も、すべて行列のべき乗の応用！</li>
           <li>圏論とネットワーク科学が合体し、巨大な複雑システムを解剖！</li>
-          <li>量子圏論や次世代AI記憶など、現代科学の最前線を牽引する！</li>
+          <li>DisCoCat や次世代AI記憶など、現代科学の最前線を牽引する！</li>
         </ul>
       </div>
 

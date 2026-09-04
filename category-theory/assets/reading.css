@@ -1,0 +1,41 @@
+/**
+ * 圏論教材 — 公開向けタイポグラフィ（Windows / macOS / Linux / モバイル共通）
+ * Noto Sans JP: 画面表示向け・各OSで安定した日本語レンダリング
+ */
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+:root {
+  --font-sans: "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+    "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+}
+
+select,
+button,
+input,
+textarea {
+  font-family: inherit;
+}
+
+pre,
+code {
+  font-family: inherit;
+}
+
+pre {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0;
+  overflow-x: auto;
+  line-height: 1.75;
+}
