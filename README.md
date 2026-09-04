@@ -12,7 +12,14 @@
 | [math-combinatorics-tool](./math-combinatorics-tool/) | 組合せツール（HTML） |
 | [path-to-structure](./path-to-structure/) | 組合せ探索　道から構造へ（最短路→ZDD、Dual-View HTML） |
 | [system-dynamics](./system-dynamics/) | SD×TOC 教材（統合 HTML・Pages） |
-| [category-theory](./category-theory/) | 圏論（Category Theory）直感と構造の探求ガイド（統合 HTML・原稿） |
+| [category-theory](./category-theory/) | 圏論（Category Theory）直感と構造の探求ガイド（[GitHub Pages](https://ogaogamirai.github.io/Teaching-materials/category-theory/)・原稿） |
+
+## 圏論教材（すぐ見る）
+
+1. **学習用一冊（ブラウザ）:** [category-theory（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/category-theory/)
+2. **半環カートリッジ実験室:** [tool/index.html（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/category-theory/tool/index.html)
+3. **応用実験室（裁定・波及・停止ドミノ）:** [applications-lab.html（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/category-theory/tool/applications-lab.html)
+4. **原稿・章立て:** [`category-theory/chapters/`](./category-theory/chapters/)
 
 ## フーリエ教材（すぐ見る）
 

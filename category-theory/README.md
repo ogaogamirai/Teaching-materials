@@ -38,9 +38,11 @@ graph TD
 
 本教材は単一の HTML ファイルでも快適に閲覧できます（KaTeX 数式・Mermaid 図・モダンUI対応）。
 
-- **HTML版教材**: [`index.html`](./index.html) をブラウザで開く（ダブルクリック / `file://` 直開き対応）
-- **🧰 実践ツール（半環カートリッジ実験室）**: [`tool/index.html`](./tool/index.html)（ルート最適化インタラクティブツール）
-- **💱 応用実験室（裁定・波及・停止ドミノ）**: [`tool/applications-lab.html`](./tool/applications-lab.html)（第4章 §2 の3例を体験）
+- **HTML版教材（GitHub Pages）:** [統合教材を開く](https://ogaogamirai.github.io/Teaching-materials/category-theory/)（ブラウザでそのまま閲覧）
+- **🧰 実践ツール（半環カートリッジ実験室）:** [tool/index.html](https://ogaogamirai.github.io/Teaching-materials/category-theory/tool/index.html)（ルート最適化インタラクティブツール）
+- **💱 応用実験室（裁定・波及・停止ドミノ）:** [applications-lab.html](https://ogaogamirai.github.io/Teaching-materials/category-theory/tool/applications-lab.html)（第4章 §2 の3例を体験）
+
+ローカルで開く場合は [`index.html`](./index.html) をダブルクリック（`file://` 可）。
 
 ---
 
