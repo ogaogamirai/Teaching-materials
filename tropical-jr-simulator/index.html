@@ -7,8 +7,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- KaTeX -->
   <link rel="stylesheet" href="./vendor/katex/katex.min.css">
-  <script defer src="./vendor/katex/katex.min.js"></script>
-  <script defer src="./vendor/katex/contrib/auto-render.min.js"></script>
+  <script src="./vendor/katex/katex.min.js"></script>
+  <script src="./vendor/katex/auto-render.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&display=swap');
     body {
@@ -815,13 +815,21 @@
           ],
           throwOnError: false
         });
+        return true;
       }
+      return false;
     }
+
+    renderMath();
     window.addEventListener('DOMContentLoaded', renderMath);
     window.addEventListener('load', renderMath);
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
-      renderMath();
-    }
+    let mathRetryCount = 0;
+    const mathRetryTimer = setInterval(() => {
+      mathRetryCount++;
+      if (renderMath() || mathRetryCount > 50) {
+        clearInterval(mathRetryTimer);
+      }
+    }, 50);
   </script>
 </body>
 </html>
