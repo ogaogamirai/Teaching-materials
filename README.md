@@ -2,19 +2,18 @@
 
 動機主導・直感と王道をセットにした学習教材の monorepo。
 
-| フォルダ | 内容 |
-|----------|------|
-| [fourier-theory-v2](./fourier-theory-v2/) | フーリエ theory-v2 **学習用一冊**（GitHub Pages） |
-| [fourier-transform](./fourier-transform/) | フーリエ（原稿・正本 [`theory-v2`](./fourier-transform/theory-v2/)／旧 interactive は archive） |
-| [modern-cryptography](./modern-cryptography/) | 現代暗号の基礎（RSA・ECC・量子計算・PQC） |
-| [math-integers-guide](./math-integers-guide/) | 整数が面白いほどわかるシリーズ |
-| [math-combinatorics-guide](./math-combinatorics-guide/) | 組合せの直感ガイド |
-| [math-combinatorics-tool](./math-combinatorics-tool/) | 組合せツール（HTML） |
-| [path-to-structure](./path-to-structure/) | 組合せ探索　道から構造へ（最短路→ZDD、Dual-View HTML） |
-| [system-dynamics](./system-dynamics/) | SD×TOC 教材（統合 HTML・Pages） |
-| [category-theory](./category-theory/) | 圏論（Category Theory）直感と構造の探求ガイド（[GitHub Pages](https://ogaogamirai.github.io/Teaching-materials/category-theory/)・原稿） |
-| [tropical-math](./tropical-math/) | トロピカル代数とフロンティア法（4駅モデル・ZDD コマ送り実況） |
-| [tropical-jr-simulator](./tropical-jr-simulator/) | 都内JR 87駅全体シミュレーター（トロピカル最短路・最長一筆書き・ZDDフロンティア法） |
+| 教材・ツール | ブラウザ閲覧（GitHub Pages） | 原稿・ローカル | 内容 |
+|---|---|---|---|
+| **トロピカル数学とフロンティア法** | [tropical-math（本編）](https://ogaogamirai.github.io/Teaching-materials/tropical-math/) | [`textbook.md`](./tropical-math/textbook.md) | トロピカル代数とフロンティア法（4駅モデル・ZDD コマ送り実況） |
+| └ **4駅完全連動実験室** | [simulator.html](https://ogaogamirai.github.io/Teaching-materials/tropical-math/simulator.html) | [`simulator.html`](./tropical-math/simulator.html) | 状態・フロンティア・DPテーブルの全連動シミュレーター |
+| └ **都内JR 87駅シミュレーター** | [tropical-jr-simulator](https://ogaogamirai.github.io/Teaching-materials/tropical-jr-simulator/) | [`index.html`](./tropical-jr-simulator/index.html) | 都内JR 87駅全体シミュレーター（トロピカル最短路・最長一筆書き・ZDD） |
+| **圏論（Category Theory）** | [category-theory](https://ogaogamirai.github.io/Teaching-materials/category-theory/) | [`category-theory/`](./category-theory/) | 直感と構造の探求ガイド、半環カートリッジ実験室 |
+| **フーリエ解析** | [fourier-theory-v2](https://ogaogamirai.github.io/Teaching-materials/fourier-theory-v2/) | [`theory-v2/`](./fourier-transform/theory-v2/) | フーリエ theory-v2 **学習用一冊** |
+| **現代暗号の基礎** | [modern-cryptography](https://ogaogamirai.github.io/Teaching-materials/modern-cryptography/) | [`modern-cryptography/`](./modern-cryptography/) | RSA・ECC・量子計算（操作盤シミュレーター）・耐量子暗号（PQC） |
+| **システムダイナミクス×TOC** | [system-dynamics](https://ogaogamirai.github.io/Teaching-materials/system-dynamics/) | [`system-dynamics/`](./system-dynamics/) | SD×TOC 教材（統合 HTML・Pages） |
+| **道から構造へ** | [path-to-structure](https://ogaogamirai.github.io/Teaching-materials/path-to-structure/) | [`path-to-structure/`](./path-to-structure/) | 組合せ探索　道から構造へ（最短路→ZDD、Dual-View HTML） |
+| **整数が面白いほどわかるシリーズ** | - | [`math-integers-guide`](./math-integers-guide/) | 整数が面白いほどわかるシリーズ原稿 |
+| **組合せの直感ガイド** | - | [`math-combinatorics-guide`](./math-combinatorics-guide/) | 組合せの直感ガイド原稿・ツール |
 
 ## 正本の置き場（三家共通）
 
@@ -27,6 +26,14 @@
 | GitHub | [ogaogamirai/Teaching-materials](https://github.com/ogaogamirai/Teaching-materials) |
 
 各家の `tools/` に教材全文をコピーしない。Agent は [`Projects/README.md`](../README.md) の正本で作業する。
+
+## 🪐 トロピカル数学とZDD（すぐ見る）
+
+1. 📘 **学習用一冊（ブラウザ）:** [tropical-math（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/tropical-math/)
+2. 🎮 **4駅完全連動Web実験室:** [simulator.html（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/tropical-math/simulator.html)
+3. 🗺️ **都内JR 87駅全体シミュレーター:** [tropical-jr-simulator（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/tropical-jr-simulator/)
+4. 📄 **原稿正本:** [`tropical-math/textbook.md`](./tropical-math/textbook.md)
+5. 🔨 **ビルドコマンド:** `cd tropical-math && python build_html.py`
 
 ## 圏論教材（すぐ見る）
 
@@ -43,24 +50,15 @@
 
 ## path-to-structure（すぐ見る）
 
-1. [`path-to-structure/index.html`](./path-to-structure/index.html) をブラウザで開く（`file://` 可）
-2. 原稿の編集正本: `path-to-structure/chapters/*.md`
-3. プレーン版: [`path-to-structure/plain.html`](./path-to-structure/plain.html)
-
-詳細は各フォルダの `README.md` / `PLAN_*.md` を参照。
+1. **ブラウザで開く:** [path-to-structure（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/path-to-structure/) / [`index.html`](./path-to-structure/index.html)
+2. **原稿の編集正本:** `path-to-structure/chapters/*.md`
+3. **プレーン版:** [`path-to-structure/plain.html`](./path-to-structure/plain.html)
 
 ## 現代暗号の基礎（すぐ見る）
 
 1. **学習用一冊（ブラウザ）:** [modern-cryptography（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/modern-cryptography/)
 2. **量子計算の操作盤:** [quantum_basics.html（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/modern-cryptography/models/quantum_basics.html)
 3. **原稿・設計:** [`modern-cryptography/`](./modern-cryptography/)
-
-## トロピカル数学とZDD（すぐ見る）
-
-1. **学習用一冊（ブラウザ）:** [`tropical-math/index.html`](./tropical-math/index.html)（`file://` 可）
-2. **原稿正本:** [`tropical-math/textbook.md`](./tropical-math/textbook.md)
-3. **ビルド:** `cd tropical-math && python build_html.py`
-4. **連動シミュレーター:** [`tropical-math/simulator.html`](./tropical-math/simulator.html)
 
 ---
 
