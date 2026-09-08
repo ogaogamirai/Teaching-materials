@@ -735,15 +735,6 @@ def build():
     subtitle_match = re.search(r"^##\s+(.*)$", header_chunk, re.M)
     subtitle = subtitle_match.group(1).strip() if subtitle_match else "トロピカル代数とフロンティア法で解き明かす「最短」と「最長」の数理"
 
-    author_match = re.search(r"\*\*著者\*\*:\s*(.*)", header_chunk)
-    author = author_match.group(1).strip() if author_match else "Eleanor Arroway (Ellie) × Captain"
-    target_match = re.search(r"\*\*対象読者\*\*:\s*(.*)", header_chunk)
-    target = target_match.group(1).strip() if target_match else "一般社会人（学び直し・エンジニア・教養）"
-    prereq_match = re.search(r"\*\*前提知識\*\*:\s*(.*)", header_chunk)
-    prereq = prereq_match.group(1).strip() if prereq_match else "中学数学レベル（四則演算・不等式）"
-    ver_match = re.search(r"\*\*教材バージョン\*\*:\s*(.*)", header_chunk)
-    version = ver_match.group(1).strip() if ver_match else "1.2.0"
-
     chapters: list[dict] = []
     for i, m in enumerate(matches):
         raw_title = m.group(1).strip()
@@ -915,12 +906,6 @@ def build():
     <header class="hero">
       <h1>__TITLE__</h1>
       <p class="tagline">__SUBTITLE__</p>
-      <div class="meta-box">
-        <div><strong>著者:</strong> __AUTHOR__</div>
-        <div><strong>教材版:</strong> __VERSION__ (__NOW_STR__ ビルド)</div>
-        <div><strong>対象:</strong> __TARGET__</div>
-        <div><strong>前提:</strong> __PREREQ__</div>
-      </div>
       <div class="actions">
         <a href="simulator.html" target="_blank" class="btn btn-primary">🎮 連動Webシミュレーター（4駅実験室）を開く</a>
         <a href="../tropical-jr-simulator/index.html" target="_blank" class="btn btn-primary" style="background: #059669; border-color: #059669;">🗺️ 都内JR 87駅全体シミュレーターを開く</a>
@@ -946,11 +931,6 @@ def build():
         .replace("__TITLE__", title)
         .replace("__SUBTITLE__", subtitle)
         .replace("__CSS_STYLES__", CSS_STYLES)
-        .replace("__AUTHOR__", author)
-        .replace("__VERSION__", version)
-        .replace("__NOW_STR__", now_str)
-        .replace("__TARGET__", target)
-        .replace("__PREREQ__", prereq)
         .replace("__SELECT_OPTIONS__", "".join(select_options_html))
         .replace("__TOC_ITEMS__", "".join(toc_items_html))
         .replace("__CHAPTERS__", "".join(chapters_html))
