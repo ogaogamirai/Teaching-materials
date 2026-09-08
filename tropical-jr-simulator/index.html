@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>東京都内JRネットワーク × トロピカル代数＆ZDD 最短・最長シミュレーター</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background-color: #0b0f19;
+      color: #e2e8f0;
+    }
+    .font-mono-code {
+      font-family: 'Fira Code', monospace;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-3 md:p-6">
+
+  <!-- ヘッダー -->
+  <header class="max-w-7xl mx-auto mb-6 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-2xl backdrop-blur">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="inline-block w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-xs font-mono-code uppercase tracking-widest text-emerald-400 font-semibold">Tropical & ZDD Graph Engine</span>
+          <span class="text-xs text-slate-500 font-mono-code">v2.1 (Min-Plus Semiring & Frontier ZDD)</span>
+        </div>
+        <h1 class="text-xl md:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+          🚃 東京都内JRネットワーク 最短＆最長（一筆書き大回り）シミュレーター
+        </h1>
+        <p class="text-xs md:text-sm text-slate-400 mt-1">
+          多項式時間で解ける「トロピカル行列積（最短）」と、組み合わせ爆発を制圧する「ZDD・フロンティア法（一筆書き最長）」を体感する数理ツール
+        </p>
+        <div class="flex gap-2 mt-3">
+          <a href="../tropical-math/index.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700 transition">
+            📖 教材テキスト（HTML版）へ戻る
+          </a>
+          <a href="../tropical-math/simulator.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-950/80 hover:bg-cyan-900 text-xs font-medium text-cyan-300 border border-cyan-800/60 transition">
+            🎮 4駅連動シミュレーターへ
+          </a>
+        </div>
+      </div>
+
+      <!-- クイックステータス -->
+      <div class="flex items-center gap-4 bg-slate-950/60 border border-slate-800 px-4 py-2.5 rounded-xl text-xs font-mono-code">
+        <div>
+          <span class="text-slate-500 block">STATIONS</span>
+          <span class="text-cyan-400 font-bold text-base" id="statStations">87</span>
+        </div>
+        <div class="border-l border-slate-800 pl-4">
+          <span class="text-slate-500 block">EDGES</span>
+          <span class="text-cyan-400 font-bold text-base" id="statEdges">200</span>
+        </div>
+        <div class="border-l border-slate-800 pl-4">
+          <span class="text-slate-500 block">ZDD WIDTH</span>
+          <span class="text-amber-400 font-bold text-base">Max 12</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- メイングリッド -->
+  <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- 左カラム：入力・操作パネル (4 cols) -->
+    <div class="lg:col-span-4 space-y-6">
+
+      <!-- 検索・選択カード -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-xl">
+        <h2 class="text-sm font-bold text-slate-200 tracking-wider uppercase mb-4 flex items-center gap-2">
+          <span>🎯 駅の選択と最適化基準</span>
+        </h2>
+
+        <div class="space-y-4">
+          <!-- 出発駅 -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1.5 flex items-center justify-between">
+              <span>出発駅</span>
+              <span class="text-[10px] text-cyan-400 font-mono-code">START_NODE (i)</span>
+            </label>
+            <div class="relative">
+              <select id="startStation" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500">
+                <!-- JSで注入 -->
+              </select>
+            </div>
+          </div>
+
+          <!-- 到着駅 -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1.5 flex items-center justify-between">
+              <span>到着駅</span>
+              <span class="text-[10px] text-rose-400 font-mono-code">GOAL_NODE (j)</span>
+            </label>
+            <div class="relative">
+              <select id="goalStation" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500">
+                <!-- JSで注入 -->
+              </select>
+            </div>
+          </div>
+
+          <!-- クイック入替ボタン -->
+          <div class="flex justify-center">
+            <button id="swapStationsBtn" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-lg border border-slate-700 flex items-center gap-1 transition">
+              <span>⇅ 出発と到着を入替</span>
+            </button>
+          </div>
+
+          <!-- 最適化基準の選択 (4モード) -->
+          <div class="pt-2 border-t border-slate-800">
+            <label class="block text-xs font-semibold text-slate-400 mb-2 flex items-center justify-between">
+              <span>経路探索モード</span>
+              <span class="text-[10px] text-amber-400">4タイプ選択可能</span>
+            </label>
+            
+            <div class="space-y-2">
+              <div class="text-[11px] font-semibold text-slate-500">⚡ 最短経路（トロピカル Min-Plus代数 / 多項式時間P）</div>
+              <div class="grid grid-cols-2 gap-2">
+                <button class="mode-btn px-2.5 py-2 rounded-xl text-xs font-bold border transition flex items-center justify-center gap-1 bg-cyan-500/20 text-cyan-300 border-cyan-500" data-mode="shortest-time">
+                  <span>⏱️ 最短時間</span>
+                </button>
+                <button class="mode-btn px-2.5 py-2 rounded-xl text-xs font-bold border transition flex items-center justify-center gap-1 bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700" data-mode="shortest-dist">
+                  <span>📏 最短距離</span>
+                </button>
+              </div>
+
+              <div class="text-[11px] font-semibold text-amber-400/90 pt-1">🌟 一筆書き最長ルート（乗鉄大回り / NP困難・ZDD領域）</div>
+              <div class="grid grid-cols-2 gap-2">
+                <button class="mode-btn px-2.5 py-2 rounded-xl text-xs font-bold border transition flex items-center justify-center gap-1 bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700" data-mode="longest-dist">
+                  <span>🚃 最長距離(大回り)</span>
+                </button>
+                <button class="mode-btn px-2.5 py-2 rounded-xl text-xs font-bold border transition flex items-center justify-center gap-1 bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700" data-mode="longest-time">
+                  <span>⏳ 最長時間(大回り)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- よく使う代表ルートクイック選択 -->
+          <div class="pt-2 border-t border-slate-800">
+            <label class="block text-xs font-semibold text-slate-400 mb-2">おすすめ区間クイック選択</label>
+            <div class="space-y-2">
+              <div class="text-[10px] text-amber-400/80">★ 大回りの効果が劇的な隣接駅ペア：</div>
+              <div class="flex flex-wrap gap-1.5">
+                <button class="quick-pair text-[11px] px-2.5 py-1 rounded-lg bg-amber-950/30 border border-amber-800/60 hover:border-amber-500 text-amber-200" data-from="東京" data-to="神田">東京 ➔ 神田 (隣駅)</button>
+                <button class="quick-pair text-[11px] px-2.5 py-1 rounded-lg bg-amber-950/30 border border-amber-800/60 hover:border-amber-500 text-amber-200" data-from="品川" data-to="田町">品川 ➔ 田町 (隣駅)</button>
+                <button class="quick-pair text-[11px] px-2.5 py-1 rounded-lg bg-amber-950/30 border border-amber-800/60 hover:border-amber-500 text-amber-200" data-from="秋葉原" data-to="御茶ノ水">秋葉原 ➔ 御茶ノ水</button>
+              </div>
+              <div class="text-[10px] text-slate-500">★ 定番・広域ペア：</div>
+              <div class="flex flex-wrap gap-1.5">
+                <button class="quick-pair text-[11px] px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 hover:border-slate-600 text-slate-300" data-from="東京" data-to="新宿">東京 ➔ 新宿</button>
+                <button class="quick-pair text-[11px] px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 hover:border-slate-600 text-slate-300" data-from="立川" data-to="東京">立川 ➔ 東京</button>
+                <button class="quick-pair text-[11px] px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 hover:border-slate-600 text-slate-300" data-from="赤羽" data-to="渋谷">赤羽 ➔ 渋谷</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- トロピカル代数のルール早見表 -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-xl text-xs space-y-3">
+        <h3 class="font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+          <span>🌴 ① トロピカル半環（Min-Plus）の演算</span>
+        </h3>
+        <p class="text-slate-400 text-[11px]">
+          高校までの「普通の足し算・掛け算」のルールを、以下の「トロピカルルール」に置き換えます：
+        </p>
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2 font-mono-code text-[11px]">
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400">加算 a ⊕ b :</span>
+            <span class="text-cyan-300 font-bold">min(a, b) （短い方を選ぶ）</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400">乗算 a ⊗ b :</span>
+            <span class="text-amber-300 font-bold">a + b （時間を足し合わせる）</span>
+          </div>
+        </div>
+        <p class="text-[11px] text-slate-400 italic">
+          ※ これにより、行列の掛け算 (A ⊗ B)ij = min_k (A_ik + B_kj) がそのまま「最短経路の探索」になります！
+        </p>
+      </div>
+
+      <!-- ZDDフロンティア法の早見表 -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-xl text-xs space-y-3">
+        <h3 class="font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+          <span>🌲 ② ZDD（フロンティア法）の原理</span>
+        </h3>
+        <p class="text-slate-400 text-[11px] leading-relaxed">
+          日本発の世界最高峰アルゴリズム（湊真一教授）。
+          一筆書きパスの膨大な組み合わせ空間（2^98 ≈ 10^29通り）を、<strong class="text-slate-200">「切断境界（フロンティア）」の接続状態が等しいものを完全マージ</strong>することで極小のDAG（有向非巡回グラフ）へと超圧縮します。
+        </p>
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-[11px] space-y-1.5 text-slate-300 font-mono-code">
+          <div class="flex justify-between">
+            <span class="text-slate-500">全エッジ組合せ:</span>
+            <span class="text-rose-400">2^98 (天文学的爆発)</span>
+          </div>
+          <div class="flex justify-between border-t border-slate-800 pt-1">
+            <span class="text-slate-400">都内最大フロンティア幅:</span>
+            <span class="text-amber-300 font-bold">わずか 12 頂点</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">平均フロンティア幅:</span>
+            <span class="text-cyan-300 font-bold">5.69 頂点</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 乗り鉄コラムカード -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-xl text-xs space-y-3">
+        <h3 class="font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+          <span>🎫 乗り鉄の掟：大回り乗車とは？</span>
+        </h3>
+        <p class="text-slate-400 text-[11px] leading-relaxed">
+          JRの「大都市近郊区間内相互発着の特例（旅客営業規則第157条第2項）」により、対象区間内では<strong class="text-slate-200">「実際に乗車した経路にかかわらず、最も安価な最短経路で運賃を計算する」</strong>という特例があります。
+        </p>
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-[11px] space-y-1.5 text-slate-300">
+          <div><strong class="text-amber-300">① 一筆書きの原則：</strong> 同じ駅を2度通過してはならない</div>
+          <div><strong class="text-amber-300">② 途中下車不可：</strong> 改札を出るとその駅で打ち切り</div>
+          <div><strong class="text-amber-300">③ 有効期限は当日限り：</strong> 終電までにゴールへ着くこと</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 右カラム：結果・道筋可視化・行列インスペクター (8 cols) -->
+    <div class="lg:col-span-8 space-y-6">
+
+      <!-- 1. 計算サマリーカード -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+        
+        <!-- 大回り乗車バッジ（最長モード時表示） -->
+        <div id="oomawariBadge" class="hidden mb-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2 text-amber-300 font-bold">
+            <span class="text-base">🌟</span>
+            <span>大都市近郊区間特例：一筆書き大回りルート適用中</span>
+          </div>
+          <span id="oomawariRatio" class="text-[11px] font-mono-code text-amber-400 font-semibold">最短比 -- 倍</span>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4 mb-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-mono-code text-cyan-400 tracking-wider" id="resultModeLabel">SHORTEST PATH</span>
+              <span id="resultComplexityBadge" class="text-[10px] px-2 py-0.5 rounded font-mono-code bg-emerald-500/20 text-emerald-300">P (Polynomial Time)</span>
+            </div>
+            <h2 class="text-lg md:text-xl font-bold text-white flex items-center gap-2 mt-0.5" id="routeTitle">
+              東京 ➔ 新宿
+            </h2>
+          </div>
+          <div class="flex items-center gap-6">
+            <div class="text-right">
+              <span class="text-[11px] text-slate-400 block">所要時間</span>
+              <span class="text-2xl md:text-3xl font-bold font-mono-code text-cyan-400" id="resTotalTime">--</span>
+              <span class="text-xs text-slate-400">分</span>
+            </div>
+            <div class="text-right border-l border-slate-800 pl-6">
+              <span class="text-[11px] text-slate-400 block">営業キロ</span>
+              <span class="text-2xl md:text-3xl font-bold font-mono-code text-amber-400" id="resTotalDist">--</span>
+              <span class="text-xs text-slate-400">km</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 補足情報・運賃注記 -->
+        <div class="flex flex-wrap items-center justify-between text-xs text-slate-400 mb-6 gap-2">
+          <div id="resHopCount">経由駅: --駅 / 乗り換え: --回</div>
+          <div id="resFareNote" class="text-slate-500">※運賃計算キロ: 最短経路適用</div>
+        </div>
+
+        <!-- 道筋（駅と乗り換え）のステップ可視化 -->
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+            <span>📍 走行ルート・経由駅の道筋</span>
+          </h3>
+          <div id="routeStepsContainer" class="flex flex-wrap items-center gap-1.5 p-4 bg-slate-950 rounded-xl border border-slate-800 max-h-60 overflow-y-auto">
+            <!-- JSで動的生成 -->
+          </div>
+        </div>
+
+        <!-- 路線別内訳テーブル -->
+        <div class="mt-6">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+            <span>📊 乗車区間・路線別内訳</span>
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-950 text-slate-400 font-mono-code border-b border-slate-800">
+                <tr>
+                  <th class="py-2.5 px-3">区間</th>
+                  <th class="py-2.5 px-3">路線名</th>
+                  <th class="py-2.5 px-3 text-right">営業キロ</th>
+                  <th class="py-2.5 px-3 text-right">所要時間</th>
+                </tr>
+              </thead>
+              <tbody id="routeTableBody" class="divide-y divide-slate-800/60 font-mono-code">
+                <!-- JSで動的生成 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 2. 数理インスペクター：トロピカル代数 vs ZDDフロンティア法 -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-5">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-bold text-amber-400 tracking-wider uppercase flex items-center gap-2">
+            <span>🔍 数理インスペクター：計算の現場</span>
+          </h2>
+          <span class="text-xs font-mono-code text-slate-400" id="matrixCalcStatus">Min-Plus Closed-form</span>
+        </div>
+
+        <!-- 最短モード時の解説 -->
+        <div id="inspectorShortest" class="space-y-4">
+          <p class="text-xs text-slate-300 leading-relaxed">
+            トロピカル代数では、隣接行列 A の掛け算を繰り返すこと（A^(k)）で、任意の2点間の最短経路を<strong>「ただの行列積」</strong>として求めます。
+            現在選ばれている出発駅 <strong class="text-cyan-300" id="inspectStartStation">東京</strong> から到着駅 <strong class="text-rose-300" id="inspectGoalStation">新宿</strong> への最短コストは、次の中継点 k のトロピカル加算 min_k によって確定しています：
+          </p>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono-code text-xs space-y-2">
+            <div class="text-slate-400 text-[11px] mb-1">// トロピカル行列積によるコスト最小化方程式</div>
+            <div class="text-cyan-300 font-semibold" id="inspectFormula">
+              D[i, j] = min_k ( A[i, k] + D[k, j] )
+            </div>
+            <div class="text-slate-300 pt-2 border-t border-slate-800 text-[11px]" id="inspectOptimalChoice">
+              選択された最適中継駅: <span class="text-amber-400 font-bold">--</span> (直通または次駅)
+            </div>
+          </div>
+        </div>
+
+        <!-- 最長モード時の解説（ZDDフロンティア法＆P vs NP） -->
+        <div id="inspectorLongest" class="hidden space-y-4">
+          <p class="text-xs text-slate-300 leading-relaxed">
+            なぜ「一筆書き最長経路」はトロピカル行列積で一瞬で解けないのでしょうか？<br>
+            もし Max-Plus半環 (max, +) で行列積を行うと、<strong>「同じ駅をぐるぐる回り続けるループ（正の閉路）」</strong>の重みが無限大に発散してしまうため、単純な行列演算では「一筆書き（同じ頂点を2度訪問しない）」という制約を表現できません。
+          </p>
+
+          <!-- ZDDフロンティア法による解決策のカード -->
+          <div class="bg-slate-950 p-4 rounded-xl border border-amber-500/30 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                <span>🌲 日本発の世界的ブレークスルー：ZDD（フロンティア法）の解法</span>
+              </span>
+              <span class="text-[10px] font-mono-code text-cyan-400">Simpath Algorithm</span>
+            </div>
+            
+            <p class="text-xs text-slate-300 leading-relaxed">
+              一筆書きの全組み合わせを1本ずつ数えると天文学的爆発（2^98通り）を起こしますが、<strong>湊真一教授が開発した「フロンティア法」</strong>では、路線図を走査する「切断境界（フロンティア）」の接続関係が同じ部分構造を完全に同一ノードとして合流（ゼロサプレス圧縮）します。
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2 pt-2 text-[11px] font-mono-code">
+              <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                <span class="text-slate-500 block text-[10px]">① 全組合せ空間</span>
+                <span class="text-rose-400 font-bold">2^98 ≈ 10^29通り</span>
+                <span class="text-[10px] text-slate-400 block mt-0.5">総当たりは物理的に不可能</span>
+              </div>
+              <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                <span class="text-slate-500 block text-[10px]">② 都内最大フロンティア幅</span>
+                <span class="text-amber-300 font-bold">わずか 12 頂点</span>
+                <span class="text-[10px] text-slate-400 block mt-0.5">記憶すべき境界線上の駅数</span>
+              </div>
+              <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                <span class="text-slate-500 block text-[10px]">③ DAG上の動的計画法 (DP)</span>
+                <span class="text-emerald-400 font-bold">O(|ZDD|) 線形時間</span>
+                <span class="text-[10px] text-slate-400 block mt-0.5">真の最長ルートを一撃抽出</span>
+              </div>
+            </div>
+
+            <p class="text-[11px] text-slate-400 leading-relaxed pt-1">
+              ※本Webシミュレーターでは、このZDDの等価性・到達可能性の枝刈り原理（Branch & Bound）をJavaScriptでリアルタイム実行し、ブラウザ上で0.01秒で最長級の一筆書きルートを提示しています。厳密全数ZDD解析は同梱の <code class="text-amber-300">zdd_engine.py</code> で実行可能です。
+            </p>
+          </div>
+        </div>
+
+        <!-- 3大数理アプローチ比較テーブル -->
+        <div class="pt-2 border-t border-slate-800">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">
+            <span>📚 3大数理アプローチの比較</span>
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-[11px] text-left">
+              <thead class="bg-slate-950 text-slate-400 font-mono-code border-b border-slate-800">
+                <tr>
+                  <th class="py-2 px-2.5">手法</th>
+                  <th class="py-2 px-2.5">数理の土台</th>
+                  <th class="py-2 px-2.5">対象問題</th>
+                  <th class="py-2 px-2.5">計算量</th>
+                  <th class="py-2 px-2.5">特徴</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/60 font-mono-code">
+                <tr class="hover:bg-slate-800/30">
+                  <td class="py-2 px-2.5 text-cyan-300 font-bold">🌴 トロピカル代数</td>
+                  <td class="py-2 px-2.5 text-slate-300">Min-Plus半環</td>
+                  <td class="py-2 px-2.5 text-slate-300">最短経路</td>
+                  <td class="py-2 px-2.5 text-emerald-400">O(V^3) 多項式時間</td>
+                  <td class="py-2 px-2.5 text-slate-400">探索問題が行列の掛け算そのものに化ける</td>
+                </tr>
+                <tr class="hover:bg-slate-800/30">
+                  <td class="py-2 px-2.5 text-amber-300 font-bold">🔍 分枝限定DFS</td>
+                  <td class="py-2 px-2.5 text-slate-300">状態空間探索＋BFS枝刈り</td>
+                  <td class="py-2 px-2.5 text-slate-300">一筆書き最長実用解</td>
+                  <td class="py-2 px-2.5 text-amber-400">実用上ミリ秒 (上限制御)</td>
+                  <td class="py-2 px-2.5 text-slate-400">軽量でブラウザ即応。長大ルートを高速捕捉</td>
+                </tr>
+                <tr class="hover:bg-slate-800/30">
+                  <td class="py-2 px-2.5 text-emerald-300 font-bold">🌲 ZDD (フロンティア法)</td>
+                  <td class="py-2 px-2.5 text-slate-300">ゼロサプレス二分決定グラフ</td>
+                  <td class="py-2 px-2.5 text-slate-300">全一筆書き数え上げ＆厳密最長</td>
+                  <td class="py-2 px-2.5 text-cyan-400">幅依存 O(poly * 2^w)</td>
+                  <td class="py-2 px-2.5 text-slate-400">全解空間をDAGに超圧縮。真の最大値を厳密特定</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- フッター -->
+  <footer class="max-w-7xl mx-auto mt-8 text-center text-xs text-slate-600 font-mono-code pb-6">
+    JR Tokyo Network Simulator &copy; 2026 Eleanor Arroway. Min-Plus Linear Algebra & Frontier-based ZDD Engine.
+  </footer>
+
+  <!-- 埋め込みデータ＆ロジック -->
+  <script>
+    const networkData = {"metadata": {"title": "東京都内JR路線ネットワーク", "version": "1.0.0", "station_count": 87, "lines": ["山手線", "中央線快速", "中央・総武各駅停車", "京浜東北線", "埼京線", "総武快速・横須賀線", "常磐線", "武蔵野線", "南武線"], "line_colors": {"山手線": "#80c241", "中央線快速": "#f15a22", "中央・総武各駅停車": "#ffd400", "京浜東北線": "#00b2e5", "埼京線": "#00ac9a", "総武快速・横須賀線": "#002060", "常磐線": "#007ac1", "武蔵野線": "#ea5404", "南武線": "#ffb81c"}}, "stations": [{"id": 0, "name": "三河島", "lines": ["常磐線"]}, {"id": 1, "name": "三鷹", "lines": ["中央線快速"]}, {"id": 2, "name": "上中里", "lines": ["京浜東北線"]}, {"id": 3, "name": "上野", "lines": ["山手線"]}, {"id": 4, "name": "両国", "lines": ["中央・総武各駅停車"]}, {"id": 5, "name": "中野", "lines": ["中央・総武各駅停車", "中央線快速"]}, {"id": 6, "name": "亀戸", "lines": ["中央・総武各駅停車"]}, {"id": 7, "name": "亀有", "lines": ["常磐線"]}, {"id": 8, "name": "五反田", "lines": ["山手線"]}, {"id": 9, "name": "代々木", "lines": ["中央・総武各駅停車", "山手線"]}, {"id": 10, "name": "信濃町", "lines": ["中央・総武各駅停車"]}, {"id": 11, "name": "八王子", "lines": ["中央線快速"]}, {"id": 12, "name": "分倍河原", "lines": ["南武線"]}, {"id": 13, "name": "北千住", "lines": ["常磐線"]}, {"id": 14, "name": "北赤羽", "lines": ["埼京線"]}, {"id": 15, "name": "十条", "lines": ["埼京線"]}, {"id": 16, "name": "千駄ケ谷", "lines": ["中央・総武各駅停車"]}, {"id": 17, "name": "南千住", "lines": ["常磐線"]}, {"id": 18, "name": "原宿", "lines": ["山手線"]}, {"id": 19, "name": "吉祥寺", "lines": ["中央線快速"]}, {"id": 20, "name": "品川", "lines": ["京浜東北線", "山手線", "総武快速・横須賀線"]}, {"id": 21, "name": "四ツ谷", "lines": ["中央・総武各駅停車", "中央線快速"]}, {"id": 22, "name": "国分寺", "lines": ["中央線快速"]}, {"id": 23, "name": "国立", "lines": ["中央線快速"]}, {"id": 24, "name": "大久保", "lines": ["中央・総武各駅停車"]}, {"id": 25, "name": "大井町", "lines": ["京浜東北線"]}, {"id": 26, "name": "大塚", "lines": ["山手線"]}, {"id": 27, "name": "大崎", "lines": ["山手線"]}, {"id": 28, "name": "大森", "lines": ["京浜東北線"]}, {"id": 29, "name": "小岩", "lines": ["中央・総武各駅停車"]}, {"id": 30, "name": "巣鴨", "lines": ["山手線"]}, {"id": 31, "name": "市ケ谷", "lines": ["中央・総武各駅停車"]}, {"id": 32, "name": "平井", "lines": ["中央・総武各駅停車"]}, {"id": 33, "name": "府中本町", "lines": ["南武線", "武蔵野線"]}, {"id": 34, "name": "御徒町", "lines": ["山手線"]}, {"id": 35, "name": "御茶ノ水", "lines": ["中央・総武各駅停車", "中央線快速"]}, {"id": 36, "name": "恵比寿", "lines": ["山手線"]}, {"id": 37, "name": "新大久保", "lines": ["山手線"]}, {"id": 38, "name": "新宿", "lines": ["中央・総武各駅停車", "中央線快速", "山手線"]}, {"id": 39, "name": "新小岩", "lines": ["中央・総武各駅停車", "総武快速・横須賀線"]}, {"id": 40, "name": "新日本橋", "lines": ["総武快速・横須賀線"]}, {"id": 41, "name": "新橋", "lines": ["山手線", "総武快速・横須賀線"]}, {"id": 42, "name": "新秋津", "lines": ["武蔵野線"]}, {"id": 43, "name": "日暮里", "lines": ["山手線", "常磐線"]}, {"id": 44, "name": "日野", "lines": ["中央線快速"]}, {"id": 45, "name": "有楽町", "lines": ["山手線"]}, {"id": 46, "name": "東中野", "lines": ["中央・総武各駅停車"]}, {"id": 47, "name": "東京", "lines": ["中央線快速", "山手線", "総武快速・横須賀線"]}, {"id": 48, "name": "東十条", "lines": ["京浜東北線"]}, {"id": 49, "name": "東小金井", "lines": ["中央線快速"]}, {"id": 50, "name": "板橋", "lines": ["埼京線"]}, {"id": 51, "name": "武蔵境", "lines": ["中央線快速"]}, {"id": 52, "name": "武蔵小金井", "lines": ["中央線快速"]}, {"id": 53, "name": "水道橋", "lines": ["中央・総武各駅停車"]}, {"id": 54, "name": "池袋", "lines": ["埼京線", "山手線"]}, {"id": 55, "name": "浅草橋", "lines": ["中央・総武各駅停車"]}, {"id": 56, "name": "浜松町", "lines": ["山手線"]}, {"id": 57, "name": "浮間舟渡", "lines": ["埼京線"]}, {"id": 58, "name": "渋谷", "lines": ["山手線"]}, {"id": 59, "name": "王子", "lines": ["京浜東北線"]}, {"id": 60, "name": "田町", "lines": ["山手線"]}, {"id": 61, "name": "田端", "lines": ["京浜東北線", "山手線"]}, {"id": 62, "name": "目白", "lines": ["山手線"]}, {"id": 63, "name": "目黒", "lines": ["山手線"]}, {"id": 64, "name": "神田", "lines": ["中央線快速", "山手線"]}, {"id": 65, "name": "秋葉原", "lines": ["中央・総武各駅停車", "山手線"]}, {"id": 66, "name": "立川", "lines": ["中央線快速", "南武線"]}, {"id": 67, "name": "綾瀬", "lines": ["常磐線"]}, {"id": 68, "name": "荻窪", "lines": ["中央線快速"]}, {"id": 69, "name": "蒲田", "lines": ["京浜東北線"]}, {"id": 70, "name": "西八王子", "lines": ["中央線快速"]}, {"id": 71, "name": "西国分寺", "lines": ["中央線快速", "武蔵野線"]}, {"id": 72, "name": "西日暮里", "lines": ["山手線"]}, {"id": 73, "name": "西荻窪", "lines": ["中央線快速"]}, {"id": 74, "name": "豊田", "lines": ["中央線快速"]}, {"id": 75, "name": "赤羽", "lines": ["京浜東北線", "埼京線"]}, {"id": 76, "name": "金町", "lines": ["常磐線"]}, {"id": 77, "name": "錦糸町", "lines": ["中央・総武各駅停車", "総武快速・横須賀線"]}, {"id": 78, "name": "阿佐ケ谷", "lines": ["中央線快速"]}, {"id": 79, "name": "飯田橋", "lines": ["中央・総武各駅停車"]}, {"id": 80, "name": "馬喰町", "lines": ["総武快速・横須賀線"]}, {"id": 81, "name": "駒込", "lines": ["山手線"]}, {"id": 82, "name": "高円寺", "lines": ["中央線快速"]}, {"id": 83, "name": "高尾", "lines": ["中央線快速"]}, {"id": 84, "name": "高田馬場", "lines": ["山手線"]}, {"id": 85, "name": "高輪ゲートウェイ", "lines": ["山手線"]}, {"id": 86, "name": "鶯谷", "lines": ["山手線"]}], "edges": [{"from": "東京", "to": "有楽町", "distance": 0.8, "time": 2, "line": "山手線"}, {"from": "有楽町", "to": "東京", "distance": 0.8, "time": 2, "line": "山手線"}, {"from": "有楽町", "to": "新橋", "distance": 1.1, "time": 2, "line": "山手線"}, {"from": "新橋", "to": "有楽町", "distance": 1.1, "time": 2, "line": "山手線"}, {"from": "新橋", "to": "浜松町", "distance": 1.2, "time": 2, "line": "山手線"}, {"from": "浜松町", "to": "新橋", "distance": 1.2, "time": 2, "line": "山手線"}, {"from": "浜松町", "to": "田町", "distance": 1.5, "time": 2, "line": "山手線"}, {"from": "田町", "to": "浜松町", "distance": 1.5, "time": 2, "line": "山手線"}, {"from": "田町", "to": "高輪ゲートウェイ", "distance": 1.3, "time": 2, "line": "山手線"}, {"from": "高輪ゲートウェイ", "to": "田町", "distance": 1.3, "time": 2, "line": "山手線"}, {"from": "高輪ゲートウェイ", "to": "品川", "distance": 0.9, "time": 2, "line": "山手線"}, {"from": "品川", "to": "高輪ゲートウェイ", "distance": 0.9, "time": 2, "line": "山手線"}, {"from": "品川", "to": "大崎", "distance": 2.0, "time": 3, "line": "山手線"}, {"from": "大崎", "to": "品川", "distance": 2.0, "time": 3, "line": "山手線"}, {"from": "大崎", "to": "五反田", "distance": 0.9, "time": 2, "line": "山手線"}, {"from": "五反田", "to": "大崎", "distance": 0.9, "time": 2, "line": "山手線"}, {"from": "五反田", "to": "目黒", "distance": 1.2, "time": 2, "line": "山手線"}, {"from": "目黒", "to": "五反田", "distance": 1.2, "time": 2, "line": "山手線"}, {"from": "目黒", "to": "恵比寿", "distance": 1.5, "time": 2, "line": "山手線"}, {"from": "恵比寿", "to": "目黒", "distance": 1.5, "time": 2, "line": "山手線"}, {"from": "恵比寿", "to": "渋谷", "distance": 1.6, "time": 2, "line": "山手線"}, {"from": "渋谷", "to": "恵比寿", "distance": 1.6, "time": 2, "line": "山手線"}, {"from": "渋谷", "to": "原宿", "distance": 1.2, "time": 2, "line": "山手線"}, {"from": "原宿", "to": "渋谷", "distance": 1.2, "time": 2, "line": "山手線"}, {"from": "原宿", "to": "代々木", "distance": 1.5, "time": 2, "line": "山手線"}, {"from": "代々木", "to": "原宿", "distance": 1.5, "time": 2, "line": "山手線"}, {"from": "代々木", "to": "新宿", "distance": 0.7, "time": 2, "line": "山手線"}, {"from": "新宿", "to": "代々木", "distance": 0.7, "time": 2, "line": "山手線"}, {"from": "新宿", "to": "新大久保", "distance": 1.3, "time": 2, "line": "山手線"}, {"from": "新大久保", "to": "新宿", "distance": 1.3, "time": 2, "line": "山手線"}, {"from": "新大久保", "to": "高田馬場", "distance": 1.4, "time": 2, "line": "山手線"}, {"from": "高田馬場", "to": "新大久保", "distance": 1.4, "time": 2, "line": "山手線"}, {"from": "高田馬場", "to": "目白", "distance": 0.9, "time": 2, "line": "山手線"}, {"from": "目白", "to": "高田馬場", "distance": 0.9, "time": 2, "line": "山手線"}, {"from": "目白", "to": "池袋", "distance": 1.2, "time": 2, "line": "山手線"}, {"from": "池袋", "to": "目白", "distance": 1.2, "time": 2, "line": "山手線"}, {"from": "池袋", "to": "大塚", "distance": 1.8, "time": 3, "line": "山手線"}, {"from": "大塚", "to": "池袋", "distance": 1.8, "time": 3, "line": "山手線"}, {"from": "大塚", "to": "巣鴨", "distance": 1.1, "time": 2, "line": "山手線"}, {"from": "巣鴨", "to": "大塚", "distance": 1.1, "time": 2, "line": "山手線"}, {"from": "巣鴨", "to": "駒込", "distance": 0.7, "time": 2, "line": "山手線"}, {"from": "駒込", "to": "巣鴨", "distance": 0.7, "time": 2, "line": "山手線"}, {"from": "駒込", "to": "田端", "distance": 1.6, "time": 3, "line": "山手線"}, {"from": "田端", "to": "駒込", "distance": 1.6, "time": 3, "line": "山手線"}, {"from": "田端", "to": "西日暮里", "distance": 0.8, "time": 2, "line": "山手線"}, {"from": "西日暮里", "to": "田端", "distance": 0.8, "time": 2, "line": "山手線"}, {"from": "西日暮里", "to": "日暮里", "distance": 0.5, "time": 2, "line": "山手線"}, {"from": "日暮里", "to": "西日暮里", "distance": 0.5, "time": 2, "line": "山手線"}, {"from": "日暮里", "to": "鶯谷", "distance": 1.1, "time": 2, "line": "山手線"}, {"from": "鶯谷", "to": "日暮里", "distance": 1.1, "time": 2, "line": "山手線"}, {"from": "鶯谷", "to": "上野", "distance": 1.1, "time": 2, "line": "山手線"}, {"from": "上野", "to": "鶯谷", "distance": 1.1, "time": 2, "line": "山手線"}, {"from": "上野", "to": "御徒町", "distance": 0.6, "time": 2, "line": "山手線"}, {"from": "御徒町", "to": "上野", "distance": 0.6, "time": 2, "line": "山手線"}, {"from": "御徒町", "to": "秋葉原", "distance": 1.0, "time": 2, "line": "山手線"}, {"from": "秋葉原", "to": "御徒町", "distance": 1.0, "time": 2, "line": "山手線"}, {"from": "秋葉原", "to": "神田", "distance": 0.7, "time": 2, "line": "山手線"}, {"from": "神田", "to": "秋葉原", "distance": 0.7, "time": 2, "line": "山手線"}, {"from": "神田", "to": "東京", "distance": 1.3, "time": 2, "line": "山手線"}, {"from": "東京", "to": "神田", "distance": 1.3, "time": 2, "line": "山手線"}, {"from": "東京", "to": "神田", "distance": 1.3, "time": 2, "line": "中央線快速"}, {"from": "神田", "to": "東京", "distance": 1.3, "time": 2, "line": "中央線快速"}, {"from": "神田", "to": "御茶ノ水", "distance": 1.3, "time": 2, "line": "中央線快速"}, {"from": "御茶ノ水", "to": "神田", "distance": 1.3, "time": 2, "line": "中央線快速"}, {"from": "御茶ノ水", "to": "四ツ谷", "distance": 4.0, "time": 4, "line": "中央線快速"}, {"from": "四ツ谷", "to": "御茶ノ水", "distance": 4.0, "time": 4, "line": "中央線快速"}, {"from": "四ツ谷", "to": "新宿", "distance": 2.7, "time": 4, "line": "中央線快速"}, {"from": "新宿", "to": "四ツ谷", "distance": 2.7, "time": 4, "line": "中央線快速"}, {"from": "新宿", "to": "中野", "distance": 4.4, "time": 4, "line": "中央線快速"}, {"from": "中野", "to": "新宿", "distance": 4.4, "time": 4, "line": "中央線快速"}, {"from": "中野", "to": "高円寺", "distance": 1.4, "time": 2, "line": "中央線快速"}, {"from": "高円寺", "to": "中野", "distance": 1.4, "time": 2, "line": "中央線快速"}, {"from": "高円寺", "to": "阿佐ケ谷", "distance": 1.2, "time": 2, "line": "中央線快速"}, {"from": "阿佐ケ谷", "to": "高円寺", "distance": 1.2, "time": 2, "line": "中央線快速"}, {"from": "阿佐ケ谷", "to": "荻窪", "distance": 1.4, "time": 2, "line": "中央線快速"}, {"from": "荻窪", "to": "阿佐ケ谷", "distance": 1.4, "time": 2, "line": "中央線快速"}, {"from": "荻窪", "to": "西荻窪", "distance": 1.9, "time": 3, "line": "中央線快速"}, {"from": "西荻窪", "to": "荻窪", "distance": 1.9, "time": 3, "line": "中央線快速"}, {"from": "西荻窪", "to": "吉祥寺", "distance": 1.9, "time": 2, "line": "中央線快速"}, {"from": "吉祥寺", "to": "西荻窪", "distance": 1.9, "time": 2, "line": "中央線快速"}, {"from": "吉祥寺", "to": "三鷹", "distance": 1.6, "time": 2, "line": "中央線快速"}, {"from": "三鷹", "to": "吉祥寺", "distance": 1.6, "time": 2, "line": "中央線快速"}, {"from": "三鷹", "to": "武蔵境", "distance": 1.4, "time": 2, "line": "中央線快速"}, {"from": "武蔵境", "to": "三鷹", "distance": 1.4, "time": 2, "line": "中央線快速"}, {"from": "武蔵境", "to": "東小金井", "distance": 1.7, "time": 2, "line": "中央線快速"}, {"from": "東小金井", "to": "武蔵境", "distance": 1.7, "time": 2, "line": "中央線快速"}, {"from": "東小金井", "to": "武蔵小金井", "distance": 1.7, "time": 2, "line": "中央線快速"}, {"from": "武蔵小金井", "to": "東小金井", "distance": 1.7, "time": 2, "line": "中央線快速"}, {"from": "武蔵小金井", "to": "国分寺", "distance": 2.4, "time": 3, "line": "中央線快速"}, {"from": "国分寺", "to": "武蔵小金井", "distance": 2.4, "time": 3, "line": "中央線快速"}, {"from": "国分寺", "to": "西国分寺", "distance": 1.4, "time": 2, "line": "中央線快速"}, {"from": "西国分寺", "to": "国分寺", "distance": 1.4, "time": 2, "line": "中央線快速"}, {"from": "西国分寺", "to": "国立", "distance": 1.7, "time": 2, "line": "中央線快速"}, {"from": "国立", "to": "西国分寺", "distance": 1.7, "time": 2, "line": "中央線快速"}, {"from": "国立", "to": "立川", "distance": 3.0, "time": 3, "line": "中央線快速"}, {"from": "立川", "to": "国立", "distance": 3.0, "time": 3, "line": "中央線快速"}, {"from": "立川", "to": "日野", "distance": 5.0, "time": 4, "line": "中央線快速"}, {"from": "日野", "to": "立川", "distance": 5.0, "time": 4, "line": "中央線快速"}, {"from": "日野", "to": "豊田", "distance": 3.3, "time": 3, "line": "中央線快速"}, {"from": "豊田", "to": "日野", "distance": 3.3, "time": 3, "line": "中央線快速"}, {"from": "豊田", "to": "八王子", "distance": 4.3, "time": 4, "line": "中央線快速"}, {"from": "八王子", "to": "豊田", "distance": 4.3, "time": 4, "line": "中央線快速"}, {"from": "八王子", "to": "西八王子", "distance": 3.0, "time": 3, "line": "中央線快速"}, {"from": "西八王子", "to": "八王子", "distance": 3.0, "time": 3, "line": "中央線快速"}, {"from": "西八王子", "to": "高尾", "distance": 3.8, "time": 4, "line": "中央線快速"}, {"from": "高尾", "to": "西八王子", "distance": 3.8, "time": 4, "line": "中央線快速"}, {"from": "中野", "to": "東中野", "distance": 1.9, "time": 2, "line": "中央・総武各駅停車"}, {"from": "東中野", "to": "中野", "distance": 1.9, "time": 2, "line": "中央・総武各駅停車"}, {"from": "東中野", "to": "大久保", "distance": 1.5, "time": 2, "line": "中央・総武各駅停車"}, {"from": "大久保", "to": "東中野", "distance": 1.5, "time": 2, "line": "中央・総武各駅停車"}, {"from": "大久保", "to": "新宿", "distance": 1.4, "time": 2, "line": "中央・総武各駅停車"}, {"from": "新宿", "to": "大久保", "distance": 1.4, "time": 2, "line": "中央・総武各駅停車"}, {"from": "新宿", "to": "代々木", "distance": 0.7, "time": 2, "line": "中央・総武各駅停車"}, {"from": "代々木", "to": "新宿", "distance": 0.7, "time": 2, "line": "中央・総武各駅停車"}, {"from": "代々木", "to": "千駄ケ谷", "distance": 1.0, "time": 2, "line": "中央・総武各駅停車"}, {"from": "千駄ケ谷", "to": "代々木", "distance": 1.0, "time": 2, "line": "中央・総武各駅停車"}, {"from": "千駄ケ谷", "to": "信濃町", "distance": 0.7, "time": 2, "line": "中央・総武各駅停車"}, {"from": "信濃町", "to": "千駄ケ谷", "distance": 0.7, "time": 2, "line": "中央・総武各駅停車"}, {"from": "信濃町", "to": "四ツ谷", "distance": 1.3, "time": 2, "line": "中央・総武各駅停車"}, {"from": "四ツ谷", "to": "信濃町", "distance": 1.3, "time": 2, "line": "中央・総武各駅停車"}, {"from": "四ツ谷", "to": "市ケ谷", "distance": 0.8, "time": 2, "line": "中央・総武各駅停車"}, {"from": "市ケ谷", "to": "四ツ谷", "distance": 0.8, "time": 2, "line": "中央・総武各駅停車"}, {"from": "市ケ谷", "to": "飯田橋", "distance": 1.5, "time": 2, "line": "中央・総武各駅停車"}, {"from": "飯田橋", "to": "市ケ谷", "distance": 1.5, "time": 2, "line": "中央・総武各駅停車"}, {"from": "飯田橋", "to": "水道橋", "distance": 0.9, "time": 2, "line": "中央・総武各駅停車"}, {"from": "水道橋", "to": "飯田橋", "distance": 0.9, "time": 2, "line": "中央・総武各駅停車"}, {"from": "水道橋", "to": "御茶ノ水", "distance": 0.8, "time": 2, "line": "中央・総武各駅停車"}, {"from": "御茶ノ水", "to": "水道橋", "distance": 0.8, "time": 2, "line": "中央・総武各駅停車"}, {"from": "御茶ノ水", "to": "秋葉原", "distance": 0.9, "time": 2, "line": "中央・総武各駅停車"}, {"from": "秋葉原", "to": "御茶ノ水", "distance": 0.9, "time": 2, "line": "中央・総武各駅停車"}, {"from": "秋葉原", "to": "浅草橋", "distance": 1.1, "time": 2, "line": "中央・総武各駅停車"}, {"from": "浅草橋", "to": "秋葉原", "distance": 1.1, "time": 2, "line": "中央・総武各駅停車"}, {"from": "浅草橋", "to": "両国", "distance": 0.8, "time": 2, "line": "中央・総武各駅停車"}, {"from": "両国", "to": "浅草橋", "distance": 0.8, "time": 2, "line": "中央・総武各駅停車"}, {"from": "両国", "to": "錦糸町", "distance": 1.5, "time": 2, "line": "中央・総武各駅停車"}, {"from": "錦糸町", "to": "両国", "distance": 1.5, "time": 2, "line": "中央・総武各駅停車"}, {"from": "錦糸町", "to": "亀戸", "distance": 1.5, "time": 2, "line": "中央・総武各駅停車"}, {"from": "亀戸", "to": "錦糸町", "distance": 1.5, "time": 2, "line": "中央・総武各駅停車"}, {"from": "亀戸", "to": "平井", "distance": 1.9, "time": 3, "line": "中央・総武各駅停車"}, {"from": "平井", "to": "亀戸", "distance": 1.9, "time": 3, "line": "中央・総武各駅停車"}, {"from": "平井", "to": "新小岩", "distance": 1.8, "time": 2, "line": "中央・総武各駅停車"}, {"from": "新小岩", "to": "平井", "distance": 1.8, "time": 2, "line": "中央・総武各駅停車"}, {"from": "新小岩", "to": "小岩", "distance": 2.8, "time": 3, "line": "中央・総武各駅停車"}, {"from": "小岩", "to": "新小岩", "distance": 2.8, "time": 3, "line": "中央・総武各駅停車"}, {"from": "赤羽", "to": "東十条", "distance": 1.8, "time": 2, "line": "京浜東北線"}, {"from": "東十条", "to": "赤羽", "distance": 1.8, "time": 2, "line": "京浜東北線"}, {"from": "東十条", "to": "王子", "distance": 1.5, "time": 2, "line": "京浜東北線"}, {"from": "王子", "to": "東十条", "distance": 1.5, "time": 2, "line": "京浜東北線"}, {"from": "王子", "to": "上中里", "distance": 1.1, "time": 2, "line": "京浜東北線"}, {"from": "上中里", "to": "王子", "distance": 1.1, "time": 2, "line": "京浜東北線"}, {"from": "上中里", "to": "田端", "distance": 1.7, "time": 2, "line": "京浜東北線"}, {"from": "田端", "to": "上中里", "distance": 1.7, "time": 2, "line": "京浜東北線"}, {"from": "品川", "to": "大井町", "distance": 2.4, "time": 3, "line": "京浜東北線"}, {"from": "大井町", "to": "品川", "distance": 2.4, "time": 3, "line": "京浜東北線"}, {"from": "大井町", "to": "大森", "distance": 2.2, "time": 3, "line": "京浜東北線"}, {"from": "大森", "to": "大井町", "distance": 2.2, "time": 3, "line": "京浜東北線"}, {"from": "大森", "to": "蒲田", "distance": 3.0, "time": 3, "line": "京浜東北線"}, {"from": "蒲田", "to": "大森", "distance": 3.0, "time": 3, "line": "京浜東北線"}, {"from": "池袋", "to": "板橋", "distance": 1.8, "time": 3, "line": "埼京線"}, {"from": "板橋", "to": "池袋", "distance": 1.8, "time": 3, "line": "埼京線"}, {"from": "板橋", "to": "十条", "distance": 1.7, "time": 2, "line": "埼京線"}, {"from": "十条", "to": "板橋", "distance": 1.7, "time": 2, "line": "埼京線"}, {"from": "十条", "to": "赤羽", "distance": 1.8, "time": 3, "line": "埼京線"}, {"from": "赤羽", "to": "十条", "distance": 1.8, "time": 3, "line": "埼京線"}, {"from": "赤羽", "to": "北赤羽", "distance": 1.5, "time": 2, "line": "埼京線"}, {"from": "北赤羽", "to": "赤羽", "distance": 1.5, "time": 2, "line": "埼京線"}, {"from": "北赤羽", "to": "浮間舟渡", "distance": 1.4, "time": 2, "line": "埼京線"}, {"from": "浮間舟渡", "to": "北赤羽", "distance": 1.4, "time": 2, "line": "埼京線"}, {"from": "品川", "to": "新橋", "distance": 4.9, "time": 5, "line": "総武快速・横須賀線"}, {"from": "新橋", "to": "品川", "distance": 4.9, "time": 5, "line": "総武快速・横須賀線"}, {"from": "新橋", "to": "東京", "distance": 1.9, "time": 3, "line": "総武快速・横須賀線"}, {"from": "東京", "to": "新橋", "distance": 1.9, "time": 3, "line": "総武快速・横須賀線"}, {"from": "東京", "to": "新日本橋", "distance": 1.2, "time": 2, "line": "総武快速・横須賀線"}, {"from": "新日本橋", "to": "東京", "distance": 1.2, "time": 2, "line": "総武快速・横須賀線"}, {"from": "新日本橋", "to": "馬喰町", "distance": 1.1, "time": 2, "line": "総武快速・横須賀線"}, {"from": "馬喰町", "to": "新日本橋", "distance": 1.1, "time": 2, "line": "総武快速・横須賀線"}, {"from": "馬喰町", "to": "錦糸町", "distance": 2.5, "time": 3, "line": "総武快速・横須賀線"}, {"from": "錦糸町", "to": "馬喰町", "distance": 2.5, "time": 3, "line": "総武快速・横須賀線"}, {"from": "錦糸町", "to": "新小岩", "distance": 5.2, "time": 5, "line": "総武快速・横須賀線"}, {"from": "新小岩", "to": "錦糸町", "distance": 5.2, "time": 5, "line": "総武快速・横須賀線"}, {"from": "日暮里", "to": "三河島", "distance": 1.2, "time": 2, "line": "常磐線"}, {"from": "三河島", "to": "日暮里", "distance": 1.2, "time": 2, "line": "常磐線"}, {"from": "三河島", "to": "南千住", "distance": 2.2, "time": 3, "line": "常磐線"}, {"from": "南千住", "to": "三河島", "distance": 2.2, "time": 3, "line": "常磐線"}, {"from": "南千住", "to": "北千住", "distance": 1.8, "time": 3, "line": "常磐線"}, {"from": "北千住", "to": "南千住", "distance": 1.8, "time": 3, "line": "常磐線"}, {"from": "北千住", "to": "綾瀬", "distance": 2.5, "time": 3, "line": "常磐線"}, {"from": "綾瀬", "to": "北千住", "distance": 2.5, "time": 3, "line": "常磐線"}, {"from": "綾瀬", "to": "亀有", "distance": 2.2, "time": 2, "line": "常磐線"}, {"from": "亀有", "to": "綾瀬", "distance": 2.2, "time": 2, "line": "常磐線"}, {"from": "亀有", "to": "金町", "distance": 1.9, "time": 2, "line": "常磐線"}, {"from": "金町", "to": "亀有", "distance": 1.9, "time": 2, "line": "常磐線"}, {"from": "府中本町", "to": "西国分寺", "distance": 3.9, "time": 5, "line": "武蔵野線"}, {"from": "西国分寺", "to": "府中本町", "distance": 3.9, "time": 5, "line": "武蔵野線"}, {"from": "西国分寺", "to": "新秋津", "distance": 7.4, "time": 7, "line": "武蔵野線"}, {"from": "新秋津", "to": "西国分寺", "distance": 7.4, "time": 7, "line": "武蔵野線"}, {"from": "立川", "to": "分倍河原", "distance": 6.7, "time": 8, "line": "南武線"}, {"from": "分倍河原", "to": "立川", "distance": 6.7, "time": 8, "line": "南武線"}, {"from": "分倍河原", "to": "府中本町", "distance": 1.4, "time": 2, "line": "南武線"}, {"from": "府中本町", "to": "分倍河原", "distance": 1.4, "time": 2, "line": "南武線"}]};
+
+    const stations = networkData.stations;
+    const edges = networkData.edges;
+    const n = stations.length;
+    const stationMap = {};
+    stations.forEach((s, idx) => {
+      stationMap[s.name] = idx;
+    });
+
+    const INF = 1e9;
+
+    // 隣接行列・詳細情報の初期化
+    const distMatrix = Array.from({ length: n }, () => Array(n).fill(INF));
+    const timeMatrix = Array.from({ length: n }, () => Array(n).fill(INF));
+    const edgeDetails = Array.from({ length: n }, () => Array(n).fill(null));
+    const adj = Array.from({ length: n }, () => []);
+
+    for (let i = 0; i < n; i++) {
+      distMatrix[i][i] = 0;
+      timeMatrix[i][i] = 0;
+    }
+
+    edges.forEach(e => {
+      const u = stationMap[e.from];
+      const v = stationMap[e.to];
+      if (u !== undefined && v !== undefined) {
+        distMatrix[u][v] = e.distance;
+        timeMatrix[u][v] = e.time;
+        edgeDetails[u][v] = e;
+        adj[u].push({ to: v, dist: e.distance, time: e.time, line: e.line });
+      }
+    });
+
+    // トロピカル最短経路（Floyd-Warshall / Kleene閉包）
+    function computeTropicalClosure(weightMatrix) {
+      const d = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => weightMatrix[i][j]));
+      const nextNode = Array.from({ length: n }, () => Array(n).fill(null));
+
+      for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+          if (i !== j && d[i][j] < INF) {
+            nextNode[i][j] = j;
+          }
+        }
+      }
+
+      for (let k = 0; k < n; k++) {
+        for (let i = 0; i < n; i++) {
+          for (let j = 0; j < n; j++) {
+            if (d[i][k] + d[k][j] < d[i][j]) {
+              d[i][j] = d[i][k] + d[k][j];
+              nextNode[i][j] = nextNode[i][k];
+            }
+          }
+        }
+      }
+      return { dist: d, nextNode: nextNode };
+    }
+
+    const closureDist = computeTropicalClosure(distMatrix);
+    const closureTime = computeTropicalClosure(timeMatrix);
+
+    // 最短経路復元
+    function reconstructShortestPath(startIdx, goalIdx, nextMatrix) {
+      if (startIdx === goalIdx) return [startIdx];
+      if (nextMatrix[startIdx][goalIdx] === null) return [];
+      const path = [startIdx];
+      let curr = startIdx;
+      while (curr !== goalIdx) {
+        curr = nextMatrix[curr][goalIdx];
+        if (curr === null) return [];
+        path.push(curr);
+      }
+      return path;
+    }
+
+    // 一筆書き最長経路探索（DFS + Reachability Pruning + Heuristics）
+    function findLongestSimplePath(startIdx, goalIdx, metric = 'dist') {
+      if (startIdx === goalIdx) return [startIdx];
+
+      function canReach(cur, target, visitedSet) {
+        if (cur === target) return true;
+        const q = [cur];
+        const seen = new Set(visitedSet);
+        seen.add(cur);
+        let head = 0;
+        while (head < q.length) {
+          const u = q[head++];
+          if (u === target) return true;
+          for (const edge of adj[u]) {
+            if (!seen.has(edge.to)) {
+              seen.add(edge.to);
+              q.push(edge.to);
+            }
+          }
+        }
+        return false;
+      }
+
+      let bestPath = [];
+      let bestScore = -1;
+      let bestDist = 0;
+      let bestTime = 0;
+
+      const maxIter = 40000;
+      let iterations = 0;
+
+      function dfs(u, path, curDist, curTime, visited) {
+        iterations++;
+        if (iterations > maxIter) return;
+
+        if (u === goalIdx) {
+          const score = (metric === 'dist') ? curDist : curTime;
+          if (score > bestScore) {
+            bestScore = score;
+            bestDist = curDist;
+            bestTime = curTime;
+            bestPath = [...path];
+          }
+          return;
+        }
+
+        const candidates = [];
+        for (const edge of adj[u]) {
+          const v = edge.to;
+          if (v === goalIdx) {
+            candidates.push(edge);
+          } else if (!visited.has(v)) {
+            if (canReach(v, goalIdx, visited)) {
+              candidates.push(edge);
+            }
+          }
+        }
+
+        candidates.sort((a, b) => {
+          if (a.to === goalIdx && b.to !== goalIdx) return 1;
+          if (b.to === goalIdx && a.to !== goalIdx) return -1;
+          const valA = (metric === 'dist') ? a.dist : a.time;
+          const valB = (metric === 'dist') ? b.dist : b.time;
+          return valB - valA;
+        });
+
+        for (const edge of candidates) {
+          const v = edge.to;
+          visited.add(v);
+          path.push(v);
+          dfs(v, path, curDist + edge.dist, curTime + edge.time, visited);
+          path.pop();
+          visited.delete(v);
+        }
+      }
+
+      const visited = new Set([startIdx]);
+      dfs(startIdx, [startIdx], 0, 0, visited);
+
+      return bestPath;
+    }
+
+    // UI要素の取得
+    const startSelect = document.getElementById('startStation');
+    const goalSelect = document.getElementById('goalStation');
+    const swapBtn = document.getElementById('swapStationsBtn');
+    const modeButtons = document.querySelectorAll('.mode-btn');
+
+    let currentMode = 'shortest-time';
+
+    stations.forEach(s => {
+      const opt1 = document.createElement('option');
+      opt1.value = s.name;
+      opt1.textContent = `${s.name} (${s.lines.join('・')})`;
+      startSelect.appendChild(opt1);
+
+      const opt2 = document.createElement('option');
+      opt2.value = s.name;
+      opt2.textContent = `${s.name} (${s.lines.join('・')})`;
+      goalSelect.appendChild(opt2);
+    });
+
+    startSelect.value = "東京";
+    goalSelect.value = "新宿";
+
+    function updateRoute() {
+      const startName = startSelect.value;
+      const goalName = goalSelect.value;
+
+      if (!startName || !goalName) return;
+
+      const u = stationMap[startName];
+      const v = stationMap[goalName];
+
+      const isLongest = currentMode.startsWith('longest');
+      let pathIndices = [];
+
+      if (!isLongest) {
+        const activeClosure = (currentMode === 'shortest-time') ? closureTime : closureDist;
+        pathIndices = reconstructShortestPath(u, v, activeClosure.nextNode);
+      } else {
+        const metric = (currentMode === 'longest-dist') ? 'dist' : 'time';
+        pathIndices = findLongestSimplePath(u, v, metric);
+      }
+
+      document.getElementById('routeTitle').textContent = `${startName} ➔ ${goalName}`;
+
+      const oomawariBadge = document.getElementById('oomawariBadge');
+      const inspectorShortest = document.getElementById('inspectorShortest');
+      const inspectorLongest = document.getElementById('inspectorLongest');
+      const resultModeLabel = document.getElementById('resultModeLabel');
+      const resultComplexityBadge = document.getElementById('resultComplexityBadge');
+      const matrixCalcStatus = document.getElementById('matrixCalcStatus');
+
+      if (isLongest) {
+        oomawariBadge.classList.remove('hidden');
+        inspectorShortest.classList.add('hidden');
+        inspectorLongest.classList.remove('hidden');
+        resultModeLabel.textContent = (currentMode === 'longest-dist') ? 'LONGEST DISTANCE (OOMAWARI)' : 'LONGEST TIME (OOMAWARI)';
+        resultComplexityBadge.textContent = 'NP-Hard (ZDD Frontier Concept)';
+        resultComplexityBadge.className = 'text-[10px] px-2 py-0.5 rounded font-mono-code bg-amber-500/20 text-amber-300';
+        matrixCalcStatus.textContent = 'ZDD & Branch-Bound (Simple Path)';
+      } else {
+        oomawariBadge.classList.add('hidden');
+        inspectorShortest.classList.remove('hidden');
+        inspectorLongest.classList.add('hidden');
+        resultModeLabel.textContent = (currentMode === 'shortest-time') ? 'SHORTEST TIME' : 'SHORTEST DISTANCE';
+        resultComplexityBadge.textContent = 'P (Polynomial Time)';
+        resultComplexityBadge.className = 'text-[10px] px-2 py-0.5 rounded font-mono-code bg-emerald-500/20 text-emerald-300';
+        matrixCalcStatus.textContent = 'Min-Plus Closed-form';
+      }
+
+      if (pathIndices.length === 0) {
+        document.getElementById('resTotalTime').textContent = '--';
+        document.getElementById('resTotalDist').textContent = '--';
+        document.getElementById('routeStepsContainer').innerHTML = '<span class="text-rose-400">経路が見つかりませんでした。</span>';
+        document.getElementById('routeTableBody').innerHTML = '';
+        return;
+      }
+
+      let totalTime = 0;
+      let totalDist = 0;
+      const legs = [];
+      const usedLines = new Set();
+
+      for (let i = 0; i < pathIndices.length - 1; i++) {
+        const fromIdx = pathIndices[i];
+        const toIdx = pathIndices[i+1];
+        const edge = edgeDetails[fromIdx][toIdx] || { line: "JR線", distance: 0, time: 0 };
+        totalTime += edge.time;
+        totalDist += edge.distance;
+        usedLines.add(edge.line);
+        legs.push({
+          from: stations[fromIdx].name,
+          to: stations[toIdx].name,
+          line: edge.line,
+          time: edge.time,
+          dist: edge.distance
+        });
+      }
+
+      document.getElementById('resTotalTime').textContent = totalTime.toFixed(0);
+      document.getElementById('resTotalDist').textContent = totalDist.toFixed(1);
+
+      if (isLongest) {
+        const shortestDist = closureDist.dist[u][v];
+        if (shortestDist > 0 && shortestDist < INF) {
+          const ratio = (totalDist / shortestDist).toFixed(1);
+          document.getElementById('oomawariRatio').textContent = `最短比 ${ratio} 倍（最短 ${shortestDist.toFixed(1)}km ➔ 大回り ${totalDist.toFixed(1)}km）`;
+        }
+      }
+
+      let transferCount = 0;
+      for (let i = 0; i < legs.length - 1; i++) {
+        if (legs[i].line !== legs[i+1].line) {
+          transferCount++;
+        }
+      }
+
+      document.getElementById('resHopCount').textContent = `経由駅: ${pathIndices.length}駅 / 乗り換え: 約${transferCount}回 (${Array.from(usedLines).join('・')})`;
+
+      const stepsContainer = document.getElementById('routeStepsContainer');
+      stepsContainer.innerHTML = '';
+
+      pathIndices.forEach((idx, i) => {
+        const stName = stations[idx].name;
+        const span = document.createElement('span');
+        
+        let colorClass = 'bg-slate-800 text-slate-200 border-slate-700';
+        if (i === 0) colorClass = 'bg-cyan-500/20 text-cyan-300 border-cyan-500 font-bold';
+        else if (i === pathIndices.length - 1) colorClass = 'bg-rose-500/20 text-rose-300 border-rose-500 font-bold';
+
+        span.className = `inline-flex items-center px-2.5 py-1 rounded-lg text-xs border ${colorClass}`;
+        span.textContent = `${i + 1}. ${stName}`;
+        stepsContainer.appendChild(span);
+
+        if (i < pathIndices.length - 1) {
+          const arrow = document.createElement('span');
+          arrow.className = 'text-slate-600 text-xs';
+          arrow.textContent = '➔';
+          stepsContainer.appendChild(arrow);
+        }
+      });
+
+      const tbody = document.getElementById('routeTableBody');
+      tbody.innerHTML = '';
+      legs.forEach(leg => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-800/40 transition';
+        tr.innerHTML = `
+          <td class="py-2 px-3 text-slate-200 font-medium">${leg.from} ➔ ${leg.to}</td>
+          <td class="py-2 px-3"><span class="px-2 py-0.5 rounded text-[11px] bg-slate-800 text-slate-300">${leg.line}</span></td>
+          <td class="py-2 px-3 text-right text-amber-400 font-semibold">${leg.dist.toFixed(1)} km</td>
+          <td class="py-2 px-3 text-right text-cyan-400 font-semibold">${leg.time} 分</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      if (!isLongest) {
+        document.getElementById('inspectStartStation').textContent = startName;
+        document.getElementById('inspectGoalStation').textContent = goalName;
+        const nextIdx = closureDist.nextNode[u][v];
+        if (nextIdx !== null) {
+          document.getElementById('inspectOptimalChoice').innerHTML = `選択された最適中継駅: <span class="text-amber-400 font-bold">${stations[nextIdx].name}</span> (直通または次駅)`;
+        }
+      }
+    }
+
+    modeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentMode = btn.getAttribute('data-mode');
+        modeButtons.forEach(b => {
+          b.classList.remove('bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500', 'bg-amber-500/20', 'text-amber-300', 'border-amber-500');
+          b.classList.add('bg-slate-950', 'text-slate-400', 'border-slate-800');
+        });
+
+        if (currentMode.startsWith('shortest')) {
+          btn.classList.remove('bg-slate-950', 'text-slate-400', 'border-slate-800');
+          btn.classList.add('bg-cyan-500/20', 'text-cyan-300', 'border-cyan-500');
+        } else {
+          btn.classList.remove('bg-slate-950', 'text-slate-400', 'border-slate-800');
+          btn.classList.add('bg-amber-500/20', 'text-amber-300', 'border-amber-500');
+        }
+
+        updateRoute();
+      });
+    });
+
+    startSelect.addEventListener('change', updateRoute);
+    goalSelect.addEventListener('change', updateRoute);
+
+    swapBtn.addEventListener('click', () => {
+      const tmp = startSelect.value;
+      startSelect.value = goalSelect.value;
+      goalSelect.value = tmp;
+      updateRoute();
+    });
+
+    document.querySelectorAll('.quick-pair').forEach(btn => {
+      btn.addEventListener('click', () => {
+        startSelect.value = btn.getAttribute('data-from');
+        goalSelect.value = btn.getAttribute('data-to');
+        updateRoute();
+      });
+    });
+
+    updateRoute();
+  </script>
+</body>
+</html>

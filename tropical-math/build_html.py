@@ -906,6 +906,7 @@ def build():
       </div>
       <div class="nav-actions">
         <a href="simulator.html" target="_blank" class="nav-btn-sim">🎮 実験室</a>
+        <a href="../tropical-jr-simulator/index.html" target="_blank" class="nav-btn-sim" style="background: #059669;">🗺️ 87駅シミュレータ</a>
       </div>
     </div>
   </nav>
@@ -921,7 +922,8 @@ def build():
         <div><strong>前提:</strong> __PREREQ__</div>
       </div>
       <div class="actions">
-        <a href="simulator.html" target="_blank" class="btn btn-primary">🎮 連動Webシミュレーター（実験室）を開く</a>
+        <a href="simulator.html" target="_blank" class="btn btn-primary">🎮 連動Webシミュレーター（4駅実験室）を開く</a>
+        <a href="../tropical-jr-simulator/index.html" target="_blank" class="btn btn-primary" style="background: #059669; border-color: #059669;">🗺️ 都内JR 87駅全体シミュレーターを開く</a>
         <a href="textbook.md" target="_blank" class="btn btn-secondary">📄 Markdown 正本を開く</a>
       </div>
     </header>

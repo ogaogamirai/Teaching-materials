@@ -14,6 +14,7 @@
 | [system-dynamics](./system-dynamics/) | SD×TOC 教材（統合 HTML・Pages） |
 | [category-theory](./category-theory/) | 圏論（Category Theory）直感と構造の探求ガイド（[GitHub Pages](https://ogaogamirai.github.io/Teaching-materials/category-theory/)・原稿） |
 | [tropical-math](./tropical-math/) | トロピカル代数とフロンティア法（4駅モデル・ZDD コマ送り実況） |
+| [tropical-jr-simulator](./tropical-jr-simulator/) | 都内JR 87駅全体シミュレーター（トロピカル最短路・最長一筆書き・ZDDフロンティア法） |
 
 ## 正本の置き場（三家共通）
 
