@@ -13,6 +13,19 @@
 | [path-to-structure](./path-to-structure/) | 組合せ探索　道から構造へ（最短路→ZDD、Dual-View HTML） |
 | [system-dynamics](./system-dynamics/) | SD×TOC 教材（統合 HTML・Pages） |
 | [category-theory](./category-theory/) | 圏論（Category Theory）直感と構造の探求ガイド（[GitHub Pages](https://ogaogamirai.github.io/Teaching-materials/category-theory/)・原稿） |
+| [tropical-math](./tropical-math/) | トロピカル代数とフロンティア法（4駅モデル・ZDD コマ送り実況） |
+
+## 正本の置き場（三家共通）
+
+**地図の正本:** [`Tools/DRIVE_REGISTRY_v01.md`](../../Tools/DRIVE_REGISTRY_v01.md)  
+**閉じ役:** J.T. → [`GITHUB_CLOSER_ROLES_v01.md`](../../Tools/GITHUB_CLOSER_ROLES_v01.md)
+
+| 層 | パス |
+|---|---|
+| ローカル正本 | `G:\マイドライブ\Projects\Teaching-materials\` |
+| GitHub | [ogaogamirai/Teaching-materials](https://github.com/ogaogamirai/Teaching-materials) |
+
+各家の `tools/` に教材全文をコピーしない。Agent は [`Projects/README.md`](../README.md) の正本で作業する。
 
 ## 圏論教材（すぐ見る）
 
@@ -40,6 +53,13 @@
 1. **学習用一冊（ブラウザ）:** [modern-cryptography（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/modern-cryptography/)
 2. **量子計算の操作盤:** [quantum_basics.html（GitHub Pages）](https://ogaogamirai.github.io/Teaching-materials/modern-cryptography/models/quantum_basics.html)
 3. **原稿・設計:** [`modern-cryptography/`](./modern-cryptography/)
+
+## トロピカル数学とZDD（すぐ見る）
+
+1. **学習用一冊（ブラウザ）:** [`tropical-math/index.html`](./tropical-math/index.html)（`file://` 可）
+2. **原稿正本:** [`tropical-math/textbook.md`](./tropical-math/textbook.md)
+3. **ビルド:** `cd tropical-math && python build_html.py`
+4. **連動シミュレーター:** [`tropical-math/simulator.html`](./tropical-math/simulator.html)
 
 ---
 
