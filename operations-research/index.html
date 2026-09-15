@@ -996,7 +996,8 @@ model.Minimize(sum(penalties))
 <p class="lead">
 第4章で「データ（0/1マトリクス）」の準備が整いました。ここからは、<strong>現場の複雑怪奇な業務ルール</strong>を、
 CP-SATが解ける<strong>「数学的判定式」</strong>と<strong>「Pythonコード」</strong>へと1対1で翻訳する実践ロジック集です。<br>
-「1日1シフト」「必要人数」「夜勤明け休み」「2連休必須」など、実務で頻出する6大制約の変換パターンを完全網羅します。
+「1日1シフト」「必要人数」「夜勤明け休み」「2連休必須」など、実務で頻出する6大制約の変換パターンを完全網羅します。<br>
+各制約には安定ID（C1〜C6・補則CF）を付与しています。第7章テンプレート・OPTIOのunsat_coreと相互参照できます。
 </p>
         <div style="background: #0b1120; border: 2px solid #38bdf8; border-radius: 10px; padding: 1.5rem; margin: 2rem 0;">
             <h3 style="color: #38bdf8; margin-top: 0; margin-bottom: 0.5rem; font-size: 1.2rem; border: none; padding: 0;">
@@ -1019,7 +1020,7 @@ CP-SATが解ける<strong>「数学的判定式」</strong>と<strong>「Python�
                     <tbody>
                         <tr>
                             <td>
-                                <span class="human-badge">ルール①</span><br>
+                                <span class="human-badge">ルール①</span> <span class="code-badge">C1</span><br>
                                 <strong>1人1日1シフトのみ</strong><br>
                                 <span style="font-size: 0.8rem; color: #94a3b8;">「同じ日に日勤と夜勤は兼任不可」</span>
                             </td>
@@ -1046,7 +1047,7 @@ model.AddExactlyOne([<br>
 
                         <tr>
                             <td>
-                                <span class="human-badge">ルール②</span><br>
+                                <span class="human-badge">ルール②</span> <span class="code-badge">C2</span><br>
                                 <strong>毎日日勤1名・夜勤1名</strong><br>
                                 <span style="font-size: 0.8rem; color: #94a3b8;">「毎日の必要人数を必ず満たす」</span>
                             </td>
@@ -1075,7 +1076,7 @@ model.Add(<br>
 
                         <tr>
                             <td>
-                                <span class="human-badge">ルール③</span><br>
+                                <span class="human-badge">ルール③</span> <span class="code-badge">C3</span><br>
                                 <strong>夜勤の翌日は日勤禁止</strong><br>
                                 <span style="font-size: 0.8rem; color: #94a3b8;">「夜勤明け当日の勤務を禁止」</span>
                             </td>
@@ -1101,7 +1102,7 @@ model.Add(<br>
 
                         <tr style="background: rgba(245, 158, 11, 0.05); border: 1px solid var(--accent);">
                             <td>
-                                <span class="human-badge" style="border-color: #f59e0b; color: #fbbf24;">ルール④ (注目!)</span><br>
+                                <span class="human-badge" style="border-color: #f59e0b; color: #fbbf24;">ルール④ (注目!)</span> <span class="code-badge">C4</span><br>
                                 <strong>週に最低1回は2連休</strong><br>
                                 <span style="font-size: 0.8rem; color: #cbd5e1;">「飛び石ばかりは禁止、2日連続で休ませる」</span>
                             </td>
@@ -1130,7 +1131,7 @@ model.Add(sum(pairs) >= 1)
 
                         <tr>
                             <td>
-                                <span class="human-badge">ルール⑤</span><br>
+                                <span class="human-badge">ルール⑤</span> <span class="code-badge">C5</span><br>
                                 <strong>3連勤以上は禁止</strong><br>
                                 <span style="font-size: 0.8rem; color: #94a3b8;">「3日ぶっ続け勤務を制限」</span>
                             </td>
@@ -1157,7 +1158,7 @@ model.Add(<br>
 
                         <tr>
                             <td>
-                                <span class="human-badge" style="border-color: #10b981; color: #34d399;">要望⑥ (希望休)</span><br>
+                                <span class="human-badge" style="border-color: #10b981; color: #34d399;">要望⑥ (希望休)</span> <span class="code-badge">C6</span><br>
                                 <strong>「Aliceは水曜休み希望」</strong><br>
                                 <span style="font-size: 0.8rem; color: #94a3b8;">「できる限り個人の希望を叶える」</span>
                             </td>
@@ -1180,6 +1181,31 @@ model.Minimize(sum(penalties))
                                 </div>
                             </td>
                         </tr>
+
+                        <tr style="background: rgba(56, 189, 248, 0.05);">
+                            <td>
+                                <span class="human-badge" style="border-color: #38bdf8; color: #38bdf8;">補則</span> <span class="code-badge">CF</span><br>
+                                <strong>夜勤は1人最大2回まで</strong><br>
+                                <span style="font-size: 0.8rem; color: #94a3b8;">「公平性のハード上限（テンプレート制約5）」</span>
+                            </td>
+                            <td>
+                                <strong>「ヨコ行の夜マス合計」</strong><br>
+                                <span style="font-size: 0.8rem; color: #cbd5e1;">
+                                各スタッフの行を見て、<br>
+                                <code>[夜]</code> の「1」が合計2個以下。
+                                </span>
+                            </td>
+                            <td>
+                                $$\sum_{d} x_{s, d, \text{N}} \le 2$$
+                            </td>
+                            <td>
+                                <div class="code-snippet" style="margin: 0; font-size: 0.8rem;">
+model.Add(<br>
+  sum(x[s, d, "N"] for d in days) <= 2<br>
+)
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -1189,7 +1215,7 @@ model.Minimize(sum(penalties))
         <!-- パターン1 -->
         <div class="interactive-card">
             <div class="pattern-title">
-                <span>① 「1人1日1シフト」の絶対原則（排他）</span>
+                <span>① 「1人1日1シフト」の絶対原則（排他） ［C1］</span>
                 <span class="human-badge">基本中の基本</span>
             </div>
             <p style="font-size: 0.95rem; color: #94a3b8;">
@@ -1210,7 +1236,7 @@ model.Minimize(sum(penalties))
         <!-- パターン2 -->
         <div class="interactive-card">
             <div class="pattern-title">
-                <span>② 「毎日の必要人数の確保」（縦の合計）</span>
+                <span>② 「毎日の必要人数の確保」（縦の合計） ［C2］</span>
                 <span class="human-badge">現場の維持</span>
             </div>
             <p style="font-size: 0.95rem; color: #94a3b8;">
@@ -1230,7 +1256,7 @@ model.Minimize(sum(penalties))
         <!-- パターン3 -->
         <div class="interactive-card">
             <div class="pattern-title">
-                <span>③ 「夜勤の翌日は日勤禁止」（隣接インターバル規制）</span>
+                <span>③ 「夜勤の翌日は日勤禁止」（隣接インターバル規制） ［C3］</span>
                 <span class="human-badge">健康・労働衛生</span>
             </div>
             <p style="font-size: 0.95rem; color: #94a3b8;">
@@ -1250,7 +1276,7 @@ model.Minimize(sum(penalties))
         <!-- パターン4: 今回のハイライト -->
         <div class="interactive-card" style="border: 2px solid var(--accent);">
             <div class="pattern-title">
-                <span style="color: var(--accent);">🌟 ④ 「どのスタッフも、一週間に2連休を最低1回取らせる」（連休制約）</span>
+                <span style="color: var(--accent);">🌟 ④ 「どのスタッフも、一週間に2連休を最低1回取らせる」（連休制約） ［C4］</span>
                 <span class="human-badge" style="background: rgba(245, 158, 11, 0.3); border-color: #f59e0b;">超頻出・応用パズル</span>
             </div>
             <p style="font-size: 0.95rem; color: #cbd5e1;">
@@ -1282,7 +1308,7 @@ model.Minimize(sum(penalties))
         <!-- パターン5 -->
         <div class="interactive-card">
             <div class="pattern-title">
-                <span>⑤ 「3連勤以上は禁止」（連続勤務の上限）</span>
+                <span>⑤ 「3連勤以上は禁止」（連続勤務の上限） ［C5・応用］</span>
                 <span class="human-badge">過労防止</span>
             </div>
             <p style="font-size: 0.95rem; color: #94a3b8;">
@@ -1299,10 +1325,32 @@ model.Minimize(sum(penalties))
             </div>
         </div>
 
+        <!-- 補則CF：公平性のハード上限（テンプレート制約5） -->
+        <div class="interactive-card" style="border: 1px dashed var(--primary);">
+            <div class="pattern-title">
+                <span>補則 「夜勤は1人最大2回まで」（公平ハード上限） ［CF］</span>
+                <span class="human-badge">テンプレート制約5</span>
+            </div>
+            <p style="font-size: 0.95rem; color: #94a3b8;">
+                <strong>人間の言葉：</strong>「夜勤の偏りはペナルティ（第6章）で滑らかに扱うのが基本。どうしても割らせない上限だけ、ハード制約として天井を打つ！」
+            </p>
+            <div class="intuition-box">
+                💡 <strong>数学的判定式（音読）：</strong> 1週間の夜勤フラグの合計が 2 以下<br>
+                $$\sum_{d} x_{s, d, \text{N}} \le 2$$
+            </div>
+            <div class="code-snippet">
+<span class="code-keyword">for</span> s <span class="code-keyword">in</span> staff:
+    model.Add(sum(x[s, d, <span class="code-var">"N"</span>] <span class="code-keyword">for</span> d <span class="code-keyword">in</span> days) &lt;= <span class="code-var">2</span>)
+            </div>
+            <p style="font-size: 0.9rem; color: #94a3b8;">
+                対応：テンプレート制約5・OPTIOのunsat IDは <strong>CF</strong>。第6章レベル③の「不公平ペナルティ（ソフト版）」と使い分ける。
+            </p>
+        </div>
+
         <!-- パターン6 -->
         <div class="interactive-card">
             <div class="pattern-title">
-                <span>⑥ 「個人の希望休・わがまま」（ソフト制約 ＝ ペナルティ化）</span>
+                <span>⑥ 「個人の希望休・わがまま」（ソフト制約 ＝ ペナルティ化） ［C6］</span>
                 <span class="human-badge" style="background: rgba(16, 185, 129, 0.15); border-color: #10b981; color: #34d399;">柔軟な最適化</span>
             </div>
             <p style="font-size: 0.95rem; color: #94a3b8;">
@@ -1489,6 +1537,10 @@ target_night = <span class="code-var">2</span>  <span class="code-comment"># 1�
         <pre class="code-block">
 <span class="code-keyword">from</span> ortools.sat.python <span class="code-keyword">import</span> cp_model
 
+<span class="code-comment"># 0. 基本データ（スタッフ・曜日）</span>
+staff = [<span class="code-var">"Alice"</span>, <span class="code-var">"Bob"</span>, <span class="code-var">"Charlie"</span>, <span class="code-var">"Dave"</span>]
+days = [<span class="code-var">"月"</span>, <span class="code-var">"火"</span>, <span class="code-var">"水"</span>, <span class="code-var">"木"</span>, <span class="code-var">"金"</span>, <span class="code-var">"土"</span>, <span class="code-var">"日"</span>]
+
 <span class="code-comment"># 1. モデルの初期化</span>
 model = cp_model.CpModel()
 
@@ -1501,17 +1553,22 @@ x = {}
             x[s, d, shift] = model.NewBoolVar(f<span class="code-var">"x_{s}_{d}_{shift}"</span>)
 
 <span class="code-comment"># --- ステップ②：ハード制約を敷く（鉄の掟） ---</span>
-<span class="code-comment"># 毎日、日勤1名、夜勤1名</span>
+<span class="code-comment"># [C1] 1人1日1シフトのみ（日・夜・休の排他）</span>
+<span class="code-keyword">for</span> s <span class="code-keyword">in</span> staff:
+    <span class="code-keyword">for</span> d <span class="code-keyword">in</span> days:
+        model.AddExactlyOne([x[s, d, shift] <span class="code-keyword">for</span> shift <span class="code-keyword">in</span> [<span class="code-var">"D"</span>, <span class="code-var">"N"</span>, <span class="code-var">"O"</span>]])
+
+<span class="code-comment"># [C2] 毎日、日勤1名、夜勤1名</span>
 <span class="code-keyword">for</span> d <span class="code-keyword">in</span> days:
     model.Add(sum(x[s, d, <span class="code-var">"D"</span>] <span class="code-keyword">for</span> s <span class="code-keyword">in</span> staff) == <span class="code-var">1</span>)
     model.Add(sum(x[s, d, <span class="code-var">"N"</span>] <span class="code-keyword">for</span> s <span class="code-keyword">in</span> staff) == <span class="code-var">1</span>)
 
-<span class="code-comment"># 夜勤の翌日は日勤禁止！（足して1以下）</span>
+<span class="code-comment"># [C3] 夜勤の翌日は日勤禁止！（足して1以下）</span>
 <span class="code-keyword">for</span> s <span class="code-keyword">in</span> staff:
     <span class="code-keyword">for</span> d <span class="code-keyword">in</span> range(len(days) - <span class="code-var">1</span>):
         model.Add(x[s, days[d], <span class="code-var">"N"</span>] + x[s, days[d+1], <span class="code-var">"D"</span>] &lt;= <span class="code-var">1</span>)
 
-<span class="code-comment"># 【NEW】どのスタッフにも一週間に最低1回の2連休！（補助変数＋AND＋OR）</span>
+<span class="code-comment"># [C4] どのスタッフにも一週間に最低1回の2連休！（補助変数＋AND＋OR）</span>
 <span class="code-keyword">for</span> s <span class="code-keyword">in</span> staff:
     two_off = []
     <span class="code-keyword">for</span> d <span class="code-keyword">in</span> range(len(days) - <span class="code-var">1</span>):
@@ -1520,9 +1577,17 @@ x = {}
         two_off.append(pair_flag)
     model.Add(sum(two_off) &gt;= <span class="code-var">1</span>)
 
+<span class="code-comment"># [CF] 公平性：夜勤は1人最大2回まで（テンプレート制約5）</span>
+<span class="code-keyword">for</span> s <span class="code-keyword">in</span> staff:
+    model.Add(sum(x[s, d, <span class="code-var">"N"</span>] <span class="code-keyword">for</span> d <span class="code-keyword">in</span> days) &lt;= <span class="code-var">2</span>)
+
 <span class="code-comment"># --- ステップ③：ソフト制約（目的関数：ペナルティ最小化） ---</span>
 penalties = []
 penalties.append(<span class="code-var">10</span> * (<span class="code-var">1</span> - x[<span class="code-var">"Alice"</span>, <span class="code-var">"水"</span>, <span class="code-var">"O"</span>])) <span class="code-comment"># Alice水曜休みの希望</span>
+penalties.append(<span class="code-var">10</span> * (<span class="code-var">1</span> - x[<span class="code-var">"Bob"</span>, <span class="code-var">"土"</span>, <span class="code-var">"O"</span>])) <span class="code-comment"># Bob土曜休みの希望</span>
+penalties.append(<span class="code-var">10</span> * (<span class="code-var">1</span> - x[<span class="code-var">"Bob"</span>, <span class="code-var">"日"</span>, <span class="code-var">"O"</span>])) <span class="code-comment"># Bob日曜休みの希望</span>
+penalties.append(<span class="code-var">10</span> * (<span class="code-var">1</span> - x[<span class="code-var">"Charlie"</span>, <span class="code-var">"月"</span>, <span class="code-var">"O"</span>])) <span class="code-comment"># Charlie月曜休みの希望</span>
+penalties.append(<span class="code-var">10</span> * (<span class="code-var">1</span> - x[<span class="code-var">"Dave"</span>, <span class="code-var">"金"</span>, <span class="code-var">"N"</span>])) <span class="code-comment"># Dave金曜夜勤の希望</span>
 model.Minimize(sum(penalties))
 
 <span class="code-comment"># 実行！</span>
@@ -1532,7 +1597,8 @@ status = solver.Solve(model)
 
         <h3>📊 ソルバー実測出力（全制約＋2連休100%充足）</h3>
         <p style="font-size: 0.95rem; color: #94a3b8;">
-            上記コードを実行すると、わずか <strong>18ms (0.018秒)</strong> で22兆通りから以下の一意な最適解が確定します：
+            上記コードを実行すると、わずか <strong>数十ms</strong> で22兆通りから以下の一意な最適解が確定します（実行例：28ms・分岐232・衝突4）：
+            <br>※下表はテンプレート全体版（制約C1・C2・C3・C4・CF＋希望5件）の実測出力です（2026-09-15 J.T. 実機検証済み・OPTIMAL）。
         </p>
         <table class="sched">
             <thead>
@@ -1554,9 +1620,9 @@ status = solver.Solve(model)
                 <tr>
                     <td><strong>Alice</strong></td>
                     <td><span class="b-day">日勤</span></td>
-                    <td><span class="b-night">夜勤</span></td>
-                    <td><span class="b-off">休</span></td>
                     <td><span class="b-day">日勤</span></td>
+                    <td><span class="b-off">休</span></td>
+                    <td><span class="b-night">夜勤</span></td>
                     <td><span class="b-off">休</span></td>
                     <td><span class="b-off">休</span></td>
                     <td><span class="b-night">夜勤</span></td>
@@ -1569,39 +1635,39 @@ status = solver.Solve(model)
                     <td><span class="b-night">夜勤</span></td>
                     <td><span class="b-off">休</span></td>
                     <td><span class="b-off">休</span></td>
-                    <td><span class="b-night">夜勤</span></td>
+                    <td><span class="b-day">日勤</span></td>
                     <td><span class="b-day">日勤</span></td>
                     <td><span class="b-off">休</span></td>
                     <td><span class="b-off">休</span></td>
-                    <td>2回</td>
+                    <td>1回</td>
                     <td>4日</td>
                     <td><strong style="color: var(--accent);">火 - 水, 土 - 日</strong> (週末連休充足!)</td>
                 </tr>
                 <tr>
                     <td><strong>Charlie</strong></td>
                     <td><span class="b-off">休</span></td>
-                    <td><span class="b-off">休</span></td>
+                    <td><span class="b-night">夜勤</span></td>
                     <td><span class="b-night">夜勤</span></td>
                     <td><span class="b-off">休</span></td>
                     <td><span class="b-off">休</span></td>
                     <td><span class="b-day">日勤</span></td>
                     <td><span class="b-day">日勤</span></td>
-                    <td>1回</td>
-                    <td>4日</td>
-                    <td><strong style="color: var(--accent);">月 - 火, 木 - 金</strong> (月曜希望休も充足!)</td>
+                    <td>2回</td>
+                    <td>3日</td>
+                    <td><strong style="color: var(--accent);">木 - 金</strong> (月曜希望休も充足!)</td>
                 </tr>
                 <tr>
                     <td><strong>Dave</strong></td>
                     <td><span class="b-off">休</span></td>
-                    <td><span class="b-day">日勤</span></td>
+                    <td><span class="b-off">休</span></td>
                     <td><span class="b-day">日勤</span></td>
                     <td><span class="b-off">休</span></td>
                     <td><span class="b-night">夜勤</span></td>
                     <td><span class="b-night">夜勤</span></td>
                     <td><span class="b-off">休</span></td>
                     <td>2回</td>
-                    <td>3日</td>
-                    <td><strong style="color: var(--accent);">日 - 月(週またぎ) / 水木</strong></td>
+                    <td>4日</td>
+                    <td><strong style="color: var(--accent);">月 - 火</strong> (金曜夜勤希望も充足!)</td>
                 </tr>
             </tbody>
         </table>
