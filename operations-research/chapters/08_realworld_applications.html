@@ -1,0 +1,31 @@
+<!-- 第8章: 【応用】あらゆるビジネス課題への横展開 -->
+<section id="ch8">
+        <h2>🌍 8. 【応用】あらゆるビジネス課題への横展開</h2>
+        <p>この「CP-SATの型（変数・制約・目的）」は、シフト表だけでなく、あらゆる現実問題にそのままトランスファー（移植）できます。</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; margin-top: 1.5rem;">
+            <div style="background: var(--surface-hover); padding: 1.5rem; border-radius: 10px; border-top: 4px solid var(--primary);">
+                <h4 style="color: var(--primary); margin-bottom: 0.5rem;">🚚 配車・巡回ルート (VRP)</h4>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                    「トラック5台で20箇所に配送する。積載量上限と時間指定を守り、走行距離を最小化せよ」。
+                </p>
+                <div style="font-size: 0.8rem; color: var(--accent);">変数: $x_{i, j, k}$（トラックkが拠点iからjへ走るか）</div>
+            </div>
+
+            <div style="background: var(--surface-hover); padding: 1.5rem; border-radius: 10px; border-top: 4px solid var(--accent);">
+                <h4 style="color: var(--accent); margin-bottom: 0.5rem;">🎒 予算・機能配分 (Knapsack)</h4>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                    「予算1億円、エンジニア30人月。30個の機能候補から、費用対効果が最大の組み合わせを選べ」。
+                </p>
+                <div style="font-size: 0.8rem; color: var(--accent);">変数: $x_{i}$（機能iを採用するか0/1）</div>
+            </div>
+
+            <div style="background: var(--surface-hover); padding: 1.5rem; border-radius: 10px; border-top: 4px solid var(--success);">
+                <h4 style="color: var(--success); margin-bottom: 0.5rem;">⏱️ 工程計画 (RCPSP)</h4>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                    「タスクAが終わらないとタスクBは着手できない。重機が2台しかない制約下で最短工期を求めよ」。
+                </p>
+                <div style="font-size: 0.8rem; color: var(--accent);">変数: $t_{i}$（タスクiの開始時刻）</div>
+            </div>
+        </div>
+    </section>

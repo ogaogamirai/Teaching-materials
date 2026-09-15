@@ -61,6 +61,7 @@ class MaterialValidator:
                 text = file.read_text(encoding="utf-8", errors="replace")
                 lines = text.splitlines()
                 
+                self.check_control_characters(file, text)
                 self.check_bold_brackets(file, lines)
                 self.check_math_formulas(file, text, lines)
                 self.check_mermaid_syntax(file, lines)
@@ -75,6 +76,30 @@ class MaterialValidator:
         if self.target_path.is_file():
             return [self.target_path]
         return [p for p in self.target_path.rglob("*") if p.is_file() and p.suffix in (".md", ".html")]
+
+    # -------------------------------------------------------------------------
+    # L0: 不正制御文字・エスケープ破損チェック (Bad Control Characters)
+    # -------------------------------------------------------------------------
+    def check_control_characters(self, file: Path, text: str):
+        # \r (13), \n (10), \t (9) 以外の ASCII < 32 の制御文字を走査
+        for idx, char in enumerate(text):
+            code = ord(char)
+            if code < 32 and code not in (9, 10, 13):
+                line_no = text[:idx].count('\n') + 1
+                char_names = {
+                    7: "ASCII BEL (0x07) - 例: \\approx が \\a + pprox に化けた可能性",
+                    8: "ASCII BS (0x08) - 例: \\b (backspace) エスケープ破損",
+                    11: "ASCII VT (0x0B) - 例: \\v (vertical tab) エスケープ破損",
+                    12: "ASCII FF (0x0C) - 例: \\forall が \\f + orall に化けた可能性",
+                    0: "ASCII NUL (0x00) - ヌルバイト",
+                }
+                detail = char_names.get(code, f"ASCII {hex(code)}")
+                snippet = repr(text[max(0, idx - 15):min(len(text), idx + 20)])
+                self.issues.append(Issue(
+                    "ERROR", file.name, line_no, "L0-BadControlChar",
+                    f"不正な制御文字 {hex(code)} ({detail}) が含まれています。Python文字列のエスケープ処理事故の恐れがあります。",
+                    snippet
+                ))
 
     # -------------------------------------------------------------------------
     # L1: Markdown 太字 × 括弧境界チェック
@@ -144,7 +169,7 @@ class MaterialValidator:
                         ))
 
     # -------------------------------------------------------------------------
-    # L2: 数式 KaTeX 構文チェック
+    # L2: 数式 KaTeX 構文・脱落コマンドチェック
     # -------------------------------------------------------------------------
     def check_math_formulas(self, file: Path, text: str, lines: list[str]):
         # $$ ... $$ または $ ... $ の抽出
@@ -158,13 +183,44 @@ class MaterialValidator:
         for m in re.finditer(r'(?<!\$)\$(?!\$)([^$\n]+?)(?<!\$)\$(?!\$)', text):
             math_blocks.append((m.group(1), text[:m.start()].count('\n') + 1, False))
 
+        # 典型的なLaTeXコマンドの頭文字脱落パターン（\a, \t, \f 等のエスケープ事故）
+        # 例: pprox (\approx), imes (\times), orall (\forall), heta (\theta), au (\tau)
+        broken_command_pattern = re.compile(r'(?<!\\)\b(pprox|imes|orall|heta|au)\b')
+
         for formula, line_no, is_display in math_blocks:
             f_clean = formula.strip()
             if not f_clean:
                 self.issues.append(Issue("WARN", file.name, line_no, "L2-MathEmpty", "空の数式ブロックです。"))
                 continue
 
-            # 不正な生の不等号 (< や >) の検出（\lt, \gt を推奨）
+            # 1. 数式内にタブ文字 \t が混入していないか (Pythonの \times -> \t + imes 事故防止)
+            if '\t' in formula:
+                self.issues.append(Issue(
+                    "ERROR", file.name, line_no, "L2-MathTabChar",
+                    "数式内にタブ文字(\\t)が含まれています。\\times などのエスケープ破損の可能性があります。",
+                    formula[:40]
+                ))
+
+            # 2. 脱落した壊れたLaTeXコマンドの検出
+            broken_match = broken_command_pattern.search(f_clean)
+            if broken_match:
+                bw = broken_match.group(1)
+                guess = {"pprox": "\\approx", "imes": "\\times", "orall": "\\forall", "heta": "\\theta", "au": "\\tau"}.get(bw, f"\\{bw}")
+                self.issues.append(Issue(
+                    "ERROR", file.name, line_no, "L2-MathBrokenCommand",
+                    f"数式内にバックスラッシュが脱落したコマンド '{bw}' が見つかりました。'{guess}' の誤りではありませんか？",
+                    f_clean[:50]
+                ))
+
+            # 3. 中括弧 {} の開閉バランス
+            if f_clean.count('{') != f_clean.count('}'):
+                self.issues.append(Issue(
+                    "ERROR", file.name, line_no, "L2-MathUnbalancedBraces",
+                    f"数式内の中括弧 {{}} の開閉数が一致しません ('{{': {f_clean.count('{')}個, '}}': {f_clean.count('}')}個)。KaTeXパースエラーの原因になります。",
+                    f_clean[:50]
+                ))
+
+            # 4. 不正な生の不等号 (< や >) の検出（\lt, \gt を推奨）
             if re.search(r'(?<!\\text\{)(?<!\\)(?<!\{)<(?![a-zA-Z/!])', f_clean):
                 if "<" in f_clean and "\\lt" not in f_clean and "\\text{" not in f_clean:
                     self.issues.append(Issue(
@@ -173,8 +229,7 @@ class MaterialValidator:
                         f_clean[:40]
                     ))
 
-            # 数式内での日本語直書きチェック（\text{} で囲まれていない日本語）
-            # \text{...} を除去した後に日本語文字が残っているか
+            # 5. 数式内での日本語直書きチェック（\text{} で囲まれていない日本語）
             stripped = re.sub(r'\\text\{[^}]*\}', '', f_clean)
             jp_match = re.search(r'[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]', stripped)
             if jp_match:

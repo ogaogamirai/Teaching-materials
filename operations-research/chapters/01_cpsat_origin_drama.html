@@ -1,0 +1,24 @@
+<!-- 第1章: CP-SAT誕生のドラマ：2つの流派の「奇跡の合体」 -->
+<section id="ch1">
+        <h2>🏛️ 1. CP-SAT誕生のドラマ：2つの流派の「奇跡の合体」</h2>
+        <p>かつてコンピュータサイエンスには、似ているようで交わらない2つの世界がありました。</p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+            <div style="background: #030712; padding: 1.2rem; border-radius: 8px; border: 1px solid #6366f1;">
+                <h4 style="color: #818cf8; margin-bottom: 0.5rem;">制約プログラミング (CP)</h4>
+                <p style="font-size: 0.9rem; color: var(--text-muted);">
+                    「夜勤の翌日は日勤禁止」「全員バラバラの値」など、<strong>人間の言葉に近い柔軟な制約</strong>をそのまま書ける。しかし探索が遅く、大規模問題で息切れした。
+                </p>
+            </div>
+            <div style="background: #030712; padding: 1.2rem; border-radius: 8px; border: 1px solid #38bdf8;">
+                <h4 style="color: #38bdf8; margin-bottom: 0.5rem;">SATソルバー (命題論理)</h4>
+                <p style="font-size: 0.9rem; color: var(--text-muted);">
+                    「0と1の論理式」しか扱えない。しかし、CPUのバグ検証などで培われた<strong>超人的な推論エンジン（CDCL）</strong>を持ち、数百万変数を一瞬で解く怪物。
+                </p>
+            </div>
+        </div>
+
+        <p>2010年代半ば、Google OR-Toolsの開発チーム（Laurent Perronら）が歴史的ブレイクスルーを起こしました：<br>
+        <strong>「表側はCPの豊かな表現力で人間が書き、ツールが裏でそれを全部『0と1の命題論理』に自動分解して、最強のSATエンジン（CDCL）で解かせればいい！」</strong><br>
+        これが現在、世界標準となっている <strong>CP-SAT</strong> です。</p>
+    </section>

@@ -1,0 +1,126 @@
+<!-- 第2章: 衝突駆動節学習（CDCL）：失敗から自律学習する現場 -->
+<section id="ch2">
+    <h2>🧠 2. 衝突駆動節学習（CDCL）：ブラックボックス（ソルバー）の完全解体</h2>
+    <p>
+        Pythonで書くコードはたった1行、<code>status = solver.Solve(model)</code> だけです。<br>
+        しかし、この関数の内部では<strong>「4つの専門部署が働く超知性チーム」</strong>がミリ秒単位で火花を散らしています。<br>
+        この仕組みを知ると、「なぜあのコードを書くのか」「どう書けばソルバーが爆速で解いてくれるのか」が手にとるように分かるようになります！
+    </p>
+
+    <!-- 4大エンジンの擬人化図解 -->
+    <div style="background: #030712; border: 2px solid var(--primary); border-radius: 12px; padding: 1.5rem; margin: 2rem 0;">
+        <h3 style="color: var(--primary); margin-top: 0; margin-bottom: 0.8rem; border-left: none; padding-left: 0;">
+            🏢 ソルバー内部で働く「4つの専門部署」（自動化工場）
+        </h3>
+        <p style="font-size: 0.95rem; color: #cbd5e1; margin-bottom: 1.2rem;">
+            22兆通りの迷路に突入したソルバーは、以下のサイクルを1秒間に何万回も回して正解へ追い詰めています：
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem;">
+            <!-- 部署1 -->
+            <div style="background: #0f172a; border-radius: 8px; padding: 1rem; border-top: 4px solid #38bdf8;">
+                <div style="color: #38bdf8; font-weight: bold; font-size: 0.95rem; margin-bottom: 0.4rem;">
+                    ① プリソルバー (Presolver)<br><small style="color: #94a3b8;">【仕分け屋】</small>
+                </div>
+                <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.6;">
+                    探索前に、自明なマス（確定休など）を即座に固定し、不要な選択肢を削ぎ落とす。<br>
+                    <strong>探索空間を一瞬で数万分の一に圧縮！</strong>
+                </p>
+            </div>
+
+            <!-- 部署2 -->
+            <div style="background: #0f172a; border-radius: 8px; padding: 1rem; border-top: 4px solid #fbbf24;">
+                <div style="color: #fbbf24; font-weight: bold; font-size: 0.95rem; margin-bottom: 0.4rem;">
+                    ② 探索ヒューリスティクス<br><small style="color: #94a3b8;">【直感のベテラン刑事】</small>
+                </div>
+                <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.6;">
+                    左上から順番に試すのではなく、<strong>「一番制約がキツい危険なマス（夜勤枠など）」</strong>から優先的に仮定する（VSIDS技術）。
+                </p>
+            </div>
+
+            <!-- 部署3 -->
+            <div style="background: #0f172a; border-radius: 8px; padding: 1rem; border-top: 4px solid #34d399;">
+                <div style="color: #34d399; font-weight: bold; font-size: 0.95rem; margin-bottom: 0.4rem;">
+                    ③ 制約伝播 (Propagator)<br><small style="color: #94a3b8;">【ドミノ倒しの名手】</small>
+                </div>
+                <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.6;">
+                    1マスが決まった瞬間、「夜勤明けの翌日日勤禁止」「1日1人」の連鎖で、<strong>周囲の何十マスもの候補を自動確定（単位伝播）</strong>！
+                </p>
+            </div>
+
+            <!-- 部署4 -->
+            <div style="background: #0f172a; border-radius: 8px; padding: 1rem; border-top: 4px solid #f87171;">
+                <div style="color: #f87171; font-weight: bold; font-size: 0.95rem; margin-bottom: 0.4rem;">
+                    ④ 衝突学習 (CDCL心臓部)<br><small style="color: #94a3b8;">【失敗を糧にする参謀】</small>
+                </div>
+                <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.6;">
+                    矛盾（衝突）に激突した時、犯人の組み合わせを特定して<strong>「新ルール（学習節）」を自作</strong>。5手前まで一気に大脱出ジャンプ！
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- コマ送り実況シミュレーター -->
+    <div class="cdcl-box">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <strong style="color: var(--primary);">🔍 CDCL 内部探索実況シミュレーター（コマ送り実験室）</strong>
+            <span id="cdcl-status" style="color: var(--accent); font-size: 0.9rem;">Step 0: 探索開始前</span>
+        </div>
+
+        <div class="cdcl-controls">
+            <button class="btn-step" onclick="nextStep()">次の一手を進める (Step)</button>
+            <button class="btn-step" onclick="resetCdcl()">リセット</button>
+            <button class="btn-auto" onclick="runAuto()">一括実行 (Auto)</button>
+        </div>
+
+        <div class="tree-visualizer" id="tree-log">【探索ログ】
+[Step 0] 待機中。「次の一手を進める」を押してください。</div>
+
+        <div class="learned-clauses-box">
+            <div class="learned-title">📚 自律生成された学習節（プログラムが自分で作った新ルール）:</div>
+            <div id="learned-list" style="color: #cbd5e1; font-family: var(--font-mono); font-size: 0.85rem;">
+                (まだ衝突は発生していません)
+            </div>
+        </div>
+    </div>
+
+    <!-- 中身が分かるとコードが書けるようになる！4箇条 -->
+    <div style="background: rgba(56, 189, 248, 0.05); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; margin-top: 2rem;">
+        <h3 style="color: var(--primary); margin-top: 0; margin-bottom: 0.8rem; border-left: none; padding-left: 0;">
+            💡 中身の理解がコードに直結する！ 現場のプログラミング4箇条
+        </h3>
+        <p style="font-size: 0.95rem; color: #cbd5e1; margin-bottom: 1rem;">
+            ソルバーの内部メカニズム（伝播と学習）が分かると、なぜPythonコードでその書き方をするのかが完全に腑に落ちます：
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div style="background: #0f172a; padding: 1rem; border-radius: 6px; border-left: 3px solid #38bdf8;">
+                <strong style="color: #38bdf8; font-size: 0.9rem;">Q1. なぜ <code>AddExactlyOne</code> を使うのか？</strong>
+                <p style="font-size: 0.82rem; color: #94a3b8; margin-top: 0.3rem;">
+                    単に足して1と書くより、<code>AddExactlyOne</code> と書いた方が、部署3（伝播エンジン）が「誰か1人決まったら残り全員を0にする」というドミノ倒しを超高速に発動できるからです。
+                </p>
+            </div>
+
+            <div style="background: #0f172a; padding: 1rem; border-radius: 6px; border-left: 3px solid #fbbf24;">
+                <strong style="color: #fbbf24; font-size: 0.9rem;">Q2. なぜ連休制約で <code>AddBoolAnd</code> を使うのか？</strong>
+                <p style="font-size: 0.82rem; color: #94a3b8; margin-top: 0.3rem;">
+                    補助フラグとANDを束縛することで、部署4（CDCL）が「飛び石ばかりの組み合わせ」にぶつかった瞬間、一網打尽にする学習節を自律生成できるからです。
+                </p>
+            </div>
+
+            <div style="background: #0f172a; padding: 1rem; border-radius: 6px; border-left: 3px solid #34d399;">
+                <strong style="color: #34d399; font-size: 0.9rem;">Q3. なぜ掛け算や割り算を避けるのか？</strong>
+                <p style="font-size: 0.82rem; color: #94a3b8; margin-top: 0.3rem;">
+                    ソルバーの本質は「0と1の命題論理（SAT）」です。足し算や不等式（線形）で書いてあげると、部署1（プリソルバー）が一瞬でSATの節に分解できるからです。
+                </p>
+            </div>
+
+            <div style="background: #0f172a; padding: 1rem; border-radius: 6px; border-left: 3px solid #f87171;">
+                <strong style="color: #f87171; font-size: 0.9rem;">Q4. なぜ二分探索で最適解が出るのか？</strong>
+                <p style="font-size: 0.82rem; color: #94a3b8; margin-top: 0.3rem;">
+                    CDCLが学習節の力で「白黒判定（YES/NO）」を0.001秒で返せるからこそ、不満度ペナルティのピストン締め上げ（MaxSAT）が成立するからです。
+                </p>
+            </div>
+        </div>
+    </div>
+</section>

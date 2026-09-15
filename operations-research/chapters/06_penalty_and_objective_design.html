@@ -1,0 +1,142 @@
+<!-- 第6章: 【不満度の測定と設計】人間の心理を数理モデルにする技術 -->
+<section id="ch6">
+        <h2>🎯 6. 【不満度の測定と設計】人間の心理を数理モデルにする技術</h2>
+        <p>ハード制約（人数確保や夜勤明け日勤禁止）は「違反か適合か（0か1か）」の白黒判定でした。<br>
+        しかし、現場のスタッフの希望や公平性は<strong>「グラデーション（感情や痛みの度合い）」</strong>です。<br>
+        この人間の心理をいかにして「目的関数（最小化すべきペナルティ）」として美しく測定・設計するか、その<strong>4大アプローチ</strong>を解剖します。</p>
+
+        <!-- レベル1: 基本の1-x -->
+        <div class="interactive-card">
+            <div class="pattern-title">
+                <span>レベル①：基本測定式「叶えば0点、叶わなければ加算」</span>
+                <span class="human-badge" style="background: rgba(16, 185, 129, 0.15); border-color: #10b981; color: #34d399;">基本の型</span>
+            </div>
+            <p style="font-size: 0.95rem; color: #94a3b8;">
+                <strong>心理の言語化：</strong>「休みを希望したのに出勤にされたら悲しい。希望が通ったら満足（不満ゼロ）！」
+            </p>
+            <div class="intuition-box">
+                💡 <strong>測定式（音読）：</strong> 不満度 ＝ 1 − 実際のシフト変数<br>
+                $$\text{Penalty} = 1 - x_{s, d, \text{希望シフト}}$$
+                <ul>
+                    <li>希望が叶った場合（$x = 1$）： $1 - 1 = 0$ （不満度 <strong>0点</strong>）</li>
+                    <li>希望が蹴られた場合（$x = 0$）： $1 - 0 = 1$ （不満度 <strong>1点</strong> 発生！）</li>
+                </ul>
+            </div>
+            <div class="code-snippet">
+<span class="code-comment"># Aliceの水曜休みが叶わなければペナルティ加算</span>
+penalties.append(<span class="code-var">1</span> - x[<span class="code-var">"Alice"</span>, <span class="code-var">"水"</span>, <span class="code-var">"O"</span>])
+            </div>
+        </div>
+
+        <!-- レベル2: 重み付け（優先度） -->
+        <div class="interactive-card">
+            <div class="pattern-title">
+                <span>レベル②：優先度の重み付け（Weight）「みんなの希望は平等ではない」</span>
+                <span class="human-badge" style="background: rgba(245, 158, 11, 0.15); border-color: #f59e0b; color: #fbbf24;">現場の必須機能</span>
+            </div>
+            <p style="font-size: 0.95rem; color: #94a3b8;">
+                <strong>心理の言語化：</strong>「子供の冠婚葬祭（絶対に休みたい！）と、なんとなく趣味で休みたい希望を同じ扱いにされたら困る！」
+            </p>
+            <div class="intuition-box">
+                💡 <strong>測定式（音読）：</strong> 不満度 ＝ 重み係数 $w$ × ( 1 − 実際のシフト変数 )<br>
+                $$\text{Total Penalty} = \sum_{(s, d)} w_{s, d} \times (1 - x_{s, d, \text{希望}})$$
+                <ul>
+                    <li><strong>命がけの希望（冠婚葬祭・通院）：</strong> 重み $w = 100$</li>
+                    <li><strong>普通のお休み希望（キャンプ・旅行）：</strong> 重み $w = 10$</li>
+                    <li><strong>通ったら嬉しい程度の軽い希望：</strong> 重み $w = 2$</li>
+                </ul>
+            </div>
+            <div class="code-snippet">
+<span class="code-comment"># 重み付きペナルティの登録</span>
+penalties.append(<span class="code-var">100</span> * (<span class="code-var">1</span> - x[<span class="code-var">"Alice"</span>, <span class="code-var">"水"</span>, <span class="code-var">"O"</span>]))  <span class="code-comment"># ピアノ発表会（重み100）</span>
+penalties.append(<span class="code-var">10</span> * (<span class="code-var">1</span> - x[<span class="code-var">"Bob"</span>, <span class="code-var">"土"</span>, <span class="code-var">"O"</span>]))      <span class="code-comment"># キャンプ（重み10）</span>
+            </div>
+        </div>
+
+        <!-- レベル3: 不公平さの測定（絶対値誤差） -->
+        <div class="interactive-card" style="border: 2px solid var(--primary);">
+            <div class="pattern-title">
+                <span style="color: var(--primary);">🌟 レベル③：不公平さの測定（夜勤回数の偏り・絶対値ペナルティ）</span>
+                <span class="human-badge">プロのモデリング</span>
+            </div>
+            <p style="font-size: 0.95rem; color: #cbd5e1;">
+                <strong>心理の言語化：</strong>「私だけ今週夜勤が3回も入っているのに、あの人は1回だけなんて不公平で耐えられない！」
+            </p>
+            <div class="intuition-box">
+                💡 <strong>測定式（音読）：</strong> 理想回数（例: 2回）からのズレ（絶対値誤差）をペナルティにする<br>
+                $$\text{Night Diff}_s \ge |\text{実際の夜勤回数}_s - \text{理想の回数}|$$
+                線形化テクニック：補助変数 $\text{diff}_s$ を置き、2本の不等式で絶対値を挟み込む！<br>
+                $$\text{diff}_s \ge \sum_d x_{s, d, \text{N}} - \text{Target}, \quad \text{diff}_s \ge \text{Target} - \sum_d x_{s, d, \text{N}}$$
+            </div>
+            <div class="code-snippet">
+target_night = <span class="code-var">2</span>  <span class="code-comment"># 1人あたりの理想夜勤回数</span>
+<span class="code-keyword">for</span> s <span class="code-keyword">in</span> staff:
+    actual_night = sum(x[s, d, <span class="code-var">"N"</span>] <span class="code-keyword">for</span> d <span class="code-keyword">in</span> days)
+    diff = model.NewIntVar(<span class="code-var">0</span>, <span class="code-var">7</span>, f<span class="code-var">"diff_{s}"</span>)
+    
+    <span class="code-comment"># diff >= |actual - target| を2式で表現（絶対値の線形化）</span>
+    model.Add(diff &gt;= actual_night - target_night)
+    model.Add(diff &gt;= target_night - actual_night)
+    
+    <span class="code-comment"># ズレ1回につき 20点 の不公平ペナルティを加算！</span>
+    penalties.append(<span class="code-var">20</span> * diff)
+            </div>
+        </div>
+
+        <!-- レベル4: 痛みの二乗・集中爆発の防止 -->
+        <div class="interactive-card">
+            <div class="pattern-title">
+                <span>レベル④：痛みの集中防止（累乗・多段階ペナルティ）</span>
+                <span class="human-badge" style="background: rgba(239, 68, 68, 0.15); border-color: #ef4444; color: #f87171;">合意形成の極致</span>
+            </div>
+            <p style="font-size: 0.95rem; color: #94a3b8;">
+                <strong>心理の言語化：</strong>「1回我慢するのは譲り合いだけど、2回も3回も自分だけ蹴られたら退職します！」
+            </p>
+            <div class="intuition-box">
+                💡 <strong>設計思想：</strong> 不満は線形（10点, 20点, 30点）ではなく、<strong>二乗（10点 ➔ 40点 ➔ 100点）</strong>で爆発する。<br>
+                「1人に我慢を集中させるくらいなら、全員で1回ずつ痛みを分け合う方がマシ」という優しい妥協解をソルバーに選ばせる。
+            </div>
+            <div class="code-snippet">
+<span class="code-comment"># 違反回数に応じてペナルティ係数を跳ね上げる（痛みの分散）</span>
+<span class="code-comment"># 1回目の未達: +10点 / 2回目の未達: +30点 / 3回目の未達: +80点...</span>
+<span class="code-comment"># ➔ ソルバーは「特定の人に我慢が集中する解」を避けて「全員平等に1回ずつ我慢する解」を選ぶ！</span>
+            </div>
+        </div>
+
+        <!-- まとめ表 -->
+        <div style="background: #0f172a; border-radius: 8px; padding: 1.2rem; margin-top: 1.5rem; border: 1px solid var(--border-subtle);">
+            <h4 style="color: var(--primary); margin-bottom: 0.6rem; font-size: 1rem;">
+                📊 不満度測定の全体アーキテクチャまとめ
+            </h4>
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--border-subtle); color: var(--text-muted);">
+                        <th style="padding: 0.5rem;">測定対象</th>
+                        <th>人間の心理・現場の不満</th>
+                        <th>数理モデルでの表現</th>
+                        <th>ソルバーの行動</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #1e293b;">
+                        <td style="padding: 0.5rem; font-weight: bold; color: #38bdf8;">希望休の未達</td>
+                        <td>「せっかく出した休みが消えた」</td>
+                        <td>$w \times (1 - x)$</td>
+                        <td>優先度の高い希望から順に死守する</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #1e293b;">
+                        <td style="padding: 0.5rem; font-weight: bold; color: #fbbf24;">業務量の偏り</td>
+                        <td>「私だけ夜勤が多くて不公平」</td>
+                        <td>$w \times |\text{実績} - \text{理想}|$</td>
+                        <td>夜勤回数が全員均等になるよう平準化する</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem; font-weight: bold; color: #f87171;">我慢の偏り</td>
+                        <td>「いつも私ばかり損をしている」</td>
+                        <td>違反回数の累乗ペナルティ</td>
+                        <td>痛みを特定の人に集中させず全員で分担する</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>

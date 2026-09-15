@@ -1,0 +1,22 @@
+<!-- 第3章: 白黒判定器がなぜ「柔軟なシフト」を作れるのか？ -->
+<section id="ch3">
+        <h2>⚖️ 3. 白黒判定器がなぜ「柔軟なシフト」を作れるのか？</h2>
+        <p>ここで極めて鋭い疑問が生まれます：<br>
+        <strong>「CDCLはYESかNOか（満たす解があるか否か）を判定するだけの論理マシンなのに、なぜ現場の柔軟な希望や妥協（最適化）ができるのか？」</strong></p>
+
+        <div class="callout callout-accent">
+            <strong>答え：MaxSAT と 締め上げ二分探索</strong><br>
+            CDCLを単発で使うのではなく、<strong>「不満度（ペナルティ）を締め上げるピストン」</strong>として超高速連打しています。
+        </div>
+
+        <div style="background: #030712; padding: 1.5rem; border-radius: 8px; font-family: var(--font-mono); font-size: 0.95rem; line-height: 1.8;">
+            1. 問う: 「不満度 50点以下 で全員のルールを守れるシフトはあるか？」<br>
+            　 ➔ CDCL: <span style="color: var(--success); font-weight: bold;">YES! (解Aを発見: 0.002秒)</span><br><br>
+            2. 問う: 「じゃあ、不満度 20点以下 はあるか？」<br>
+            　 ➔ CDCL: <span style="color: var(--success); font-weight: bold;">YES! (解Bを発見: 0.003秒)</span><br><br>
+            3. 問う: 「じゃあ、不満度 5点以下 はあるか？」<br>
+            　 ➔ CDCL: <span style="color: var(--danger); font-weight: bold;">NO! (数学的に不可能です: 0.001秒)</span><br><br>
+            4. 判定: <strong>「解B（不満度20点）が、人類が取りうる最もマシな最高妥協案（最適解）だ！」</strong>
+        </div>
+        <p style="margin-top: 1rem;">CDCLがミリ秒単位でYES/NOを返せるからこそ、二分探索で最良の妥協点を一瞬で絞り込めるのです。</p>
+    </section>

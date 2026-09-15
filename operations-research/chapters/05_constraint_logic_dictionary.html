@@ -1,0 +1,347 @@
+<!-- 第5章: 【制約ロジック完全マスター】現場ルール ➔ 論理式 ➔ CP-SATコードの黄金対応表 -->
+<section id="ch5">
+<h2>🧭 5. 【制約ロジック完全マスター】現場ルール ➔ 論理式 ➔ CP-SATコードの黄金対応表</h2>
+<p class="lead">
+第4章で「データ（0/1マトリクス）」の準備が整いました。ここからは、<strong>現場の複雑怪奇な業務ルール</strong>を、
+CP-SATが解ける<strong>「数学的判定式」</strong>と<strong>「Pythonコード」</strong>へと1対1で翻訳する実践ロジック集です。<br>
+「1日1シフト」「必要人数」「夜勤明け休み」「2連休必須」など、実務で頻出する6大制約の変換パターンを完全網羅します。
+</p>
+        <div style="background: #0b1120; border: 2px solid #38bdf8; border-radius: 10px; padding: 1.5rem; margin: 2rem 0;">
+            <h3 style="color: #38bdf8; margin-top: 0; margin-bottom: 0.5rem; font-size: 1.2rem; border: none; padding: 0;">
+                🗺️ 【完全対照マスターマップ】要望 ➔ マトリクスの位置 ➔ Pythonコード
+            </h3>
+            <p style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 1.2rem;">
+                現場の「要望」が、2値マトリクスの「どのマス目・どの方向」に作用し、最終的に「どんなPythonコード」に対応するのかを一目で俯瞰できる対照表です。
+            </p>
+
+            <div style="overflow-x: auto;">
+                <table class="mapping-table" style="margin: 0;">
+                    <thead>
+                        <tr>
+                            <th style="width: 22%;">🗣️ 人間の要望・ルール</th>
+                            <th style="width: 28%;">🔢 マトリクス（表）での見方・位置</th>
+                            <th style="width: 22%;">💡 数学的判定式</th>
+                            <th style="width: 28%;">🐍 対応する Python コード (CP-SAT)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span class="human-badge">ルール①</span><br>
+                                <strong>1人1日1シフトのみ</strong><br>
+                                <span style="font-size: 0.8rem; color: #94a3b8;">「同じ日に日勤と夜勤は兼任不可」</span>
+                            </td>
+                            <td>
+                                <strong>「奥行き方向（1マス）」</strong><br>
+                                <span style="font-size: 0.8rem; color: #cbd5e1;">
+                                あるスタッフ・ある日付において、<br>
+                                <code>[日, 夜, 休]</code> の3つのうち「1」は1個だけ。
+                                </span>
+                            </td>
+                            <td>
+                                $$x_{\text{D}} + x_{\text{N}} + x_{\text{O}} = 1$$
+                            </td>
+                            <td>
+                                <div class="code-snippet" style="margin: 0; font-size: 0.8rem;">
+model.AddExactlyOne([<br>
+  x[s, d, "D"],<br>
+  x[s, d, "N"],<br>
+  x[s, d, "O"]<br>
+])
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="human-badge">ルール②</span><br>
+                                <strong>毎日日勤1名・夜勤1名</strong><br>
+                                <span style="font-size: 0.8rem; color: #94a3b8;">「毎日の必要人数を必ず満たす」</span>
+                            </td>
+                            <td>
+                                <strong>「タテ列（スタッフ全員の合計）」</strong><br>
+                                <span style="font-size: 0.8rem; color: #cbd5e1;">
+                                各日付の列を縦に見て、<br>
+                                日勤の「1」が合計1個、夜勤の「1」が合計1個。
+                                </span>
+                            </td>
+                            <td>
+                                $$\sum_{s} x_{s, d, \text{D}} = 1$$
+                                $$\sum_{s} x_{s, d, \text{N}} = 1$$
+                            </td>
+                            <td>
+                                <div class="code-snippet" style="margin: 0; font-size: 0.8rem;">
+model.Add(<br>
+  sum(x[s, d, "D"] for s in staff) == 1<br>
+)<br>
+model.Add(<br>
+  sum(x[s, d, "N"] for s in staff) == 1<br>
+)
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="human-badge">ルール③</span><br>
+                                <strong>夜勤の翌日は日勤禁止</strong><br>
+                                <span style="font-size: 0.8rem; color: #94a3b8;">「夜勤明け当日の勤務を禁止」</span>
+                            </td>
+                            <td>
+                                <strong>「ヨコ行の隣り合う2マス」</strong><br>
+                                <span style="font-size: 0.8rem; color: #cbd5e1;">
+                                今日の <code>[夜]</code> と 明日の <code>[日]</code> が<br>
+                                同時に「1」になることを禁止。
+                                </span>
+                            </td>
+                            <td>
+                                $$x_{s, d, \text{N}} + x_{s, d+1, \text{D}} \le 1$$
+                            </td>
+                            <td>
+                                <div class="code-snippet" style="margin: 0; font-size: 0.8rem;">
+model.Add(<br>
+  x[s, days[d], "N"] + <br>
+  x[s, days[d+1], "D"] <= 1<br>
+)
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr style="background: rgba(245, 158, 11, 0.05); border: 1px solid var(--accent);">
+                            <td>
+                                <span class="human-badge" style="border-color: #f59e0b; color: #fbbf24;">ルール④ (注目!)</span><br>
+                                <strong>週に最低1回は2連休</strong><br>
+                                <span style="font-size: 0.8rem; color: #cbd5e1;">「飛び石ばかりは禁止、2日連続で休ませる」</span>
+                            </td>
+                            <td>
+                                <strong>「ヨコ行の連続する[休][休]ペア」</strong><br>
+                                <span style="font-size: 0.8rem; color: #cbd5e1;">
+                                6つの隣接ペア <code>(月火, 火水...)</code> のうち、<br>
+                                少なくとも1組で「休」が連続「1」になる。
+                                </span>
+                            </td>
+                            <td>
+                                $$c_d \iff (x_{d,\text{O}} \land x_{d+1,\text{O}})$$<br>
+                                $$\sum_{d=0}^{5} c_d \ge 1$$
+                            </td>
+                            <td>
+                                <div class="code-snippet" style="margin: 0; font-size: 0.8rem; border-color: var(--accent);">
+<span style="color: #64748b;"># 補助変数 pair_flag を導入</span><br>
+model.AddBoolAnd([<br>
+  x[s, d, "O"], x[s, d+1, "O"]<br>
+]).OnlyEnforceIf(pair_flag)<br><br>
+<span style="color: #64748b;"># 6ペアのうち1つ以上成立</span><br>
+model.Add(sum(pairs) >= 1)
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="human-badge">ルール⑤</span><br>
+                                <strong>3連勤以上は禁止</strong><br>
+                                <span style="font-size: 0.8rem; color: #94a3b8;">「3日ぶっ続け勤務を制限」</span>
+                            </td>
+                            <td>
+                                <strong>「ヨコ行の3マス区間スライド」</strong><br>
+                                <span style="font-size: 0.8rem; color: #cbd5e1;">
+                                任意の3日間 <code>[d, d+1, d+2]</code> の中に、<br>
+                                「休」の「1」が最低1個入る。
+                                </span>
+                            </td>
+                            <td>
+                                $$x_{d,\text{O}} + x_{d+1,\text{O}} + x_{d+2,\text{O}} \ge 1$$
+                            </td>
+                            <td>
+                                <div class="code-snippet" style="margin: 0; font-size: 0.8rem;">
+model.Add(<br>
+  x[s, d, "O"] + <br>
+  x[s, d+1, "O"] + <br>
+  x[s, d+2, "O"] >= 1<br>
+)
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <span class="human-badge" style="border-color: #10b981; color: #34d399;">要望⑥ (希望休)</span><br>
+                                <strong>「Aliceは水曜休み希望」</strong><br>
+                                <span style="font-size: 0.8rem; color: #94a3b8;">「できる限り個人の希望を叶える」</span>
+                            </td>
+                            <td>
+                                <strong>「特定ピンポイントの1マス」</strong><br>
+                                <span style="font-size: 0.8rem; color: #cbd5e1;">
+                                要望マトリクス <code>(Alice, 水, 休)</code> が 1。<br>
+                                実際のシフトが 0 のときペナルティ加算。
+                                </span>
+                            </td>
+                            <td>
+                                $$\text{Cost} \times (1 - x_{\text{Alice}, \text{水}, \text{O}})$$
+                            </td>
+                            <td>
+                                <div class="code-snippet" style="margin: 0; font-size: 0.8rem;">
+penalties.append(<br>
+  10 * (1 - x["Alice", "水", "O"])<br>
+)<br>
+model.Minimize(sum(penalties))
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- パターン1 -->
+        <div class="interactive-card">
+            <div class="pattern-title">
+                <span>① 「1人1日1シフト」の絶対原則（排他）</span>
+                <span class="human-badge">基本中の基本</span>
+            </div>
+            <p style="font-size: 0.95rem; color: #94a3b8;">
+                <strong>人間の言葉：</strong>「同じ日に日勤と夜勤を両方やったり、出勤なのに休みになったりするのは物理的にあり得ない！」
+            </p>
+            <div class="intuition-box">
+                💡 <strong>数学的判定式（音読）：</strong> 日勤フラグ ＋ 夜勤フラグ ＋ 休日フラグ ＝ ちょうど1<br>
+                $$x_{s, d, \text{D}} + x_{s, d, \text{N}} + x_{s, d, \text{O}} = 1$$
+            </div>
+            <div class="code-snippet">
+<span class="code-comment"># CP-SATなら専用メソッドで一撃（内部でCDCLが超高速に排他伝播）</span>
+<span class="code-keyword">for</span> s <span class="code-keyword">in</span> staff:
+    <span class="code-keyword">for</span> d <span class="code-keyword">in</span> days:
+        model.AddExactlyOne([x[s, d, shift] <span class="code-keyword">for</span> shift <span class="code-keyword">in</span> [<span class="code-var">"D"</span>, <span class="code-var">"N"</span>, <span class="code-var">"O"</span>]])
+            </div>
+        </div>
+
+        <!-- パターン2 -->
+        <div class="interactive-card">
+            <div class="pattern-title">
+                <span>② 「毎日の必要人数の確保」（縦の合計）</span>
+                <span class="human-badge">現場の維持</span>
+            </div>
+            <p style="font-size: 0.95rem; color: #94a3b8;">
+                <strong>人間の言葉：</strong>「毎日必ず、日勤に1人、夜勤に1人は現場にいなければ仕事が回らない！」
+            </p>
+            <div class="intuition-box">
+                💡 <strong>数学的判定式（音読）：</strong> 全スタッフの日勤フラグを足し合わせた合計が 1 に等しい<br>
+                $$\sum_{s \in \text{Staff}} x_{s, d, \text{D}} = 1, \quad \sum_{s \in \text{Staff}} x_{s, d, \text{N}} = 1$$
+            </div>
+            <div class="code-snippet">
+<span class="code-keyword">for</span> d <span class="code-keyword">in</span> days:
+    model.Add(sum(x[s, d, <span class="code-var">"D"</span>] <span class="code-keyword">for</span> s <span class="code-keyword">in</span> staff) == <span class="code-var">1</span>)
+    model.Add(sum(x[s, d, <span class="code-var">"N"</span>] <span class="code-keyword">for</span> s <span class="code-keyword">in</span> staff) == <span class="code-var">1</span>)
+            </div>
+        </div>
+
+        <!-- パターン3 -->
+        <div class="interactive-card">
+            <div class="pattern-title">
+                <span>③ 「夜勤の翌日は日勤禁止」（隣接インターバル規制）</span>
+                <span class="human-badge">健康・労働衛生</span>
+            </div>
+            <p style="font-size: 0.95rem; color: #94a3b8;">
+                <strong>人間の言葉：</strong>「朝まで夜勤をやった数時間後に、そのまま日勤に入るのは過労死ラインだから絶対NG！」
+            </p>
+            <div class="intuition-box">
+                💡 <strong>数学的判定式（音読）：</strong> 「今日夜勤(1)」かつ「明日日勤(1)」の同時成立を禁止（足して1以下）<br>
+                $$x_{s, d, \text{N}} + x_{s, d+1, \text{D}} \le 1$$
+            </div>
+            <div class="code-snippet">
+<span class="code-keyword">for</span> s <span class="code-keyword">in</span> staff:
+    <span class="code-keyword">for</span> d <span class="code-keyword">in</span> range(len(days) - <span class="code-var">1</span>):
+        model.Add(x[s, days[d], <span class="code-var">"N"</span>] + x[s, days[d+1], <span class="code-var">"D"</span>] &lt;= <span class="code-var">1</span>)
+            </div>
+        </div>
+
+        <!-- パターン4: 今回のハイライト -->
+        <div class="interactive-card" style="border: 2px solid var(--accent);">
+            <div class="pattern-title">
+                <span style="color: var(--accent);">🌟 ④ 「どのスタッフも、一週間に2連休を最低1回取らせる」（連休制約）</span>
+                <span class="human-badge" style="background: rgba(245, 158, 11, 0.3); border-color: #f59e0b;">超頻出・応用パズル</span>
+            </div>
+            <p style="font-size: 0.95rem; color: #cbd5e1;">
+                <strong>人間の言葉：</strong>「飛び石連休ばかりだと旅行にも行けず疲れが取れない。一週間のうち必ずどこかで『2日連続の休み』を取らせて！」
+            </p>
+            <div class="intuition-box" style="background: rgba(245, 158, 11, 0.1); border-left-color: var(--accent);">
+                💡 <strong>思考のステップ（補助変数 ＋ AND ＋ OR）：</strong><br>
+                1. 2連休になり得るペアは、週に6箇所（月火, 火水, 水木, 木金, 金土, 土日）。<br>
+                2. 各ペアについて「両日休みか？」を表すスイッチ（補助ブール変数 $c_{s, d}$）を作る。<br>
+                3. $c_{s, d} \iff (x_{s, d, \text{O}} \land x_{s, d+1, \text{O}})$ （両日休みならスイッチON）<br>
+                4. 全6ペアのうち「少なくともどれか1つがON」： $\sum_{d=0}^{5} c_{s, d} \ge 1$
+            </div>
+            <div class="code-snippet">
+<span class="code-keyword">for</span> s <span class="code-keyword">in</span> staff:
+    two_off_pairs = []
+    <span class="code-keyword">for</span> d <span class="code-keyword">in</span> range(len(days) - <span class="code-var">1</span>):
+        <span class="code-comment"># 補助変数: このペアが2連休か？</span>
+        pair_flag = model.NewBoolVar(f<span class="code-var">"two_off_{s}_{days[d]}_{days[d+1]}"</span>)
+        
+        <span class="code-comment"># pair_flag が 1 になるのは「今日が休み」かつ「翌日も休み」のとき</span>
+        model.AddBoolAnd([x[s, days[d], <span class="code-var">"O"</span>], x[s, days[d+1], <span class="code-var">"O"</span>]]).OnlyEnforceIf(pair_flag)
+        two_off_pairs.append(pair_flag)
+        
+    <span class="code-comment"># 6つのペアのうち、最低1回は成立していなければならない！</span>
+    model.Add(sum(two_off_pairs) &gt;= <span class="code-var">1</span>)  <span class="code-comment"># または model.AddBoolOr(two_off_pairs)</span>
+            </div>
+        </div>
+
+        <!-- パターン5 -->
+        <div class="interactive-card">
+            <div class="pattern-title">
+                <span>⑤ 「3連勤以上は禁止」（連続勤務の上限）</span>
+                <span class="human-badge">過労防止</span>
+            </div>
+            <p style="font-size: 0.95rem; color: #94a3b8;">
+                <strong>人間の言葉：</strong>「3日連続で勤務（日勤または夜勤）させるな！ 3日間の窓の中に最低1日は休みを入れろ！」
+            </p>
+            <div class="intuition-box">
+                💡 <strong>数学的判定式（音読）：</strong> 任意の連続する3日間において、休みの合計が 1日以上<br>
+                $$x_{s, d, \text{O}} + x_{s, d+1, \text{O}} + x_{s, d+2, \text{O}} \ge 1 \quad (\forall d)$$
+            </div>
+            <div class="code-snippet">
+<span class="code-keyword">for</span> s <span class="code-keyword">in</span> staff:
+    <span class="code-keyword">for</span> d <span class="code-keyword">in</span> range(len(days) - <span class="code-var">2</span>):
+        model.Add(x[s, days[d], <span class="code-var">"O"</span>] + x[s, days[d+1], <span class="code-var">"O"</span>] + x[s, days[d+2], <span class="code-var">"O"</span>] &gt;= <span class="code-var">1</span>)
+            </div>
+        </div>
+
+        <!-- パターン6 -->
+        <div class="interactive-card">
+            <div class="pattern-title">
+                <span>⑥ 「個人の希望休・わがまま」（ソフト制約 ＝ ペナルティ化）</span>
+                <span class="human-badge" style="background: rgba(16, 185, 129, 0.15); border-color: #10b981; color: #34d399;">柔軟な最適化</span>
+            </div>
+            <p style="font-size: 0.95rem; color: #94a3b8;">
+                <strong>人間の言葉：</strong>「Aliceは水曜日に休みたい。どうしても無理なら仕方ないけど、できる限り叶えて！」
+            </p>
+            <div class="intuition-box">
+                💡 <strong>数学的判定式（音読）：</strong> 叶わなかった時（$x=0$）にペナルティ加算、叶えば（$x=1$）ペナルティ0<br>
+                $$\text{Penalty} = \text{Cost} \times (1 - x_{s, d, \text{O}})$$
+            </div>
+            <div class="code-snippet">
+penalties = []
+<span class="code-comment"># Aliceの水曜休み希望（叶わなければ +10点 の不満ペナルティ）</span>
+penalties.append(<span class="code-var">10</span> * (<span class="code-var">1</span> - x[<span class="code-var">"Alice"</span>, <span class="code-var">"水"</span>, <span class="code-var">"O"</span>]))
+
+<span class="code-comment"># ソルバーに「不満の合計を最小にせよ！」と命じる（MaxSAT二分探索が始動）</span>
+model.Minimize(sum(penalties))
+            </div>
+        </div>
+
+    <!-- 章末チェックポイント -->
+    <div class="intuition-box" style="margin-top: 2rem; border-left: 4px solid var(--accent); background: rgba(56, 189, 248, 0.05);">
+        <h4 style="color: var(--accent); margin-top: 0; font-size: 1.1rem;">
+            🎓 第5章の重要チェックポイント（制約構築の黄金律）
+        </h4>
+        <ul style="margin: 0.5rem 0 0 1.2rem; line-height: 1.7; color: var(--text-muted); font-size: 0.95rem;">
+            <li><strong>ExactlyOne:</strong> 排他選択は <code>AddExactlyOne([x, y, z])</code> または <code>sum(...) == 1</code>。</li>
+            <li><strong>時間軸スライス（スライディングウィンドウ）:</strong> 「2連休」や「最大3連勤」は、連続する日付ブロックをループで回して不等式を立てる。</li>
+            <li><strong>ハード制約とソフト制約の境界:</strong> 破綻させないための絶対制約は <code>Add(...)</code>、妥協を許す希望は次章（第6章）の「ペナルティ（目的関数）」へ回す。</li>
+        </ul>
+        <p style="margin-top: 1rem; margin-bottom: 0; font-size: 0.95rem; color: var(--text);">
+            👉 <strong>次の第6章へ進もう:</strong> 制約が決まったら、次は「不満度」や「偏り」をどのように数値化し、ソルバーに最小化させるかという<strong>目的関数の設計術</strong>を学びます！
+        </p>
+    </div>
+</section>

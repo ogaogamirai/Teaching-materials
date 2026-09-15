@@ -1,0 +1,241 @@
+<!-- 第4章: 【要望マトリクス入門】自然言語 ➔ 0/1表 ➔ Pythonデータ構造への変換術 -->
+<section id="ch4">
+<h2>📊 4. 【要望マトリクス入門】自然言語 ➔ 0/1表 ➔ Pythonデータ構造への変換術</h2>
+<p class="lead">
+現場の「土曜日は休みたい」「佐藤さんと鈴木さんはペアで」「夜勤は最低2人」といった生々しい要望を、
+ソルバーはどうやって受け取るのでしょうか？<br>
+この章では、現場の混沌とした日本語の要望が、どのように<strong>「3D直方体」</strong>と<strong>「2値マトリクス（0/1表）」</strong>に整理され、
+最終的に<strong>Pythonのデータ構造（2D配列・辞書）</strong>へと変換されるのか、その入力構築プロセスを徹底的にマスターします。
+</p>
+        <p>シフト作成で最も重要なスキルは、<strong>「人間の言葉（ワガママや現場ルール）」を「0と1の判定式」に分解し、そのまま「CP-SATコード」に落とし込む変換力</strong>です。<br>
+        現場で頻出する主要な6大パターンを、音読ルビと完全対照表でマスターしましょう。</p>
+
+        <!-- 要望マトリクスの作成具体例（完全解剖） -->
+        <div style="background: #030712; border: 2px solid var(--primary); border-radius: 12px; padding: 2rem; margin: 2rem 0; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.8rem;">
+                <h3 style="color: var(--primary); margin: 0; font-size: 1.3rem; border: none; padding: 0;">
+                    📋 ステップ0：そもそも「要望マトリクス」はどうやって作るのか？（超丁寧な完全解剖）
+                </h3>
+                <span class="human-badge" style="font-size: 0.85rem;">思考の土台</span>
+            </div>
+
+            <p style="font-size: 1.05rem; color: #cbd5e1; line-height: 1.8;">
+                最適化プログラミングを始めるとき、初学者が最もつまずくのが<strong>「現実のバラバラな要望を、どうやって数理モデルの形に整理すればいいのか？」</strong>というデータの作り方です。<br>
+                ここでは、現場の生々しいやり取りからPythonで扱えるデータ構造（マトリクス）が完成するまでの全プロセスを、<strong>4つの段階</strong>で追体験してみましょう！
+            </p>
+
+            <!-- 段階1: 生の声 -->
+            <div style="background: #0f172a; border-radius: 8px; padding: 1.2rem; margin: 1.2rem 0; border-left: 4px solid var(--accent);">
+                <h4 style="color: var(--accent); margin-bottom: 0.6rem; font-size: 1.05rem;">
+                    第1段階：スタッフから届く「生の声」（自然言語のメモやLINE）
+                </h4>
+                <p style="font-size: 0.95rem; color: #94a3b8; margin-bottom: 0.8rem;">
+                    毎月のシフト締め切り日、管理者（リーダー）の手元には以下のようなLINEメッセージや付箋が集まります。
+                </p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+                    <div style="background: #1e293b; padding: 0.8rem 1rem; border-radius: 6px; border: 1px solid #334155;">
+                        <strong style="color: #38bdf8;">👩 Alice (子育て中)</strong><br>
+                        <span style="font-size: 0.85rem; color: #cbd5e1;">「水曜日は子供のピアノの発表会があるので、絶対に休みにしてください！」</span>
+                    </div>
+                    <div style="background: #1e293b; padding: 0.8rem 1rem; border-radius: 6px; border: 1px solid #334155;">
+                        <strong style="color: #38bdf8;">👨 Bob (アウトドア派)</strong><br>
+                        <span style="font-size: 0.85rem; color: #cbd5e1;">「今週末（土・日）に友人とキャンプを予定しています。土日の連休希望です！」</span>
+                    </div>
+                    <div style="background: #1e293b; padding: 0.8rem 1rem; border-radius: 6px; border: 1px solid #334155;">
+                        <strong style="color: #38bdf8;">🧑 Charlie (通院あり)</strong><br>
+                        <span style="font-size: 0.85rem; color: #cbd5e1;">「月曜日の午前に定期検診の予約が入っているため、月曜休みを希望します。」</span>
+                    </div>
+                    <div style="background: #1e293b; padding: 0.8rem 1rem; border-radius: 6px; border: 1px solid #334155;">
+                        <strong style="color: #38bdf8;">👱 Dave (稼ぎたい派)</strong><br>
+                        <span style="font-size: 0.85rem; color: #cbd5e1;">「休みは平日いつでも良いです。金曜の夜勤手当を稼ぎたいので夜勤に入れてください！」</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 段階2: 3次元（スタッフ×日付×シフト）のキャンバスを用意する -->
+            <div style="background: #0f172a; border-radius: 8px; padding: 1.2rem; margin: 1.2rem 0; border-left: 4px solid var(--primary);">
+                <h4 style="color: var(--primary); margin-bottom: 0.6rem; font-size: 1.05rem;">
+                    第2段階：すべての可能性を網羅する「3次元の白紙グリッド」を定義する
+                </h4>
+                <p style="font-size: 0.95rem; color: #94a3b8; margin-bottom: 0.8rem;">
+                    コンピュータには「感情」や「言葉のニュアンス」は一切伝わりません。そこで、シフト表のすべてのマス目を<br>
+                    <strong>「スタッフ（4人） × 日付（7日） × シフト種別（日勤/夜勤/休の3種） ＝ 計84個のスイッチ」</strong><br>
+                    として空間を構造化します。
+                </p>
+                <div style="background: #030712; padding: 1rem; border-radius: 6px; font-family: var(--font-mono); font-size: 0.85rem; color: #e2e8f0;">
+                    staff = ["Alice", "Bob", "Charlie", "Dave"]<br>
+                    days  = ["月", "火", "水", "木", "金", "土", "日"]<br>
+                    shifts = ["D", "N", "O"]  # D:日勤, N:夜勤, O:休日<br><br>
+                    <span style="color: #64748b;"># 84個のマス目の1つひとつに (スタッフ, 日付, シフト) の住所がつく！</span><br>
+                    <span style="color: #38bdf8;">(Alice, 水, O)</span> ➔ 「Alice の 水曜日 は 休日か？」を表すスイッチ
+                </div>
+            </div>
+
+            <!-- 段階3: 生の声を0と1にプロットする（マトリクス完成） -->
+            <div style="background: #0f172a; border-radius: 8px; padding: 1.2rem; margin: 1.2rem 0; border-left: 4px solid var(--success);">
+                <h4 style="color: var(--success); margin-bottom: 0.6rem; font-size: 1.05rem;">
+                    第3段階：生の声の該当するマスに「1」を立てる（要望マトリクスの誕生）
+                </h4>
+                <p style="font-size: 0.95rem; color: #94a3b8; margin-bottom: 0.8rem;">
+                    スタッフの希望が書かれているマスに「<strong>1</strong>（希望あり）」を、何も指定がないマスには「<strong>0</strong>（どちらでも良い）」を埋めていきます。
+                </p>
+
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: center; margin: 0.5rem 0;">
+                        <thead>
+                            <tr style="background: #1e293b; color: #38bdf8; border: 1px solid var(--border-subtle);">
+                                <th style="padding: 0.6rem; text-align: left;">スタッフ</th>
+                                <th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th><th>日</th>
+                                <th style="text-align: left; padding-left: 1rem;">翻訳された要望の意味</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border: 1px solid var(--border-subtle);">
+                                <td style="padding: 0.6rem; text-align: left; font-weight: bold;">Alice</td>
+                                <td>0</td><td>0</td>
+                                <td style="background: rgba(56,189,248,0.2); color: #38bdf8; font-weight: bold; border: 1px solid var(--primary);">1 (休)</td>
+                                <td>0</td><td>0</td><td>0</td><td>0</td>
+                                <td style="text-align: left; padding-left: 1rem; color: #94a3b8; font-size: 0.8rem;">水曜に「休」スイッチをONにしてほしい</td>
+                            </tr>
+                            <tr style="border: 1px solid var(--border-subtle);">
+                                <td style="padding: 0.6rem; text-align: left; font-weight: bold;">Bob</td>
+                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                                <td style="background: rgba(56,189,248,0.2); color: #38bdf8; font-weight: bold; border: 1px solid var(--primary);">1 (休)</td>
+                                <td style="background: rgba(56,189,248,0.2); color: #38bdf8; font-weight: bold; border: 1px solid var(--primary);">1 (休)</td>
+                                <td style="text-align: left; padding-left: 1rem; color: #94a3b8; font-size: 0.8rem;">土・日両方に「休」スイッチをONにしてほしい</td>
+                            </tr>
+                            <tr style="border: 1px solid var(--border-subtle);">
+                                <td style="padding: 0.6rem; text-align: left; font-weight: bold;">Charlie</td>
+                                <td style="background: rgba(56,189,248,0.2); color: #38bdf8; font-weight: bold; border: 1px solid var(--primary);">1 (休)</td>
+                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                                <td style="text-align: left; padding-left: 1rem; color: #94a3b8; font-size: 0.8rem;">月曜に「休」スイッチをONにしてほしい</td>
+                            </tr>
+                            <tr style="border: 1px solid var(--border-subtle);">
+                                <td style="padding: 0.6rem; text-align: left; font-weight: bold;">Dave</td>
+                                <td>0</td><td>0</td><td>0</td><td>0</td>
+                                <td style="background: rgba(168,85,247,0.2); color: #c084fc; font-weight: bold; border: 1px solid #a855f7;">1 (夜)</td>
+                                <td>0</td><td>0</td>
+                                <td style="text-align: left; padding-left: 1rem; color: #94a3b8; font-size: 0.8rem;">金曜に「夜勤」スイッチをONにしてほしい</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pythonコードとしての要望マトリクス表現（2つの実装スタイル） -->
+                <div style="margin-top: 1.2rem; background: #030712; border: 1px solid #334155; border-radius: 8px; padding: 1rem;">
+                    <div style="color: var(--primary); font-weight: bold; font-size: 0.95rem; margin-bottom: 0.5rem;">
+                        🐍 Pythonコードでこのマトリクスを定義する具体例（2つの王道スタイル）
+                    </div>
+                    <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 0.8rem;">
+                        この「0と1の表」は、Pythonでは以下のどちらの形式でも直感的に書くことができます：
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <!-- スタイルA: 直感的な2次元マトリクス（行と列の0/1行列） -->
+                        <div style="background: #090d16; padding: 0.8rem; border-radius: 6px; border: 1px solid #1e293b;">
+                            <div style="color: var(--accent); font-weight: bold; font-size: 0.85rem; margin-bottom: 0.3rem;">
+                                スタイルA: 見た目そのままの2次元配列 (0/1 Matrix)
+                            </div>
+                            <pre style="font-family: var(--font-mono); font-size: 0.78rem; color: #cbd5e1; line-height: 1.5; margin: 0; overflow-x: auto;">
+<span class="code-comment"># スタッフ × 日付の「希望休(O)」マトリクス</span>
+<span class="code-comment">#          月, 火, 水, 木, 金, 土, 日</span>
+request_matrix = {
+    <span class="code-var">"Alice"</span>:   [0,  0,  <span style="color:#38bdf8; font-weight:bold;">1</span>,  0,  0,  0,  0],  <span class="code-comment"># 水休</span>
+    <span class="code-var">"Bob"</span>:     [0,  0,  0,  0,  0,  <span style="color:#38bdf8; font-weight:bold;">1</span>,  <span style="color:#38bdf8; font-weight:bold;">1</span>],  <span class="code-comment"># 土日休</span>
+    <span class="code-var">"Charlie"</span>: [<span style="color:#38bdf8; font-weight:bold;">1</span>,  0,  0,  0,  0,  0,  0],  <span class="code-comment"># 月休</span>
+    <span class="code-var">"Dave"</span>:    [0,  0,  0,  0,  0,  0,  0],  <span class="code-comment"># なし</span>
+}
+
+<span class="code-comment"># 利用側: マトリクスで1のマスだけペナルティに変換</span>
+<span class="code-keyword">for</span> s, row <span class="code-keyword">in</span> request_matrix.items():
+    <span class="code-keyword">for</span> d_idx, is_req <span class="code-keyword">in</span> enumerate(row):
+        <span class="code-keyword">if</span> is_req == <span class="code-var">1</span>:
+            d = days[d_idx]
+            penalties.append(<span class="code-var">10</span> * (<span class="code-var">1</span> - x[s, d, <span class="code-var">"O"</span>]))
+                            </pre>
+                        </div>
+
+                        <!-- スタイルB: 疎行列（スパース）辞書形式 -->
+                        <div style="background: #090d16; padding: 0.8rem; border-radius: 6px; border: 1px solid #1e293b;">
+                            <div style="color: var(--success); font-weight: bold; font-size: 0.85rem; margin-bottom: 0.3rem;">
+                                スタイルB: 実務で最も好まれる「辞書形式」 (Sparse Map)
+                            </div>
+                            <pre style="font-family: var(--font-mono); font-size: 0.78rem; color: #cbd5e1; line-height: 1.5; margin: 0; overflow-x: auto;">
+<span class="code-comment"># (スタッフ, 日付) ➔ 希望シフト のマッピング</span>
+<span class="code-comment"># ※ 0（こだわりなし）は省略できるため実務で超便利！</span>
+requests = {
+    (<span class="code-var">"Alice"</span>,   <span class="code-var">"水"</span>): <span class="code-var">"O"</span>,  <span class="code-comment"># 水曜休み</span>
+    (<span class="code-var">"Bob"</span>,     <span class="code-var">"土"</span>): <span class="code-var">"O"</span>,  <span class="code-comment"># 土曜休み</span>
+    (<span class="code-var">"Bob"</span>,     <span class="code-var">"日"</span>): <span class="code-var">"O"</span>,  <span class="code-comment"># 日曜休み</span>
+    (<span class="code-var">"Charlie"</span>, <span class="code-var">"月"</span>): <span class="code-var">"O"</span>,  <span class="code-comment"># 月曜休み</span>
+    (<span class="code-var">"Dave"</span>,    <span class="code-var">"金"</span>): <span class="code-var">"N"</span>,  <span class="code-comment"># 金曜夜勤手当</span>
+}
+
+<span class="code-comment"># 利用側: 辞書から直接ペナルティに変換</span>
+<span class="code-keyword">for</span> (s, d), desired_shift <span class="code-keyword">in</span> requests.items():
+    penalties.append(<span class="code-var">10</span> * (<span class="code-var">1</span> - x[s, d, desired_shift]))
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 段階4: Python辞書データ構造と目的関数への連結 -->
+            <div style="background: #0f172a; border-radius: 8px; padding: 1.2rem; margin: 1.2rem 0; border-left: 4px solid #f43f5e;">
+                <h4 style="color: #f43f5e; margin-bottom: 0.6rem; font-size: 1.05rem;">
+                    第4段階：Pythonコードでの保持方法と「不満度（ペナルティ）の数式化」
+                </h4>
+                <p style="font-size: 0.95rem; color: #cbd5e1; margin-bottom: 0.8rem;">
+                    Pythonプログラムでは、この要望を <code>(スタッフ, 日付, 希望シフト)</code> をキーにした辞書やタプルリストで直感的に保持します：
+                </p>
+
+                <div class="code-snippet" style="color: #f1f5f9;">
+<span class="code-comment"># 1. 現場から集まった要望リスト（これが要望マトリクスの実体！）</span>
+requests = [
+    {<span class="code-var">"staff"</span>: <span class="code-var">"Alice"</span>,   <span class="code-var">"day"</span>: <span class="code-var">"水"</span>, <span class="code-var">"shift"</span>: <span class="code-var">"O"</span>, <span class="code-var">"weight"</span>: <span class="code-var">10</span>},  <span class="code-comment"># 水曜休</span>
+    {<span class="code-var">"staff"</span>: <span class="code-var">"Bob"</span>,     <span class="code-var">"day"</span>: <span class="code-var">"土"</span>, <span class="code-var">"shift"</span>: <span class="code-var">"O"</span>, <span class="code-var">"weight"</span>: <span class="code-var">10</span>},  <span class="code-comment"># 土曜休</span>
+    {<span class="code-var">"staff"</span>: <span class="code-var">"Bob"</span>,     <span class="code-var">"day"</span>: <span class="code-var">"日"</span>, <span class="code-var">"shift"</span>: <span class="code-var">"O"</span>, <span class="code-var">"weight"</span>: <span class="code-var">10</span>},  <span class="code-comment"># 日曜休</span>
+    {<span class="code-var">"staff"</span>: <span class="code-var">"Charlie"</span>, <span class="code-var">"day"</span>: <span class="code-var">"月"</span>, <span class="code-var">"shift"</span>: <span class="code-var">"O"</span>, <span class="code-var">"weight"</span>: <span class="code-var">10</span>},  <span class="code-comment"># 月曜休</span>
+    {<span class="code-var">"staff"</span>: <span class="code-var">"Dave"</span>,    <span class="code-var">"day"</span>: <span class="code-var">"金"</span>, <span class="code-var">"shift"</span>: <span class="code-var">"N"</span>, <span class="code-var">"weight"</span>: <span class="code-var">10</span>},  <span class="code-comment"># 金曜夜勤</span>
+]
+
+<span class="code-comment"># 2. マトリクスからペナルティ（目的関数）への自動変換！</span>
+penalties = []
+<span class="code-keyword">for</span> req <span class="code-keyword">in</span> requests:
+    s = req[<span class="code-var">"staff"</span>]
+    d = req[<span class="code-var">"day"</span>]
+    sh = req[<span class="code-var">"shift"</span>]
+    w = req[<span class="code-var">"weight"</span>]
+    
+    <span class="code-comment"># x[s, d, sh] が 1（希望通り）なら、(1 - 1) = 0点（不満なし）</span>
+    <span class="code-comment"># x[s, d, sh] が 0（叶わず）なら、(1 - 0) * weight = 10点（ペナルティ発生！）</span>
+    penalties.append(w * (<span class="code-var">1</span> - x[s, d, sh]))
+
+<span class="code-comment"># 全員の不満合計を最小化せよ！</span>
+model.Minimize(sum(penalties))
+                </div>
+
+                <div class="intuition-box" style="margin-top: 1rem;">
+                    💡 <strong>ここが美しさの頂点！</strong><br>
+                    <code>w * (1 - x)</code> という極めてシンプルな1行の数式で、<br>
+                    <strong>「叶えばペナルティ0、叶わなければペナルティ加算」</strong> という人間の「わがまま・願望」が完璧に数理化されました。<br>
+                    あとはCP-SATが、第3章で学んだMaxSAT二分探索で「不満ペナルティの合計が最も小さくなる妥協シフト」を一瞬で探索してくれるのです！
+                </div>
+            </div>
+        </div>
+
+    <!-- 章末チェックポイント -->
+    <div class="intuition-box" style="margin-top: 2rem; border-left: 4px solid var(--accent); background: rgba(56, 189, 248, 0.05);">
+        <h4 style="color: var(--accent); margin-top: 0; font-size: 1.1rem;">
+            🎓 第4章の重要チェックポイント（データ入力の準備完了！）
+        </h4>
+        <ul style="margin: 0.5rem 0 0 1.2rem; line-height: 1.7; color: var(--text-muted); font-size: 0.95rem;">
+            <li><strong>3次元の直方体:</strong> スタッフ $\times$ 日付 $\times$ シフト種別 の立体グリッドとして変数を定義する。</li>
+            <li><strong>マトリクスの役割:</strong> 「要望」や「必要人数」は、この直方体のスライス（断面）に対するデータ（配列または辞書）として表現する。</li>
+            <li><strong>ハードとソフトの分離:</strong> 絶対に守る「必須条件（必要人数など）」と、できれば叶えたい「希望休（ペナルティ化）」をデータ作成の段階で明確に分ける。</li>
+        </ul>
+        <p style="margin-top: 1rem; margin-bottom: 0; font-size: 0.95rem; color: var(--text);">
+            👉 <strong>次の第5章へ進もう:</strong> データが揃ったら、次はいよいよ「1日1回勤務」「夜勤明け休み」「2連休必須」といった<strong>現場の6大ルールをCP-SATコードに変換する制約ロジック</strong>を完全攻略します！
+        </p>
+    </div>
+</section>
